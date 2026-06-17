@@ -1,0 +1,23 @@
+.DS_Store
+
+# Frontend
+frontend/.nuxt/
+frontend/.output/
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Backend
+backend/.bundle/
+backend/log/*
+backend/tmp/*
+backend/vendor/bundle/
+!backend/log/.keep
+!backend/tmp/.keep
+
+# Environment
+.env
+.env.*
+!.env.example
