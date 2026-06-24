@@ -1,4 +1,4 @@
-FROM ruby:3.3.4-slim
+FROM ruby:3.4.9
 
 RUN apt-get update -qq \
   && apt-get install -y --no-install-recommends build-essential libpq-dev postgresql-client \
