@@ -5,7 +5,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE
+        || (process.env.NODE_ENV === 'production'
+          ? 'https://tqce-info-practice.onrender.com'
+          : 'http://localhost:3001'),
     },
   },
 })

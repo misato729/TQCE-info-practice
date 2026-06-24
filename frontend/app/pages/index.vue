@@ -5,6 +5,8 @@ const { data, pending, error } = await useFetch('/api/v1/health', {
   baseURL: config.public.apiBase,
   server: false,
 })
+
+const apiBase = computed(() => String(config.public.apiBase).replace(/\/$/, ''))
 </script>
 
 <template>
@@ -19,7 +21,9 @@ const { data, pending, error } = await useFetch('/api/v1/health', {
       <div class="status">
         <span class="dot" :class="{ ok: data?.status === 'ok' }" />
         <span v-if="pending">API 接続を確認中...</span>
-        <span v-else-if="error">API に接続できません</span>
+        <span v-else-if="error">
+          API に接続できません（接続先: {{ apiBase }}）
+        </span>
         <span v-else>Rails API: {{ data?.status }}</span>
       </div>
     </section>
@@ -73,6 +77,10 @@ h1 {
   background: #ffffff;
   color: #2f3b4c;
   font-weight: 600;
+}
+
+.status span {
+  overflow-wrap: anywhere;
 }
 
 .dot {
