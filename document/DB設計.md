@@ -250,8 +250,8 @@ erDiagram
 | `user_id` | bigint | NO | `users.id` |
 | `question_id` | bigint | NO | `questions.id` |
 | `selected_choice_id` | bigint | YES | `question_choices.id`。未回答を許容する場合はNULL |
-| `is_correct` | boolean | NO | 正解かどうか |
-| `answered_at` | datetime | NO | 回答日時 |
+| `is_correct` | boolean | YES | 正解かどうか。演習開始直後の未回答時はNULL |
+| `answered_at` | datetime | YES | 回答日時。演習開始直後の未回答時はNULL |
 | `created_at` | datetime | NO | 作成日時 |
 | `updated_at` | datetime | NO | 更新日時 |
 
@@ -266,8 +266,11 @@ erDiagram
 
 ### 補足
 
+* 演習開始時に、出題対象の問題ごとに未回答状態のレコードを作成する
+* 回答時に `selected_choice_id`, `is_correct`, `answered_at` を更新する
+* 未回答問題もこのテーブルで保持するため、演習セッションと出題問題を紐づける専用テーブルは作成しない
 * 演習結果ページではこのテーブルを参照する
-* 問題別進捗の集計元になる
+* 回答済みレコードは問題別進捗の集計元になる
 
 ## user_question_stats
 
@@ -406,6 +409,8 @@ erDiagram
 | `practice_sessions.category_code` | 小分類指定時は必須 |
 | `practice_sessions.question_count` | 1以上 |
 | `practice_sessions.correct_count` | `question_count` 以下 |
+| `practice_answers.is_correct` | 回答済みの場合は必須 |
+| `practice_answers.answered_at` | 回答済みの場合は必須 |
 | `question_reports.report_body` | 必須 |
 | `question_reports.status` | `utils` の誤り報告対応状態に含まれる値のみ |
 
