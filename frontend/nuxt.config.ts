@@ -4,6 +4,8 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
+    basicAuthUser: '',
+    basicAuthPassword: '',
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE
         || (process.env.NODE_ENV === 'production'
