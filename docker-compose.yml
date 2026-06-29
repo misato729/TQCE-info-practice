@@ -3,8 +3,8 @@ services:
     build:
       context: ./frontend
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    environment:
-      NUXT_PUBLIC_API_BASE: http://localhost:3001
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     volumes:
@@ -17,8 +17,9 @@ services:
     build:
       context: ./backend
     command: bash -lc "bundle install && bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/tqce_development
       RAILS_ENV: development
     ports:
       - "3001:3000"
@@ -31,16 +32,14 @@ services:
 
   db:
     image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: tqce_development
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d tqce_development"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
