@@ -9,16 +9,23 @@ class ApplicationController < ActionController::API
 
     auth = Rack::Auth::Basic::Request.new(request.env)
     return if auth.provided? && auth.basic? && auth.credentials &&
-      secure_compare(auth.credentials.first, ENV.fetch("BACKEND_BASIC_AUTH_USER")) &&
-      secure_compare(auth.credentials.second, ENV.fetch("BACKEND_BASIC_AUTH_PASSWORD"))
+      secure_compare(auth.credentials.first, backend_basic_auth_user) &&
+      secure_compare(auth.credentials.second, backend_basic_auth_password)
 
     response.headers["WWW-Authenticate"] = 'Basic realm="TQCE Backend"'
     render plain: "HTTP Basic: Access denied.\n", status: :unauthorized
   end
 
   def backend_basic_auth_enabled?
-    ENV["BACKEND_BASIC_AUTH_USER"].present? &&
-      ENV["BACKEND_BASIC_AUTH_PASSWORD"].present?
+    backend_basic_auth_user.present? && backend_basic_auth_password.present?
+  end
+
+  def backend_basic_auth_user
+    ENV["BACKEND_BASIC_AUTH_USER"].presence || ENV["NUXT_BASIC_AUTH_USER"]
+  end
+
+  def backend_basic_auth_password
+    ENV["BACKEND_BASIC_AUTH_PASSWORD"].presence || ENV["NUXT_BASIC_AUTH_PASSWORD"]
   end
 
   def secure_compare(value, expected)
