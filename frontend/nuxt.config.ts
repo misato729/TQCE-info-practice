@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE
         || (process.env.NODE_ENV === 'production'
-          ? 'https://tqce-info-practice.onrender.com'
+          ? 'https://tqce-info-practice.fly.dev'
           : 'http://localhost:3001'),
     },
   },

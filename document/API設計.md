@@ -29,7 +29,7 @@ Authorization: Bearer <access_token>
 * 管理APIではトークンの `role = admin` を確認する
 * 本番環境ではHTTPSを必須とする
 
-Bearerトークンを採用する理由は、VercelとRenderでドメインが分かれる構成でもCookieのSameSite設定やCSRF対応を増やさずに実装できるためである。
+Bearerトークンを採用する理由は、VercelとFly.ioでドメインが分かれる構成でもCookieのSameSite設定やCSRF対応を増やさずに実装できるためである。
 
 ## 共通リクエスト仕様
 

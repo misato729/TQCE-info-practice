@@ -45,6 +45,66 @@ docker compose down
 docker compose down -v
 ```
 
+## バックエンドのデプロイ
+
+バックエンドは Fly.io にデプロイします。Fly.io の設定は `backend/fly.toml` に置いています。
+
+初回は Fly.io にログインしたうえで、バックエンドディレクトリからアプリを作成します。
+
+```sh
+cd backend
+fly launch --no-deploy
+```
+
+`backend/fly.toml` の `app` 名と Fly.io 側のアプリ名が異なる場合は、どちらかに合わせてください。
+
+本番で必要な環境変数は Fly.io の secrets に設定します。DB は Neon を使う想定です。
+
+```sh
+fly secrets set SECRET_KEY_BASE=<secret>
+fly secrets set DATABASE_URL=<neon-production-database-url>
+fly secrets set CORS_ORIGINS=https://tqce-info-practice.vercel.app
+```
+
+バックエンドのルート画面に Basic 認証をかける場合は、以下も設定します。
+
+```sh
+fly secrets set BACKEND_BASIC_AUTH_USER=<user>
+fly secrets set BACKEND_BASIC_AUTH_PASSWORD=<password>
+```
+
+デプロイは以下で実行します。
+
+```sh
+fly deploy
+```
+
+デプロイ後、Vercel 側の `NUXT_PUBLIC_API_BASE` には Fly.io のバックエンド URL を設定します。
+
+```text
+https://tqce-info-practice.fly.dev
+```
+
+### release_command が失敗する場合
+
+`release_command failed` が出た場合は、ほとんどの場合 `SECRET_KEY_BASE` または `DATABASE_URL` の未設定、あるいはDB接続エラーです。以下で secrets が入っているか確認してください。
+
+```sh
+fly secrets list -a tqce-info-practice
+```
+
+ログの詳細は以下で確認します。
+
+```sh
+fly logs -a tqce-info-practice
+```
+
+DB が Neon の場合、`DATABASE_URL` は本番用の接続文字列を設定します。接続文字列のパスワードやクエリ文字列にシェル特殊文字が含まれる場合は、値全体をシングルクォートで囲んで設定してください。
+
+```sh
+fly secrets set DATABASE_URL='<neon-production-database-url>' -a tqce-info-practice
+```
+
 ## ディレクトリ構成
 
 ```text
