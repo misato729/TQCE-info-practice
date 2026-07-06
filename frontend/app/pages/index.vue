@@ -366,7 +366,7 @@ h3 {
 
 .stats-band {
   width: min(1120px, calc(100% - 32px));
-  margin: -40px auto 0;
+  margin: 24px auto 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border: 1px solid rgba(148, 163, 184, 0.36);
