@@ -59,6 +59,20 @@ Accept: application/json
 | `{question_id}` | 問題ID |
 | `{answer_history_id}` | 回答履歴ID |
 
+### コンテンツブロック
+
+問題本文、選択肢、解答解説は、表示順に並んだ `content_blocks` の配列として扱う。HTML文字列は受け付けず、フロントエンドは `type` ごとの表示部品で描画する。
+
+| `type` | 用途 | 主なキー |
+| --- | --- | --- |
+| `text` | 通常の文章 | `text` |
+| `quote` | 枠付きの引用文 | `text`, 任意の `source` |
+| `table` | 表 | `headers`, `rows` |
+| `code` | 単独のプログラム表記 | 任意の `title`, `code` |
+| `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
+
+問題本文ではすべての形式を使用できる。選択肢では `text`, `table`、解答解説では `text`, `quote`, `table`, `code` を使用できる。
+
 ### ページネーション
 
 回答履歴、お気に入り、管理問題一覧で使用する。
@@ -268,7 +282,12 @@ Accept: application/json
     "id": 42,
     "exam_number": 1,
     "question_number": 1,
-    "body": "教育基本法について正しいものを選びなさい。",
+    "content_blocks": [
+      {
+        "type": "text",
+        "text": "教育基本法について正しいものを選びなさい。"
+      }
+    ],
     "major_category_code": "teacher_education",
     "category_code": "education_law",
     "difficulty": "star1",
@@ -276,7 +295,12 @@ Accept: application/json
       {
         "id": 101,
         "choice_label": "ア",
-        "body": "選択肢の内容",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "選択肢の内容"
+          }
+        ],
         "display_order": 1
       }
     ]
@@ -285,6 +309,8 @@ Accept: application/json
 ```
 
 * 選択肢は必ず4件返す
+* `content_blocks` の配列順を画面の表示順とする
+* プログラムの `code` は改行と字下げを変更せず返す
 * `exam_number` のみ指定した場合は、その試験ナンバーの問1を取得する
 * `exam_number` と `after_question_number` を指定した場合は、同じ試験ナンバーの次の問番号を取得する
 * 問20より後の問題を要求した場合は `404 Not Found` を返す
@@ -321,9 +347,19 @@ Accept: application/json
     "correct_choice": {
       "id": 103,
       "choice_label": "ウ",
-      "body": "正答となる選択肢"
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "正答となる選択肢"
+        }
+      ]
     },
-    "explanation": "この問題の解答解説です。",
+    "explanation_blocks": [
+      {
+        "type": "text",
+        "text": "この問題の解答解説です。"
+      }
+    ],
     "source_text": "教育基本法第1条",
     "answer_history_id": 501
   }
@@ -353,7 +389,7 @@ Accept: application/json
         "id": 42,
         "exam_number": 1,
         "question_number": 1,
-        "body": "教育基本法について正しいものを選びなさい。",
+        "body_excerpt": "教育基本法について正しいものを選びなさい。",
         "major_category_code": "teacher_education",
         "category_code": "education_law",
         "difficulty": "star1"
@@ -361,7 +397,7 @@ Accept: application/json
       "selected_choice": {
         "id": 101,
         "choice_label": "ア",
-        "body": "選択した内容"
+        "body_excerpt": "選択した内容"
       },
       "is_correct": false,
       "answered_at": "2026-06-25T03:00:00Z"
@@ -375,6 +411,9 @@ Accept: application/json
   }
 }
 ```
+
+* `body_excerpt` は、最初の `text` または `quote` ブロックから装飾を除いて生成する
+* `body_excerpt` は一覧表示用であり、問題の完全な内容は指定問題取得APIで取得する
 
 ### 回答履歴詳細
 
@@ -418,14 +457,14 @@ Accept: application/json
 | `category_code` | 小分類で絞り込む |
 | `difficulty` | 難易度で絞り込む |
 | `publication_status` | 公開状態で絞り込む |
-| `keyword` | 問題文を部分一致検索する |
+| `keyword` | 問題本文のコンテンツブロック内の文字列を部分一致検索する |
 | `page`、`per_page` | ページネーション |
 
 ### 管理問題詳細
 
 `GET /api/v1/admin/questions/{question_id}`
 
-試験ナンバー、問番号、正答を含む4つの選択肢、解答解説、根拠資料、分類、難易度、公開状態を返す。
+試験ナンバー、問番号、問題本文のコンテンツブロック、正答を含む4つの選択肢、解答解説のコンテンツブロック、根拠資料、分類、難易度、公開状態を返す。
 
 ### 問題作成
 
@@ -436,35 +475,58 @@ Accept: application/json
   "question": {
     "exam_number": 1,
     "question_number": 1,
-    "body": "問題文",
-    "major_category_code": "teacher_education",
-    "category_code": "education_law",
+    "content_blocks": [
+      {
+        "type": "text",
+        "text": "次のプログラムを比較し、正しいものを選びなさい。"
+      },
+      {
+        "type": "code_group",
+        "items": [
+          {
+            "title": "プログラムA",
+            "code": "(01) i = 0\n(02) i < n - 1 の間繰り返す:"
+          },
+          {
+            "title": "プログラムB",
+            "code": "(01) i = 1\n(02) i < n の間繰り返す:"
+          }
+        ]
+      }
+    ],
+    "major_category_code": "information",
+    "category_code": "algorithm",
     "difficulty": "star1",
-    "explanation": "解答解説",
-    "source_text": "教育基本法第1条",
+    "explanation_blocks": [
+      {
+        "type": "text",
+        "text": "解答解説"
+      }
+    ],
+    "source_text": "高等学校学習指導要領解説 情報編",
     "publication_status": "draft",
     "choices": [
       {
         "choice_label": "ア",
-        "body": "選択肢1",
+        "content_blocks": [{ "type": "text", "text": "選択肢1" }],
         "is_correct": false,
         "display_order": 1
       },
       {
         "choice_label": "イ",
-        "body": "選択肢2",
+        "content_blocks": [{ "type": "text", "text": "選択肢2" }],
         "is_correct": true,
         "display_order": 2
       },
       {
         "choice_label": "ウ",
-        "body": "選択肢3",
+        "content_blocks": [{ "type": "text", "text": "選択肢3" }],
         "is_correct": false,
         "display_order": 3
       },
       {
         "choice_label": "エ",
-        "body": "選択肢4",
+        "content_blocks": [{ "type": "text", "text": "選択肢4" }],
         "is_correct": false,
         "display_order": 4
       }
@@ -475,6 +537,9 @@ Accept: application/json
 
 * 選択肢は4件とする
 * 正答は1件だけとする
+* 問題本文、選択肢、解答解説の各 `content_blocks` は空配列にせず、「コンテンツブロック」の形式に従う
+* `table` は見出しと各行の列数を一致させる
+* `code_group.items` は2件以上とし、プログラムの改行と字下げを保持する
 * `exam_number` は1以上、`question_number` は1〜20とする
 * `exam_number` と `question_number` の組み合わせは重複させない
 * 大分類と小分類の組み合わせが `utils` の定義と一致していることを確認する
@@ -524,5 +589,6 @@ Accept: application/json
 * 回答判定は必ずサーバー側で行う
 * 一般ユーザーは自分の回答履歴とお気に入りだけ取得できる
 * 管理APIはすべて管理者権限を確認する
+* コンテンツブロックでは許可したキーと文字列だけを受け付け、任意のHTMLやスクリプトを保存・描画しない
 * 会員登録、ログイン、回答APIには必要に応じてレート制限を設ける
 * アカウント削除と問題削除はトランザクションで実行する

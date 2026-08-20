@@ -51,8 +51,8 @@ erDiagram
         integer question_number
         varchar major_category_code
         varchar category_code
-        text body
-        text explanation
+        jsonb content_blocks
+        jsonb explanation_blocks
         varchar difficulty
         text source_text
         varchar publication_status
@@ -66,7 +66,7 @@ erDiagram
         bigint id PK
         bigint question_id FK
         varchar choice_label
-        text body
+        jsonb content_blocks
         boolean is_correct
         integer display_order
         datetime created_at
@@ -124,7 +124,7 @@ erDiagram
 
 ### 3.2 questions
 
-試験ナンバーごとに20問を配置し、問題本文、分類、解説、出典、公開状態を管理する。
+試験ナンバーごとに20問を配置し、問題本文、分類、解説、出典、公開状態を管理する。問題本文と解説は、文章、引用、表、プログラムなどを表示順に並べられるコンテンツブロックとして保存する。
 
 | カラム | 型 | NULL | デフォルト | 制約・説明 |
 |---|---|---:|---|---|
@@ -133,8 +133,8 @@ erDiagram
 | `question_number` | INTEGER | NO | - | 試験セット内の問番号。1〜20 |
 | `major_category_code` | VARCHAR(50) | NO | - | 大分類コード |
 | `category_code` | VARCHAR(100) | NO | - | 分野コード |
-| `body` | TEXT | NO | - | 問題文 |
-| `explanation` | TEXT | NO | - | 解答後に表示する解説 |
+| `content_blocks` | JSONB | NO | - | 問題文の表示ブロック。通常文、引用文、表、プログラム、プログラム比較を表示順に保持 |
+| `explanation_blocks` | JSONB | NO | - | 解答後に表示する解説の表示ブロック |
 | `difficulty` | VARCHAR(20) | NO | - | 難易度 |
 | `source_text` | TEXT | YES | `NULL` | 出典・根拠資料 |
 | `publication_status` | VARCHAR(20) | NO | `draft` | 公開状態 |
@@ -167,6 +167,10 @@ erDiagram
 - 1つの試験ナンバーを試験セットとして扱い、試験セットとして提供する際は問1〜20が各1件ずつ存在することをアプリケーションで検証する。
 - 問題削除時は、関連する選択肢、解答履歴、お気に入りも同一トランザクションで削除する。
 - 解答前の一般向けAPIでは、解説や正解情報を返さない。
+- `content_blocks` と `explanation_blocks` は配列とし、配列の並び順をそのまま画面の表示順とする。
+- 問題本文の `content_blocks` では `text`, `quote`, `table`, `code`, `code_group` を使用できる。
+- 解説の `explanation_blocks` では `text`, `quote`, `table`, `code` を使用できる。
+- コンテンツブロックの構造は「4.6 コンテンツブロック形式」に従い、問題の作成・更新時にアプリケーションで検証する。
 
 ### 3.3 question_choices
 
@@ -176,8 +180,8 @@ erDiagram
 |---|---|---:|---|---|
 | `id` | BIGINT | NO | - | 主キー |
 | `question_id` | BIGINT | NO | - | `questions.id` を参照 |
-| `choice_label` | VARCHAR(10) | NO | - | 画面表示用ラベル。例: `1`, `2`, `3`, `4` |
-| `body` | TEXT | NO | - | 選択肢本文 |
+| `choice_label` | VARCHAR(10) | NO | - | 画面表示用ラベル。例: `ア`, `イ`, `ウ`, `エ` |
+| `content_blocks` | JSONB | NO | - | 選択肢の表示ブロック。通常文または表形式の内容を保持 |
 | `is_correct` | BOOLEAN | NO | `false` | 正解なら `true` |
 | `display_order` | INTEGER | NO | - | 表示順 |
 | `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
@@ -198,6 +202,8 @@ erDiagram
 - 1問につき選択肢4件、正解1件を必須とする。
 - 選択肢数と正解数は、問題の作成・更新トランザクション内でアプリケーションが検証する。
 - 解答履歴から参照されている選択肢は個別削除せず、必要な修正は同じIDのまま更新する。
+- `content_blocks` では `text` と `table` を使用できる。表形式でも選択肢1件を1つの回答対象として扱う。
+- `content_blocks` の配列順を表示順とし、構造は「4.6 コンテンツブロック形式」に従う。
 
 ### 3.4 answer_histories
 
@@ -308,6 +314,63 @@ erDiagram
 | `published` | 公開 | する |
 | `private` | 非公開 | しない |
 
+### 4.6 コンテンツブロック形式
+
+問題本文、選択肢、解説は、次の形式のオブジェクトを配列で保持する。HTMLは保存せず、フロントエンドが `type` に応じた部品で描画する。
+
+| `type` | 用途 | 主なデータ |
+|---|---|---|
+| `text` | 通常の文章 | `text` |
+| `quote` | 枠付きの引用文 | `text`, 任意の `source` |
+| `table` | 表 | `headers`, `rows` |
+| `code` | 単独のプログラム表記 | 任意の `title`, `code` |
+| `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
+
+問題本文の例:
+
+```json
+[
+  {
+    "type": "text",
+    "text": "次のプログラムAとプログラムBについて答えなさい。"
+  },
+  {
+    "type": "code_group",
+    "items": [
+      {
+        "title": "プログラムA",
+        "code": "(01) i = 0\n(02) i < n - 1 の間繰り返す:"
+      },
+      {
+        "title": "プログラムB",
+        "code": "(01) i = 1\n(02) i < n の間繰り返す:"
+      }
+    ]
+  }
+]
+```
+
+表ブロックの例:
+
+```json
+{
+  "type": "table",
+  "headers": ["第1層", "第2層", "第3層", "第4層"],
+  "rows": [
+    ["内容1", "内容2", "内容3", "内容4"]
+  ]
+}
+```
+
+#### 検証ルール
+
+- 配列は1件以上とし、各ブロックに許可された `type` と必須データがあることを検証する。
+- `text`, `source`, `title`, `code` は文字列とし、空文字だけの値を許可しない。
+- `table.headers` と各 `table.rows` の列数を一致させる。
+- `code` と `code_group.items[].code` は改行と字下げを変更せず保存する。
+- `code_group.items` は2件以上とする。
+- 令和7年度科目Ⅰを基準とする初期設計では、画像ブロックは設けない。
+
 ## 5. 整合性ルール
 
 ### 5.1 問題登録・更新
@@ -320,6 +383,7 @@ erDiagram
 - 選択肢が4件ある。
 - 正解の選択肢が1件だけある。
 - `choice_label` と `display_order` が問題内で重複しない。
+- 問題本文、選択肢、解説のコンテンツブロックが「4.6 コンテンツブロック形式」に従う。
 
 ### 5.2 解答保存
 
