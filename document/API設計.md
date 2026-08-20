@@ -4,34 +4,44 @@
 
 * Rails APIからNuxtフロントエンドへJSON形式でデータを提供する
 * APIのベースパスは `/api/v1` とする
-* URLはリソース指向とし、HTTPメソッドで取得・登録・更新・削除を表現する
 * JSONのキーはRails側に合わせて `snake_case` とする
 * 日時はISO 8601形式のUTCで返す
     * 例: `2026-06-25T03:00:00Z`
 * 一覧APIはページネーションに対応する
 * 分野、難易度、公開状態などの固定値はDBから取得せず、フロントエンドとバックエンドの `utils` で管理する
-* 通常演習と模擬試験は、共通の `practice_sessions` APIで扱う
-* 公開問題閲覧時と演習回答前は、正答を推測できる情報をレスポンスに含めない
+* 問題は1問ずつ取得し、演習セッションや演習完了処理は設けない
+* 問題は `exam_number` ごとに20問を配置し、各問を `question_number` で並べる
+* 未ログインユーザーも問題に回答できるが、回答履歴は保存しない
+* ログインユーザーが回答した場合のみ、回答履歴を1問単位で保存する
+* 回答前のレスポンスには、正答や解答解説を含めない
 
 ## 認証方式
 
-初期実装では、Bearerトークン方式を採用する。
+初期実装ではBearerトークン方式を採用する。
 
 ```http
 Authorization: Bearer <access_token>
 ```
 
-* ログイン成功時にアクセストークンを発行する
-* アクセストークンにはユーザーID、権限、有効期限を含め、改ざん検知できる形式で署名する
+* 会員登録またはログイン成功時にアクセストークンを発行する
+* アクセストークンにはユーザーID、権限、有効期限を含め、改ざんを検知できる形式で署名する
 * 有効期限は24時間を初期値とする
-* フロントエンドはログアウト時にトークンを破棄する
-* リフレッシュトークンは初期実装では設けず、期限切れ時は再ログインする
+* リフレッシュトークンとパスワード再設定は初期実装では設けない
+* ログアウトはフロントエンド側でアクセストークンを破棄して行う
 * 管理APIではトークンの `role = admin` を確認する
 * 本番環境ではHTTPSを必須とする
 
-Bearerトークンを採用する理由は、VercelとFly.ioでドメインが分かれる構成でもCookieのSameSite設定やCSRF対応を増やさずに実装できるためである。
+Bearerトークン方式は、VercelとFly.ioでフロントエンドとバックエンドのドメインが分かれる構成を想定して採用する。
 
-## 共通リクエスト仕様
+### 任意認証
+
+問題回答APIは認証を任意とする。
+
+* Authorizationヘッダーがない場合は、回答を判定するだけで履歴を保存しない
+* 有効なAuthorizationヘッダーがある場合は、回答を判定して履歴を保存する
+* Authorizationヘッダーがあるにもかかわらずトークンが不正または期限切れの場合は、匿名扱いにせず `401 Unauthorized` を返す
+
+## 共通仕様
 
 ### Content-Type
 
@@ -47,19 +57,16 @@ Accept: application/json
 | 表記 | 内容 |
 | --- | --- |
 | `{question_id}` | 問題ID |
-| `{practice_session_id}` | 演習セッションID |
-| `{report_id}` | 誤り報告ID |
+| `{answer_history_id}` | 回答履歴ID |
 
 ### ページネーション
 
-一覧APIでは以下のクエリパラメータを使用する。
+回答履歴、お気に入り、管理問題一覧で使用する。
 
 | パラメータ | 必須 | 初期値 | 内容 |
 | --- | --- | --- | --- |
 | `page` | 任意 | `1` | ページ番号 |
 | `per_page` | 任意 | `20` | 1ページの件数。最大100件 |
-
-一覧レスポンスには以下の `meta` を含める。
 
 ```json
 {
@@ -67,8 +74,8 @@ Accept: application/json
   "meta": {
     "current_page": 1,
     "per_page": 20,
-    "total_count": 1200,
-    "total_pages": 60
+    "total_count": 42,
+    "total_pages": 3
   }
 }
 ```
@@ -79,13 +86,10 @@ Accept: application/json
 | --- | --- |
 | 取得成功 | `200 OK` |
 | 登録成功 | `201 Created` |
-| 非同期処理・受付成功 | `202 Accepted` |
 | 更新成功 | `200 OK` |
 | 削除成功・レスポンス本文なし | `204 No Content` |
 
 ### エラーレスポンス
-
-エラー時は形式を統一する。
 
 ```json
 {
@@ -101,12 +105,11 @@ Accept: application/json
 
 | HTTPステータス | `code`例 | 使用場面 |
 | --- | --- | --- |
-| `400 Bad Request` | `bad_request` | JSON形式不正、必要な条件の組み合わせ不正 |
+| `400 Bad Request` | `bad_request` | JSON形式不正、パラメータ形式不正 |
 | `401 Unauthorized` | `unauthorized` | 未ログイン、トークン不正・期限切れ |
-| `403 Forbidden` | `forbidden` | 権限不足、他ユーザーのデータへのアクセス |
-| `404 Not Found` | `not_found` | 対象データが存在しない、非公開問題への一般アクセス |
-| `409 Conflict` | `conflict` | 演習完了後の回答など、現在状態と競合する操作 |
-| `422 Unprocessable Entity` | `validation_error` | バリデーションエラー、出題可能数不足 |
+| `403 Forbidden` | `forbidden` | 管理者権限不足、他ユーザーのデータへのアクセス |
+| `404 Not Found` | `not_found` | 対象が存在しない、非公開問題への一般アクセス |
+| `422 Unprocessable Entity` | `validation_error` | バリデーションエラー、選択肢の指定不正 |
 | `500 Internal Server Error` | `internal_server_error` | サーバー内部エラー |
 
 ## API一覧
@@ -123,54 +126,41 @@ Accept: application/json
 | --- | --- | --- | --- |
 | POST | `/api/v1/auth/signup` | 不要 | 会員登録し、アクセストークンを発行する |
 | POST | `/api/v1/auth/login` | 不要 | ログインし、アクセストークンを発行する |
-| DELETE | `/api/v1/auth/logout` | 必要 | ログアウトを受け付ける |
 | GET | `/api/v1/me` | 必要 | ログインユーザー情報を取得する |
 | DELETE | `/api/v1/me` | 必要 | ログインユーザーのアカウントを物理削除する |
-| POST | `/api/v1/password_resets` | 不要 | パスワード再設定案内を送信する |
-| PATCH | `/api/v1/password_resets` | 不要 | 再設定トークンを使ってパスワードを変更する |
 
-### 公開問題・誤り報告
+### 問題演習
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
-| GET | `/api/v1/questions` | 不要 | 公開中の問題を一覧取得する |
-| GET | `/api/v1/questions/{question_id}` | 不要 | 公開中の問題詳細を取得する |
-| POST | `/api/v1/questions/{question_id}/reports` | 不要 | 問題の誤りを報告する |
+| GET | `/api/v1/questions/next` | 不要 | 公開中の問題を1問取得する |
+| GET | `/api/v1/questions/{question_id}` | 不要 | 指定した公開問題を取得する |
+| POST | `/api/v1/questions/{question_id}/answer` | 任意 | 回答を判定し、ログイン時のみ履歴を保存する |
+
+### 回答履歴
+
+| メソッド | パス | 認証 | 概要 |
+| --- | --- | --- | --- |
+| GET | `/api/v1/answer_histories` | 必要 | ログインユーザーの回答履歴を取得する |
+| GET | `/api/v1/answer_histories/{answer_history_id}` | 必要 | 回答履歴の詳細と解説を取得する |
 
 ### お気に入り
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
-| GET | `/api/v1/favorites` | 必要 | お気に入り問題を一覧取得する |
-| POST | `/api/v1/questions/{question_id}/favorite` | 必要 | 問題をお気に入り登録する |
+| GET | `/api/v1/favorites` | 必要 | お気に入り問題を取得する |
+| PUT | `/api/v1/questions/{question_id}/favorite` | 必要 | 問題をお気に入り登録する |
 | DELETE | `/api/v1/questions/{question_id}/favorite` | 必要 | 問題のお気に入りを解除する |
-
-### 演習・履歴
-
-| メソッド | パス | 認証 | 概要 |
-| --- | --- | --- | --- |
-| POST | `/api/v1/practice_sessions` | 必要 | 通常演習または模擬試験を開始する |
-| GET | `/api/v1/practice_sessions/{practice_session_id}` | 必要 | 演習セッションと出題問題を取得する |
-| POST | `/api/v1/practice_sessions/{practice_session_id}/answers` | 必要 | 1問分の回答を保存する |
-| PATCH | `/api/v1/practice_sessions/{practice_session_id}/complete` | 必要 | 演習を完了し、結果を集計する |
-| GET | `/api/v1/practice_sessions/{practice_session_id}/result` | 必要 | 完了した演習結果を取得する |
-| GET | `/api/v1/practice_sessions` | 必要 | ログインユーザーの演習履歴を取得する |
-| GET | `/api/v1/question_stats` | 必要 | 問題別進捗を取得する |
-| GET | `/api/v1/mypage_summary` | 必要 | マイページ用の学習状況概要を取得する |
 
 ### 管理
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
-| GET | `/api/v1/admin/dashboard` | 管理者 | 管理ダッシュボード情報を取得する |
 | GET | `/api/v1/admin/questions` | 管理者 | 全公開状態の問題を一覧取得する |
 | GET | `/api/v1/admin/questions/{question_id}` | 管理者 | 問題の編集用データを取得する |
 | POST | `/api/v1/admin/questions` | 管理者 | 問題を作成する |
 | PATCH | `/api/v1/admin/questions/{question_id}` | 管理者 | 問題を更新する |
 | DELETE | `/api/v1/admin/questions/{question_id}` | 管理者 | 問題を削除する |
-| GET | `/api/v1/admin/reports` | 管理者 | 誤り報告を一覧取得する |
-| GET | `/api/v1/admin/reports/{report_id}` | 管理者 | 誤り報告の詳細を取得する |
-| PATCH | `/api/v1/admin/reports/{report_id}` | 管理者 | 誤り報告の対応状態を更新する |
 
 ## 認証・アカウントAPI
 
@@ -222,12 +212,6 @@ Accept: application/json
 
 レスポンスは会員登録と同じ形式とする。認証失敗時は `401 Unauthorized` を返す。
 
-### ログアウト
-
-`DELETE /api/v1/auth/logout`
-
-初期実装ではサーバー側にトークンを保存しないため、APIは `204 No Content` を返し、フロントエンド側でトークンを破棄する。
-
 ### ログインユーザー取得
 
 `GET /api/v1/me`
@@ -258,445 +242,129 @@ Accept: application/json
 }
 ```
 
-* パスワードを再確認してから削除する
-* ユーザーに紐づく演習履歴、お気に入り、問題別進捗なども削除する
-* 成功時は `204 No Content` を返す
+現在のパスワードが一致した場合、ユーザー、回答履歴、お気に入りを物理削除し、`204 No Content` を返す。
 
-### パスワード再設定依頼
+## 問題演習API
 
-`POST /api/v1/password_resets`
+### 次の問題取得
 
-リクエスト:
+`GET /api/v1/questions/next`
 
-```json
-{
-  "email": "user@example.com"
-}
-```
+公開状態が `published` の問題から1問取得する。
 
-メールアドレスの登録有無を外部から推測できないよう、存在しないメールアドレスでも同じ `202 Accepted` を返す。
-
-```json
-{
-  "data": {
-    "message": "登録されているメールアドレスの場合、再設定案内を送信しました"
-  }
-}
-```
-
-### パスワード再設定
-
-`PATCH /api/v1/password_resets`
-
-リクエスト:
-
-```json
-{
-  "token": "reset-token",
-  "password": "newPassword123",
-  "password_confirmation": "newPassword123"
-}
-```
-
-成功時は `204 No Content` を返す。
-
-## 公開問題API
-
-### 問題一覧取得
-
-`GET /api/v1/questions`
-
-クエリパラメータ:
+任意のクエリパラメータ:
 
 | パラメータ | 内容 |
 | --- | --- |
-| `major_category_code` | 大分類コードで絞り込む |
-| `category_code` | 小分類コードで絞り込む |
-| `difficulty` | 難易度で絞り込む |
-| `page` | ページ番号 |
-| `per_page` | 1ページの件数 |
-
-* `publication_status = published` の問題のみ返す
-* `category_code` を指定した場合は、対応する `major_category_code` との整合性を確認する
-* ログイン済みの場合は `is_favorite` を返す
-* 問題一覧では正答、解説、選択肢を返さない
-
-レスポンス `200 OK`:
-
-```json
-{
-  "data": [
-    {
-      "id": 101,
-      "body": "問題文の冒頭...",
-      "major_category_code": "teacher_education",
-      "category_code": "education_law",
-      "difficulty": "star1",
-      "is_favorite": true
-    }
-  ],
-  "meta": {
-    "current_page": 1,
-    "per_page": 20,
-    "total_count": 1200,
-    "total_pages": 60
-  }
-}
-```
-
-未ログイン時の `is_favorite` は `false` とする。
-
-### 問題詳細取得
-
-`GET /api/v1/questions/{question_id}`
-
-問題閲覧ページでは正答と解説を閲覧できる要件のため、このAPIは正答を含めて返す。ただし、演習中はこのAPIを使用せず、演習セッションAPIから正答を除いた問題を取得する。
+| `exclude_question_id` | 直前の問題ID。ほかに公開問題がある場合、この問題を除外する |
+| `exam_number` | 指定した試験ナンバーの問題に限定する |
+| `after_question_number` | 指定した問番号の次を取得する。`exam_number` と組み合わせて使用する |
 
 レスポンス `200 OK`:
 
 ```json
 {
   "data": {
-    "id": 101,
-    "body": "問題文",
-    "explanation": "解答解説",
+    "id": 42,
+    "exam_number": 1,
+    "question_number": 1,
+    "body": "教育基本法について正しいものを選びなさい。",
     "major_category_code": "teacher_education",
     "category_code": "education_law",
     "difficulty": "star1",
-    "source_text": "参考資料",
-    "is_favorite": true,
     "choices": [
       {
-        "id": 1001,
-        "choice_label": "ア",
-        "body": "選択肢1",
-        "display_order": 1,
-        "is_correct": false
-      },
-      {
-        "id": 1002,
-        "choice_label": "イ",
-        "body": "選択肢2",
-        "display_order": 2,
-        "is_correct": true
-      }
-    ]
-  }
-}
-```
-
-実際のレスポンスでは選択肢を4件返す。
-
-### 誤り報告
-
-`POST /api/v1/questions/{question_id}/reports`
-
-リクエスト:
-
-```json
-{
-  "report_body": "選択肢イの説明と正答が一致していないように見えます"
-}
-```
-
-* 未ログインでも送信可能とする
-* ログイン済みの場合のみ、認証情報から `user_id` を保存する
-* 初期状態は `unhandled` とする
-* 成功時は報告IDと受付完了メッセージを返す
-
-## お気に入りAPI
-
-### お気に入り一覧
-
-`GET /api/v1/favorites`
-
-問題一覧APIと同じ問題概要形式で返す。ページネーションに対応する。
-
-### お気に入り登録
-
-`POST /api/v1/questions/{question_id}/favorite`
-
-リクエスト本文は不要とする。
-
-レスポンス `201 Created`:
-
-```json
-{
-  "data": {
-    "question_id": 101,
-    "is_favorite": true
-  }
-}
-```
-
-すでに登録済みの場合もエラーにせず、同じ状態を `200 OK` で返す。
-
-### お気に入り解除
-
-`DELETE /api/v1/questions/{question_id}/favorite`
-
-登録がない場合もエラーにせず、`204 No Content` を返す。
-
-## 演習API
-
-### 演習状態
-
-DBには専用の状態カラムを持たないため、以下のように判定する。
-
-| 状態 | 判定 |
-| --- | --- |
-| `in_progress` | `finished_at` がNULL |
-| `completed` | `finished_at` が入っている |
-
-### 通常演習開始
-
-`POST /api/v1/practice_sessions`
-
-リクエスト:
-
-```json
-{
-  "practice_type": "practice",
-  "condition_type": "category",
-  "major_category_code": "teacher_education",
-  "category_code": "education_law",
-  "extra_condition": "incorrect",
-  "question_count": 10
-}
-```
-
-入力規則:
-
-| 条件 | 必須項目 |
-| --- | --- |
-| `condition_type = all` | 分野コードは指定しない |
-| `condition_type = major_category` | `major_category_code` |
-| `condition_type = category` | `major_category_code`, `category_code` |
-| `extra_condition = favorite` | お気に入り登録済み問題を対象とする |
-| `extra_condition = incorrect` | 不正解回数が1回以上の問題を対象とする |
-| `extra_condition = unanswered` | 回答履歴がない問題を対象とする |
-
-* 対象は公開中の問題のみとする
-* 条件に合う問題をランダムに選択する
-* 条件に合う問題が指定数未満の場合は `422 Unprocessable Entity` を返す
-* 作成時の `correct_count` と `correct_rate` は0とする
-* 選択した問題ごとに、`practice_answers` を未回答状態で作成する
-
-レスポンス `201 Created`:
-
-```json
-{
-  "data": {
-    "id": 501,
-    "practice_type": "practice",
-    "status": "in_progress",
-    "question_count": 10,
-    "started_at": "2026-06-25T03:00:00Z",
-    "questions": [
-      {
         "id": 101,
-        "body": "問題文",
-        "major_category_code": "teacher_education",
-        "category_code": "education_law",
-        "difficulty": "star1",
-        "choices": [
-          {
-            "id": 1001,
-            "choice_label": "ア",
-            "body": "選択肢1",
-            "display_order": 1
-          }
-        ]
+        "choice_label": "ア",
+        "body": "選択肢の内容",
+        "display_order": 1
       }
     ]
   }
 }
 ```
 
-演習開始レスポンスには `is_correct`、正答ID、解説を含めない。
+* 選択肢は必ず4件返す
+* `exam_number` のみ指定した場合は、その試験ナンバーの問1を取得する
+* `exam_number` と `after_question_number` を指定した場合は、同じ試験ナンバーの次の問番号を取得する
+* 問20より後の問題を要求した場合は `404 Not Found` を返す
+* `is_correct`、正答、解答解説、根拠資料は返さない
+* ログイン中の場合に限り、レスポンスへ `is_favorite` を追加してよい
+* 公開問題が1件もない場合は `404 Not Found` を返す
 
-### 模擬試験開始
+### 指定問題取得
 
-通常演習と同じ `POST /api/v1/practice_sessions` を使用する。
+`GET /api/v1/questions/{question_id}`
 
-リクエスト:
+回答履歴やお気に入りから、指定した問題を再度表示するときに使用する。レスポンス形式と公開条件は「次の問題取得」と同じとする。
 
-```json
-{
-  "practice_type": "mock_exam"
-}
-```
+### 回答判定
 
-サーバー側で以下を設定する。
-
-* `condition_type = all`
-* `extra_condition = none`
-* `question_count = 20`
-* `utils` の `MOCK_EXAM_CATEGORY_COUNTS` に従って、小分類ごとの問題数を選択する
-* 同じ模擬問題セットを出題する場合は、未使用の `mock_exam_no` から1セットを選択する
-
-問題不足により20問を構成できない場合は `422 Unprocessable Entity` を返す。
-
-### 演習セッション取得
-
-`GET /api/v1/practice_sessions/{practice_session_id}`
-
-* セッション所有者のみ取得できる
-* 回答済みかどうかと選択した選択肢IDを返す
-* 完了前は未回答問題の正答を返さない
-* 通常演習の回答済み問題は、回答APIで返された正誤・解説を再表示できる
-* 模擬試験は完了まで正答・解説を返さない
-
-### 回答保存
-
-`POST /api/v1/practice_sessions/{practice_session_id}/answers`
+`POST /api/v1/questions/{question_id}/answer`
 
 リクエスト:
 
 ```json
 {
-  "question_id": 101,
-  "selected_choice_id": 1002
+  "selected_choice_id": 101
 }
 ```
-
-共通処理:
-
-* 対象問題がその演習セッションに含まれることを確認する
-* 選択肢が対象問題に属することを確認する
-* 演習開始時に作成した `practice_answers` を回答済み状態へ更新する
-* `user_question_stats` の正解回数、不正解回数、連続正解数、最終回答日を更新する
-* 同じ問題への2回目の回答は `409 Conflict` とする
-* 完了済みセッションへの回答は `409 Conflict` とする
-
-通常演習のレスポンス `200 OK`:
-
-```json
-{
-  "data": {
-    "question_id": 101,
-    "selected_choice_id": 1002,
-    "is_correct": true,
-    "correct_choice_id": 1002,
-    "explanation": "解答解説",
-    "answered_at": "2026-06-25T03:05:00Z"
-  }
-}
-```
-
-模擬試験では完了前に正答を表示しない。
-
-```json
-{
-  "data": {
-    "question_id": 101,
-    "selected_choice_id": 1002,
-    "answered": true,
-    "answered_at": "2026-06-25T03:05:00Z"
-  }
-}
-```
-
-### 演習完了
-
-`PATCH /api/v1/practice_sessions/{practice_session_id}/complete`
-
-* セッション所有者のみ実行できる
-* 原則として全問回答済みの場合のみ完了できる
-* 正答数、正答率、終了日時を集計・保存する
-* 模擬試験は正答数が12問以上の場合に `is_passed = true` とする
-* 通常演習の `is_passed` はNULLとする
 
 レスポンス `200 OK`:
 
 ```json
 {
   "data": {
-    "id": 501,
-    "practice_type": "mock_exam",
-    "status": "completed",
-    "question_count": 20,
-    "correct_count": 13,
-    "correct_rate": 65.0,
-    "is_passed": true,
-    "finished_at": "2026-06-25T03:30:00Z"
+    "question_id": 42,
+    "selected_choice_id": 101,
+    "is_correct": false,
+    "correct_choice": {
+      "id": 103,
+      "choice_label": "ウ",
+      "body": "正答となる選択肢"
+    },
+    "explanation": "この問題の解答解説です。",
+    "source_text": "教育基本法第1条",
+    "answer_history_id": 501
   }
 }
 ```
 
-### 演習結果取得
+* `selected_choice_id` は対象問題に属する選択肢でなければならない
+* 未ログイン時は `answer_history_id` を `null` とし、DBへ保存しない
+* ログイン時は回答履歴を作成し、そのIDを返す
+* 同じ問題へ複数回答した場合も、回答ごとに履歴を作成する
+* 非公開問題に対する回答は `404 Not Found` とする
 
-`GET /api/v1/practice_sessions/{practice_session_id}/result`
+## 回答履歴API
 
-完了したセッションのみ取得できる。
+### 回答履歴一覧
 
-```json
-{
-  "data": {
-    "id": 501,
-    "practice_type": "mock_exam",
-    "question_count": 20,
-    "correct_count": 13,
-    "correct_rate": 65.0,
-    "is_passed": true,
-    "started_at": "2026-06-25T03:00:00Z",
-    "finished_at": "2026-06-25T03:30:00Z",
-    "answers": [
-      {
-        "question_id": 101,
-        "question_body": "問題文",
-        "selected_choice_id": 1002,
-        "correct_choice_id": 1002,
-        "is_correct": true,
-        "explanation": "解答解説"
-      }
-    ]
-  }
-}
-```
+`GET /api/v1/answer_histories`
 
-### 演習履歴
-
-`GET /api/v1/practice_sessions`
-
-クエリパラメータ:
-
-| パラメータ | 内容 |
-| --- | --- |
-| `practice_type` | `practice`, `mock_exam` で絞り込む |
-| `page` | ページ番号 |
-| `per_page` | 1ページの件数 |
-
-完了済みセッションを `finished_at` の降順で返す。
-
-### 問題別進捗
-
-`GET /api/v1/question_stats`
-
-クエリパラメータ:
-
-| パラメータ | 内容 |
-| --- | --- |
-| `major_category_code` | 大分類で絞り込む |
-| `category_code` | 小分類で絞り込む |
-| `page` | ページ番号 |
-| `per_page` | 1ページの件数 |
-
-レスポンスには以下を含める。
+ログインユーザー本人の履歴だけを新しい順に返す。
 
 ```json
 {
   "data": [
     {
-      "question_id": 101,
-      "question_body": "問題文の冒頭...",
-      "major_category_code": "teacher_education",
-      "category_code": "education_law",
-      "correct_count": 3,
-      "incorrect_count": 1,
-      "consecutive_correct_count": 2,
-      "medal": "silver",
-      "last_answered_at": "2026-06-25T03:05:00Z"
+      "id": 501,
+      "question": {
+        "id": 42,
+        "exam_number": 1,
+        "question_number": 1,
+        "body": "教育基本法について正しいものを選びなさい。",
+        "major_category_code": "teacher_education",
+        "category_code": "education_law",
+        "difficulty": "star1"
+      },
+      "selected_choice": {
+        "id": 101,
+        "choice_label": "ア",
+        "body": "選択した内容"
+      },
+      "is_correct": false,
+      "answered_at": "2026-06-25T03:00:00Z"
     }
   ],
   "meta": {
@@ -708,242 +376,153 @@ DBには専用の状態カラムを持たないため、以下のように判定
 }
 ```
 
-`medal` はDBに保存せず、`consecutive_correct_count` と `utils` の条件から算出する。
+### 回答履歴詳細
 
-### マイページ概要
+`GET /api/v1/answer_histories/{answer_history_id}`
 
-`GET /api/v1/mypage_summary`
+一覧の内容に加えて、正答、解答解説、根拠資料を返す。他ユーザーの回答履歴には `404 Not Found` を返す。
 
-画面表示時の通信回数を減らすため、マイページに必要な集計値をまとめて返す。
+## お気に入りAPI
 
-```json
-{
-  "data": {
-    "total_answered_count": 120,
-    "total_correct_count": 84,
-    "overall_correct_rate": 70.0,
-    "favorite_count": 15,
-    "recent_sessions": []
-  }
-}
-```
+### お気に入り一覧
+
+`GET /api/v1/favorites`
+
+ログインユーザー本人のお気に入りを新しい順に返す。各項目には問題ID、問題文の概要、大分類、小分類、難易度、登録日時を含める。
+
+### お気に入り登録
+
+`PUT /api/v1/questions/{question_id}/favorite`
+
+* 対象は公開中の問題に限る
+* 同じ問題を再度登録しても重複データを作成しない
+* 要件に合わせ、ログインユーザーが一度以上回答した問題だけ登録できる
+* 新規登録時は `201 Created`、登録済みの場合は `200 OK` を返す
+
+### お気に入り解除
+
+`DELETE /api/v1/questions/{question_id}/favorite`
+
+登録が存在する場合は削除し、存在しない場合も成功として `204 No Content` を返す。
 
 ## 管理API
-
-管理APIはすべてBearerトークン認証を必須とし、`role = admin` のユーザーのみ利用できる。
-
-### 管理ダッシュボード
-
-`GET /api/v1/admin/dashboard`
-
-```json
-{
-  "data": {
-    "question_count": 1200,
-    "published_question_count": 1180,
-    "unhandled_report_count": 3
-  }
-}
-```
 
 ### 管理問題一覧
 
 `GET /api/v1/admin/questions`
 
-クエリパラメータ:
-
 | パラメータ | 内容 |
 | --- | --- |
-| `keyword` | 問題文の部分一致検索 |
+| `exam_number` | 試験ナンバーで絞り込む |
 | `major_category_code` | 大分類で絞り込む |
 | `category_code` | 小分類で絞り込む |
 | `difficulty` | 難易度で絞り込む |
 | `publication_status` | 公開状態で絞り込む |
-| `page` | ページ番号 |
-| `per_page` | 1ページの件数 |
-
-下書き・公開・非公開をすべて取得対象とする。
+| `keyword` | 問題文を部分一致検索する |
+| `page`、`per_page` | ページネーション |
 
 ### 管理問題詳細
 
 `GET /api/v1/admin/questions/{question_id}`
 
-問題本文、解説、分類、難易度、根拠資料、公開状態、模擬問題セット番号、4件の選択肢を返す。各選択肢には `is_correct` を含める。
+試験ナンバー、問番号、正答を含む4つの選択肢、解答解説、根拠資料、分類、難易度、公開状態を返す。
 
 ### 問題作成
 
 `POST /api/v1/admin/questions`
 
-リクエスト:
-
 ```json
 {
   "question": {
+    "exam_number": 1,
+    "question_number": 1,
     "body": "問題文",
-    "explanation": "解答解説",
     "major_category_code": "teacher_education",
     "category_code": "education_law",
     "difficulty": "star1",
-    "source_text": "参考資料",
+    "explanation": "解答解説",
+    "source_text": "教育基本法第1条",
     "publication_status": "draft",
-    "mock_exam_no": 1,
-    "mock_exam_question_no": 1,
     "choices": [
       {
         "choice_label": "ア",
         "body": "選択肢1",
-        "display_order": 1,
-        "is_correct": false
+        "is_correct": false,
+        "display_order": 1
       },
       {
         "choice_label": "イ",
         "body": "選択肢2",
-        "display_order": 2,
-        "is_correct": true
+        "is_correct": true,
+        "display_order": 2
       },
       {
         "choice_label": "ウ",
         "body": "選択肢3",
-        "display_order": 3,
-        "is_correct": false
+        "is_correct": false,
+        "display_order": 3
       },
       {
         "choice_label": "エ",
         "body": "選択肢4",
-        "display_order": 4,
-        "is_correct": false
+        "is_correct": false,
+        "display_order": 4
       }
     ]
   }
 }
 ```
 
-バリデーション:
-
-* 選択肢は4件
-* 正答は1件
-* `category_code` は指定した `major_category_code` に属する
-* 難易度、公開状態、分野コードは `utils` に定義された値
-* `mock_exam_no` は1〜60
-* `mock_exam_question_no` は1〜20
-
-問題と選択肢はトランザクション内で一括登録する。
+* 選択肢は4件とする
+* 正答は1件だけとする
+* `exam_number` は1以上、`question_number` は1〜20とする
+* `exam_number` と `question_number` の組み合わせは重複させない
+* 大分類と小分類の組み合わせが `utils` の定義と一致していることを確認する
 
 ### 問題更新
 
 `PATCH /api/v1/admin/questions/{question_id}`
 
-問題作成と同じ形式で、変更対象を送信する。選択肢の更新では各要素に `id` を含める。
-
-問題本文のみ、または公開状態のみの部分更新も許可する。
-
-```json
-{
-  "question": {
-    "publication_status": "published"
-  }
-}
-```
+リクエスト形式は問題作成と同じとする。選択肢は既存IDを指定して更新し、回答履歴から参照されている選択肢を不用意に削除しない。
 
 ### 問題削除
 
 `DELETE /api/v1/admin/questions/{question_id}`
 
-* 回答履歴が存在しない問題は物理削除する
-* 回答履歴が存在する問題は履歴保全のため削除せず、`publication_status = private` への変更を促す
-* 回答履歴がある場合は `409 Conflict` を返す
+問題、選択肢、回答履歴、お気に入りを同一トランザクションで削除し、`204 No Content` を返す。
 
-### 誤り報告一覧
+## 固定値
 
-`GET /api/v1/admin/reports`
+以下はDBテーブル化せず、フロントエンドとバックエンドの `utils` で同じ値を管理する。
 
-クエリパラメータ:
-
-| パラメータ | 内容 |
+| 固定値 | 値 |
 | --- | --- |
-| `status` | 対応状態で絞り込む |
-| `question_id` | 問題IDで絞り込む |
-| `page` | ページ番号 |
-| `per_page` | 1ページの件数 |
-
-`created_at` の降順で返す。
-
-### 誤り報告詳細
-
-`GET /api/v1/admin/reports/{report_id}`
-
-報告内容、対応状態、管理者メモ、報告対象問題、報告ユーザー情報を返す。未ログイン報告の場合、ユーザー情報はNULLとする。
-
-### 誤り報告更新
-
-`PATCH /api/v1/admin/reports/{report_id}`
-
-リクエスト:
-
-```json
-{
-  "status": "fixed",
-  "admin_memo": "問題文と解説を修正済み"
-}
-```
-
-* `status` は `unhandled`, `in_progress`, `fixed`, `rejected` のいずれかとする
-* `fixed` または `rejected` への変更時は、認証中の管理者を `resolved_by_user_id` に保存し、`resolved_at` を設定する
-* `unhandled` または `in_progress` に戻した場合は、`resolved_by_user_id` と `resolved_at` をNULLに戻す
-
-## 固定値の扱い
-
-固定値の取得APIは作成しない。以下のファイルをフロントエンドの表示、バックエンドのバリデーションおよび演習抽出条件に使用する。
-
-* `frontend/app/utils/masterData.ts`
-* `backend/app/utils/master_data.rb`
-
-対象:
-
-* ユーザー権限
-* 大分類・小分類
-* 難易度
-* 公開状態
-* 誤り報告対応状態
-* 演習種別
-* 出題条件
-* 追加条件
-* メダル条件
-* 模擬試験の分野別出題数
-
-フロントエンドとバックエンドで値がずれないよう、変更時は両方のファイルを同じプルリクエストで更新する。
+| ユーザー権限 | `user`, `admin` |
+| 大分類 | `teacher_education`, `information` |
+| 小分類 | `education_history`, `education_law`, `curriculum_guideline`, `student_guidance`, `educational_psychology`, `new_japanese_school_education`, `information_curriculum_guideline`, `algorithm`, `data_science` |
+| 難易度 | `star1`, `star2`, `star3` |
+| 公開状態 | `draft`, `published`, `private` |
 
 ## CORS
 
 許可するオリジンは環境変数で管理する。
 
-| 環境 | 設定例 |
+| 環境 | 許可例 |
 | --- | --- |
 | 開発 | `http://localhost:3000` |
-| 本番 | Vercelで公開したフロントエンドURL |
+| 本番 | Vercelで公開するフロントエンドURL |
 
-許可する主なヘッダー:
-
-* `Authorization`
-* `Content-Type`
-* `Accept`
-
-許可するHTTPメソッド:
-
-* `GET`
-* `POST`
-* `PATCH`
-* `DELETE`
-* `OPTIONS`
+* 許可メソッドは使用するHTTPメソッドに限定する
+* 許可ヘッダーに `Authorization` と `Content-Type` を含める
+* 本番環境でワイルドカード `*` は使用しない
 
 ## セキュリティ・実装上の注意
 
-* パスワードおよびパスワード再設定トークンは平文保存しない
-* 認証ユーザーID、管理者IDはリクエスト本文から受け取らず、アクセストークンから決定する
-* 一般ユーザーは他ユーザーの演習セッション、履歴、お気に入り、問題別進捗を取得できない
-* 管理者用問題API以外では、下書き・非公開問題を返さない
-* 演習完了前のレスポンスから正答や `is_correct` が漏れないよう、公開閲覧用・演習用・管理用でレスポンス生成処理を分ける
-* 問題作成・更新、回答保存、演習完了時の集計はDBトランザクションを使用する
-* 一覧APIではN+1クエリを避けるため、必要な関連データを事前読み込みする
-* 本番環境では例外メッセージやスタックトレースをレスポンスに含めない
-* ログにパスワード、アクセストークン、再設定トークンを出力しない
+* パスワードは `bcrypt` などでハッシュ化し、平文保存しない
+* アクセストークン、パスワード、Authorizationヘッダーをログへ出力しない
+* 公開問題取得時は `question_choices.is_correct`、解答解説、根拠資料を返さない
+* 回答判定は必ずサーバー側で行う
+* 一般ユーザーは自分の回答履歴とお気に入りだけ取得できる
+* 管理APIはすべて管理者権限を確認する
+* 会員登録、ログイン、回答APIには必要に応じてレート制限を設ける
+* アカウント削除と問題削除はトランザクションで実行する
