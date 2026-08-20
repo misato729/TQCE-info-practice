@@ -8,7 +8,7 @@ const toggleExam = (exam: number) => {
 }
 
 const isCurrentQuestion = (exam: number, question: number) => {
-  return route.path === `/practice/${question}` && Number(route.query.exam || 1) === exam
+  return route.path === `/practice/${exam}/${question}`
 }
 </script>
 
@@ -22,9 +22,9 @@ const isCurrentQuestion = (exam: number, question: number) => {
     <section v-for="exam in exams" :key="exam" class="exam-group">
       <div
         class="exam-row"
-        :class="{ current: route.path.startsWith('/practice/') && Number(route.query.exam || 1) === exam }"
+        :class="{ current: route.path.startsWith(`/practice/${exam}/`) }"
       >
-        <NuxtLink class="exam-link" :to="`/practice/1?exam=${exam}`">
+        <NuxtLink class="exam-link" :to="`/practice/${exam}/1`">
           模擬試験 {{ exam }}
         </NuxtLink>
         <button
@@ -53,7 +53,7 @@ const isCurrentQuestion = (exam: number, question: number) => {
           <NuxtLink
             v-for="question in 20"
             :key="question"
-            :to="`/practice/${question}?exam=${exam}`"
+            :to="`/practice/${exam}/${question}`"
             :class="{ active: isCurrentQuestion(exam, question) }"
           >
             問{{ question }}

@@ -25,12 +25,6 @@ export const CATEGORIES = [
   { value: 'data_science', label: 'データサイエンス', majorCategoryValue: 'information' },
 ] as const
 
-export const DIFFICULTIES = [
-  { value: 'star1', label: '★' },
-  { value: 'star2', label: '★★' },
-  { value: 'star3', label: '★★★' },
-] as const satisfies readonly MasterDataItem[]
-
 export const PUBLICATION_STATUSES = [
   { value: 'draft', label: '下書き' },
   { value: 'published', label: '公開' },

@@ -1,7 +1,18 @@
 class ApplicationController < ActionController::API
   before_action :authenticate_backend_screen
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
   private
+
+  def render_not_found
+    render_error(:not_found, "対象が見つかりません", :not_found)
+  end
+
+  def render_error(code, message, status, details: nil)
+    error = { code: code, message: message }
+    error[:details] = details if details.present?
+    render json: { error: error }, status: status
+  end
 
   def authenticate_backend_screen
     return if request.path.start_with?("/api/")

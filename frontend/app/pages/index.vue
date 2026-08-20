@@ -15,7 +15,7 @@ const updates = [
           高等学校（情報）教員資格認定試験の問題演習ができるサービスです。
         </p>
         <div class="overview-actions">
-          <NuxtLink class="primary-link" to="/practice/1?exam=1">
+          <NuxtLink class="primary-link" to="/practice/1/1">
             <UIcon name="i-lucide-play" />
             問題演習を始める
           </NuxtLink>

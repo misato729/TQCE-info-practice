@@ -6,7 +6,7 @@ const { isLoggedIn } = useDemoAuth()
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },
   { label: '試験概要', to: '/exam-overview', icon: 'i-lucide-book-open' },
-  { label: '問題演習', to: '/practice/1', icon: 'i-lucide-pencil-line' },
+  { label: '問題演習', to: '/practice/1/1', icon: 'i-lucide-pencil-line' },
   ...(isLoggedIn.value
     ? [
         { label: '解答履歴', to: '/history', icon: 'i-lucide-history' },

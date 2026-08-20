@@ -1,8 +1,9 @@
+<% test_database_url = ENV["TEST_DATABASE_URL"] || ENV["DATABASE_URL"]&.sub(%r{/[^/?]+(?=\?|$)}, "/tqce_test") %>
+
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
-  url: <%= ENV["DATABASE_URL"] %>
   host: <%= ENV.fetch("DB_HOST", "localhost") %>
   username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
@@ -13,8 +14,10 @@ development:
 
 test:
   <<: *default
+  url: <%= test_database_url %>
   database: tqce_test
 
 production:
   <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
   database: tqce_production

@@ -23,12 +23,6 @@ module MasterData
     { value: 'data_science', label: 'データサイエンス', major_category_value: 'information' }
   ].freeze
 
-  DIFFICULTIES = [
-    { value: 'star1', label: '★' },
-    { value: 'star2', label: '★★' },
-    { value: 'star3', label: '★★★' }
-  ].freeze
-
   PUBLICATION_STATUSES = [
     { value: 'draft', label: '下書き' },
     { value: 'published', label: '公開' },

@@ -16,7 +16,7 @@
         <li>教育史、教育法規、学習指導要領、生徒指導、教育心理</li>
         <li>情報科の学習指導要領、アルゴリズム、データサイエンス</li>
       </ul>
-      <NuxtLink class="primary-link" to="/practice/1">問題演習へ進む</NuxtLink>
+      <NuxtLink class="primary-link" to="/practice/1/1">問題演習へ進む</NuxtLink>
     </section>
   </div>
 </template>

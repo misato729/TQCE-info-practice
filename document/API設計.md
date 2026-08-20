@@ -8,7 +8,7 @@
 * 日時はISO 8601形式のUTCで返す
     * 例: `2026-06-25T03:00:00Z`
 * 一覧APIはページネーションに対応する
-* 分野、難易度、公開状態などの固定値はDBから取得せず、フロントエンドとバックエンドの `utils` で管理する
+* 分野、公開状態などの固定値はDBから取得せず、フロントエンドとバックエンドの `utils` で管理する
 * 問題は1問ずつ取得し、演習セッションや演習完了処理は設けない
 * 問題は `exam_number` ごとに20問を配置し、各問を `question_number` で並べる
 * 未ログインユーザーも問題に回答できるが、回答履歴は保存しない
@@ -58,6 +58,8 @@ Accept: application/json
 | --- | --- |
 | `{question_id}` | 問題ID |
 | `{answer_history_id}` | 回答履歴ID |
+
+`{question_id}` はDB上の問題IDを表す。問題演習画面の `/practice/{examNumber}/{questionNumber}` で使用する試験ナンバー・問番号とは区別する。
 
 ### コンテンツブロック
 
@@ -290,7 +292,6 @@ Accept: application/json
     ],
     "major_category_code": "teacher_education",
     "category_code": "education_law",
-    "difficulty": "star1",
     "choices": [
       {
         "id": 101,
@@ -392,7 +393,6 @@ Accept: application/json
         "body_excerpt": "教育基本法について正しいものを選びなさい。",
         "major_category_code": "teacher_education",
         "category_code": "education_law",
-        "difficulty": "star1"
       },
       "selected_choice": {
         "id": 101,
@@ -427,7 +427,7 @@ Accept: application/json
 
 `GET /api/v1/favorites`
 
-ログインユーザー本人のお気に入りを新しい順に返す。各項目には問題ID、問題文の概要、大分類、小分類、難易度、登録日時を含める。
+ログインユーザー本人のお気に入りを新しい順に返す。各項目には問題ID、試験ナンバー、問番号、問題文の概要、大分類、小分類、登録日時を含める。
 
 ### お気に入り登録
 
@@ -455,7 +455,6 @@ Accept: application/json
 | `exam_number` | 試験ナンバーで絞り込む |
 | `major_category_code` | 大分類で絞り込む |
 | `category_code` | 小分類で絞り込む |
-| `difficulty` | 難易度で絞り込む |
 | `publication_status` | 公開状態で絞り込む |
 | `keyword` | 問題本文のコンテンツブロック内の文字列を部分一致検索する |
 | `page`、`per_page` | ページネーション |
@@ -464,7 +463,7 @@ Accept: application/json
 
 `GET /api/v1/admin/questions/{question_id}`
 
-試験ナンバー、問番号、問題本文のコンテンツブロック、正答を含む4つの選択肢、解答解説のコンテンツブロック、根拠資料、分類、難易度、公開状態を返す。
+試験ナンバー、問番号、問題本文のコンテンツブロック、正答を含む4つの選択肢、解答解説のコンテンツブロック、根拠資料、分類、公開状態を返す。
 
 ### 問題作成
 
@@ -496,7 +495,6 @@ Accept: application/json
     ],
     "major_category_code": "information",
     "category_code": "algorithm",
-    "difficulty": "star1",
     "explanation_blocks": [
       {
         "type": "text",
@@ -565,7 +563,6 @@ Accept: application/json
 | ユーザー権限 | `user`, `admin` |
 | 大分類 | `teacher_education`, `information` |
 | 小分類 | `education_history`, `education_law`, `curriculum_guideline`, `student_guidance`, `educational_psychology`, `new_japanese_school_education`, `information_curriculum_guideline`, `algorithm`, `data_science` |
-| 難易度 | `star1`, `star2`, `star3` |
 | 公開状態 | `draft`, `published`, `private` |
 
 ## CORS

@@ -2,7 +2,7 @@
 const { login } = useDemoAuth()
 const submit = async () => {
   login()
-  await navigateTo('/practice/1')
+  await navigateTo('/practice/1/1')
 }
 </script>
 

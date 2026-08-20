@@ -14,7 +14,7 @@ const { isLoggedIn } = useDemoAuth()
       <UIcon class="empty-icon" name="i-lucide-star" />
       <h2>お気に入りはまだありません</h2>
       <p>問題の解答後に、お気に入りへ追加できます。</p>
-      <NuxtLink class="primary-link" to="/practice/1">問題演習を始める</NuxtLink>
+      <NuxtLink class="primary-link" to="/practice/1/1">問題演習を始める</NuxtLink>
     </div>
   </div>
 </template>

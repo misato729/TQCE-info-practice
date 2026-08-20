@@ -53,7 +53,6 @@ erDiagram
         varchar category_code
         jsonb content_blocks
         jsonb explanation_blocks
-        varchar difficulty
         text source_text
         varchar publication_status
         bigint created_by_user_id FK
@@ -135,7 +134,6 @@ erDiagram
 | `category_code` | VARCHAR(100) | NO | - | 分野コード |
 | `content_blocks` | JSONB | NO | - | 問題文の表示ブロック。通常文、引用文、表、プログラム、プログラム比較を表示順に保持 |
 | `explanation_blocks` | JSONB | NO | - | 解答後に表示する解説の表示ブロック |
-| `difficulty` | VARCHAR(20) | NO | - | 難易度 |
 | `source_text` | TEXT | YES | `NULL` | 出典・根拠資料 |
 | `publication_status` | VARCHAR(20) | NO | `draft` | 公開状態 |
 | `created_by_user_id` | BIGINT | YES | `NULL` | 作成した管理者。`users.id` を参照 |
@@ -152,7 +150,6 @@ erDiagram
 | INDEX | `exam_number, publication_status, question_number` | 試験セットの公開問題を問番号順に取得 |
 | INDEX | `major_category_code` | 大分類での抽出 |
 | INDEX | `category_code` | 分野での抽出 |
-| INDEX | `difficulty` | 難易度での抽出 |
 | INDEX | `publication_status, id` | 公開問題の取得 |
 | FOREIGN KEY | `created_by_user_id` | `users.id`。管理者削除時は `NULL` |
 | FOREIGN KEY | `updated_by_user_id` | `users.id`。管理者削除時は `NULL` |
@@ -170,7 +167,7 @@ erDiagram
 - `content_blocks` と `explanation_blocks` は配列とし、配列の並び順をそのまま画面の表示順とする。
 - 問題本文の `content_blocks` では `text`, `quote`, `table`, `code`, `code_group` を使用できる。
 - 解説の `explanation_blocks` では `text`, `quote`, `table`, `code` を使用できる。
-- コンテンツブロックの構造は「4.6 コンテンツブロック形式」に従い、問題の作成・更新時にアプリケーションで検証する。
+- コンテンツブロックの構造は「4.5 コンテンツブロック形式」に従い、問題の作成・更新時にアプリケーションで検証する。
 
 ### 3.3 question_choices
 
@@ -203,7 +200,7 @@ erDiagram
 - 選択肢数と正解数は、問題の作成・更新トランザクション内でアプリケーションが検証する。
 - 解答履歴から参照されている選択肢は個別削除せず、必要な修正は同じIDのまま更新する。
 - `content_blocks` では `text` と `table` を使用できる。表形式でも選択肢1件を1つの回答対象として扱う。
-- `content_blocks` の配列順を表示順とし、構造は「4.6 コンテンツブロック形式」に従う。
+- `content_blocks` の配列順を表示順とし、構造は「4.5 コンテンツブロック形式」に従う。
 
 ### 3.4 answer_histories
 
@@ -298,15 +295,7 @@ erDiagram
 | `algorithm` | `information` | アルゴリズム |
 | `data_science` | `information` | データサイエンス |
 
-### 4.4 難易度
-
-| 値 | 表示名 |
-|---|---|
-| `star1` | 星1 |
-| `star2` | 星2 |
-| `star3` | 星3 |
-
-### 4.5 公開状態
+### 4.4 公開状態
 
 | 値 | 表示名 | 一般公開 |
 |---|---|---:|
@@ -314,7 +303,7 @@ erDiagram
 | `published` | 公開 | する |
 | `private` | 非公開 | しない |
 
-### 4.6 コンテンツブロック形式
+### 4.5 コンテンツブロック形式
 
 問題本文、選択肢、解説は、次の形式のオブジェクトを配列で保持する。HTMLは保存せず、フロントエンドが `type` に応じた部品で描画する。
 
@@ -383,7 +372,7 @@ erDiagram
 - 選択肢が4件ある。
 - 正解の選択肢が1件だけある。
 - `choice_label` と `display_order` が問題内で重複しない。
-- 問題本文、選択肢、解説のコンテンツブロックが「4.6 コンテンツブロック形式」に従う。
+- 問題本文、選択肢、解説のコンテンツブロックが「4.5 コンテンツブロック形式」に従う。
 
 ### 5.2 解答保存
 

@@ -14,7 +14,7 @@ const { isLoggedIn } = useDemoAuth()
       <UIcon class="empty-icon" name="i-lucide-history" />
       <h2>まだ解答履歴がありません</h2>
       <p>問題に回答すると、ここに記録されます。</p>
-      <NuxtLink class="primary-link" to="/practice/1">問題演習を始める</NuxtLink>
+      <NuxtLink class="primary-link" to="/practice/1/1">問題演習を始める</NuxtLink>
     </div>
   </div>
 </template>
