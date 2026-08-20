@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resource :health, only: :show, controller: :health
+      resources :exams, only: :index
 
       resources :questions, only: :show do
         collection do

@@ -1,7 +1,21 @@
 <script setup lang="ts">
+type Exam = {
+  exam_number: number
+  question_numbers: number[]
+}
+
+type ApiResponse<T> = { data: T }
+
 const route = useRoute()
-const exams = [1, 2, 3]
+const config = useRuntimeConfig()
 const openExam = ref<number | null>(null)
+
+const { data: examsResponse } = await useFetch<ApiResponse<Exam[]>>('/api/v1/exams', {
+  baseURL: config.public.apiBase,
+  server: false,
+})
+
+const exams = computed(() => examsResponse.value?.data ?? [])
 
 const toggleExam = (exam: number) => {
   openExam.value = openExam.value === exam ? null : exam
@@ -19,42 +33,42 @@ const isCurrentQuestion = (exam: number, question: number) => {
       <span>試験セット</span>
     </div>
 
-    <section v-for="exam in exams" :key="exam" class="exam-group">
+    <section v-for="exam in exams" :key="exam.exam_number" class="exam-group">
       <div
         class="exam-row"
-        :class="{ current: route.path.startsWith(`/practice/${exam}/`) }"
+        :class="{ current: route.path.startsWith(`/practice/${exam.exam_number}/`) }"
       >
-        <NuxtLink class="exam-link" :to="`/practice/${exam}/1`">
-          模擬試験 {{ exam }}
+        <NuxtLink class="exam-link" :to="`/practice/${exam.exam_number}/${exam.question_numbers[0]}`">
+          模擬試験 {{ exam.exam_number }}
         </NuxtLink>
         <button
           type="button"
-          :aria-expanded="openExam === exam"
-          :aria-controls="`exam-${exam}-questions`"
-          :title="openExam === exam ? `模擬試験${exam}を閉じる` : `模擬試験${exam}を開く`"
-          @click="toggleExam(exam)"
+          :aria-expanded="openExam === exam.exam_number"
+          :aria-controls="`exam-${exam.exam_number}-questions`"
+          :title="openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く`"
+          @click="toggleExam(exam.exam_number)"
         >
           <UIcon
-            :name="openExam === exam ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+            :name="openExam === exam.exam_number ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
           />
           <span class="sr-only">
-            {{ openExam === exam ? `模擬試験${exam}を閉じる` : `模擬試験${exam}を開く` }}
+            {{ openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く` }}
           </span>
         </button>
       </div>
 
       <Transition name="questions">
         <nav
-          v-if="openExam === exam"
-          :id="`exam-${exam}-questions`"
+          v-if="openExam === exam.exam_number"
+          :id="`exam-${exam.exam_number}-questions`"
           class="question-list"
-          :aria-label="`模擬試験${exam}の問題一覧`"
+          :aria-label="`模擬試験${exam.exam_number}の問題一覧`"
         >
           <NuxtLink
-            v-for="question in 20"
+            v-for="question in exam.question_numbers"
             :key="question"
-            :to="`/practice/${exam}/${question}`"
-            :class="{ active: isCurrentQuestion(exam, question) }"
+            :to="`/practice/${exam.exam_number}/${question}`"
+            :class="{ active: isCurrentQuestion(exam.exam_number, question) }"
           >
             問{{ question }}
           </NuxtLink>

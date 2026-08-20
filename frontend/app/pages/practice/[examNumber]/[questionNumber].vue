@@ -1,6 +1,6 @@
 <script setup lang="ts">
 type ContentBlock = {
-  type: 'text' | 'quote' | 'table' | 'code' | 'code_group'
+  type: 'text' | 'quote' | 'fill_in_text' | 'fill_in_quote' | 'fill_in_choice' | 'table' | 'code' | 'code_group'
   text?: string
   source?: string
   title?: string
@@ -8,6 +8,7 @@ type ContentBlock = {
   headers?: string[]
   rows?: string[][]
   items?: { title: string, code: string }[]
+  cells?: string[]
 }
 
 type Choice = {
@@ -41,6 +42,8 @@ type ApiResponse<T> = { data: T }
 
 const route = useRoute()
 const config = useRuntimeConfig()
+const { isLoggedIn } = useDemoAuth()
+const { isFavorite, toggleFavorite } = useDemoFavorites()
 
 const examNumber = computed(() => Number(route.params.examNumber))
 const questionNumber = computed(() => Number(route.params.questionNumber))
@@ -80,6 +83,8 @@ const answerError = ref('')
 const submitting = ref(false)
 const loadingNext = ref(false)
 const completed = ref(false)
+const favoriteModalOpen = ref(false)
+const favoriteModalCloseButton = ref<HTMLButtonElement | null>(null)
 
 const majorCategoryLabel = computed(() => (
   MAJOR_CATEGORIES.find(item => item.value === question.value?.major_category_code)?.label
@@ -87,6 +92,9 @@ const majorCategoryLabel = computed(() => (
   ?? ''
 ))
 const categoryLabel = computed(() => getCategoryLabel(question.value?.category_code ?? ''))
+const questionIsFavorite = computed(() => (
+  isLoggedIn.value && question.value ? isFavorite(question.value.id) : false
+))
 
 const loadErrorMessage = computed(() => {
   if (!validPosition.value) return '試験ナンバーまたは問番号が正しくありません。'
@@ -163,11 +171,35 @@ const goToNextQuestion = async () => {
     loadingNext.value = false
   }
 }
+
+const closeFavoriteModal = () => {
+  favoriteModalOpen.value = false
+}
+
+const handleFavoriteClick = async () => {
+  if (!question.value) return
+
+  if (!isLoggedIn.value) {
+    favoriteModalOpen.value = true
+    await nextTick()
+    favoriteModalCloseButton.value?.focus()
+    return
+  }
+
+  toggleFavorite(question.value.id)
+}
+
+const handleFavoriteModalKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && favoriteModalOpen.value) closeFavoriteModal()
+}
+
+onMounted(() => window.addEventListener('keydown', handleFavoriteModalKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalKeydown))
 </script>
 
 <template>
   <div class="page-wrap practice-wrap">
-    <div v-if="status === 'pending'" class="state-panel" aria-live="polite">
+    <div v-if="status === 'idle' || status === 'pending'" class="state-panel" aria-live="polite">
       <UIcon class="spin" name="i-lucide-loader-circle" />
       <p>問題を読み込んでいます</p>
     </div>
@@ -185,10 +217,23 @@ const goToNextQuestion = async () => {
     <template v-else>
       <header class="practice-head">
         <div>
-          <span>模擬試験 {{ question.exam_number }}</span>
+          <span class="exam-label">模擬試験 {{ question.exam_number }}</span>
           <h1>問{{ question.question_number }}</h1>
         </div>
-        <p>{{ majorCategoryLabel }} / {{ categoryLabel }}</p>
+        <div class="practice-meta">
+          <button
+            class="favorite-button"
+            :class="{ active: questionIsFavorite }"
+            type="button"
+            :aria-pressed="isLoggedIn ? questionIsFavorite : false"
+            :aria-label="questionIsFavorite ? 'お気に入りから解除する' : 'お気に入りに登録する'"
+            :title="questionIsFavorite ? 'お気に入りから解除' : 'お気に入りに登録'"
+            @click="handleFavoriteClick"
+          >
+            <FavoriteStarIcon :filled="questionIsFavorite" :size="34" />
+          </button>
+          <p>{{ majorCategoryLabel }} / {{ categoryLabel }}</p>
+        </div>
       </header>
 
       <section class="question-panel">
@@ -279,15 +324,67 @@ const goToNextQuestion = async () => {
         </section>
       </section>
     </template>
+
+    <Teleport to="body">
+      <Transition name="favorite-modal">
+        <div
+          v-if="favoriteModalOpen"
+          class="favorite-modal-backdrop"
+          @click.self="closeFavoriteModal"
+        >
+          <section
+            class="favorite-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="favorite-modal-title"
+          >
+            <button
+              ref="favoriteModalCloseButton"
+              class="favorite-modal-close"
+              type="button"
+              aria-label="閉じる"
+              @click="closeFavoriteModal"
+            >
+              <UIcon name="i-lucide-x" />
+            </button>
+            <span class="favorite-modal-icon" aria-hidden="true">
+              <UIcon name="i-lucide-star" />
+            </span>
+            <h2 id="favorite-modal-title">お気に入り機能について</h2>
+            <p>お気に入り登録は、会員登録後にご利用いただけます。</p>
+            <div class="favorite-modal-actions">
+              <NuxtLink class="primary-link" to="/signup" @click="closeFavoriteModal">会員登録へ</NuxtLink>
+              <NuxtLink class="secondary-link" to="/login" @click="closeFavoriteModal">ログインへ</NuxtLink>
+            </div>
+          </section>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <style scoped>
 .practice-wrap { max-width: 900px; }
 .practice-head { padding: 46px 0 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
-.practice-head span { color: var(--teal); font-size: 14px; font-weight: 800; }
+.practice-head .exam-label { color: var(--teal); font-size: 14px; font-weight: 800; }
 .practice-head h1 { margin: 5px 0 0; font-size: 36px; }
 .practice-head p { margin: 0; color: var(--muted); }
+.practice-meta { display: flex; align-items: center; gap: 10px; }
+.favorite-button {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #72838a;
+  cursor: pointer;
+  transition: color .15s, transform .15s;
+}
+.favorite-button:hover { color: #c78b00; transform: scale(1.08); }
+.favorite-button.active { color: #f0b323; }
 .question-panel { padding: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .question-text { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.8; }
 .choices { display: grid; gap: 10px; margin-top: 28px; }
@@ -330,6 +427,60 @@ const goToNextQuestion = async () => {
 .error-panel :deep(svg) { color: var(--coral); }
 .state-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
 .spin { animation: spin 1s linear infinite; }
+.favorite-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(13, 34, 39, .55);
+}
+.favorite-modal {
+  position: relative;
+  width: min(460px, 100%);
+  padding: 34px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(13, 34, 39, .24);
+  text-align: center;
+}
+.favorite-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #edf2f2;
+  color: #41555c;
+  cursor: pointer;
+}
+.favorite-modal-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #fff4cf;
+  color: #c78b00;
+}
+.favorite-modal-icon :deep(svg) { width: 29px; height: 29px; fill: currentColor; }
+.favorite-modal h2 { margin: 0; font-size: 24px; }
+.favorite-modal p { margin: 14px 0 0; color: var(--muted); line-height: 1.8; }
+.favorite-modal-actions { display: flex; justify-content: center; gap: 10px; margin-top: 26px; }
+.favorite-modal-enter-active,
+.favorite-modal-leave-active { transition: opacity .16s ease; }
+.favorite-modal-enter-active .favorite-modal,
+.favorite-modal-leave-active .favorite-modal { transition: transform .18s ease; }
+.favorite-modal-enter-from,
+.favorite-modal-leave-to { opacity: 0; }
+.favorite-modal-enter-from .favorite-modal,
+.favorite-modal-leave-to .favorite-modal { transform: translateY(8px) scale(.98); }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) {
   .practice-head { align-items: flex-start; flex-direction: column; }
@@ -337,5 +488,8 @@ const goToNextQuestion = async () => {
   .question-text { font-size: 18px; }
   .choices label { grid-template-columns: 18px 28px minmax(0, 1fr) 22px; padding: 11px; }
   .answer-result { padding: 20px 16px; }
+  .favorite-modal { padding: 30px 20px 24px; }
+  .favorite-modal-actions { flex-direction: column; }
+  .favorite-modal-actions a { width: 100%; }
 }
 </style>

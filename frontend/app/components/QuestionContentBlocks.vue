@@ -5,7 +5,7 @@ type CodeItem = {
 }
 
 type ContentBlock = {
-  type: 'text' | 'quote' | 'table' | 'code' | 'code_group'
+  type: 'text' | 'quote' | 'fill_in_text' | 'fill_in_quote' | 'fill_in_choice' | 'table' | 'code' | 'code_group'
   text?: string
   source?: string
   title?: string
@@ -13,11 +13,31 @@ type ContentBlock = {
   headers?: string[]
   rows?: string[][]
   items?: CodeItem[]
+  cells?: string[]
 }
 
 defineProps<{
   blocks: ContentBlock[]
 }>()
+
+type FillInPart = {
+  type: 'text' | 'blank'
+  text: string
+}
+
+const fillInParts = (text = ''): FillInPart[] => (
+  text
+    .split(/(\{\{[^{}]+\}\})/g)
+    .filter(Boolean)
+    .map((part) => {
+      const match = part.match(/^\{\{(.+)\}\}$/)
+      return match
+        ? { type: 'blank', text: match[1] ?? '' }
+        : { type: 'text', text: part }
+    })
+)
+
+const blankLabels = ['①', '②', '③', '④', '⑤']
 </script>
 
 <template>
@@ -29,6 +49,29 @@ defineProps<{
         <p>{{ block.text }}</p>
         <cite v-if="block.source">{{ block.source }}</cite>
       </blockquote>
+
+      <p v-else-if="block.type === 'fill_in_text'" class="content-text fill-in-text">
+        <template v-for="(part, partIndex) in fillInParts(block.text)" :key="partIndex">
+          <span v-if="part.type === 'blank'" class="fill-in-blank">{{ part.text }}</span>
+          <template v-else>{{ part.text }}</template>
+        </template>
+      </p>
+
+      <blockquote v-else-if="block.type === 'fill_in_quote'" class="exam-fill-in-quote">
+        <p>
+          <template v-for="(part, partIndex) in fillInParts(block.text)" :key="partIndex">
+            <span v-if="part.type === 'blank'" class="fill-in-blank">{{ part.text }}</span>
+            <template v-else>{{ part.text }}</template>
+          </template>
+        </p>
+      </blockquote>
+
+      <div v-else-if="block.type === 'fill_in_choice'" class="fill-in-choice">
+        <span v-for="(cell, cellIndex) in block.cells" :key="cellIndex" class="fill-in-choice-cell">
+          <small>{{ blankLabels[cellIndex] }}</small>
+          <span>{{ cell }}</span>
+        </span>
+      </div>
 
       <div v-else-if="block.type === 'table'" class="content-table-wrap" tabindex="0">
         <table class="content-table">
@@ -66,6 +109,37 @@ defineProps<{
 .content-quote { margin: 0; padding: 18px 20px; border: 1px solid var(--line); border-left: 4px solid var(--teal); background: #f7faf9; }
 .content-quote p { margin: 0; white-space: pre-wrap; }
 .content-quote cite { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; font-style: normal; }
+.fill-in-text { line-height: 2.15; }
+.fill-in-blank {
+  min-width: 3.1em;
+  min-height: 1.75em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 .18em;
+  padding: 0 .55em;
+  border: 2px solid #46575c;
+  background: #fff;
+  color: #46575c;
+  font-size: .82em;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+}
+.exam-fill-in-quote {
+  margin: 0;
+  padding: 22px 24px;
+  border: 1px solid #66777c;
+  background: #fff;
+  color: #263a41;
+  font-weight: 500;
+  line-height: 2.3;
+}
+.exam-fill-in-quote p { margin: 0; white-space: pre-wrap; }
+.fill-in-choice { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.fill-in-choice-cell { min-width: 0; display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: baseline; gap: 6px; }
+.fill-in-choice-cell small { color: #52666d; font-size: 14px; font-weight: 700; }
+.fill-in-choice-cell > span { font-weight: 700; }
 .content-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); }
 .content-table { width: 100%; min-width: 620px; border-collapse: collapse; background: #fff; }
 .content-table th,
@@ -82,5 +156,7 @@ defineProps<{
 @media (max-width: 720px) {
   .code-group { grid-template-columns: 1fr; }
   .content-quote { padding: 16px; }
+  .exam-fill-in-quote { padding: 17px 16px; line-height: 2.15; }
+  .fill-in-choice { grid-template-columns: 1fr; gap: 5px; }
 }
 </style>

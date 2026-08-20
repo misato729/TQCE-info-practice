@@ -6,6 +6,13 @@ text_choice = lambda do |label, text, correct = false|
     correct: correct,
   }
 end
+fill_in_choice = lambda do |label, cells, correct = false|
+  {
+    label: label,
+    content_blocks: [{ type: "fill_in_choice", cells: cells }],
+    correct: correct,
+  }
+end
 
 questions = [
   {
@@ -49,18 +56,25 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "education_law",
     content_blocks: [
-      text_block.call("教育基本法に定める『教育の機会均等』に関する記述として、最も適切なものを選びなさい。"),
+      {
+        type: "fill_in_text",
+        text: "次の文章は、『教育基本法』（平成18年法律第120号）第4条第1項の条文である。文章中の空欄 {{①}} 〜 {{③}} に当てはまる語句の組合せとして正しいものを、下のア〜エの中から一つ選びなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "第4条　すべて国民は、{{①}}、その{{②}}に応じた教育を受ける機会を与えられなければならず、人種、信条、性別、社会的身分、経済的地位又は{{③}}によって、教育上差別されない。",
+      },
     ],
     choices: [
-      text_choice.call("ア", "すべて国民には能力に応じた教育を受ける機会が与えられ、人種、信条、性別、社会的身分、経済的地位または門地によって教育上差別されない。", true),
-      text_choice.call("イ", "義務教育を受ける機会だけが保障され、高等学校以降の教育は機会均等の対象とならない。"),
-      text_choice.call("ウ", "国は経済的理由で修学が困難な者を支援できるが、地方公共団体には同様の責務はない。"),
-      text_choice.call("エ", "障害のある者への教育上必要な支援は、本人から申請があった場合に限って講じるものとされている。"),
+      fill_in_choice.call("ア", ["ひとしく", "能力", "門地"], true),
+      fill_in_choice.call("イ", ["ひとしく", "適性", "国籍"]),
+      fill_in_choice.call("ウ", ["等しく", "能力", "国籍"]),
+      fill_in_choice.call("エ", ["等しく", "適性", "門地"]),
     ],
     explanation_blocks: [
-      text_block.call("教育基本法第4条第1項は、能力に応じた教育を受ける機会と、列挙された事由による教育上の差別禁止を定めています。同条は、国と地方公共団体に対して、障害の状態に応じた支援や経済的理由で修学困難な者への奨学措置も求めています。"),
+      text_block.call("教育基本法第4条第1項の文言は、『ひとしく、その能力に応じた教育を受ける機会』および『経済的地位又は門地によって、教育上差別されない』です。したがって、①は『ひとしく』、②は『能力』、③は『門地』となります。"),
     ],
-    source_text: "教育基本法 第4条（教育の機会均等）",
+    source_text: "教育基本法 第4条第1項（教育の機会均等）",
   },
   {
     question_number: 4,
