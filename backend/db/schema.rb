@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_21_000003) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_21_000005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answer_histories", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "question_id", null: false
+    t.bigint "selected_choice_id", null: false
+    t.boolean "is_correct", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_answer_histories_on_question_id"
+    t.index ["selected_choice_id"], name: "index_answer_histories_on_selected_choice_id"
+    t.index ["user_id", "created_at"], name: "index_answer_histories_on_user_id_and_created_at", order: { created_at: :desc }
+    t.index ["user_id", "question_id"], name: "index_answer_histories_on_user_id_and_question_id"
+    t.index ["user_id"], name: "index_answer_histories_on_user_id"
+  end
 
   create_table "question_choices", force: :cascade do |t|
     t.bigint "question_id", null: false
@@ -49,5 +63,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_21_000003) do
     t.check_constraint "question_number >= 1 AND question_number <= 20", name: "questions_question_number_range"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.string "email", limit: 255, null: false
+    t.string "password_digest", null: false
+    t.string "role", limit: 20, default: "user", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.check_constraint "role::text = ANY (ARRAY['user'::character varying, 'admin'::character varying]::text[])", name: "users_role_valid"
+  end
+
+  add_foreign_key "answer_histories", "question_choices", column: "selected_choice_id"
+  add_foreign_key "answer_histories", "questions", on_delete: :cascade
+  add_foreign_key "answer_histories", "users", on_delete: :cascade
   add_foreign_key "question_choices", "questions", on_delete: :cascade
 end

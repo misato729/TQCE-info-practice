@@ -45,6 +45,41 @@ class Api::V1::QuestionsTest < ActionDispatch::IntegrationTest
     assert_nil body.fetch("answer_history_id")
   end
 
+  test "ログイン中の回答は履歴として保存する" do
+    user = User.create!(
+      name: "学習ユーザー",
+      email: "user@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+    )
+
+    assert_difference -> { AnswerHistory.count }, 1 do
+      post answer_api_v1_question_path(@question),
+        params: { selected_choice_id: @choices.first.id },
+        headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" },
+        as: :json
+    end
+
+    assert_response :success
+    history = AnswerHistory.last
+    assert_equal user, history.user
+    assert_equal @question, history.question
+    assert_equal @choices.first, history.selected_choice
+    assert_not history.is_correct
+    assert_equal history.id, response.parsed_body.dig("data", "answer_history_id")
+  end
+
+  test "不正なアクセストークン付きの回答は匿名扱いにしない" do
+    assert_no_difference -> { AnswerHistory.count } do
+      post answer_api_v1_question_path(@question),
+        params: { selected_choice_id: @choices.first.id },
+        headers: { "Authorization" => "Bearer invalid-token" },
+        as: :json
+    end
+
+    assert_response :unauthorized
+  end
+
   test "別の問題の選択肢は回答に使えない" do
     another_question = Question.create!(
       exam_number: 2,

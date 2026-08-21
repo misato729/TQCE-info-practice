@@ -2,6 +2,7 @@ module Api
   module V1
     class QuestionsController < ApplicationController
       before_action :set_question, only: %i[show answer]
+      before_action :authenticate_optional_user!, only: :answer
 
       def show
         render json: { data: serialize_question(@question) }
@@ -28,6 +29,11 @@ module Api
         end
 
         correct_choice = @question.question_choices.find_by!(is_correct: true)
+        answer_history = current_user&.answer_histories&.create!(
+          question: @question,
+          selected_choice: selected_choice,
+          is_correct: selected_choice.id == correct_choice.id,
+        )
 
         render json: {
           data: {
@@ -37,7 +43,7 @@ module Api
             correct_choice: serialize_choice(correct_choice),
             explanation_blocks: @question.explanation_blocks,
             source_text: @question.source_text,
-            answer_history_id: nil,
+            answer_history_id: answer_history&.id,
           },
         }
       end

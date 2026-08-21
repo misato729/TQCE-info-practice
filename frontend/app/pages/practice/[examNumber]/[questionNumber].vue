@@ -38,11 +38,21 @@ type AnswerResult = {
   answer_history_id: number | null
 }
 
+type AnswerHistoryDetail = {
+  id: number
+  question: { id: number }
+  selected_choice: { id: number }
+  is_correct: boolean
+  correct_choice: Choice
+  explanation_blocks: ContentBlock[]
+  source_text: string | null
+}
+
 type ApiResponse<T> = { data: T }
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const { isLoggedIn } = useDemoAuth()
+const { isLoggedIn, authHeaders, logout } = useAuth()
 const { isFavorite, toggleFavorite } = useDemoFavorites()
 
 const examNumber = computed(() => Number(route.params.examNumber))
@@ -85,6 +95,7 @@ const loadingNext = ref(false)
 const completed = ref(false)
 const favoriteModalOpen = ref(false)
 const favoriteModalCloseButton = ref<HTMLButtonElement | null>(null)
+const restoredHistoryId = ref<number | null>(null)
 
 const majorCategoryLabel = computed(() => (
   MAJOR_CATEGORIES.find(item => item.value === question.value?.major_category_code)?.label
@@ -109,6 +120,7 @@ watch(
     answerResult.value = null
     answerError.value = ''
     completed.value = false
+    restoredHistoryId.value = null
   },
 )
 
@@ -134,18 +146,71 @@ const submitAnswer = async () => {
       {
         baseURL: config.public.apiBase,
         method: 'POST',
+        headers: authHeaders.value,
         body: { selected_choice_id: selectedChoiceId.value },
       },
     )
     answerResult.value = response.data
   }
-  catch {
+  catch (error: any) {
+    if (error?.statusCode === 401 || error?.status === 401) {
+      logout()
+      answerError.value = 'ログインの有効期限が切れました。もう一度ログインしてください。'
+      return
+    }
     answerError.value = '回答を送信できませんでした。通信状況を確認して、もう一度お試しください。'
   }
   finally {
     submitting.value = false
   }
 }
+
+const answerHistoryId = computed(() => {
+  const value = Number(route.query.answer_history_id)
+  return Number.isInteger(value) && value > 0 ? value : null
+})
+
+const restoreAnswerHistory = async () => {
+  if (!question.value || !isLoggedIn.value || !answerHistoryId.value) return
+  if (restoredHistoryId.value === answerHistoryId.value) return
+
+  try {
+    const response = await $fetch<ApiResponse<AnswerHistoryDetail>>(
+      `/api/v1/answer_histories/${answerHistoryId.value}`,
+      {
+        baseURL: config.public.apiBase,
+        headers: authHeaders.value,
+      },
+    )
+    const history = response.data
+    if (history.question.id !== question.value.id) {
+      answerError.value = 'この解答履歴は表示中の問題と一致しません。'
+      return
+    }
+
+    selectedChoiceId.value = history.selected_choice.id
+    answerResult.value = {
+      question_id: history.question.id,
+      selected_choice_id: history.selected_choice.id,
+      is_correct: history.is_correct,
+      correct_choice: history.correct_choice,
+      explanation_blocks: history.explanation_blocks,
+      source_text: history.source_text,
+      answer_history_id: history.id,
+    }
+    restoredHistoryId.value = history.id
+  }
+  catch (error: any) {
+    if (error?.statusCode === 401 || error?.status === 401) logout()
+    else answerError.value = '解答履歴を読み込めませんでした。'
+  }
+}
+
+watch(
+  [question, answerHistoryId, isLoggedIn],
+  restoreAnswerHistory,
+  { immediate: true },
+)
 
 const goToNextQuestion = async () => {
   if (!question.value || loadingNext.value) return
@@ -353,8 +418,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
             <h2 id="favorite-modal-title">お気に入り機能について</h2>
             <p>お気に入り登録は、会員登録後にご利用いただけます。</p>
             <div class="favorite-modal-actions">
-              <NuxtLink class="primary-link" to="/signup" @click="closeFavoriteModal">会員登録へ</NuxtLink>
-              <NuxtLink class="secondary-link" to="/login" @click="closeFavoriteModal">ログインへ</NuxtLink>
+              <NuxtLink class="primary-link" :to="{ path: '/signup', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">会員登録へ</NuxtLink>
+              <NuxtLink class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">ログインへ</NuxtLink>
             </div>
           </section>
         </div>

@@ -1,5 +1,6 @@
 class QuestionChoice < ApplicationRecord
   belongs_to :question, inverse_of: :question_choices
+  has_many :answer_histories, foreign_key: :selected_choice_id, dependent: :restrict_with_error
 
   validates :choice_label, presence: true, uniqueness: { scope: :question_id }
   validates :display_order,

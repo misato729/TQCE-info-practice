@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { isLoggedIn, logout } = useDemoAuth()
+const { isLoggedIn, user, logout, ensureCurrentUser } = useAuth()
+if (isLoggedIn.value) await ensureCurrentUser()
 const handleLogout = async () => {
   logout()
   await navigateTo('/')
@@ -16,8 +17,8 @@ const handleLogout = async () => {
     </div>
     <template v-else>
       <section class="content-panel account-info">
-        <div><span>ユーザー名</span><strong>デモユーザー</strong></div>
-        <div><span>メールアドレス</span><strong>demo@example.com</strong></div>
+        <div><span>ユーザー名</span><strong>{{ user?.name }}</strong></div>
+        <div><span>メールアドレス</span><strong>{{ user?.email }}</strong></div>
       </section>
       <section class="content-panel account-actions">
         <h2>ログイン状態</h2>

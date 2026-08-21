@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isLoggedIn } = useDemoAuth()
+const { isLoggedIn } = useAuth()
 const { favoriteIds, removeFavorite } = useDemoFavorites()
 const config = useRuntimeConfig()
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const menuOpen = ref(false)
-const { isLoggedIn } = useDemoAuth()
+const { isLoggedIn } = useAuth()
 
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },

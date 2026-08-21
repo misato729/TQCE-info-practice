@@ -2,6 +2,8 @@ class ApplicationController < ActionController::API
   before_action :authenticate_backend_screen
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
+  attr_reader :current_user
+
   private
 
   def render_not_found
@@ -12,6 +14,22 @@ class ApplicationController < ActionController::API
     error = { code: code, message: message }
     error[:details] = details if details.present?
     render json: { error: error }, status: status
+  end
+
+  def authenticate_optional_user!
+    return if request.authorization.blank?
+
+    authenticate_user!
+  end
+
+  def authenticate_user!
+    token = request.authorization.to_s.match(/\ABearer (.+)\z/)&.captures&.first
+    payload = AuthToken.verify(token) if token.present?
+    @current_user = User.find_by(id: payload[:user_id]) if payload.present?
+
+    return if @current_user && @current_user.role == payload[:role]
+
+    render_error(:unauthorized, "ログインが必要です", :unauthorized)
   end
 
   def authenticate_backend_screen
