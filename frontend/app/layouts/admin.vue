@@ -12,7 +12,7 @@ watch(() => route.fullPath, () => { navigationOpen.value = false })
 
 const signOut = async () => {
   logout()
-  await navigateTo('/login')
+  await navigateTo('/admin/login')
 }
 </script>
 

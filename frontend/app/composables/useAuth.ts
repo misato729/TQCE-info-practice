@@ -41,6 +41,7 @@ export const useAuth = () => {
       body: credentials,
     })
     setSession(response.data)
+    return response.data.user
   }
 
   const signup = async (attributes: {

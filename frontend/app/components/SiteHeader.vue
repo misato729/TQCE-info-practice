@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const menuOpen = ref(false)
-const { isLoggedIn, user } = useAuth()
+const { isLoggedIn, user, ensureCurrentUser } = useAuth()
 
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },
@@ -26,6 +26,7 @@ const closeOnEscape = (event: KeyboardEvent) => {
 }
 
 onMounted(() => window.addEventListener('keydown', closeOnEscape))
+onMounted(() => { void ensureCurrentUser() })
 onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
 </script>
 

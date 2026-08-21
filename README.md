@@ -32,6 +32,10 @@ docker compose up --build
 
 - Frontend: http://localhost:3000
 - Backend health check: http://localhost:3001/api/v1/health
+- Admin login: http://localhost:3000/admin/login
+- Admin questions: http://localhost:3000/admin/questions
+
+管理画面は `role = admin` のユーザーのみ利用できます。一般画面で管理者としてログイン済みの場合は、同じ認証セッションを使って管理画面へ遷移できます。
 
 ## 停止
 
