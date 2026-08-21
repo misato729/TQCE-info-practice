@@ -32,6 +32,14 @@ class ApplicationController < ActionController::API
     render_error(:unauthorized, "ログインが必要です", :unauthorized)
   end
 
+  def authenticate_admin!
+    authenticate_user!
+    return if performed?
+    return if current_user.role == "admin"
+
+    render_error(:forbidden, "管理者権限が必要です", :forbidden)
+  end
+
   def authenticate_backend_screen
     return if request.path.start_with?("/api/")
     return unless backend_basic_auth_enabled?

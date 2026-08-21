@@ -134,7 +134,7 @@ erDiagram
 | `category_code` | VARCHAR(100) | NO | - | 分野コード |
 | `content_blocks` | JSONB | NO | - | 問題文の表示ブロック。通常文、引用文、表、プログラム、プログラム比較を表示順に保持 |
 | `explanation_blocks` | JSONB | NO | - | 解答後に表示する解説の表示ブロック |
-| `source_text` | TEXT | YES | `NULL` | 出典・根拠資料 |
+| `source_text` | TEXT | YES | `NULL` | 出典・根拠資料。1行ごとに `資料名・章節 | https://...` 形式で保持し、画面では外部リンクとして表示 |
 | `publication_status` | VARCHAR(20) | NO | `draft` | 公開状態 |
 | `created_by_user_id` | BIGINT | YES | `NULL` | 作成した管理者。`users.id` を参照 |
 | `updated_by_user_id` | BIGINT | YES | `NULL` | 最終更新した管理者。`users.id` を参照 |
@@ -164,6 +164,7 @@ erDiagram
 - 1つの試験ナンバーを試験セットとして扱い、試験セットとして提供する際は問1〜20が各1件ずつ存在することをアプリケーションで検証する。
 - 問題削除時は、関連する選択肢、解答履歴、お気に入りも同一トランザクションで削除する。
 - 解答前の一般向けAPIでは、解説や正解情報を返さない。
+- `source_text` は1行につき1出典とし、`資料名・章節 | https://...` 形式で公式原典へのリンクを保持する。
 - `content_blocks` と `explanation_blocks` は配列とし、配列の並び順をそのまま画面の表示順とする。
 - 問題本文の `content_blocks` では `text`, `quote`, `table`, `code`, `code_group` を使用できる。
 - 解説の `explanation_blocks` では `text`, `quote`, `table`, `code` を使用できる。

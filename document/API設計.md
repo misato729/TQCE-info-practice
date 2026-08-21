@@ -361,7 +361,7 @@ Accept: application/json
         "text": "この問題の解答解説です。"
       }
     ],
-    "source_text": "教育基本法第1条",
+    "source_text": "教育基本法 第1条 | https://laws.e-gov.go.jp/law/418AC0000000120",
     "answer_history_id": 501
   }
 }
@@ -370,6 +370,7 @@ Accept: application/json
 * `selected_choice_id` は対象問題に属する選択肢でなければならない
 * 未ログイン時は `answer_history_id` を `null` とし、DBへ保存しない
 * ログイン時は回答履歴を作成し、そのIDを返す
+* `source_text` は1行ごとに `資料名・章節 | https://...` 形式とし、クライアントはURL部分を外部リンクとして表示する
 * 同じ問題へ複数回答した場合も、回答ごとに履歴を作成する
 * 非公開問題に対する回答は `404 Not Found` とする
 
@@ -501,7 +502,7 @@ Accept: application/json
         "text": "解答解説"
       }
     ],
-    "source_text": "高等学校学習指導要領解説 情報編",
+    "source_text": "高等学校学習指導要領解説 情報編 | https://www.mext.go.jp/content/1407073_11_1_2.pdf",
     "publication_status": "draft",
     "choices": [
       {

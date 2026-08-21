@@ -19,6 +19,10 @@ Rails.application.routes.draw do
           post :answer
         end
       end
+
+      namespace :admin do
+        resources :questions, only: %i[index show create update destroy]
+      end
     end
   end
 end

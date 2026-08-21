@@ -50,6 +50,11 @@ type AnswerHistoryDetail = {
 
 type ApiResponse<T> = { data: T }
 
+type SourceReference = {
+  label: string
+  url: string | null
+}
+
 const route = useRoute()
 const config = useRuntimeConfig()
 const { isLoggedIn, authHeaders, logout } = useAuth()
@@ -105,6 +110,22 @@ const majorCategoryLabel = computed(() => (
 const categoryLabel = computed(() => getCategoryLabel(question.value?.category_code ?? ''))
 const questionIsFavorite = computed(() => (
   isLoggedIn.value && question.value ? isFavorite(question.value.id) : false
+))
+const sourceReferences = computed<SourceReference[]>(() => (
+  (answerResult.value?.source_text ?? '')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const separatorIndex = line.lastIndexOf('|')
+      if (separatorIndex === -1) return { label: line, url: null }
+
+      const label = line.slice(0, separatorIndex).trim()
+      const url = line.slice(separatorIndex + 1).trim()
+      if (!/^https:\/\/[^\s]+$/.test(url)) return { label: line, url: null }
+
+      return { label: label || url, url }
+    })
 ))
 
 const loadErrorMessage = computed(() => {
@@ -369,7 +390,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 
           <div v-if="answerResult.source_text" class="result-section source-section">
             <h2>根拠資料</h2>
-            <p>{{ answerResult.source_text }}</p>
+            <ul>
+              <li v-for="(source, index) in sourceReferences" :key="`${source.url ?? source.label}-${index}`">
+                <a
+                  v-if="source.url"
+                  :href="source.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >{{ source.label }}</a>
+                <span v-else>{{ source.label }}</span>
+              </li>
+            </ul>
           </div>
 
           <p class="ai-note">
@@ -479,7 +510,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .result-section h2 { margin: 0 0 12px; color: #30464d; font-size: 16px; }
 .correct-answer { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start; }
 .correct-answer > span { color: var(--teal-dark); font-weight: 900; }
-.source-section p { margin: 0; color: #506168; line-height: 1.7; }
+.source-section ul { display: grid; gap: 8px; margin: 0; padding-left: 1.2em; color: #506168; line-height: 1.7; }
+.source-section a { color: var(--teal-dark); font-weight: 700; text-underline-offset: 3px; }
 .ai-note { display: flex; align-items: flex-start; gap: 8px; margin: 24px 0 0; padding: 13px 15px; background: #fff7dc; color: #685715; font-size: 13px; line-height: 1.65; }
 .ai-note :deep(svg) { flex: 0 0 auto; margin-top: 2px; }
 .next-button { margin-top: 24px; }

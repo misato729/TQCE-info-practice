@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const menuOpen = ref(false)
-const { isLoggedIn } = useAuth()
+const { isLoggedIn, user } = useAuth()
 
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },
@@ -12,6 +12,9 @@ const menuItems = computed(() => [
         { label: '解答履歴', to: '/history', icon: 'i-lucide-history' },
         { label: 'お気に入り一覧', to: '/favorites', icon: 'i-lucide-star' },
         { label: 'アカウント設定', to: '/account', icon: 'i-lucide-user-round' },
+        ...(user.value?.role === 'admin'
+          ? [{ label: '管理画面', to: '/admin/questions', icon: 'i-lucide-shield-check' }]
+          : []),
       ]
     : []),
 ])
