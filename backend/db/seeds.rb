@@ -25,6 +25,8 @@ expected_categories = [
   "data_science",
 ].freeze
 
+fill_in_prompt_pattern = /\A次の文章は，.+の「.+」からの抜粋である。文章中の空欄 \{\{①\}\} ～ \{\{[②③④⑤]\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/
+
 (1..3).each do |exam_number|
   exam_questions = Question.where(exam_number: exam_number).includes(:question_choices).order(:question_number).to_a
 
@@ -44,6 +46,12 @@ expected_categories = [
 
     unless question.content_blocks.any? && question.explanation_blocks.any?
       raise "模擬試験#{exam_number} 問#{question.question_number}の問題文または解説が空です"
+    end
+
+    question.content_blocks.select { |block| block["type"] == "fill_in_text" }.each do |block|
+      unless block["text"].to_s.match?(fill_in_prompt_pattern)
+        raise "模擬試験#{exam_number} 問#{question.question_number}の抜粋穴埋め問題の体裁が不正です"
+      end
     end
 
     unless question.question_choices.size == 4 && question.question_choices.count(&:is_correct?) == 1
