@@ -8,7 +8,7 @@ class Api::V1::AnswerHistoriesTest < ActionDispatch::IntegrationTest
       exam_number: 1,
       question_number: 1,
       major_category_code: "teacher_education",
-      category_code: "education_law",
+      category_code: "education_system",
       publication_status: "published",
       content_blocks: [{ type: "text", text: "教育基本法について正しいものを選びなさい。" }],
       explanation_blocks: [{ type: "text", text: "解説本文" }],

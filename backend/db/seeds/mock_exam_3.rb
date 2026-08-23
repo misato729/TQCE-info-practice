@@ -22,43 +22,43 @@ questions = [
   {
     question_number: 1,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("戦後の学校教育法に基づく新制学校の発足時期の組合せとして、正しいものを選びなさい。"),
+      text_block.call("第二次世界大戦後の新しい学校制度の発足に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "小学校・中学校：1946（昭和21）年／高等学校：1947（昭和22）年／大学：1948（昭和23）年"),
-      text_choice.call("イ", "小学校・中学校・高等学校・大学：いずれも1947（昭和22）年"),
-      text_choice.call("ウ", "小学校・中学校：1947（昭和22）年／高等学校：1948（昭和23）年／大学：1949（昭和24）年（一部私学は1948年）", true),
-      text_choice.call("エ", "小学校：1947（昭和22）年／中学校・高等学校：1948（昭和23）年／大学：1950（昭和25）年"),
+      text_choice.call("ア", "学校教育法の施行により、新制の小学校と中学校は1947（昭和22）年、新制高等学校は1948（昭和23）年、新制大学は原則として1949（昭和24）年に発足した。ただし、一部の私立大学は1948（昭和23）年に発足した。", true),
+      text_choice.call("イ", "学校教育法は1947（昭和22）年に施行され、六・三・三・四制を一斉に完成させるため、小学校、中学校、高等学校及び大学は、いずれも同年4月に同時に発足した。"),
+      text_choice.call("ウ", "教育基本法の施行により、新制の小学校と中学校は1947（昭和22）年に発足したが、高等学校と大学については、旧制学校からの移行を終えた1950（昭和25）年に同時に発足した。"),
+      text_choice.call("エ", "学校教育法の施行後も、義務教育段階では国民学校と青年学校の制度が維持され、新制小学校と中学校が発足したのは、新制高等学校の発足後である1949（昭和24）年であった。"),
     ],
     explanation_blocks: [
-      text_block.call("学校教育法は1947（昭和22）年4月から施行され、新制の小学校と中学校が同年、高等学校が1948（昭和23）年、大学が1949（昭和24）年に発足しました（大学は一部の私学が1948年に発足）。学校段階ごとに発足年が異なる点が要点です。"),
+      text_block.call("アが適切です。新制小学校・中学校は1947年、高等学校は1948年、大学は原則1949年に発足し、一部の私立大学は1948年に発足しました。イは誤りです。各学校段階は同時に発足したのではありません。ウは誤りです。直接の制度的根拠を教育基本法とする点に加え、高等学校と大学の発足年も誤っています。エは誤りです。国民学校と青年学校を維持したまま新制学校の発足を遅らせたのではなく、新制小学校・中学校が最初に1947年に発足しました。"),
     ],
     source_text: "文部科学省『学制百年史』第二編第一章第一節「三 新教育制度の具現」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317739.htm",
   },
   {
     question_number: 2,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("幼稚園（Kindergarten）を創設し、子供の自己活動や遊びを重視するとともに、教育遊具である恩物（Gabe）を考案した人物を選びなさい。"),
+      text_block.call("フレーベル（Fröbel, F.）の教育思想と教育実践に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "コメニウス（Comenius, J. A.）"),
-      text_choice.call("イ", "ヘルバルト（Herbart, J. F.）"),
-      text_choice.call("ウ", "モンテッソーリ（Montessori, M.）"),
-      text_choice.call("エ", "フレーベル（Fröbel, F.）", true),
+      text_choice.call("ア", "世界を具体的な事物と絵によって学ばせることを重視し、絵入り教科書『世界図絵』を著すとともに、あらゆる人を対象とする体系的な学校制度を構想した。"),
+      text_choice.call("イ", "表象の明瞭化と観念の結合を通して道徳的品性を形成することを教育の目的とし、明瞭・連合・系統・方法からなる教授段階を授業構成の基礎とした。"),
+      text_choice.call("ウ", "子供が自ら誤りに気付けるよう工夫された感覚教具と、整えられた環境における自発的活動を重視し、教師を子供の活動を観察する援助者として位置付けた。"),
+      text_choice.call("エ", "子供の内的な力が自己活動を通して発達すると捉え、遊びを幼児教育の中心に置いた。Kindergartenを創設し、子供の活動を導く教育遊具として恩物を考案した。", true),
     ],
     explanation_blocks: [
-      text_block.call("フレーベルは幼児の内的な力が自己活動を通じて発達すると捉え、遊びを教育の中心に位置付けました。Kindergartenの創設と恩物の考案もフレーベルの業績です。"),
+      text_block.call("アは誤りです。『世界図絵』と体系的な学校制度の構想はコメニウスに対応します。イは誤りです。道徳的品性の形成と教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。自己訂正的な感覚教具と整えられた環境はモンテッソーリ教育の特徴です。エが適切です。フレーベルは自己活動と遊びを重視し、Kindergartenを創設して恩物を考案しました。"),
     ],
-    source_text: "Friedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN",
+    source_text: "Friedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN\n国立国会図書館「コメニウスと『世界図絵』」 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
   },
   {
     question_number: 3,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -83,7 +83,7 @@ questions = [
   {
     question_number: 4,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -108,7 +108,7 @@ questions = [
   {
     question_number: 5,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -133,7 +133,7 @@ questions = [
   {
     question_number: 6,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "curriculum_organization",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -158,7 +158,7 @@ questions = [
   {
     question_number: 7,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "curriculum_organization",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -183,7 +183,7 @@ questions = [
   {
     question_number: 8,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "integrated_inquiry",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -208,7 +208,7 @@ questions = [
   {
     question_number: 9,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "moral_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -233,7 +233,7 @@ questions = [
   {
     question_number: 10,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "special_activities",
     content_blocks: [
       text_block.call("高等学校学習指導要領の特別活動において、学校行事として示されている五つの種類の組合せとして正しいものを選びなさい。"),
     ],
@@ -251,7 +251,7 @@ questions = [
   {
     question_number: 11,
     major_category_code: "teacher_education",
-    category_code: "student_guidance",
+    category_code: "student_guidance_career",
     content_blocks: [
       text_block.call("ある高等学校では、全ての生徒を対象に、年間指導計画に位置付けて『SOSの出し方教育』を実施することにした。文部科学省『生徒指導提要』の2軸3類4層構造に照らした、この取組の位置付けとして最も適切なものを選びなさい。"),
     ],
@@ -269,36 +269,36 @@ questions = [
   {
     question_number: 12,
     major_category_code: "teacher_education",
-    category_code: "educational_psychology",
+    category_code: "special_support_education",
     content_blocks: [
-      text_block.call("通級による指導の対象として法令・通知に示されている障害について、次のa〜dのうち該当するものの組合せとして正しいものを選びなさい。\n\na　言語障害\nb　弱視\nc　知的障害\nd　肢体不自由"),
+      text_block.call("障害のある生徒の教育的ニーズの把握と学びの場の検討に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "a、c"),
-      text_choice.call("イ", "a、b、d", true),
-      text_choice.call("ウ", "b、c、d"),
-      text_choice.call("エ", "a、b、c、d"),
+      text_choice.call("ア", "医学的診断によって障害の種類が確定すれば、同じ障害名の生徒には原則として同じ学びの場と同じ指導内容を設定し、本人及び保護者の意見は判定後に確認する。"),
+      text_choice.call("イ", "障害の状態だけでなく、必要な特別の指導内容、合理的配慮を含む支援の内容、本人及び保護者の意見などを総合的に把握し、関係者の共通理解の下で学びの場を検討し、就学後も必要に応じて見直す。", true),
+      text_choice.call("ウ", "視覚障害のある生徒への支援は、教科書の文字を一律に拡大することで完結するため、触覚や聴覚の活用、ICT機器の利用、学習環境の調整を個別に検討する必要はない。"),
+      text_choice.call("エ", "肢体不自由のある生徒については、主として手足の運動機能だけを評価すればよく、姿勢の保持、コミュニケーション、認知特性、健康状態が学習活動に与える影響は判断材料に含めない。"),
     ],
     explanation_blocks: [
-      text_block.call("通級による指導の対象には、言語障害、弱視、難聴、自閉症、情緒障害、学習障害、注意欠陥多動性障害のほか、通知により肢体不自由、病弱・身体虚弱も含まれます。知的障害は対象として列挙されていません。"),
+      text_block.call("アは誤りです。障害名だけで学びの場や指導内容を一律に決めるのではなく、本人・保護者の意見を含めた総合的な検討が必要です。イが適切です。障害の状態、必要な指導と支援、合理的配慮、本人・保護者の意見などから教育的ニーズを整理し、就学後も継続的に見直します。ウは誤りです。視覚障害の状態は多様であり、拡大だけでなく触覚・聴覚・ICTや環境調整も個別に検討します。エは誤りです。肢体不自由についても、姿勢、コミュニケーション、認知、健康などを含む学習上・生活上の困難を総合的に把握します。"),
     ],
-    source_text: "文部科学省「初めて通級による指導を担当する教師のためのガイド」第4章(4)「通級指導の法的根拠」 | https://www.mext.go.jp/tsukyu-guide/index.html",
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第1編「障害のある子供の教育支援の基本的な考え方」・第3編「障害の状態等に応じた教育的対応」 | https://www.mext.go.jp/a_menu/shotou/tokubetu/material/1340250_00004.htm",
   },
   {
     question_number: 13,
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("マーシャ（Marcia, J. E.）のアイデンティティ・ステイタス論に照らしたとき、進路や価値観について積極的に探索しているが、まだ特定の選択への傾倒（コミットメント）には至っていない青年の状態として最も適切なものを選びなさい。"),
+      text_block.call("マーシャ（Marcia, J. E.）のアイデンティティ・ステイタス論に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "アイデンティティ達成"),
-      text_choice.call("イ", "早期完了（フォークロージャー）"),
-      text_choice.call("ウ", "モラトリアム", true),
-      text_choice.call("エ", "アイデンティティ拡散"),
+      text_choice.call("ア", "進路や価値観について十分な探索を経験せず、親や周囲が示した選択に強く関与している状態は、探索もコミットメントも低いアイデンティティ拡散に分類される。"),
+      text_choice.call("イ", "進路や価値観について積極的に探索し、検討の結果として自ら選んだ目標に関与している状態は、コミットメントがないモラトリアムに分類される。"),
+      text_choice.call("ウ", "進路や価値観について積極的に探索しているが、まだ特定の選択へのコミットメントに至っていない状態は、モラトリアムに分類される。", true),
+      text_choice.call("エ", "進路や価値観について探索することも特定の目標に関与することも避けている状態は、探索を経て目標を選択したアイデンティティ達成に分類される。"),
     ],
     explanation_blocks: [
-      text_block.call("探索（危機）があり、コミットメントがまだない状態はモラトリアムです。探索とコミットメントの双方があるのが達成、探索を経ずにコミットしているのが早期完了、いずれも乏しいのが拡散です。"),
+      text_block.call("アは誤りです。探索を十分に経ずにコミットメントがある状態は早期完了です。イは誤りです。探索を経てコミットメントがある状態はアイデンティティ達成です。ウが適切です。探索があり、コミットメントがまだない状態がモラトリアムです。エは誤りです。探索もコミットメントも乏しい状態はアイデンティティ拡散です。"),
     ],
     source_text: "Marcia, J. E. (1966) “Development and validation of ego-identity status” | https://doi.org/10.1037/h0023281",
   },
@@ -307,23 +307,23 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("バンデューラ（Bandura, A.）の観察学習において、モデルの行動が学習され、遂行に至るまでの主要な過程を順に並べたものとして最も適切なものを選びなさい。"),
+      text_block.call("バンデューラ（Bandura, A.）の観察学習における主要な過程について述べた次の記述のうち、適切でないものを一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "注意 → 保持 → 運動再生 → 動機付け", true),
-      text_choice.call("イ", "保持 → 注意 → 動機付け → 運動再生"),
-      text_choice.call("ウ", "動機付け → 注意 → 保持 → 運動再生"),
-      text_choice.call("エ", "注意 → 運動再生 → 保持 → 動機付け"),
+      text_choice.call("ア", "注意過程では、観察者がモデルの行動のうち何に注目するかが学習に影響し、モデルの特徴や行動の目立ちやすさ、観察者の関心などが関係する。"),
+      text_choice.call("イ", "保持過程では、観察した行動を言語的又はイメージ的な表象として記憶し、モデルがいない場面でも後に取り出せるようにする。"),
+      text_choice.call("ウ", "運動再生過程では、観察した行動が記憶に保持されていれば、観察者自身の身体的能力や下位技能、練習及びフィードバックの有無にかかわらず、直ちに正確な遂行が可能になる。", true),
+      text_choice.call("エ", "動機付け過程では、観察によって行動を学習していても、その行動を実際に遂行するかどうかは、予期される結果や強化などの影響を受ける。"),
     ],
     explanation_blocks: [
-      text_block.call("観察学習では、まずモデルの行動に注意を向け、その内容を記憶に保持し、行動として再生できることが必要です。さらに、その行動を実際に遂行するかどうかには動機付けが関わります。"),
+      text_block.call("アは適切です。注意過程は、モデルのどの行動を選択的に観察するかに関わります。イは適切です。保持過程では、観察内容を表象として記憶します。ウが適切でない記述です。観察内容を保持していても、正確に再生するには必要な身体的能力や下位技能があり、練習やフィードバックによる修正も関係します。エは適切です。学習された行動が実際に遂行されるかどうかには、予期される結果や強化などの動機付けが関わります。"),
     ],
     source_text: "Bandura, A.『Social Learning Theory』第2章（観察学習） | https://openlibrary.org/books/OL4899477M/Social_learning_theory",
   },
   {
     question_number: 15,
     major_category_code: "teacher_education",
-    category_code: "new_japanese_school_education",
+    category_code: "education_system",
     content_blocks: [
       text_block.call("中央教育審議会答申『「令和の日本型学校教育」の構築を目指して』が、学校教育の本質的な役割として重視し、継承する必要があるとした『三つの保障』の組合せとして正しいものを選びなさい。"),
     ],
@@ -341,7 +341,7 @@ questions = [
   {
     question_number: 16,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -366,7 +366,7 @@ questions = [
   {
     question_number: 17,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -391,7 +391,7 @@ questions = [
   {
     question_number: 18,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -416,7 +416,7 @@ questions = [
   {
     question_number: 19,
     major_category_code: "information",
-    category_code: "algorithm",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("次の疑似コードは挿入ソートで配列 a を昇順に整列する。a = [5, 2, 4, 1] のとき、外側の繰返しで i = 2 の処理を終えた直後の配列と、全処理終了時の count の値の組合せとして正しいものを選びなさい。count は、要素を右へ1位置移動するたびに1増える。"),
       {
@@ -444,7 +444,7 @@ questions = [
   {
     question_number: 20,
     major_category_code: "information",
-    category_code: "data_science",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("教材Aと教材Bの小テスト合格率を、受講前学力が基礎層か発展層かに分けて比較したところ、次の表が得られた。このデータの解釈として最も適切なものを選びなさい。"),
       {
@@ -482,6 +482,16 @@ Question.transaction do
       exam_number: 3,
       question_number: attributes.fetch(:question_number),
     )
+
+    content_changed =
+      question.persisted? &&
+        (
+          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
+          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
+          question.source_text != question_attributes.fetch(:source_text)
+        )
+    question.answer_histories.destroy_all if content_changed
+
     question.assign_attributes(question_attributes.merge(publication_status: "draft"))
     question.save!
 

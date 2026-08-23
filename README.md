@@ -83,6 +83,22 @@ fly secrets set BACKEND_BASIC_AUTH_PASSWORD=<password>
 fly deploy
 ```
 
+`backend/fly.toml` の `release_command` では、デプロイのたびに次の処理を実行します。
+
+```sh
+bin/rails db:prepare && bin/rails db:seed
+```
+
+そのため、Fly.io のGitHub自動デプロイを設定している場合は、seedファイルを含む変更をpushすると、アプリのリリース前に本番DBへ問題データが反映されます。`release_command` が失敗した場合は新しいリリースへ切り替わりません。
+
+ローカルDBへ問題データを反映する場合は、コンテナ起動後にプロジェクトルートで以下を実行します。
+
+```sh
+docker compose exec backend bin/rails db:seed
+```
+
+seedは試験ナンバーと問番号をキーに更新するため再実行できます。問題文、解説または出典が変更された問題については、古い問題内容と回答結果の不整合を避けるため、その問題に紐づく回答履歴を削除します。
+
 デプロイ後、Vercel 側の `NUXT_PUBLIC_API_BASE` には Fly.io のバックエンド URL を設定します。
 
 ```text

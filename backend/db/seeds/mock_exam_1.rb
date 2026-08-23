@@ -22,43 +22,43 @@ questions = [
   {
     question_number: 1,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("明治期の教育制度に関する次の記述a・bについて、その正誤の組合せとして最も適切なものを選びなさい。\n\na　森有礼は、内閣制度の創設に伴い、明治18（1885）年に初代文部大臣に就任した。\nb　森有礼の下で、明治19（1886）年に小学校令・中学校令・師範学校令・帝国大学令がそれぞれ公布され、学校体系の整備が進められた。"),
+      text_block.call("明治期の学校制度と森有礼の教育政策に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "aは正しいが、bは誤りである。"),
-      text_choice.call("イ", "aは誤りだが、bは正しい。"),
-      text_choice.call("ウ", "a、bともに正しい。", true),
-      text_choice.call("エ", "a、bともに誤りである。"),
+      text_choice.call("ア", "森有礼は、1872（明治5）年の学制の起草を主導し、1879（明治12）年に教育令を公布して、中央集権的な学区制を完成させた。"),
+      text_choice.call("イ", "森有礼は初代文部卿として1880（明治13）年の改正教育令を制定し、小学校教育に対する国家の関与を縮小した。"),
+      text_choice.call("ウ", "森有礼は内閣制度の創設に伴い1885（明治18）年に初代文部大臣となり、翌年に帝国大学令、師範学校令、小学校令及び中学校令を公布して、学校種別ごとの制度化を進めた。", true),
+      text_choice.call("エ", "森有礼は教育に関する権限を市町村に全面的に委ねることを重視し、1886（明治19）年の諸学校令では師範教育に対する国の統制を廃止した。"),
     ],
     explanation_blocks: [
-      text_block.call("森有礼は明治18年12月、内閣制度の創設とともに初代文部大臣となりました。翌明治19年には、帝国大学令、師範学校令、小学校令、中学校令が相次いで公布され、近代学校制度の体系化が進められました。したがって、a、bともに正しい記述です。"),
+      text_block.call("アは誤りです。学制と教育令は、森有礼が文部大臣として制定した法令ではありません。また、教育令は学制の画一的・中央集権的な性格を改める方向を示しました。イは誤りです。森は文部卿ではなく初代文部大臣であり、改正教育令の制定者とするのも誤りです。ウが適切です。1885年の就任後、1886年に学校種別の四学校令が公布されました。エは誤りです。森の政策は国家的な学校体系と師範教育の整備を進めるもので、国の統制を廃止したとする記述とは逆です。"),
     ],
     source_text: "文部科学省『学制百年史』第一編第二章第一節「森文相と諸学校令の公布」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317609.htm",
   },
   {
     question_number: 2,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("デューイ（Dewey, J.）の教育思想と実践に関する次の記述a〜dのうち、適切なものだけを全て挙げた組合せを選びなさい。\n\na　シカゴ大学に実験学校（Laboratory School）を設けた。\nb　『民主主義と教育』において、教育と民主主義の関係を論じた。\nc　「恩物」を考案し、幼稚園（Kindergarten）を創設した。\nd　明瞭・連合・系統・方法という教授段階を教育実践の中心に据えた。"),
+      text_block.call("デューイ（Dewey, J.）の教育思想と教育実践に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "a、b", true),
-      text_choice.call("イ", "a、c"),
-      text_choice.call("ウ", "b、d"),
-      text_choice.call("エ", "c、d"),
+      text_choice.call("ア", "シカゴ大学に実験学校を設け、子供の経験と探究を重視する教育を実践した。また、『民主主義と教育』では、教育と民主的社会との関係を論じた。", true),
+      text_choice.call("イ", "幼児の自己活動と遊びを教育の中心に置き、Kindergartenを創設するとともに、教育遊具である恩物を考案した。"),
+      text_choice.call("ウ", "観念の結合による道徳的品性の形成を教育の目的とし、明瞭・連合・系統・方法という教授段階を中心とする授業を提唱した。"),
+      text_choice.call("エ", "感覚教育のための教具を用意し、教師が直接教え込むのではなく、子供が自発的に教具を操作することで知的独立を獲得する教育法を創始した。"),
     ],
     explanation_blocks: [
-      text_block.call("デューイはシカゴ大学に実験学校を設け、経験と探究を重視する教育を実践しました。また、1916年の『民主主義と教育』は教育哲学上の代表作です。cはフレーベル、dはヘルバルト派の教授段階に対応します。"),
+      text_block.call("アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。イは誤りです。Kindergartenの創設と恩物の考案はフレーベルの業績です。ウは誤りです。この教授段階はヘルバルト派に対応します。エは誤りです。感覚教育のための教具と自発的な操作を重視した説明は、モンテッソーリの教育法に対応します。"),
     ],
-    source_text: "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\nスペイン教育・職業訓練・スポーツ省教育図書館『Friedrich Froebel (1782-1852)』 | https://www.educacionfpydeportes.gob.es/biblioteca-central/blog/2026/abril/friedrich-frobel.html\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074",
+    source_text: "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\nスペイン教育・職業訓練・スポーツ省教育図書館『Friedrich Froebel (1782-1852)』 | https://www.educacionfpydeportes.gob.es/biblioteca-central/blog/2026/abril/friedrich-froebel.html\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
   },
   {
     question_number: 3,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -83,7 +83,7 @@ questions = [
   {
     question_number: 4,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -108,7 +108,7 @@ questions = [
   {
     question_number: 5,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -133,7 +133,7 @@ questions = [
   {
     question_number: 6,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "curriculum_organization",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -158,7 +158,7 @@ questions = [
   {
     question_number: 7,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "curriculum_organization",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -183,7 +183,7 @@ questions = [
   {
     question_number: 8,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "integrated_inquiry",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -208,7 +208,7 @@ questions = [
   {
     question_number: 9,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "moral_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -233,7 +233,7 @@ questions = [
   {
     question_number: 10,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "special_activities",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -258,7 +258,7 @@ questions = [
   {
     question_number: 11,
     major_category_code: "teacher_education",
-    category_code: "student_guidance",
+    category_code: "student_guidance_career",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -283,18 +283,18 @@ questions = [
   {
     question_number: 12,
     major_category_code: "teacher_education",
-    category_code: "educational_psychology",
+    category_code: "special_support_education",
     content_blocks: [
-      text_block.call("ある生徒には全般的な知的発達の遅れは見られないが、文字を正確に読むことと、考えを文章に書いて表すことに著しい困難が継続している。視覚・聴覚の障害や環境的要因が、その困難の直接の原因とは考えられない。文部科学省が示す定義に照らした障害の説明として、最も該当するものを選びなさい。"),
+      text_block.call("学習障害（LD）のある生徒の理解と支援に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "対人関係の形成の困難さと、限定された興味や反復的な行動を主な特徴とする自閉症"),
-      text_choice.call("イ", "年齢や発達に不釣り合いな不注意、衝動性、多動性を主な特徴とする注意欠陥／多動性障害（ADHD）"),
-      text_choice.call("ウ", "知的機能と適応行動の双方に全般的な制約が見られる知的障害"),
-      text_choice.call("エ", "聞く、話す、読む、書く、計算する又は推論する能力のうち、特定のものの習得と使用に著しい困難を示す学習障害（LD）", true),
+      text_choice.call("ア", "文章の読み書きに著しい困難が認められる場合には、対人関係や意思疎通にも必ず障害があると考え、自閉症を前提として、教科学習よりも社会的技能の訓練を優先する。"),
+      text_choice.call("イ", "課題の提出を避けたり、文章を読む際に集中が途切れたりする行動が見られる場合には、読み書きの能力を検討するよりも、注意欠如・多動症を前提として着席時間を延ばす。"),
+      text_choice.call("ウ", "全般的な知的発達に遅れが認められない場合であっても、読み書きの成績が学年相当より低ければ知的障害と判断し、すべての教科の学習内容を一律に引き下げる。"),
+      text_choice.call("エ", "全般的な知的発達に遅れがなくても、読む、書くなどの特定の能力の習得と使用に著しい困難が生じることがあるため、困難の現れ方を把握し、教材の提示方法や解答方法などを個別に工夫する。", true),
     ],
     explanation_blocks: [
-      text_block.call("学習障害（LD）は、基本的には全般的な知的発達に遅れがない一方、聞く・話す・読む・書く・計算する・推論する能力のうち特定のものに著しい困難を示す状態です。教員が診断を行うのではなく、困難の現れ方を把握し、校内の支援体制や専門機関と連携して必要な支援につなげることが大切です。"),
+      text_block.call("アは誤りです。読み書きの困難だけから、自閉症や対人関係上の障害を判断することはできません。イは誤りです。課題回避や集中の途切れは、読むこと自体の負担によって生じる可能性もあります。ウは誤りです。LDは全般的な知的発達に遅れがないことを前提とし、特定領域の困難を理由に全教科の内容を一律に引き下げるのも適切ではありません。エが適切です。得意な能力と困難な能力が併存し得ることを踏まえ、読み上げ、文字の拡大、ICTの利用、口頭による解答などを検討します。"),
     ],
     source_text: "文部科学省「学習障害（LD）、注意欠陥／多動性障害（ADHD）及び高機能自閉症について」 | https://www.mext.go.jp/b_menu/shingi/chukyo/chukyo0/toushin/attach/1396626.htm",
   },
@@ -303,16 +303,16 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("ある高校生は、「振り子の周期には、おもりの重さ、糸の長さ、振れ幅のどれが影響するか」を調べるため、一つの条件だけを変えて結果を比較する実験を計画した。ピアジェ（Piaget, J.）の認知発達理論において、このように仮説を立て、変数を統制して可能性を系統的に検討する思考を最もよく説明する段階を選びなさい。"),
+      text_block.call("ピアジェ（Piaget, J.）の認知発達理論における形式的操作期の思考に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "感覚運動期"),
-      text_choice.call("イ", "前操作期"),
-      text_choice.call("ウ", "形式的操作期", true),
-      text_choice.call("エ", "具体的操作期"),
+      text_choice.call("ア", "外界への働きかけを感覚と運動によって調整し、目の前から物が見えなくなっても存在し続けることを理解するが、仮説を立てて複数の条件を比較することはできない段階である。"),
+      text_choice.call("イ", "言語やイメージによる象徴的な表象が可能になる一方、対象の一つの側面に注意が集中しやすく、操作を逆方向にたどることが困難な段階である。"),
+      text_choice.call("ウ", "現実に観察された事実だけでなく、起こり得る可能性を組み合わせて仮説を立て、他の条件を一定に保ちながら一つの変数を操作して、その仮説を体系的に検証できる段階である。", true),
+      text_choice.call("エ", "保存、分類、系列化などの論理的操作が可能になるが、その操作は具体的な事物や実際に経験できる状況に強く依存している段階である。"),
     ],
     explanation_blocks: [
-      text_block.call("形式的操作期では、目の前の具体物だけに依存せず、抽象的な概念や仮説を扱い、仮説演繹的に考えることが可能になると説明されます。条件を一つずつ変えて可能性を系統的に検討する行動は、この思考の典型例です。"),
+      text_block.call("アは誤りです。これは感覚運動期の特徴です。イは誤りです。これは前操作期に見られる象徴機能、中心化及び不可逆性の説明です。ウが適切です。形式的操作期には、抽象的な可能性を想定し、変数を統制しながら仮説を検証する仮説演繹的思考が可能になります。エは誤りです。これは具体的操作期の特徴です。"),
     ],
     source_text: "NCBI Bookshelf『Piaget』Formal Operations Period | https://www.ncbi.nlm.nih.gov/books/NBK448206/",
   },
@@ -321,23 +321,23 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("協同学習の技法であるジグソー法を用いた授業の進め方として、最も適切なものを選びなさい。"),
+      text_block.call("ジグソー法に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "学習内容を複数の部分に分け、各生徒が担当部分を専門家グループで学んだ後、元のグループに戻って互いに教え合い、全体を完成させる。", true),
-      text_choice.call("イ", "全員に同一の課題を個別に解かせ、最も早く正答した生徒だけが、教師に代わって解答を読み上げる。"),
-      text_choice.call("ウ", "教師が学習内容を全て説明した後、グループごとの平均点を競わせ、順位に応じて報酬を与える。"),
-      text_choice.call("エ", "生徒ごとに異なる教材を与えるが、情報交換を禁止し、各自の成果だけを個別に評価する。"),
+      text_choice.call("ア", "すべての学習者に同一の部分資料を与えて個別に学習させた後、各班で最も成績の高い学習者だけに説明させ、班同士で説明の優劣を競わせることを中心とする学習方法である。", true),
+      text_choice.call("イ", "学習内容を複数の部分に分け、ホームグループの各成員に異なる部分を担当させた後、同じ部分を担当する学習者がエキスパートグループをつくって理解を深める。"),
+      text_choice.call("ウ", "エキスパートグループでの学習後、各成員がホームグループに戻って担当部分を説明し合うことにより、全員の情報を組み合わせなければ課題全体を理解できない構造をつくる。"),
+      text_choice.call("エ", "単に自由な話合いをさせるのではなく、学習者間の相互依存性と各成員の責任が成立するように課題を構成し、教師は学習状況を観察して必要な支援を行う。"),
     ],
     explanation_blocks: [
-      text_block.call("ジグソー法では、教材を分担し、同じ部分を担当する生徒同士の「専門家」活動を経て、元のグループで互いに教え合います。一人一人の担当が全体理解に必要となる相互依存性をつくる点が特徴です。"),
+      text_block.call("アが不適切です。ジグソー法では、成員が異なる部分を担当し、その知識を持ち寄ります。代表者だけが説明する競争的な方法ではありません。イは適切です。ホームグループとエキスパートグループを往還する基本的な手順です。ウは適切です。各成員の情報が課題全体の理解に必要となるため、肯定的な相互依存関係が形成されます。エは適切です。相互依存性だけでなく、各成員が担当部分を説明する個人の責任も重要です。"),
     ],
     source_text: "The Jigsaw Classroom『Jigsaw in 10 Easy Steps』 | https://www.jigsaw.org/",
   },
   {
     question_number: 15,
     major_category_code: "teacher_education",
-    category_code: "new_japanese_school_education",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -362,7 +362,7 @@ questions = [
   {
     question_number: 16,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -387,7 +387,7 @@ questions = [
   {
     question_number: 17,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -412,7 +412,7 @@ questions = [
   {
     question_number: 18,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -437,7 +437,7 @@ questions = [
   {
     question_number: 19,
     major_category_code: "information",
-    category_code: "algorithm",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("次のプログラムは、二つの正の整数の最大公約数をユークリッドの互除法で求めるものである。実行終了時に表示される a と count の組合せとして正しいものを選びなさい。なお、「%」は整数除算の余りを表す。"),
       {
@@ -465,7 +465,7 @@ questions = [
   {
     question_number: 20,
     major_category_code: "information",
-    category_code: "data_science",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("ある量的データについて、第1四分位数 Q1=18、第3四分位数 Q3=30 であった。外れ値の候補を「Q1−1.5×IQRより小さい値、またはQ3＋1.5×IQRより大きい値」（IQRは四分位範囲）とする。この基準による下側境界、上側境界、および外れ値の候補の組合せとして正しいものを選びなさい。"),
       {

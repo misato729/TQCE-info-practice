@@ -74,7 +74,7 @@ export const createEmptyQuestion = (): AdminQuestionInput => ({
   question_number: 1,
   content_blocks: [{ type: 'text', text: '' }],
   major_category_code: 'teacher_education',
-  category_code: 'education_history',
+  category_code: 'education_foundations',
   explanation_blocks: [{ type: 'text', text: '' }],
   source_text: '',
   publication_status: 'draft',

@@ -22,43 +22,43 @@ questions = [
   {
     question_number: 1,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("1879（明治12）年の教育令と、1880（明治13）年の改正教育令に関する記述として、最も適切なものを選びなさい。"),
+      text_block.call("1879（明治12）年の教育令と1880（明治13）年の改正教育令に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "教育令は学制よりも中央集権的・画一的な制度を採用し、改正教育令は教育に関する権限を地方へ広く委ねた。"),
-      text_choice.call("イ", "教育令は義務教育を9年とし、改正教育令は尋常小学校6年と高等小学校3年に区分した。"),
-      text_choice.call("ウ", "教育令は学制の中央集権的・画一的な性格を改めて地方の自由を重んじ、改正教育令は国家の統制を強化した。", true),
-      text_choice.call("エ", "教育令によって初めて学校種別ごとの学校令が整備され、改正教育令によって帝国大学が設置された。"),
+      text_choice.call("ア", "教育令は、全国を学区に分けて小学校設置を画一的に進めた学制の中央集権性を更に強め、改正教育令はその権限を地方に広く委ねた。"),
+      text_choice.call("イ", "教育令は義務教育の期間を九年と定め、改正教育令は小学校を尋常小学校六年と高等小学校三年に分けて、現在の九年制義務教育の基礎を定めた。"),
+      text_choice.call("ウ", "教育令は学制の中央集権的・画一的な性格を改め、地方の自由を重んじる方向を採ったが、就学状況の後退などが問題となり、改正教育令では国家の統制が再び強化された。", true),
+      text_choice.call("エ", "教育令によって帝国大学令、師範学校令、小学校令及び中学校令が初めて整備され、改正教育令によって学校種別ごとの制度が廃止された。"),
     ],
     explanation_blocks: [
-      text_block.call("1879（明治12）年の教育令は学制を廃止し、学制の中央集権的・画一的な性格を改めて、教育に関する権限を地方に委ねる方針を採りました。しかし、就学状況の後退などが問題となり、1880（明治13）年の改正教育令では国家の統制が再び強化されました。"),
+      text_block.call("アは誤りです。教育令と改正教育令の方向を逆にしています。イは誤りです。九年の義務教育や六・三制を定めた法令ではありません。ウが適切です。教育令は学制の画一性を緩和しましたが、その後の改正で国家の統制が強化されました。エは誤りです。学校種別の四学校令は1886（明治19）年に公布されたもので、教育令や改正教育令によるものではありません。"),
     ],
     source_text: "文部科学省『学制百年史』第一編第一章第二節「二 教育令・改正教育令と小学校の制度」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317588.htm",
   },
   {
     question_number: 2,
     major_category_code: "teacher_education",
-    category_code: "education_history",
+    category_code: "education_foundations",
     content_blocks: [
-      text_block.call("コメニウス（Comenius, J. A.）とその著作に関する記述として、最も適切なものを選びなさい。"),
+      text_block.call("西洋の教育思想家とその著作又は教育実践に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "『世界図絵』を著し、事物の図とことばを結び付けた子供向けの絵入り教材を示した。", true),
-      text_choice.call("イ", "『エミール』において、子供の自然な発達に即した消極教育を論じた。"),
-      text_choice.call("ウ", "幼児の自己活動と遊びを重視し、恩物を用いる幼稚園を創設した。"),
-      text_choice.call("エ", "『学校と社会』において、学校を小さな社会と捉える教育を提唱した。"),
+      text_choice.call("ア", "コメニウスは『世界図絵』を著したが、感覚を通じた学習は知性を妨げると考えたため、挿絵を用いず抽象的な定義の暗記だけで言葉を教えた。", true),
+      text_choice.call("イ", "ルソーは『エミール』において、大人の価値観や社会の悪影響を性急に子供に押し付けず、子供の自然な発達に即する消極教育を論じた。"),
+      text_choice.call("ウ", "フレーベルは幼児の自己活動と遊びを重視し、子供が自ら操作する教育遊具である恩物を考案するとともに、Kindergartenを創設した。"),
+      text_choice.call("エ", "デューイは『学校と社会』などを通じ、学校を小さな社会と捉え、子供の経験に基づく活動と共同的な問題解決を重視する教育を展開した。"),
     ],
     explanation_blocks: [
-      text_block.call("コメニウスの『世界図絵（Orbis sensualium pictus）』は1658年に刊行され、世界最初の子供向け絵入り本とされています。イはルソー、ウはフレーベル、エはデューイに対応する説明です。"),
+      text_block.call("アが不適切です。『世界図絵』は事物の図とことばを結び付けた絵入り教材であり、挿絵を避けた暗記中心の著作とする説明とは逆です。イは適切で、ルソーの消極教育の説明です。ウは適切で、フレーベルのKindergartenと恩物に対応します。エは適切で、デューイの経験主義的な教育思想を示しています。"),
     ],
-    source_text: "国立国会図書館国際子ども図書館 Research Navi『コメニウス「世界図絵」』 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237",
+    source_text: "国立国会図書館国際子ども図書館 Research Navi『コメニウス「世界図絵」』 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』 | https://plato.stanford.edu/entries/rousseau/\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN\nStanford Encyclopedia of Philosophy『John Dewey』5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/",
   },
   {
     question_number: 3,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -83,7 +83,7 @@ questions = [
   {
     question_number: 4,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -108,7 +108,7 @@ questions = [
   {
     question_number: 5,
     major_category_code: "teacher_education",
-    category_code: "education_law",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -133,7 +133,7 @@ questions = [
   {
     question_number: 6,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "curriculum_organization",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -158,7 +158,7 @@ questions = [
   {
     question_number: 7,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "career_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -183,7 +183,7 @@ questions = [
   {
     question_number: 8,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "integrated_inquiry",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -208,7 +208,7 @@ questions = [
   {
     question_number: 9,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "moral_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -233,7 +233,7 @@ questions = [
   {
     question_number: 10,
     major_category_code: "teacher_education",
-    category_code: "curriculum_guideline",
+    category_code: "special_activities",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -258,7 +258,7 @@ questions = [
   {
     question_number: 11,
     major_category_code: "teacher_education",
-    category_code: "student_guidance",
+    category_code: "student_guidance_career",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -283,18 +283,18 @@ questions = [
   {
     question_number: 12,
     major_category_code: "teacher_education",
-    category_code: "educational_psychology",
+    category_code: "special_support_education",
     content_blocks: [
-      text_block.call("ある生徒は、年齢や発達に不釣り合いな注意の持続の難しさに加え、衝動性や多動性を示し、学業や社会的な活動に支障が生じている。文部科学省が示す定義に照らして、最も適切なものを選びなさい。"),
+      text_block.call("注意欠如・多動症（ADHD）のある生徒の理解と支援に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "学習障害（LD）"),
-      text_choice.call("イ", "高機能自閉症"),
-      text_choice.call("ウ", "注意欠陥／多動性障害（ADHD）", true),
-      text_choice.call("エ", "知的障害"),
+      text_choice.call("ア", "提出物の忘れや計算上の見落としが多い場合には、特定の学習能力だけに困難がある学習障害と判断し、同じ形式の課題を繰り返させることで正確さを身に付けさせる。"),
+      text_choice.call("イ", "授業中に他の生徒の発言へ割り込む行動が見られる場合には、自閉症による対人理解の困難と判断し、その行動が起こるたびに強く注意して社会的規則を覚えさせる。"),
+      text_choice.call("ウ", "不注意、多動性又は衝動性が年齢や発達に比して著しく、学習や社会生活に支障を及ぼしている可能性を踏まえ、指示の視覚化、課題の細分化、環境調整などを実態に応じて組み合わせる。", true),
+      text_choice.call("エ", "複数の教科で成績が低く、課題を最後まで行えない場合には知的障害と判断し、本人の認知的な強みや困難を検討せず、全教科の目標を一律に引き下げる。"),
     ],
     explanation_blocks: [
-      text_block.call("文部科学省が示す定義では、注意欠陥／多動性障害（ADHD）は、年齢又は発達に不釣り合いな注意力、及び／又は衝動性、多動性を特徴とし、社会的な活動や学業の機能に支障を来す行動の障害です。学校では医療的な診断を行うのではなく、行動の背景と教育的ニーズを把握して必要な支援につなげます。"),
+      text_block.call("アは誤りです。忘れ物や見落としだけからLDと判断できず、反復量を増やすだけでは注意の持続や課題管理の困難に対応できない場合があります。イは誤りです。発言への割込みは衝動性による可能性もあり、背景を把握しない強い叱責は適切ではありません。ウが適切です。指示を短く具体的に示す、予定を視覚化する、課題を小さな段階に分ける、刺激を調整するなどの支援を個別に検討します。エは誤りです。成績や課題遂行の状態だけから知的障害と判断することはできません。"),
     ],
     source_text: "文部科学省『学習障害（LD）、注意欠陥／多動性障害（ADHD）及び高機能自閉症について』2 注意欠陥／多動性障害の定義 | https://www.mext.go.jp/b_menu/shingi/chukyo/chukyo0/toushin/attach/1396626.htm",
   },
@@ -303,16 +303,16 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("エリクソン（Erikson, E. H.）の心理社会的発達理論における青年期の発達課題と、その時期に認められる社会的猶予の組合せとして、最も適切なものを選びなさい。"),
+      text_block.call("エリクソン（Erikson, E. H.）の心理社会的発達理論における青年期の発達課題に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "勤勉性 対 劣等感 ― アタッチメント"),
-      text_choice.call("イ", "アイデンティティ 対 役割混乱 ― 心理社会的モラトリアム", true),
-      text_choice.call("ウ", "世代性 対 停滞 ― モデリング"),
-      text_choice.call("エ", "親密性 対 孤立 ― レディネス"),
+      text_choice.call("ア", "青年期の発達課題は勤勉性対劣等感であり、学習活動を通して有能感を獲得することが中心となるため、職業や価値観の選択を試みる期間は発達上望ましくない。"),
+      text_choice.call("イ", "青年期の発達課題は同一性対同一性混乱であり、自分の価値観、職業、役割などを探索する過程が重視され、最終的な決定を一定期間猶予される状態は心理社会的モラトリアムと呼ばれる。", true),
+      text_choice.call("ウ", "青年期の発達課題は親密性対孤立であり、社会的責任を負わずに友人関係だけを広げることによって、将来の職業的役割が自動的に確立される。"),
+      text_choice.call("エ", "青年期の発達課題は世代性対停滞であり、次の世代を育成する活動へ参加することで、児童期までに完成した同一性を社会的に証明することが中心となる。"),
     ],
     explanation_blocks: [
-      text_block.call("エリクソンの第5段階に当たる青年期の危機は、アイデンティティ対役割混乱（アイデンティティ拡散）です。この時期には、社会的責任を直ちに全面的に引き受けず、様々な役割を試すことが許容される心理社会的モラトリアムが関係します。勤勉性対劣等感は学童期、親密性対孤立は成人初期、世代性対停滞は成人期の課題です。"),
+      text_block.call("アは誤りです。勤勉性対劣等感は主として学童期の発達課題です。イが適切です。青年期には「自分は何者か」を探索し、職業や価値観などに関する同一性の確立が課題となります。ウは誤りです。親密性対孤立は主として成人期初期の発達課題であり、友人関係だけで職業的同一性が自動的に確立するわけではありません。エは誤りです。世代性対停滞は主として成人期の発達課題です。"),
     ],
     source_text: "APA Dictionary of Psychology『identity versus identity confusion』 | https://dictionary.apa.org/identity-versus-identity-confusion",
   },
@@ -321,23 +321,23 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "educational_psychology",
     content_blocks: [
-      text_block.call("ある生徒は、課題を一人では解決できないが、教師の問いかけや、少し先を理解している仲間の援助があれば解決できる。この生徒の『単独で解決できる水準』と『援助を受けて解決できる水準』の間を表す概念として、最も適切なものを選びなさい。"),
+      text_block.call("ヴィゴツキー（Vygotsky, L. S.）の「発達の最近接領域」と、それに基づく学習支援に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"),
     ],
     choices: [
-      text_choice.call("ア", "レディネス"),
-      text_choice.call("イ", "心理社会的モラトリアム"),
-      text_choice.call("ウ", "自己効力感"),
-      text_choice.call("エ", "発達の最近接領域（ZPD）", true),
+      text_choice.call("ア", "発達の最近接領域は、学習者が一人で遂行できる水準と、教師や能力の高い仲間から援助を受けることで遂行できる水準との間にある領域を示す。"),
+      text_choice.call("イ", "現在一人で遂行できる課題だけで能力を判断するのではなく、援助を受けた場合にどこまで遂行できるかを見ることによって、今後発達し得る可能性を捉えようとする。"),
+      text_choice.call("ウ", "教師は、手掛かり、例示、問い返しなどの支援を学習者の状態に応じて与え、自力で遂行できるようになるにつれて、その支援を段階的に減らすことが求められる。"),
+      text_choice.call("エ", "学習者が自力で課題を遂行できるようになった後も、誤りを防ぐために当初と同じ最大限の援助を固定的に与え続けることが、発達の最近接領域を広げるために必要である。", true),
     ],
     explanation_blocks: [
-      text_block.call("ヴィゴツキーの発達の最近接領域（ZPD）は、学習者が独力で達成できる水準と、より熟達した他者の援助や協働によって達成できる水準との差を指します。教師は、生徒が援助を受けながら可能にできる課題を見極め、徐々に援助を調整します。"),
+      text_block.call("アは適切です。独力による遂行水準と、援助を受けた場合の遂行水準との差に着目しています。イは適切です。既に完成した能力だけでなく、適切な援助によって発達しつつある能力を捉える考え方です。ウは適切です。一時的な支援を与え、学習者の習熟に応じて減らす考え方は足場かけと説明されます。エが不適切です。支援は学習者の状態に応じて調整し、自立に伴って減らす必要があります。"),
     ],
     source_text: "APA Dictionary of Psychology『zone of proximal development』 | https://dictionary.apa.org/zone-of-proximal-development",
   },
   {
     question_number: 15,
     major_category_code: "teacher_education",
-    category_code: "new_japanese_school_education",
+    category_code: "education_system",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -362,7 +362,7 @@ questions = [
   {
     question_number: 16,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -387,7 +387,7 @@ questions = [
   {
     question_number: 17,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       {
         type: "fill_in_text",
@@ -412,7 +412,7 @@ questions = [
   {
     question_number: 18,
     major_category_code: "information",
-    category_code: "information_curriculum_guideline",
+    category_code: "information_education",
     content_blocks: [
       text_block.call("高等学校学習指導要領における、専門教科「情報」の各科目にわたる指導計画の作成に関する記述として、最も適切なものを選びなさい。"),
     ],
@@ -430,7 +430,7 @@ questions = [
   {
     question_number: 19,
     major_category_code: "information",
-    category_code: "algorithm",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("次のプログラムは、逆ポーランド記法で表された式をスタックで評価し、計算中のスタックの最大要素数も求めるものである。tokens = [5, 1, 2, \"+\", 4, \"*\", \"+\", 3, \"-\"] として実行したとき、最後の result と max_depth の組合せとして正しいものを選びなさい。演算子 token に対する『x token y』は、x と y の順で演算するものとする。"),
       {
@@ -458,7 +458,7 @@ questions = [
   {
     question_number: 20,
     major_category_code: "information",
-    category_code: "data_science",
+    category_code: "information_specialized",
     content_blocks: [
       text_block.call("全国の高校生の動画視聴時間を推定するため、ある動画配信者が自分のSNSのフォロワーに回答を呼びかけ、回答のあった2万人の平均を全国の高校生の平均として発表した。この調査結果の解釈として、最も適切なものを選びなさい。"),
     ],
@@ -487,6 +487,16 @@ Question.transaction do
       exam_number: 2,
       question_number: attributes.fetch(:question_number),
     )
+
+    content_changed =
+      question.persisted? &&
+        (
+          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
+          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
+          question.source_text != question_attributes.fetch(:source_text)
+        )
+    question.answer_histories.destroy_all if content_changed
+
     question.assign_attributes(question_attributes.merge(publication_status: "draft"))
     question.save!
 

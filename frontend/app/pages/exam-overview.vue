@@ -5,15 +5,19 @@ useSeoMeta({
 })
 
 const questionGroups = [
-  { questions: '問1〜2', category: '教育史', details: '日本教育史、西洋教育史、教育原理、学習理論' },
-  { questions: '問3〜5', category: '教育法規', details: '教育基本法、学校教育法、地方公務員法、教育公務員特例法' },
-  { questions: '問6〜10', category: '学習指導要領', details: '教育課程、学習評価、総合的な探究の時間、道徳教育、特別活動' },
-  { questions: '問11', category: '生徒指導', details: '生徒指導提要、生徒指導の基本的な考え方' },
-  { questions: '問12〜14', category: '教育心理', details: '発達障害、青年期の発達、学習理論' },
-  { questions: '問15', category: '令和の日本型学校教育', details: '個別最適な学び、協働的な学び、中央教育審議会答申' },
-  { questions: '問16〜18', category: '学習指導要領（情報）', details: '高等学校学習指導要領、学習指導要領解説「情報編」' },
-  { questions: '問19', category: 'アルゴリズム', details: 'プログラムの読解、処理手順、計算量' },
-  { questions: '問20', category: 'データサイエンス', details: 'データの分析、統計、データの扱い' },
+  { questions: '問1〜2', category: '1.1 教育基礎総論', details: '日本教育史、西洋教育史、教育の理念・思想' },
+  { questions: '問3〜5', category: '1.3 教育制度総論', details: '教育基本法、学校教育法、地方公務員法、教育公務員特例法' },
+  { questions: '問6', category: '1.6 教育課程編成論', details: '教育課程の編成、実施、学習評価、カリキュラム・マネジメント' },
+  { questions: '問7', category: '内容に応じて分類', details: '1.5 特別支援教育、1.6 教育課程編成論、2.5・2.7 生徒指導・進路指導論など' },
+  { questions: '問8', category: '2.1 総合的な学習・探究論', details: '総合的な探究の時間、学習指導要領解説' },
+  { questions: '問9', category: '2.0 道徳教育論', details: '高等学校における道徳教育' },
+  { questions: '問10', category: '2.2 特別活動論', details: '特別活動、学習指導要領解説' },
+  { questions: '問11', category: '2.5 生徒指導・進路指導論', details: '生徒指導提要、生徒指導の基本的な考え方' },
+  { questions: '問12', category: '1.5 特別支援教育', details: '特別支援教育における障害全般' },
+  { questions: '問13〜14', category: '1.4 教育心理学', details: '青年期の発達、発達理論、学習理論' },
+  { questions: '問15', category: '1.3 教育制度総論', details: '「令和の日本型学校教育」答申' },
+  { questions: '問16〜18', category: '内容に応じて分類', details: '3.1 情報科専門科目、3.2 情報科教育法' },
+  { questions: '問19〜20', category: '3.1 情報科専門科目', details: 'アルゴリズム、プログラム、データサイエンス、統計' },
 ]
 </script>
 

@@ -2,28 +2,34 @@
   load Rails.root.join("db/seeds", seed_file).to_s
 end
 
-expected_categories = [
-  "education_history",
-  "education_history",
-  "education_law",
-  "education_law",
-  "education_law",
-  "curriculum_guideline",
-  "curriculum_guideline",
-  "curriculum_guideline",
-  "curriculum_guideline",
-  "curriculum_guideline",
-  "student_guidance",
+standard_expected_categories = [
+  "education_foundations",
+  "education_foundations",
+  "education_system",
+  "education_system",
+  "education_system",
+  "curriculum_organization",
+  "curriculum_organization",
+  "integrated_inquiry",
+  "moral_education",
+  "special_activities",
+  "student_guidance_career",
+  "special_support_education",
   "educational_psychology",
   "educational_psychology",
-  "educational_psychology",
-  "new_japanese_school_education",
-  "information_curriculum_guideline",
-  "information_curriculum_guideline",
-  "information_curriculum_guideline",
-  "algorithm",
-  "data_science",
+  "education_system",
+  "information_education",
+  "information_education",
+  "information_education",
+  "information_specialized",
+  "information_specialized",
 ].freeze
+
+expected_categories_by_exam = {
+  1 => standard_expected_categories,
+  2 => standard_expected_categories.dup.tap { |categories| categories[6] = "career_education" }.freeze,
+  3 => standard_expected_categories,
+}.freeze
 
 fill_in_prompt_pattern = /\A次の文章は，.+の「.+」からの抜粋である。文章中の空欄 \{\{①\}\} ～ \{\{[②③④⑤]\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/
 
@@ -34,7 +40,7 @@ fill_in_prompt_pattern = /\A次の文章は，.+の「.+」からの抜粋であ
     raise "模擬試験#{exam_number}は問1から問20までの20問で構成してください"
   end
 
-  unless exam_questions.map(&:category_code) == expected_categories
+  unless exam_questions.map(&:category_code) == expected_categories_by_exam.fetch(exam_number)
     raise "模擬試験#{exam_number}の出題分野または問題順が不正です"
   end
 

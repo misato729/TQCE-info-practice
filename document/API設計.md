@@ -71,11 +71,14 @@ Accept: application/json
 | --- | --- | --- |
 | `text` | 通常の文章 | `text` |
 | `quote` | 枠付きの引用文 | `text`, 任意の `source` |
+| `fill_in_text` | 過去問形式の穴埋め問題文 | `text` |
+| `fill_in_quote` | 空欄ラベルを含む抜粋文 | `text`。空欄は `{{①}}` などで表す |
+| `fill_in_choice` | 空欄ごとの語句を並べた選択肢 | `cells` |
 | `table` | 表 | `headers`, `rows` |
 | `code` | 単独のプログラム表記 | 任意の `title`, `code` |
 | `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
 
-問題本文ではすべての形式を使用できる。選択肢では `text`, `table`、解答解説では `text`, `quote`, `table`, `code` を使用できる。
+問題本文では `text`, `quote`, `fill_in_text`, `fill_in_quote`, `table`, `code`, `code_group` を使用できる。選択肢では `text`, `table`, `fill_in_choice`、解答解説では `text`, `quote`, `table`, `code` を使用できる。
 
 ### ページネーション
 
@@ -293,7 +296,7 @@ Accept: application/json
       }
     ],
     "major_category_code": "teacher_education",
-    "category_code": "education_law",
+    "category_code": "education_system",
     "choices": [
       {
         "id": 101,
@@ -395,7 +398,7 @@ Accept: application/json
         "question_number": 1,
         "body_excerpt": "教育基本法について正しいものを選びなさい。",
         "major_category_code": "teacher_education",
-        "category_code": "education_law",
+        "category_code": "education_system",
       },
       "selected_choice": {
         "id": 101,
@@ -565,7 +568,7 @@ Accept: application/json
 | --- | --- |
 | ユーザー権限 | `user`, `admin` |
 | 大分類 | `teacher_education`, `information` |
-| 小分類 | `education_history`, `education_law`, `curriculum_guideline`, `student_guidance`, `educational_psychology`, `new_japanese_school_education`, `information_curriculum_guideline`, `algorithm`, `data_science` |
+| 小分類 | `education_foundations`, `teaching_profession`, `education_system`, `educational_psychology`, `special_support_education`, `curriculum_organization`, `moral_education`, `integrated_inquiry`, `special_activities`, `education_methods`, `ict_in_education`, `student_guidance_career`, `educational_counseling`, `career_education`, `information_specialized`, `information_education` |
 | 公開状態 | `draft`, `published`, `private` |
 
 ## CORS

@@ -12,15 +12,22 @@ module MasterData
   ].freeze
 
   CATEGORIES = [
-    { value: 'education_history', label: '教育史', major_category_value: 'teacher_education' },
-    { value: 'education_law', label: '教育法規', major_category_value: 'teacher_education' },
-    { value: 'curriculum_guideline', label: '学習指導要領', major_category_value: 'teacher_education' },
-    { value: 'student_guidance', label: '生徒指導提要', major_category_value: 'teacher_education' },
-    { value: 'educational_psychology', label: '教育心理', major_category_value: 'teacher_education' },
-    { value: 'new_japanese_school_education', label: '令和の日本型学校教育', major_category_value: 'teacher_education' },
-    { value: 'information_curriculum_guideline', label: '学習指導要領(情報)', major_category_value: 'information' },
-    { value: 'algorithm', label: 'アルゴリズム', major_category_value: 'information' },
-    { value: 'data_science', label: 'データサイエンス', major_category_value: 'information' }
+    { value: 'education_foundations', label: '1.1 教育基礎総論', major_category_value: 'teacher_education' },
+    { value: 'teaching_profession', label: '1.2 教職概論', major_category_value: 'teacher_education' },
+    { value: 'education_system', label: '1.3 教育制度総論', major_category_value: 'teacher_education' },
+    { value: 'educational_psychology', label: '1.4 教育心理学', major_category_value: 'teacher_education' },
+    { value: 'special_support_education', label: '1.5 特別支援教育', major_category_value: 'teacher_education' },
+    { value: 'curriculum_organization', label: '1.6 教育課程編成論', major_category_value: 'teacher_education' },
+    { value: 'moral_education', label: '2.0 道徳教育論', major_category_value: 'teacher_education' },
+    { value: 'integrated_inquiry', label: '2.1 総合的な学習・探究論', major_category_value: 'teacher_education' },
+    { value: 'special_activities', label: '2.2 特別活動論', major_category_value: 'teacher_education' },
+    { value: 'education_methods', label: '2.3 教育方法・技術論', major_category_value: 'teacher_education' },
+    { value: 'ict_in_education', label: '2.4 教育におけるICT活用', major_category_value: 'teacher_education' },
+    { value: 'student_guidance_career', label: '2.5 生徒指導・進路指導論', major_category_value: 'teacher_education' },
+    { value: 'educational_counseling', label: '2.6 生徒理解と教育相談', major_category_value: 'teacher_education' },
+    { value: 'career_education', label: '2.7 生徒指導・進路指導論', major_category_value: 'teacher_education' },
+    { value: 'information_specialized', label: '3.1 情報科専門科目', major_category_value: 'information' },
+    { value: 'information_education', label: '3.2 情報科教育法', major_category_value: 'information' }
   ].freeze
 
   PUBLICATION_STATUSES = [
@@ -59,18 +66,6 @@ module MasterData
     { value: 'bronze', label: '銅メダル' },
     { value: 'silver', label: '銀メダル' },
     { value: 'gold', label: '金メダル' }
-  ].freeze
-
-  MOCK_EXAM_CATEGORY_COUNTS = [
-    { category_code: 'education_history', question_count: 2 },
-    { category_code: 'education_law', question_count: 3 },
-    { category_code: 'curriculum_guideline', question_count: 5 },
-    { category_code: 'student_guidance', question_count: 1 },
-    { category_code: 'educational_psychology', question_count: 3 },
-    { category_code: 'new_japanese_school_education', question_count: 1 },
-    { category_code: 'information_curriculum_guideline', question_count: 3 },
-    { category_code: 'algorithm', question_count: 1 },
-    { category_code: 'data_science', question_count: 1 }
   ].freeze
 
   MOCK_EXAM_QUESTION_COUNT = 20

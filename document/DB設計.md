@@ -166,7 +166,8 @@ erDiagram
 - 解答前の一般向けAPIでは、解説や正解情報を返さない。
 - `source_text` は1行につき1出典とし、`資料名・章節 | https://...` 形式で公式原典へのリンクを保持する。
 - `content_blocks` と `explanation_blocks` は配列とし、配列の並び順をそのまま画面の表示順とする。
-- 問題本文の `content_blocks` では `text`, `quote`, `table`, `code`, `code_group` を使用できる。
+- 問題本文の `content_blocks` では `text`, `quote`, `fill_in_text`, `fill_in_quote`, `table`, `code`, `code_group` を使用できる。
+- 選択肢の `content_blocks` では `text`, `table`, `fill_in_choice` を使用できる。
 - 解説の `explanation_blocks` では `text`, `quote`, `table`, `code` を使用できる。
 - コンテンツブロックの構造は「4.5 コンテンツブロック形式」に従い、問題の作成・更新時にアプリケーションで検証する。
 
@@ -285,15 +286,22 @@ erDiagram
 
 | 値 | 大分類 | 表示名 |
 |---|---|---|
-| `education_history` | `teacher_education` | 教育史 |
-| `education_law` | `teacher_education` | 教育法規 |
-| `curriculum_guideline` | `teacher_education` | 学習指導要領 |
-| `student_guidance` | `teacher_education` | 生徒指導提要 |
-| `educational_psychology` | `teacher_education` | 教育心理 |
-| `new_japanese_school_education` | `teacher_education` | 令和の日本型学校教育 |
-| `information_curriculum_guideline` | `information` | 学習指導要領（情報） |
-| `algorithm` | `information` | アルゴリズム |
-| `data_science` | `information` | データサイエンス |
+| `education_foundations` | `teacher_education` | 1.1 教育基礎総論 |
+| `teaching_profession` | `teacher_education` | 1.2 教職概論 |
+| `education_system` | `teacher_education` | 1.3 教育制度総論 |
+| `educational_psychology` | `teacher_education` | 1.4 教育心理学 |
+| `special_support_education` | `teacher_education` | 1.5 特別支援教育 |
+| `curriculum_organization` | `teacher_education` | 1.6 教育課程編成論 |
+| `moral_education` | `teacher_education` | 2.0 道徳教育論 |
+| `integrated_inquiry` | `teacher_education` | 2.1 総合的な学習・探究論 |
+| `special_activities` | `teacher_education` | 2.2 特別活動論 |
+| `education_methods` | `teacher_education` | 2.3 教育方法・技術論 |
+| `ict_in_education` | `teacher_education` | 2.4 教育におけるICT活用 |
+| `student_guidance_career` | `teacher_education` | 2.5 生徒指導・進路指導論 |
+| `educational_counseling` | `teacher_education` | 2.6 生徒理解と教育相談 |
+| `career_education` | `teacher_education` | 2.7 生徒指導・進路指導論 |
+| `information_specialized` | `information` | 3.1 情報科専門科目 |
+| `information_education` | `information` | 3.2 情報科教育法 |
 
 ### 4.4 公開状態
 
@@ -311,6 +319,9 @@ erDiagram
 |---|---|---|
 | `text` | 通常の文章 | `text` |
 | `quote` | 枠付きの引用文 | `text`, 任意の `source` |
+| `fill_in_text` | 過去問形式の穴埋め問題文 | `text` |
+| `fill_in_quote` | 空欄ラベルを含む抜粋文 | `text`。空欄は `{{①}}` などで表す |
+| `fill_in_choice` | 空欄ごとの語句を並べた選択肢 | `cells` |
 | `table` | 表 | `headers`, `rows` |
 | `code` | 単独のプログラム表記 | 任意の `title`, `code` |
 | `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
@@ -358,7 +369,7 @@ erDiagram
 - `table.headers` と各 `table.rows` の列数を一致させる。
 - `code` と `code_group.items[].code` は改行と字下げを変更せず保存する。
 - `code_group.items` は2件以上とする。
-- 令和7年度科目Ⅰを基準とする初期設計では、画像ブロックは設けない。
+- 令和8年度科目Ⅰを基準とする現在の設計では、画像ブロックは設けない。
 
 ## 5. 整合性ルール
 

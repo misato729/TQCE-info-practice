@@ -35,7 +35,7 @@ class Api::V1::ExamsTest < ActionDispatch::IntegrationTest
       exam_number: exam_number,
       question_number: question_number,
       major_category_code: "teacher_education",
-      category_code: "education_law",
+      category_code: "education_system",
       publication_status: publication_status,
       content_blocks: [{ type: "text", text: "問題文" }],
       explanation_blocks: [{ type: "text", text: "解説" }],

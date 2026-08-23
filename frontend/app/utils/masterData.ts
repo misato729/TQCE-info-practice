@@ -14,15 +14,22 @@ export const MAJOR_CATEGORIES = [
 ] as const satisfies readonly MasterDataItem[]
 
 export const CATEGORIES = [
-  { value: 'education_history', label: '教育史', majorCategoryValue: 'teacher_education' },
-  { value: 'education_law', label: '教育法規', majorCategoryValue: 'teacher_education' },
-  { value: 'curriculum_guideline', label: '学習指導要領', majorCategoryValue: 'teacher_education' },
-  { value: 'student_guidance', label: '生徒指導提要', majorCategoryValue: 'teacher_education' },
-  { value: 'educational_psychology', label: '教育心理', majorCategoryValue: 'teacher_education' },
-  { value: 'new_japanese_school_education', label: '令和の日本型学校教育', majorCategoryValue: 'teacher_education' },
-  { value: 'information_curriculum_guideline', label: '学習指導要領(情報)', majorCategoryValue: 'information' },
-  { value: 'algorithm', label: 'アルゴリズム', majorCategoryValue: 'information' },
-  { value: 'data_science', label: 'データサイエンス', majorCategoryValue: 'information' },
+  { value: 'education_foundations', label: '1.1 教育基礎総論', majorCategoryValue: 'teacher_education' },
+  { value: 'teaching_profession', label: '1.2 教職概論', majorCategoryValue: 'teacher_education' },
+  { value: 'education_system', label: '1.3 教育制度総論', majorCategoryValue: 'teacher_education' },
+  { value: 'educational_psychology', label: '1.4 教育心理学', majorCategoryValue: 'teacher_education' },
+  { value: 'special_support_education', label: '1.5 特別支援教育', majorCategoryValue: 'teacher_education' },
+  { value: 'curriculum_organization', label: '1.6 教育課程編成論', majorCategoryValue: 'teacher_education' },
+  { value: 'moral_education', label: '2.0 道徳教育論', majorCategoryValue: 'teacher_education' },
+  { value: 'integrated_inquiry', label: '2.1 総合的な学習・探究論', majorCategoryValue: 'teacher_education' },
+  { value: 'special_activities', label: '2.2 特別活動論', majorCategoryValue: 'teacher_education' },
+  { value: 'education_methods', label: '2.3 教育方法・技術論', majorCategoryValue: 'teacher_education' },
+  { value: 'ict_in_education', label: '2.4 教育におけるICT活用', majorCategoryValue: 'teacher_education' },
+  { value: 'student_guidance_career', label: '2.5 生徒指導・進路指導論', majorCategoryValue: 'teacher_education' },
+  { value: 'educational_counseling', label: '2.6 生徒理解と教育相談', majorCategoryValue: 'teacher_education' },
+  { value: 'career_education', label: '2.7 生徒指導・進路指導論', majorCategoryValue: 'teacher_education' },
+  { value: 'information_specialized', label: '3.1 情報科専門科目', majorCategoryValue: 'information' },
+  { value: 'information_education', label: '3.2 情報科教育法', majorCategoryValue: 'information' },
 ] as const
 
 export const PUBLICATION_STATUSES = [
@@ -62,18 +69,6 @@ export const MEDALS = [
   { value: 'silver', label: '銀メダル' },
   { value: 'gold', label: '金メダル' },
 ] as const satisfies readonly MasterDataItem[]
-
-export const MOCK_EXAM_CATEGORY_COUNTS = [
-  { categoryCode: 'education_history', questionCount: 2 },
-  { categoryCode: 'education_law', questionCount: 3 },
-  { categoryCode: 'curriculum_guideline', questionCount: 5 },
-  { categoryCode: 'student_guidance', questionCount: 1 },
-  { categoryCode: 'educational_psychology', questionCount: 3 },
-  { categoryCode: 'new_japanese_school_education', questionCount: 1 },
-  { categoryCode: 'information_curriculum_guideline', questionCount: 3 },
-  { categoryCode: 'algorithm', questionCount: 1 },
-  { categoryCode: 'data_science', questionCount: 1 },
-] as const
 
 export const MOCK_EXAM_QUESTION_COUNT = 20
 export const MOCK_EXAM_PASSING_SCORE = 12
