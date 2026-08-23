@@ -24,9 +24,15 @@ onMounted(async () => {
         <main><slot /></main>
         <footer class="site-footer">
           <div class="footer-inner">
-            <div class="footer-copy">
-              <strong>高等学校（情報）教員資格認定試験　予想問題演習サイト</strong>
-              <span>生成AIで作成した問題には誤りが含まれる可能性があります。</span>
+            <div class="footer-main">
+              <div class="footer-copy">
+                <strong>高等学校（情報）教員資格認定試験　予想問題演習サイト</strong>
+                <span>生成AIで作成した問題には誤りが含まれる可能性があります。</span>
+              </div>
+              <nav class="footer-links" aria-label="サイトポリシー">
+                <NuxtLink to="/privacy-policy">プライバシーポリシー</NuxtLink>
+                <NuxtLink to="/terms">利用規約</NuxtLink>
+              </nav>
             </div>
             <div class="api-status" :class="apiStatus">
               <span class="status-dot" aria-hidden="true" />
@@ -58,8 +64,12 @@ main { flex: 1; }
   color: #52636c;
   font-size: 13px;
 }
-.footer-copy { display: grid; gap: 6px; }
+.footer-main, .footer-copy { display: grid; gap: 6px; }
+.footer-main { gap: 10px; }
 .footer-copy strong { color: #31454c; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.footer-links a { color: #40545b; font-weight: 700; text-underline-offset: 3px; }
+.footer-links a:hover { color: var(--teal-dark); }
 .api-status {
   min-height: 36px;
   flex: 0 0 auto;
