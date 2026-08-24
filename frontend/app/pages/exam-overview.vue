@@ -207,21 +207,6 @@ const references = [
         受験案内に記載された正式な出題範囲と、令和6年度から令和8年度までの過去問から見た出題傾向を整理します。
       </p>
     </header>
-
-    <dl class="exam-facts" aria-label="科目Ⅰの基本情報">
-      <div>
-        <dt>問題数</dt>
-        <dd><strong>20</strong>問</dd>
-      </div>
-      <div>
-        <dt>出題形式</dt>
-        <dd><strong>4</strong>択</dd>
-      </div>
-      <div>
-        <dt>合格ライン</dt>
-        <dd><strong>60</strong>％以上</dd>
-      </div>
-    </dl>
     <p class="fact-note">
       試験時間は70分、マークシート方式の択一式です。令和8年度は1問5点、合計100点で、20問中12問以上の正答が合格基準に相当します。
     </p>
