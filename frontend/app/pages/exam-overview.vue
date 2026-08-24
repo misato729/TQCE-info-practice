@@ -14,10 +14,12 @@ const questionGroups = [
   { questions: '問10', category: '2.2 特別活動論', details: '特別活動、学習指導要領解説' },
   { questions: '問11', category: '2.5 生徒指導・進路指導論', details: '生徒指導提要、生徒指導の基本的な考え方' },
   { questions: '問12', category: '1.5 特別支援教育', details: '特別支援教育における障害全般' },
-  { questions: '問13〜14', category: '1.4 教育心理学', details: '青年期の発達、発達理論、学習理論' },
+  { questions: '問13', category: '1.4 教育心理学', details: '青年期の発達課題・心理、発達理論' },
+  { questions: '問14', category: '1.4 教育心理学', details: '学習理論、学習方法、教授・学習過程' },
   { questions: '問15', category: '1.3 教育制度総論', details: '「令和の日本型学校教育」答申' },
   { questions: '問16〜18', category: '内容に応じて分類', details: '3.1 情報科専門科目、3.2 情報科教育法' },
-  { questions: '問19〜20', category: '3.1 情報科専門科目', details: 'アルゴリズム、プログラム、データサイエンス、統計' },
+  { questions: '問19', category: '3.1 情報科専門科目', details: 'アルゴリズム、プログラムの読解・実行' },
+  { questions: '問20', category: '3.1 情報科専門科目', details: 'データサイエンス、統計、データの分析' },
 ]
 </script>
 
