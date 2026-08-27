@@ -1,4 +1,15 @@
-%w[mock_exam_1.rb mock_exam_2.rb mock_exam_3.rb mock_exam_4.rb mock_exam_5.rb].each do |seed_file|
+%w[
+  mock_exam_1.rb
+  mock_exam_2.rb
+  mock_exam_3.rb
+  mock_exam_4.rb
+  mock_exam_5.rb
+  mock_exam_6.rb
+  mock_exam_7.rb
+  mock_exam_8.rb
+  mock_exam_9.rb
+  mock_exam_10.rb
+].each do |seed_file|
   load Rails.root.join("db/seeds", seed_file).to_s
 end
 
