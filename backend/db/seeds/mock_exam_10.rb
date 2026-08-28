@@ -6,6 +6,13 @@ text_choice = lambda do |label, text, correct = false|
     correct: correct,
   }
 end
+fill_in_choice = lambda do |label, cells, correct = false|
+  {
+    label: label,
+    content_blocks: [{ type: "fill_in_choice", cells: cells }],
+    correct: correct,
+  }
+end
 
 # 模擬試験10は分野別に作成中のため、全20問がそろうまでは承認済みの問題も
 # 下書きとして保存し、一般向けの問題一覧には公開しない。
@@ -48,10 +55,165 @@ questions = [
     source_text: "パウロ・フレイレ著、三砂ちづる訳『被抑圧者の教育学 50周年記念版』（国立国会図書館書誌情報） | https://ndlsearch.ndl.go.jp/books/R100000002-I028908398
 兵庫教育大学 原安利『パウロ・フレイレの教育論における「対話」に関する一考察』 | https://hyogo-u.repo.nii.ac.jp/records/2692",
   },
+  {
+    question_number: 3,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      text_block.call("次のア～エは，「教育基本法」（平成18年法律第120号）の義務教育及び教育振興基本計画に関する記述である。適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "国民は、その保護する子に、別に法律で定めるところにより、普通教育を受けさせる義務を負う。"),
+      text_choice.call("イ", "義務教育として行われる普通教育は、各個人の能力を伸ばしつつ、社会において自立的に生きる基礎を培い、国家及び社会の形成者として必要な基本的資質を養うことを目的とする。"),
+      text_choice.call("ウ", "国及び地方公共団体は、適切な役割分担及び相互の協力の下、義務教育の実施に責任を負う。また、国又は地方公共団体が設置する学校の義務教育については、授業料を徴収しない。"),
+      text_choice.call("エ", "地方公共団体は、政府の教育振興基本計画を参酌し、地域の実情に応じた基本的な計画を定めなければならず、その計画を国会に報告するとともに、公表しなければならない。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("エが適切でない記述です。アは第5条第1項と一致します。イは第5条第2項が定める義務教育の目的として適切です。ウは適切です。義務教育の実施責任は第5条第3項、授業料不徴収は同条第4項に定められています。エは誤りです。地方公共団体については、政府の計画を参酌し、地域の実情に応じた計画を「定めるよう努めなければならない」とする努力義務です。国会への報告及び公表が義務付けられているのは、政府が定める計画です。"),
+    ],
+    source_text: "e-Gov法令検索『教育基本法』第5条・第17条 | https://laws.e-gov.go.jp/law/418AC0000000120",
+  },
+  {
+    question_number: 4,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の各文は，「学校教育法」（昭和22年法律第26号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "第43条　小学校は、当該小学校に関する{{①}}及び{{②}}その他の関係者の{{③}}を深めるとともに、これらの者との{{④}}の推進に資するため、当該小学校の教育活動その他の学校運営の状況に関する情報を積極的に提供するものとする。",
+      },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["保護者", "地域住民", "理解", "連携及び協力"], true),
+      fill_in_choice.call("イ", ["生徒", "地域住民", "信頼", "協働"]),
+      fill_in_choice.call("ウ", ["保護者", "学校評議員", "評価", "情報公開"]),
+      fill_in_choice.call("エ", ["保護者", "地方公共団体", "理解", "学校評価"]),
+    ],
+    explanation_blocks: [
+      text_block.call("アが原文と一致します。第43条は、保護者及び地域住民等の理解を深め、これらの者との連携及び協力を推進するため、学校運営に関する情報を積極的に提供することを定めています。第62条により、第43条は高等学校にも準用されます。イは対象を生徒とし、「理解」「連携及び協力」を別の語句へ置き換えています。ウは地域住民を学校評議員とし、理解や連携及び協力ではなく評価・情報公開としている点が誤りです。エは地域住民を地方公共団体、連携及び協力を学校評価としている点が原文と異なります。"),
+    ],
+    source_text: "e-Gov法令検索『学校教育法』第43条・第62条 | https://laws.e-gov.go.jp/law/322AC0000000026",
+  },
+  {
+    question_number: 5,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の各文は，「地方公務員法」 （昭和25年法律第261号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "第34条　職員は、{{①}}を漏らしてはならない。その職を{{②}}も、また、同様とする。\n2　法令による証人、鑑定人等となり、{{③}}に属する事項を発表する場合においては、{{④}}（退職者については、その退職した職又はこれに相当する職に係る任命権者）の許可を受けなければならない。",
+      },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["公務上知り得た情報", "退職するまで", "個人情報", "所属長"]),
+      fill_in_choice.call("イ", ["職務上知り得た秘密", "休職中", "行政上の秘密", "人事委員会"]),
+      fill_in_choice.call("ウ", ["職務上知り得た秘密", "退いた後", "職務上の秘密", "任命権者"], true),
+      fill_in_choice.call("エ", ["職務上知り得た個人情報", "退いた後", "秘密情報", "任命権者"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ウが原文と一致します。地方公務員法第34条は、職務上知り得た秘密を漏らしてはならず、退職後も同様であると定めています。証人、鑑定人等として職務上の秘密を発表する場合には、原則として任命権者の許可が必要です。アは「秘密」を単なる情報や個人情報に限定し、許可者を所属長としている点が誤りです。イは守秘義務が退職後も続くことや、許可者が任命権者であることと一致しません。エは「職務上知り得た秘密」及び「職務上の秘密」を個人情報等に限定している点が誤りです。"),
+    ],
+    source_text: "e-Gov法令検索『地方公務員法』第34条 | https://laws.e-gov.go.jp/law/325AC0000000261",
+  },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      text_block.call("次の文章及び表は，『生徒指導提要』 （令和4年12月文部科学省）に示された「チーム支援のプロセス」に基づくものである。表中の空欄 ① ～ ③ に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "fill_in_quote",
+        text: "以下に、課題を抱えて苦戦したり、危機に陥ったりした児童生徒に対して、生徒指導と教育相談の連携を核に、多職種との協働も視野に入れた包括的な支援をチームとして展開するプロセス（図5）と留意点を示しました。その際、生徒指導主事、教育相談コーディネーター、特別支援教育コーディネーター、養護教諭等のコーディネーターの果たす役割が極めて重要になります。",
+      },
+      {
+        type: "table",
+        headers: ["段階", "チーム支援のプロセス"],
+        rows: [
+          ["1", "チーム支援の判断とアセスメントの実施"],
+          ["2", "①"],
+          ["3", "②"],
+          ["4", "③"],
+          ["5", "点検・評価に基づくチーム支援の終結・継続"],
+        ],
+      },
+    ],
+    choices: [
+      text_choice.call("ア", "①：チーム支援計画の作成 ／ ②：課題の明確化と目標の共有 ／ ③：チーム支援の実践"),
+      text_choice.call("イ", "①：課題の明確化と目標の共有 ／ ②：チーム支援の実践 ／ ③：チーム支援計画の作成"),
+      text_choice.call("ウ", "①：チーム支援の実践 ／ ②：チーム支援計画の作成 ／ ③：課題の明確化と目標の共有"),
+      text_choice.call("エ", "①：課題の明確化と目標の共有 ／ ②：チーム支援計画の作成 ／ ③：チーム支援の実践", true),
+    ],
+    explanation_blocks: [
+      text_block.call("エが正答です。図5では、チーム支援の判断とアセスメントを行った後、課題の明確化と目標の共有、チーム支援計画の作成、チーム支援の実践、点検・評価に基づく終結又は継続という順に進みます。アは第2段階と第3段階が逆です。イは計画作成より先に実践を置いています。ウは実践を第2段階に置き、課題の明確化と目標の共有を第4段階まで遅らせているため、図5の順序と一致しません。"),
+    ],
+    source_text: "文部科学省『生徒指導提要』（令和4年12月）第3章3.4.2「生徒指導と教育相談が一体となったチーム支援の実際」図5「チーム支援のプロセス」 | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      text_block.call("病弱又は身体虚弱の生徒に対する教育的対応に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "本人が病気等の状態を理解し、服薬、休息、運動などを管理するとともに、参加可能な活動を判断し、必要な援助を求められるようにすることが重要である。入院中や感染予防等で登校できない場合には、情報通信技術も活用して学習と人間関係の継続を支える。", true),
+      text_choice.call("イ", "慢性疾患等の診断を受けた生徒は、全員が特別支援学校又は特別支援学級の対象となる。また、風邪などによって一時的に体調を崩している状態も、身体虚弱として扱う。"),
+      text_choice.call("ウ", "活動への参加可否は、安全確保のため教師が一律に決定し、本人による自己選択や自己決定は求めない。医療機関からの情報よりも、学校における一時的な外見上の元気さを優先して判断する。"),
+      text_choice.call("エ", "退院後は、治療前と同じ活動量へ直ちに戻すことが心理的自立につながる。学習の遅れや友人関係の不安は本人が自力で解決すべきであり、前籍校、病院、家庭による連携や遠隔授業は行わない。"),
+    ],
+    explanation_blocks: [
+      text_block.call("アが適切です。病気等に関する自己管理能力の育成と、入院・療養中も含めた学習の継続を正しく組み合わせています。イは適切ではありません。診断名だけで学びの場を一律に決めるものではなく、病状、治療、学習上・生活上の困難などを踏まえます。身体虚弱も一時的な体調不良とは区別されます。ウは適切ではありません。医療情報を踏まえつつ、本人が自身の状態に応じて活動を選択し、必要な援助を求める力を育てます。エは適切ではありません。退院後も病状や体力に応じて段階的に復帰し、学校・家庭・医療機関等が連携して学習面と心理面を支援します。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編「障害の状態等に応じた教育的対応」病弱・身体虚弱 | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_09.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      text_block.call("ゲゼルの発達理論及び研究に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "発達は、養育者による条件づけと訓練の量だけによって決まると考え、身体的・神経学的な成熟の影響を否定する環境優位説を唱えた。"),
+      text_choice.call("イ", "一卵性双生児の階段上りに関する研究などから、訓練の効果は、その学習に必要な成熟や準備状態が整っているかどうかに左右されると考え、成熟及びレディネスの重要性を示した。", true),
+      text_choice.call("ウ", "発達が成熟に基づくという立場から、経験や訓練はどの年齢でも発達に影響を与えず、適切な準備状態へ到達した後にも教育的な働き掛けは必要ないと考えた。"),
+      text_choice.call("エ", "子どもの認知発達を、感覚運動期、前操作期、具体的操作期、形式的操作期の四段階に分け、同化と調節によって認知構造が変化すると考えた。"),
+    ],
+    explanation_blocks: [
+      text_block.call("アは適切ではありません。ゲゼルは、環境や訓練だけで発達を説明するのではなく、生物学的な成熟を重視しました。イが適切です。双生児の階段上り実験は、早期から長期間訓練することよりも、学習に適した成熟や準備状態を待つことの重要性を示す例として扱われます。ウは適切ではありません。成熟を重視することは、経験や教育の影響を全面的に否定することではありません。準備状態が整った時期に適切な経験や訓練を行うことが重要になります。エは適切ではありません。四つの認知発達段階並びに同化と調節はピアジェの理論です。"),
+    ],
+    source_text: "実践女子大学『ゲゼルの双生児による階段上り実験』 | https://www.jissen.ac.jp/about/bestteaching/archive/matsuda.html",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      text_block.call("エビングハウスの記憶研究に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "日常的な記憶の働きを明らかにするため、文化的背景をもつ物語だけを材料として用い、時間の経過に伴って物語が既有の知識体系に合うよう再構成される過程を研究した。"),
+      text_choice.call("イ", "忘却は学習直後から常に一定の速さで直線的に進み、一定時間が経過すると、学習された内容は痕跡を残さず完全に消失すると結論付けた。"),
+      text_choice.call("ウ", "既有知識や意味の影響を抑えるために無意味綴りを用い、自らを主な実験参加者として、一定時間後の再学習に必要な時間や反復回数の減少を節約法によって測定した。また、忘却は初期に急速に進み、その後は緩やかになることを示した。", true),
+      text_choice.call("エ", "忘却曲線から、意味のある学校教材を含む全ての学習内容について、全ての学習者に共通する正確な忘却率を算出し、その数値に従った一つの固定的な復習間隔を示した。"),
+    ],
+    explanation_blocks: [
+      text_block.call("アは適切ではありません。エビングハウスは、意味や既有知識の影響をできるだけ抑えるため、主として無意味綴りを用いました。意味をもつ物語の再構成を中心にした研究ではありません。イは適切ではありません。忘却の進行は一定速度の直線ではなく、一般に学習後の早い時期ほど急速で、その後は緩やかになります。また、自由再生できなくても再学習が速くなる場合があり、痕跡が完全に消失したとは限りません。ウが適切です。無意味綴り、自己実験、節約法及び忘却曲線は、エビングハウスの記憶研究を特徴付ける事項です。エは適切ではありません。エビングハウスの実験条件から得られた曲線を、教材の意味、学習方法、個人差を無視して、全ての学校学習に共通する正確な割合や固定的な復習日程として扱うことはできません。"),
+    ],
+    source_text: "淑徳大学掲載資料『エビングハウスの記憶研究』 | https://shukutoku.repo.nii.ac.jp/record/193/files/KJ00007036999.pdf\n北海道大学OCW『基礎心理学入門―記憶』 | https://ocw.hokudai.ac.jp/wp-content/uploads/2016/02/Psychology-2009-Note-10.pdf",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2]
-  raise "作成中の模擬試験10には承認済みの問1・問2だけを登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14]
+  raise "作成中の模擬試験10には承認済みの問1から問5、問11から問14だけを登録してください"
 end
 
 questions.each do |question|
@@ -63,6 +225,22 @@ questions.each do |question|
   source_lines = question.fetch(:source_text).lines.map(&:strip).reject(&:empty?)
   unless source_lines.any? && source_lines.all? { |line| line.match?(/\A.+\s\|\shttps:\/\/\S+\z/) }
     raise "模擬試験10 問#{question.fetch(:question_number)}の出典リンク形式が不正です"
+  end
+
+  blank_labels = question.fetch(:content_blocks)
+    .select { |block| block[:type] == "fill_in_quote" }
+    .flat_map { |block| block[:text].scan(/\{\{([①②③④⑤])\}\}/).flatten }
+    .uniq
+  if blank_labels.any?
+    valid_fill_in_choices = choices.all? do |choice|
+      choice_blocks = choice.fetch(:content_blocks)
+      choice_blocks.one? &&
+        choice_blocks.first[:type] == "fill_in_choice" &&
+        choice_blocks.first[:cells].size == blank_labels.size
+    end
+    unless valid_fill_in_choices
+      raise "模擬試験10 問#{question.fetch(:question_number)}の空欄数と選択肢セル数が一致しません"
+    end
   end
 end
 
