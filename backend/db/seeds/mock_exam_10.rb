@@ -286,10 +286,38 @@ questions = [
     explanation_blocks: [text_block.call("イが原文と一致します。データベース管理システムは整合性管理とトランザクション管理などを提供します。トランザクションの特性として，原子性，一貫性，独立性，耐久性を扱います。アはデータベース管理機能とトランザクション特性を混同しています。ウの参照管理・ロック管理・信頼性，エの完全性管理・バックアップ管理・可逆性・永続性は原文の組合せではありません。")],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第2部第2章第8節2（2） | https://www.mext.go.jp/content/1407073_11_1_2.pdf",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムは，昇順に並んだ二つの配列a，bを一つの配列cにまとめるものである。ただし，cには同じ値を重複して格納しない。compare(x, y)は，xとyの大小関係を1回判定し，x < yなら負の値，x = yなら0，x > yなら正の値を返すものとする。プログラム終了時の配列cとcomparisonsの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "code",
+        title: "重複を除いて二つの配列をまとめるプログラム",
+        code: "a = [1, 4, 4, 8, 9]\nb = [2, 4, 7, 9]\nc = 空の配列\ni = 0\nj = 0\ncomparisons = 0\n\n手続 addIfNew(c, value):\n  もし 要素数(c) = 0 または c[要素数(c) - 1] != value なら:\n    c の末尾に value を追加する\n\ni < 要素数(a) かつ j < 要素数(b) の間繰り返す:\n  relation = compare(a[i], b[j])\n  comparisons = comparisons + 1\n\n  もし relation < 0 なら:\n    value = a[i]\n    i = i + 1\n  そうでなく relation > 0 なら:\n    value = b[j]\n    j = j + 1\n  そうでなければ:\n    value = a[i]\n    i = i + 1\n    j = j + 1\n\n  addIfNew(c, value)\n\ni < 要素数(a) の間繰り返す:\n  addIfNew(c, a[i])\n  i = i + 1\n\nj < 要素数(b) の間繰り返す:\n  addIfNew(c, b[j])\n  j = j + 1",
+      },
+    ],
+    choices: [
+      text_choice.call("ア", "c：[1, 2, 4, 7, 8, 9] ／ comparisons：7", true),
+      text_choice.call("イ", "c：[1, 2, 4, 7, 8, 9] ／ comparisons：6"),
+      text_choice.call("ウ", "c：[1, 2, 4, 4, 7, 8, 9] ／ comparisons：7"),
+      text_choice.call("エ", "c：[1, 2, 4, 7, 8, 9, 9] ／ comparisons：8"),
+    ],
+    explanation_blocks: [
+      text_block.call("アが正しい組合せです。compareによる比較は，1と2，4と2，4と4，4と7，8と7，8と9，9と9の7回です。処理する値は順に1，2，4，4，7，8，9ですが，2回目の4は既にcの末尾にあるため追加されません。したがって，cは[1, 2, 4, 7, 8, 9]，comparisonsは7となります。イはcompareの実行回数を1回少なく数えています。ウは2回目の4も追加しており，addIfNewの処理と一致しません。エは最後の9を重複して追加し，比較回数も1回多く数えています。"),
+      {
+        type: "code",
+        title: "比較と配列cの変化",
+        code: "1と2 → 1を追加      c=[1]\n4と2 → 2を追加      c=[1, 2]\n4と4 → 4を追加      c=[1, 2, 4]\n4と7 → 4は追加しない c=[1, 2, 4]\n8と7 → 7を追加      c=[1, 2, 4, 7]\n8と9 → 8を追加      c=[1, 2, 4, 7, 8]\n9と9 → 9を追加      c=[1, 2, 4, 7, 8, 9]",
+      },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習14「応用的なプログラム」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n文部科学省『高等学校学習指導要領（平成30年告示）』第2章第10節第2款第1「情報Ⅰ」2（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18]
-  raise "作成中の模擬試験10には承認済みの問1から問5、問11から問18だけを登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  raise "作成中の模擬試験10には承認済みの問1から問5、問11から問19だけを登録してください"
 end
 
 questions.each do |question|

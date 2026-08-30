@@ -269,10 +269,38 @@ questions = [
     explanation_blocks: [text_block.call("エが原文と一致します。平成21年改訂の2科目からの選択必履修を改め，共通必履修科目として「情報Ⅰ」を設け，その発展的な選択科目として「情報Ⅱ」を設けています。標準単位数はどちらも2単位です。アは③のみ一致し，①・②が異なります。イは①のみ一致し，②を応用的な選択科目，③を4単位としています。ウは②のみ一致します。")],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第1部第1章第2節2「共通教科情報科改訂の要点」 | https://www.mext.go.jp/content/1407073_11_1_2.pdf",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムは，昇順に並んだ配列aから，target以上の値が最初に現れる添字を二分探索によって求めるものである。配列の添字は0から始まり，「//」は小数点以下を切り捨てる整数除算を表す。このプログラムの実行後のpositionとcount，及び同じプログラムを要素数1,024と2,048の昇順配列に適用した場合のwhile文本体の最大実行回数の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "code",
+        title: "二分探索のプログラム",
+        code: "a = [1, 2, 2, 2, 4, 5, 7, 7, 9]\ntarget = 2\nleft = 0\nright = 要素数(a)\ncount = 0\n\nleft < right の間繰り返す:\n  mid = (left + right) // 2\n  count = count + 1\n\n  もし a[mid] < target なら:\n    left = mid + 1\n  そうでなければ:\n    right = mid\n\nposition = left",
+      },
+    ],
+    choices: [
+      text_choice.call("ア", "position：1 ／ count：3 ／ 1,024要素での最大実行回数：10 ／ 2,048要素での最大実行回数：11"),
+      text_choice.call("イ", "position：1 ／ count：4 ／ 1,024要素での最大実行回数：11 ／ 2,048要素での最大実行回数：12", true),
+      text_choice.call("ウ", "position：2 ／ count：4 ／ 1,024要素での最大実行回数：11 ／ 2,048要素での最大実行回数：12"),
+      text_choice.call("エ", "position：1 ／ count：4 ／ 1,024要素での最大実行回数：10 ／ 2,048要素での最大実行回数：20"),
+    ],
+    explanation_blocks: [
+      text_block.call("イが正しい組合せです。探索範囲の上端rightは範囲に含まれません。midとa[mid]を順に追うと，4と4，2と2，1と2，0と1を調べた後にleftとrightがともに1となるため，positionは1，countは4です。この処理はtarget以上の値が最初に現れる位置を求めるので，値2が複数存在しても添字1を返します。探索範囲はおおむね半分ずつになり，while文本体の最大実行回数は1,024要素で11回，2,048要素で12回です。アは固定された配列でのcountと両方の最大実行回数が誤りです。ウは，値2が最初に現れる添字を2としている点が誤りです。エは，要素数を2倍にしたときの最大実行回数を10回から20回としている点が誤りです。"),
+      {
+        type: "code",
+        title: "探索範囲の変化",
+        code: "1回目: left=0, right=9, mid=4, a[mid]=4  → right=4\n2回目: left=0, right=4, mid=2, a[mid]=2  → right=2\n3回目: left=0, right=2, mid=1, a[mid]=2  → right=1\n4回目: left=0, right=1, mid=0, a[mid]=1  → left=1",
+      },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習15「アルゴリズムの比較」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n文部科学省『高等学校学習指導要領（平成30年告示）』第2章第10節第2款第1「情報Ⅰ」2（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18]
-  raise "作成中の模擬試験6には承認済みの問1から問5、問11から問18だけを登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  raise "作成中の模擬試験6には承認済みの問1から問5、問11から問19だけを登録してください"
 end
 
 questions.each do |question|

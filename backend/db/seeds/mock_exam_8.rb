@@ -271,10 +271,38 @@ questions = [
     explanation_blocks: [text_block.call("イが示された内容と一致します。情報セキュリティの啓発は人的セキュリティ対策，不正アクセスや不正プログラムへの対応は技術的セキュリティ対策，入退室管理は物理的セキュリティ対策です。アは，啓発を技術的対策，不正アクセス等への対応を人的対策とする点が逆です。ウは，不正アクセス等への対応を物理的対策，入退室管理を技術的対策とする点が逆です。エは，啓発を物理的対策，入退室管理を人的対策としており，①と③の対応が異なります。")],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第2部第2章第5節2（3） | https://www.mext.go.jp/content/1407073_11_1_2.pdf",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("配列dataの指定された区間の合計を効率よく求めるため，prefix[k]にdata[0]からdata[k-1]までの合計を格納することにした。次のプログラムは，data[2]からdata[5]までの合計を求めるものである。空欄①，②に当てはまる処理の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "code",
+        title: "区間の合計を求めるプログラム",
+        code: "data = [3, 1, 4, 1, 5, 9]\nprefix = [0, 0, 0, 0, 0, 0, 0]\n\ni を 0 から 5 まで1ずつ増やしながら繰り返す:\n  ①\n\nleft = 2\nright = 5\ntotal = ②\n\ntotal を表示する",
+      },
+    ],
+    choices: [
+      text_choice.call("ア", "① prefix[i + 1] = prefix[i] + data[i] ／ ② prefix[right] - prefix[left]"),
+      text_choice.call("イ", "① prefix[i + 1] = prefix[i + 1] + data[i] ／ ② prefix[right + 1] - prefix[left]"),
+      text_choice.call("ウ", "① prefix[i] = prefix[i] + data[i] ／ ② prefix[right + 1] - prefix[left + 1]"),
+      text_choice.call("エ", "① prefix[i + 1] = prefix[i] + data[i] ／ ② prefix[right + 1] - prefix[left]", true),
+    ],
+    explanation_blocks: [
+      text_block.call("エが正しい組合せです。①を実行するとprefixは[0, 3, 4, 8, 9, 14, 23]となります。prefix[6]にはdata[0]からdata[5]までの合計23，prefix[2]にはdata[0]からdata[1]までの合計4が格納されるため，23-4=19と求められます。アはprefix[right]を用いるため，右端のdata[5]が合計に含まれません。イは直前までの合計prefix[i]を引き継いでおらず，累積した値になりません。ウはprefix[k]の定義に合う位置へ値を格納しておらず，減算する位置も一つずれています。エは①で累積値を正しく作り，②で左端より前の合計を差し引いています。"),
+      {
+        type: "code",
+        title: "累積値と計算結果",
+        code: "prefix = [0, 3, 4, 8, 9, 14, 23]\n\ntotal = prefix[6] - prefix[2]\n      = 23 - 4\n      = 19",
+      },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習14「応用的なプログラム」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n文部科学省『高等学校学習指導要領（平成30年告示）』第2章第10節第2款第1「情報Ⅰ」2（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18]
-  raise "作成中の模擬試験8には承認済みの問1から問5、問11から問18だけを登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  raise "作成中の模擬試験8には承認済みの問1から問5、問11から問19だけを登録してください"
 end
 
 questions.each do |question|

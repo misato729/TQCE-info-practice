@@ -279,10 +279,38 @@ questions = [
     explanation_blocks: [text_block.call("ウが原文と一致します。メディアを利用したサービスの社会的価値を捉え，企画，選択，活用をする力を育てます。また，情報セキュリティなどの技術的安全性と，プライバシーや情報倫理などの社会的安全性を意識します。アは，社会的価値を経済的価値，企画・選択・活用を設計・制作・発信とし，技術的・社会的安全性の具体例も原文と異なります。イは，①を公共的役割，②を分析，評価，改善，③を情報の信頼性，④を個人情報の保護とする点が原文と異なります。エは，①を社会的影響，②を企画，運用，管理，③をシステムの安全性，④を情報モラルや職業倫理としています。")],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第2部第2章第11節2（2） | https://www.mext.go.jp/content/1407073_11_1_2.pdf",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムは，縦4マス，横5マスの盤面上で駒を移動させるものである。盤面の0は移動可能なマス，1は障害物を表す。座標は左上を(0, 0)とし，右方向にxが，下方向にyが増加する。全ての命令を処理した後の駒の座標，failed及びvisitedCountの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "code",
+        title: "盤面上を移動するプログラム",
+        code: "board = [\n  [0, 0, 1, 0, 0],\n  [1, 0, 1, 0, 1],\n  [0, 0, 0, 0, 0],\n  [0, 1, 1, 0, 0]\n]\n\ncommands = [右, 下, 右, 下, 下, 右, 上, 右, 下, 左]\nx = 0\ny = 0\nfailed = 0\nvisited の全要素を false にする\nvisited[y][x] = true\nvisitedCount = 1\n\ncommands の各命令 cmd について繰り返す:\n  nx = x\n  ny = y\n\n  cmd が右なら nx = nx + 1\n  cmd が左なら nx = nx - 1\n  cmd が上なら ny = ny - 1\n  cmd が下なら ny = ny + 1\n\n  もし (nx, ny) が盤面の外側なら:\n    failed = failed + 1\n  そうでなく board[ny][nx] = 1 なら:\n    failed = failed + 1\n  そうでなければ:\n    x = nx\n    y = ny\n    もし visited[y][x] = false なら:\n      visited[y][x] = true\n      visitedCount = visitedCount + 1",
+      },
+    ],
+    choices: [
+      text_choice.call("ア", "最終座標：(3, 3) ／ failed：4 ／ visitedCount：7", true),
+      text_choice.call("イ", "最終座標：(3, 3) ／ failed：4 ／ visitedCount：6"),
+      text_choice.call("ウ", "最終座標：(2, 3) ／ failed：3 ／ visitedCount：8"),
+      text_choice.call("エ", "最終座標：(3, 3) ／ failed：3 ／ visitedCount：7"),
+    ],
+    explanation_blocks: [
+      text_block.call("アが正しい組合せです。移動に失敗するのは，3回目の右，5回目の下，7回目の上，10回目の左の4回です。開始位置を含めて訪問した異なるマスは，(0, 0)，(1, 0)，(1, 1)，(1, 2)，(2, 2)，(3, 2)，(3, 3)の7マスです。イは開始位置も訪問済みとして数える必要があるため誤りです。ウは障害物への移動も実行したものとして最終座標などを求めている点が誤りです。エは失敗した移動を1回少なく数えています。"),
+      {
+        type: "code",
+        title: "命令ごとの状態",
+        code: "右 → (1, 0) 成功\n下 → (1, 1) 成功\n右 → (1, 1) 失敗（障害物）\n下 → (1, 2) 成功\n下 → (1, 2) 失敗（障害物）\n右 → (2, 2) 成功\n上 → (2, 2) 失敗（障害物）\n右 → (3, 2) 成功\n下 → (3, 3) 成功\n左 → (3, 3) 失敗（障害物）",
+      },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習13「基本的なプログラム」・学習14「応用的なプログラム」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n文部科学省『高等学校学習指導要領（平成30年告示）』第2章第10節第2款第1「情報Ⅰ」2（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18]
-  raise "作成中の模擬試験9には承認済みの問1から問5、問11から問18だけを登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  raise "作成中の模擬試験9には承認済みの問1から問5、問11から問19だけを登録してください"
 end
 
 questions.each do |question|
