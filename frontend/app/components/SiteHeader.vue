@@ -100,9 +100,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
 <style scoped>
 .site-header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(5, 94, 98, .24); background: var(--aqua); }
 .header-inner {
-  width: min(1180px, calc(100% - 32px));
+  width: 100%;
   height: var(--header-height);
-  margin: 0 auto;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -164,7 +164,7 @@ nav a:hover, nav a.active { background: #dff2f2; color: var(--teal-dark); }
 .slide-enter-from, .slide-leave-to { transform: translateX(100%); }
 
 @media (max-width: 760px) {
-  .header-inner { width: min(100% - 24px, 1180px); }
+  .header-inner { padding: 0 12px; }
   .brand-copy { display: block; }
   .brand-copy strong, .brand-copy small { display: block; }
   .brand-copy small { margin-top: 2px; font-size: 11px; }
