@@ -9,6 +9,11 @@
   mock_exam_8.rb
   mock_exam_9.rb
   mock_exam_10.rb
+  mock_exam_11.rb
+  mock_exam_12.rb
+  mock_exam_13.rb
+  mock_exam_14.rb
+  mock_exam_15.rb
 ].each do |seed_file|
   load Rails.root.join("db/seeds", seed_file).to_s
 end
