@@ -15,6 +15,11 @@
 | `question_choices` | 問題の選択肢と正解情報 |
 | `answer_histories` | ログインユーザーの解答履歴 |
 | `favorites` | ログインユーザーのお気に入り |
+| `question_seed_states` | seedの前回内容と公開状態、管理画面での削除を保持する同期記録 |
+
+### seed同期記録
+
+`question_seed_states` は `exam_number` と `question_number` の組に一意制約を持つ。`seed_digest` は直前に確認したseedの内容ハッシュ、`seed_publication_status` はseed側の公開状態、`deleted` は削除による同期停止フラグである。作成・更新日時を記録する。問題削除後も残す必要があるため `questions` の削除に連動する外部キーは設けない。ハッシュの比較対象は本文・選択肢と正答・解説・出典・分類・問題番号で、公開状態を分離する。
 
 次の機能に対応するテーブルは設けない。
 

@@ -94,6 +94,36 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
     assert_equal "validation_error", response.parsed_body.dig("error", "code")
   end
 
+  test "duplicate labels and empty published questions return validation errors without creating records" do
+    payload = question_payload(exam_number: 2, question_number: 1)
+    payload[:choices].each { |choice| choice[:choice_label] = "ア" }
+    assert_no_difference "Question.count" do
+      post "/api/v1/admin/questions", params: { question: payload }, headers: @headers, as: :json
+      assert_response :unprocessable_content
+    end
+
+    payload = question_payload(exam_number: 2, question_number: 1)
+    payload[:publication_status] = "published"
+    payload[:content_blocks] = [{ type: "fill_in_quote", text: "" }]
+    payload[:explanation_blocks] = [{ type: "text", text: "" }]
+    payload[:source_text] = nil
+    payload[:choices].each { |choice| choice[:content_blocks] = [{ type: "fill_in_choice", cells: [] }] }
+    assert_no_difference "Question.count" do
+      post "/api/v1/admin/questions", params: { question: payload }, headers: @headers, as: :json
+      assert_response :unprocessable_content
+      assert_equal "validation_error", response.parsed_body.dig("error", "code")
+    end
+  end
+
+  test "changing the correct choice through the API removes obsolete histories" do
+    history = @user.answer_histories.create!(question: @question, selected_choice: @question.question_choices.find_by!(is_correct: true), is_correct: true)
+    payload = QuestionPayload.from_record(@question).merge("publication_status" => "draft")
+    payload["choices"].each { |choice| choice["is_correct"] = choice["choice_label"] == "ウ" }
+    patch "/api/v1/admin/questions/#{@question.id}", params: { question: payload }, headers: @headers, as: :json
+    assert_response :success
+    assert_not AnswerHistory.exists?(history.id)
+  end
+
   private
 
   def create_question(exam_number:, question_number:, publication_status: "draft")
@@ -104,7 +134,7 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
       category_code: "education_foundations",
       content_blocks: [{ type: "text", text: "問題文" }],
       explanation_blocks: [{ type: "text", text: "解答解説" }],
-      source_text: "根拠資料",
+      source_text: "根拠資料 | https://example.invalid/source",
       publication_status: publication_status,
     )
     %w[ア イ ウ エ].each_with_index do |label, index|
@@ -126,7 +156,7 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
       category_code: "education_foundations",
       content_blocks: [{ type: "text", text: "新しい問題文" }],
       explanation_blocks: [{ type: "text", text: "新しい解答解説" }],
-      source_text: "根拠資料",
+      source_text: "根拠資料 | https://example.invalid/source",
       publication_status: "draft",
       choices: %w[ア イ ウ エ].each_with_index.map do |label, index|
         {

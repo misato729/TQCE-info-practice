@@ -231,17 +231,17 @@ questions = [
       },
       {
         type: "fill_in_quote",
-        text: "「人間関係形成」，「社会参画」，「自己実現」の三つを視点として整理した。\n\nこれらの三つの視点は，特別活動において育成する資質・能力における重要な要素であり，これらの資質・能力を育成する学習の過程においても重要な意味をもつものである。「人間関係形成」，「社会参画」，「自己実現」の三つの視点が，育成することを目指す資質・能力に関わるものであると同時に，それらを育成する学習の過程においても重要な意味をもつということは，特別活動の学習の方法原理が「{{①}}」ということにある。\n\n「人間関係形成」は，集団の中で，人間関係を{{②}}によりよいものへと形成するという視点である。\n\n「社会参画」はよりよいホームルームや学校生活づくりなど，集団や社会に参画し様々な問題を{{③}}に解決しようとするという視点である。\n\n「自己実現」は，一般的には様々な意味で用いられるが，特別活動においては，集団の中で，{{④}}の自己の生活の課題を発見し，よりよく改善しようとする視点である。",
+        text: "「人間関係形成」は，集団の中で，人間関係を{{①}}によりよいものへと形成するという視点である。人間関係形成に必要な資質・能力は，集団の中において，課題の発見から実践，振り返りなど特別活動の{{②}}を通して，個人と個人あるいは個人と集団という関係性の中で育まれると考えられる。年齢や性別といった{{③}}，考え方や関心，意見の違い等を理解した上で認め合い，{{④}}を生かすような関係をつくることが大切である。",
       },
     ],
     choices: [
-      fill_in_choice.call("ア", ["なすことによって学ぶ", "自発的，自治的", "主体的", "現在及び将来"]),
-      fill_in_choice.call("イ", ["なすことによって学ぶ", "自主的，実践的", "主体的", "現在及び将来"], true),
-      fill_in_choice.call("ウ", ["実践を通して学ぶ", "自主的，実践的", "協働的", "現在及び将来"]),
-      fill_in_choice.call("エ", ["体験によって学ぶ", "自主的，協働的", "自律的", "将来"]),
+      fill_in_choice.call("ア", ["自発的，自治的", "学習過程全体", "個性", "互いのよさ"]),
+      fill_in_choice.call("イ", ["自主的，実践的", "学習過程全体", "属性", "互いのよさ"], true),
+      fill_in_choice.call("ウ", ["自主的，実践的", "合意形成の場面", "個性", "共通の価値観"]),
+      fill_in_choice.call("エ", ["自発的，自治的", "合意形成の場面", "属性", "共通の価値観"]),
     ],
     explanation_blocks: [
-      text_block.call("イが原文と一致します。特別活動の方法原理は「なすことによって学ぶ」です。「人間関係形成」は人間関係を「自主的，実践的」に形成する視点、「社会参画」は問題を「主体的」に解決しようとする視点、「自己実現」は「現在及び将来」の自己の生活の課題を改善しようとする視点です。アの「自発的，自治的」はホームルーム活動（1）や生徒会活動の特質として用いられますが、この箇所の人間関係形成の説明とは一致しません。ウは①・③が原文と異なります。エは四語とも原文の表現と一致しません。"),
+      text_block.call("イが原文と一致します。人間関係を「自主的，実践的」に形成し、その資質・能力は「学習過程全体」を通して育まれます。年齢や性別などの「属性」や意見の違いを認め合い、「互いのよさ」を生かすことが大切です。アは①の「自発的，自治的」と③の「個性」が原文と異なります。ウは②・③・④が異なり、原文は合意形成の場面に限らず学習過程全体を扱い、共通の価値観ではなく互いのよさを生かすとしています。エは①・②・④が原文と異なります。"),
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 特別活動編』第2章第1節1（1）『特別活動における「人間関係形成」，「社会参画」，「自己実現」の視点』 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf",
   },
@@ -484,43 +484,4 @@ questions.each do |question|
   end
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 6,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "published"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験6 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-  end
-end
+QuestionSeedSync.import(exam_number: 6, questions: questions, publication_status: "published")

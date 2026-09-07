@@ -50,7 +50,7 @@ module Api
         end
 
         def destroy
-          @question.destroy!
+          QuestionWriter.destroy!(@question)
           head :no_content
         end
 
@@ -83,17 +83,13 @@ module Api
         def save_question!(question, status:)
           attributes = sanitized_question_attributes
 
-          Question.transaction do
-            question.assign_attributes(attributes.except(:choices))
-            question.save!
-            sync_choices!(question, attributes[:choices])
-          end
+          QuestionWriter.save!(question, attributes)
 
           render json: { data: serialize_question(question.reload) }, status: status
         rescue ActiveRecord::RecordInvalid => error
           render_error(
             :validation_error,
-            "入力内容を確認してください",
+            error.record.errors[:base].join("、").presence || "入力内容を確認してください",
             :unprocessable_content,
             details: error.record.errors.to_hash,
           )
@@ -127,7 +123,7 @@ module Api
           sanitized = choices.each_with_index.map do |choice, index|
             choice = parameter_hash(choice)
             {
-              id: positive_integer(choice[:id], nil),
+              id: choice[:id].present? ? positive_integer(choice[:id], -1) : nil,
               choice_label: choice[:choice_label].to_s,
               content_blocks: sanitize_blocks(choice[:content_blocks], context: :choice),
               is_correct: ActiveModel::Type::Boolean.new.cast(choice[:is_correct]),
@@ -189,23 +185,6 @@ module Api
           when "fill_in_choice"
             { type: type, cells: Array(block[:cells]).map(&:to_s) }
           end
-        end
-
-        def sync_choices!(question, choices)
-          question.question_choices.update_all(is_correct: false)
-          retained_ids = []
-
-          choices.each do |attributes|
-            choice = if attributes[:id]
-              question.question_choices.find_by(id: attributes[:id])
-            end
-            choice ||= question.question_choices.find_or_initialize_by(choice_label: attributes[:choice_label])
-            choice.assign_attributes(attributes.except(:id))
-            choice.save!
-            retained_ids << choice.id
-          end
-
-          question.question_choices.where.not(id: retained_ids).destroy_all
         end
 
         def parameter_hash(value)

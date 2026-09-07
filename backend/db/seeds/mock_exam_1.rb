@@ -46,14 +46,14 @@ questions = [
     ],
     choices: [
       text_choice.call("ア", "シカゴ大学に実験学校を設け、子供の経験と探究を重視する教育を実践した。また、『民主主義と教育』では、教育と民主的社会との関係を論じた。", true),
-      text_choice.call("イ", "幼児の自己活動と遊びを教育の中心に置き、Kindergartenを創設するとともに、教育遊具である恩物を考案した。"),
+      text_choice.call("イ", "幼児の自己活動と遊びを教育の中心に置き、幼稚園を創設するとともに、教育遊具である恩物を考案した。"),
       text_choice.call("ウ", "観念の結合による道徳的品性の形成を教育の目的とし、明瞭・連合・系統・方法という教授段階を中心とする授業を提唱した。"),
       text_choice.call("エ", "感覚教育のための教具を用意し、教師が直接教え込むのではなく、子供が自発的に教具を操作することで知的独立を獲得する教育法を創始した。"),
     ],
     explanation_blocks: [
-      text_block.call("アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。イは誤りです。Kindergartenの創設と恩物の考案はフレーベルの業績です。ウは誤りです。この教授段階はヘルバルト派に対応します。エは誤りです。感覚教育のための教具と自発的な操作を重視した説明は、モンテッソーリの教育法に対応します。"),
+      text_block.call("アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。イは誤りです。幼稚園の創設と恩物の考案はフレーベルの業績です。ウは誤りです。この教授段階はヘルバルト派に対応します。エは誤りです。感覚教育のための教具と自発的な操作を重視した説明は、モンテッソーリの教育法に対応します。"),
     ],
-    source_text: "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\nスペイン教育・職業訓練・スポーツ省教育図書館『Friedrich Froebel (1782-1852)』 | https://www.educacionfpydeportes.gob.es/biblioteca-central/blog/2026/abril/friedrich-froebel.html\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
+    source_text: "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\n白石崇人『資料から考える教育原理』第11章「なぜ幼稚園が作られたのか？―フレーベルの教育思想―」（広島文教女子大学、2017年） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
   },
   {
     question_number: 3,
@@ -494,45 +494,4 @@ unless questions.size == 20 && questions.map { |question| question[:question_num
   raise "模擬試験1は問1から問20までの20問で構成してください"
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 1,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "draft"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験1 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-
-    question.update!(publication_status: "published")
-  end
-end
+QuestionSeedSync.import(exam_number: 1, questions: questions, publication_status: "published")

@@ -86,8 +86,8 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
 
     question.update!(content_blocks: [{ type: "text", text: "変更前の文面" }])
     load_partial_seeds
-    assert_not AnswerHistory.exists?(history.id)
-    assert_includes question.reload.content_blocks.first.fetch("text"), "教育基本法"
+    assert AnswerHistory.exists?(history.id)
+    assert_equal "変更前の文面", question.reload.content_blocks.first.fetch("text")
   end
 
   test "下書き問題を一般向け一覧と問題取得及び回答APIへ公開しない" do

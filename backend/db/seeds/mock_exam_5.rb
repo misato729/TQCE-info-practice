@@ -47,7 +47,7 @@ questions = [
     choices: [
       text_choice.call("ア", "『エミール』において、子供を社会の人為的な悪影響から遠ざけ、発達の自然な順序に従う消極教育を構想した。青年期までは書物による知識の教授を避け、自然と事物から学ばせることを重視した。"),
       text_choice.call("イ", "教育の究極目的を道徳的品性の形成に置き、既有の観念群が新しい観念を取り入れる統覚を教授の中心概念とした。明瞭・連合・系統・方法の形式的段階は、後に五段階教授法へ展開された。"),
-      text_choice.call("ウ", "子供の内にある神的な本質が自己活動によって展開すると捉え、幼児期の遊びを重視した。Kindergartenを創設し、球・立方体などからなる恩物を通して統一・多様・発展を経験させようとした。"),
+      text_choice.call("ウ", "子供の内にある神的な本質が自己活動によって展開すると捉え、幼児期の遊びを重視した。幼稚園を創設し、球・立方体などからなる恩物を通して統一・多様・発展を経験させようとした。"),
       text_choice.call("エ", "『教育に関する考察』を、友人エドワード・クラークへの助言を基に著した。主にジェントリの家庭教育を念頭に、健全な身体と徳性・理性の形成を重視し、子供の個性に応じ、遊びや会話を生かして学ばせ、体罰や機械的な暗記に依存しない教育を説いた。", true),
     ],
     explanation_blocks: [
@@ -109,7 +109,7 @@ questions = [
       },
       {
         type: "fill_in_quote",
-        text: "第24条　公立の小学校等の中堅教諭等〔中略〕の研修実施者は、当該中堅教諭等に対して、個々の{{①}}等に応じて、教育活動その他の{{②}}の円滑かつ効果的な実施において{{③}}を果たすことが期待される中堅教諭等としての職務を遂行する上で必要とされる資質の向上を図るために必要な事項に関する{{④}}を実施しなければならない。",
+        text: "第24条　公立の小学校等の中堅教諭等〔中略〕の研修実施者は、当該中堅教諭等に対して、個々の{{①}}等に応じて、教育活動その他の{{②}}の円滑かつ効果的な実施において{{③}}を果たすことが期待される中堅教諭等としての職務を遂行する上で必要とされる資質の向上を図るために必要な事項に関する{{④}}（次項において「中堅教諭等資質向上研修」という。）を実施しなければならない。",
       },
     ],
     choices: [
@@ -502,45 +502,4 @@ unless correct_label_counts == { "ア" => 5, "イ" => 5, "ウ" => 5, "エ" => 5 
   raise "模擬試験5の正答位置はア・イ・ウ・エを各5問にしてください"
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 5,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "draft"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験5 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-
-    question.update!(publication_status: "published")
-  end
-end
+QuestionSeedSync.import(exam_number: 5, questions: questions, publication_status: "published")

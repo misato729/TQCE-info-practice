@@ -47,13 +47,13 @@ questions = [
     choices: [
       text_choice.call("ア", "社会の人為的な慣習から子供を遠ざけ、発達の自然な順序に従う消極教育を唱えた。『エミール』では、青年期まで家庭教師が一人の子供を導く構想を示し、感覚、理性、道徳性の発達を年齢段階に即して論じた。"),
       text_choice.call("イ", "教育の目的を道徳的品性の形成に置き、既有の観念群が新しい観念を取り入れる統覚を重視した。教授を明瞭、連合、系統、方法の段階として捉える考え方は、後にヘルバルト派によって五段階教授法へ展開された。"),
-      text_choice.call("ウ", "子供の内にある神的な本質が自己活動を通して展開すると捉え、遊びを幼児期の主要な活動に位置付けた。Kindergartenを創設し、球や立方体などからなる恩物を教育遊具として考案した。"),
+      text_choice.call("ウ", "子供の内にある神的な本質が自己活動を通して展開すると捉え、遊びを幼児期の主要な活動に位置付けた。幼稚園を創設し、球や立方体などからなる恩物を教育遊具として考案した。"),
       text_choice.call("エ", "教育を頭・心・手の諸力の調和的発達として捉え、具体物の直観から学ぶ方法を重視した。貧困児の教育に取り組み、イヴェルドンの学園では知的教育と道徳的・実際的教育を結び付けようとした。", true),
     ],
     explanation_blocks: [
-      text_block.call("エが適切です。ペスタロッチは、知的・道徳的・身体的な諸力を調和的に育てる教育を構想し、具体的な事物の直観から出発する教授を重視しました。また、貧困児の教育やイヴェルドンの学園での実践で知られます。アは誤りです。消極教育と『エミール』はルソーに対応します。イは誤りです。統覚、道徳的品性、形式的教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。Kindergartenと恩物、遊びを中心とする幼児教育はフレーベルに対応します。"),
+      text_block.call("エが適切です。ペスタロッチは、知的・道徳的・身体的な諸力を調和的に育てる教育を構想し、具体的な事物の直観から出発する教授を重視しました。また、貧困児の教育やイヴェルドンの学園での実践で知られます。アは誤りです。消極教育と『エミール』はルソーに対応します。イは誤りです。統覚、道徳的品性、形式的教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。幼稚園と恩物、遊びを中心とする幼児教育はフレーベルに対応します。"),
     ],
-    source_text: "Pestalozzi International『Johann Heinrich Pestalozzi's Philosophy of Education』 | https://cms.pestalozzi.international/uploads/documents/Pestalozzi-International_Philosophy-Of-Education.pdf\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』5 Education | https://plato.stanford.edu/entries/rousseau/\nEncyclopaedia Britannica『Johann Friedrich Herbart』 | https://www.britannica.com/biography/Johann-Friedrich-Herbart\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN",
+    source_text: "白石崇人『資料から考える教育原理』第10章「教育方法とは何か？―ペスタロッチーの教育思想―」（広島文教女子大学、2017年） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n玉川学園『玉川豆知識 No.136 小原國芳がペスタロッチ賞を受賞』1 ペスタロッチ | https://www.tamagawa.jp/introduction/tamagawa_trivia/tamagawa_trivia-136.html\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』5 Education | https://plato.stanford.edu/entries/rousseau/\nEncyclopaedia Britannica『Johann Friedrich Herbart』 | https://www.britannica.com/biography/Johann-Friedrich-Herbart\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN",
   },
   {
     question_number: 3,
@@ -69,7 +69,7 @@ questions = [
       text_choice.call("エ", "国公立学校では、幼稚園から大学までの全ての教育について授業料を徴収してはならず、私立学校でも、経済的理由で修学困難な者には一律に授業料を免除しなければならない。"),
     ],
     explanation_blocks: [
-      text_block.call("アが正しい記述です。第4条第1項は能力に応じた教育を受ける機会と列挙事由による差別の禁止を、第2項は障害の状態に応じた十分な教育に必要な支援を定めています。イは経済的地位や門地による差別を容認する点、ウは支援の対象・学校段階を限定し義務を努力義務とする点が誤りです。エも誤りで、第3項が授業料を徴収しないとするのは、国又は地方公共団体が設置する学校における義務教育です。"),
+      text_block.call("アが正しい記述です。第4条第1項は能力に応じた教育を受ける機会と列挙事由による差別の禁止を、第2項は障害の状態に応じた十分な教育に必要な支援を定めています。イは経済的地位や門地による差別を容認する点、ウは支援の対象・学校段階を限定し義務を努力義務とする点が誤りです。エも誤りで、第5条第4項が授業料を徴収しないとするのは、国又は地方公共団体が設置する学校における義務教育です。"),
     ],
     source_text: "e-Gov法令検索『教育基本法』第4条（教育の機会均等） | https://laws.e-gov.go.jp/law/418AC0000000120",
   },
@@ -109,7 +109,7 @@ questions = [
       },
       {
         type: "fill_in_quote",
-        text: "第25条　公立の小学校等の教諭等の{{①}}は、児童、生徒又は幼児（以下「児童等」という。）に対する指導が{{②}}であると認定した教諭等に対して、その能力、適性等に応じて、当該指導の改善を図るために必要な事項に関する{{③}}を実施しなければならない。\n２ 指導改善研修の期間は、{{④}}を超えてはならない。",
+        text: "第25条　公立の小学校等の教諭等の{{①}}は、児童、生徒又は幼児（以下「児童等」という。）に対する指導が{{②}}であると認定した教諭等に対して、その能力、適性等に応じて、当該指導の改善を図るために必要な事項に関する研修（以下この条において「{{③}}」という。）を実施しなければならない。\n２ 指導改善研修の期間は、{{④}}を超えてはならない。ただし、特に必要があると認めるときは、任命権者は、指導改善研修を開始した日から引き続き二年を超えない範囲内で、これを延長することができる。",
       },
     ],
     choices: [
@@ -500,45 +500,4 @@ unless correct_label_counts == { "ア" => 5, "イ" => 5, "ウ" => 5, "エ" => 5 
   raise "模擬試験4の正答位置はア・イ・ウ・エを各5問にしてください"
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 4,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "draft"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験4 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-
-    question.update!(publication_status: "published")
-  end
-end
+QuestionSeedSync.import(exam_number: 4, questions: questions, publication_status: "published")

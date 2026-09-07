@@ -82,7 +82,7 @@ const submit = () => {
 
     <section class="admin-panel">
       <div class="admin-panel-head"><div><h2>根拠資料</h2><p>問題作成時に参考にした出題範囲や資料を入力します。</p></div></div>
-      <div class="admin-panel-body"><div class="admin-field"><label for="source-text">参考にした出題範囲・根拠資料</label><textarea id="source-text" v-model="form.source_text" placeholder="例：高等学校学習指導要領解説 情報編" /></div></div>
+      <div class="admin-panel-body"><div class="admin-field"><label for="source-text">参考にした出題範囲・根拠資料</label><textarea id="source-text" v-model="form.source_text" placeholder="資料名・章節 | https://...（1行につき1出典）" /></div></div>
     </section>
 
     <p v-if="errorMessage" class="admin-inline-error" role="alert">{{ errorMessage }}</p>

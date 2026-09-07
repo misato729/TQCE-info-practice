@@ -492,43 +492,4 @@ questions.each do |question|
   end
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 7,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "published"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験7 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-  end
-end
+QuestionSeedSync.import(exam_number: 7, questions: questions, publication_status: "published")

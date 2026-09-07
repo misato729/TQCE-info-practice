@@ -1,22 +1,25 @@
-%w[
-  mock_exam_1.rb
-  mock_exam_2.rb
-  mock_exam_3.rb
-  mock_exam_4.rb
-  mock_exam_5.rb
-  mock_exam_6.rb
-  mock_exam_7.rb
-  mock_exam_8.rb
-  mock_exam_9.rb
-  mock_exam_10.rb
-  mock_exam_11.rb
-  mock_exam_12.rb
-  mock_exam_13.rb
-  mock_exam_14.rb
-  mock_exam_15.rb
-].each do |seed_file|
-  load Rails.root.join("db/seeds", seed_file).to_s
+seed_entries = QuestionSeedSync.collect do
+  %w[
+    mock_exam_1.rb
+    mock_exam_2.rb
+    mock_exam_3.rb
+    mock_exam_4.rb
+    mock_exam_5.rb
+    mock_exam_6.rb
+    mock_exam_7.rb
+    mock_exam_8.rb
+    mock_exam_9.rb
+    mock_exam_10.rb
+    mock_exam_11.rb
+    mock_exam_12.rb
+    mock_exam_13.rb
+    mock_exam_14.rb
+    mock_exam_15.rb
+  ].each do |seed_file|
+    load Rails.root.join("db/seeds", seed_file).to_s
+  end
 end
+seed_questions = seed_entries.map { |entry| QuestionSeedSync.preview(entry) }
 
 standard_expected_categories = [
   "education_foundations",
@@ -100,7 +103,7 @@ student_guidance_prompt_pattern = /\A次の文章は，『生徒指導提要』 
 reiwa_answer_title = "「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）"
 
 (1..5).each do |exam_number|
-  exam_questions = Question.where(exam_number: exam_number).includes(:question_choices).order(:question_number).to_a
+  exam_questions = seed_questions.select { |q| q.exam_number == exam_number }.sort_by(&:question_number)
 
   unless exam_questions.map(&:question_number) == (1..20).to_a
     raise "模擬試験#{exam_number}は問1から問20までの20問で構成してください"
@@ -267,7 +270,7 @@ reiwa_answer_title = "「『令和の日本型学校教育』の構築を目指�
   end
 end
 
-all_mock_questions = Question.where(exam_number: 1..5).includes(:question_choices).order(:exam_number, :question_number).to_a
+all_mock_questions = seed_questions.select { |q| (1..5).cover?(q.exam_number) }.sort_by { |q| [q.exam_number, q.question_number] }
 
 unless all_mock_questions.count { |question| question.question_number == 3 && question.content_blocks.any? { |block| block["type"] == "fill_in_text" } } == 2
   raise "模擬試験1〜5の問3は穴埋め2問、正誤3問にしてください"
@@ -319,4 +322,9 @@ end
 
 unless all_mock_questions.count { |question| question.question_number == 15 && question.content_blocks.any? { |block| block["type"] == "fill_in_text" } } == 1
   raise "模擬試験1〜5の問15は正誤4問、穴埋め1問にしてください"
+end
+
+# Validate source data above, not admin-edited/deleted records. Apply atomically.
+QuestionWriter.transaction do
+  seed_entries.each { |entry| QuestionSeedSync.call(**entry) }
 end

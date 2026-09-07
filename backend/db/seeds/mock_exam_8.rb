@@ -324,7 +324,7 @@ questions = [
     explanation_blocks: [
       text_block.call("アは適切です。問題箱からの脱出時間が試行とともに徐々に短縮されたことが、試行錯誤学習の根拠となりました。イが適切ではありません。チンパンジーを用いた実験から洞察学習を提唱したのはケーラーです。ソーンダイクの問題解決は、突然の洞察よりも、試行錯誤による漸進的な学習として説明されました。ウは適切です。これは効果の法則の説明であり、後のオペラント条件づけにも影響を与えました。エは適切です。ソーンダイクは刺激と反応との結合を重視し、初期の体系では準備、練習、効果の三法則を示しました。なお、後に練習の法則などには修正を加えています。"),
     ],
-    source_text: "東京大学先端科学技術研究センター講義資料『試行錯誤学習と効果の法則』 | https://www.brain.rcast.u-tokyo.ac.jp/education/class/2015-tsukuba/tsukuba-2.pdf\n日本大学教育学会掲載論文『ソーンダイクの結合主義学習論』 | https://www.jstage.jst.go.jp/article/nihondaigakukyouikugakkai/26/0/26_KJ00009738982/_pdf/-char/ja",
+    source_text: "東京大学先端科学技術研究センター講義資料『行動を指令する４つの基本戦略』ソーンダイク・効果の法則 | https://www.brain.rcast.u-tokyo.ac.jp/education/class/2015-tsukuba/tsukuba-2.pdf\n林義樹『教育工学に関する基礎的研究 第1章：ティーチング・マシーンの創造者 プレッシー』第1節第3項（中村学園研究紀要第22号、58頁） | https://nakamura-u.repo.nii.ac.jp/record/1928/files/KJ00000735210.pdf",
   },
   {
     question_number: 15,
@@ -485,43 +485,4 @@ questions.each do |question|
   end
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 8,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "published"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験8 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-  end
-end
+QuestionSeedSync.import(exam_number: 8, questions: questions, publication_status: "published")

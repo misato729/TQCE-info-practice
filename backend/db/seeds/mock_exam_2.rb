@@ -47,11 +47,11 @@ questions = [
     choices: [
       text_choice.call("ア", "コメニウスは『世界図絵』を著したが、感覚を通じた学習は知性を妨げると考えたため、挿絵を用いず抽象的な定義の暗記だけで言葉を教えた。", true),
       text_choice.call("イ", "ルソーは『エミール』において、大人の価値観や社会の悪影響を性急に子供に押し付けず、子供の自然な発達に即する消極教育を論じた。"),
-      text_choice.call("ウ", "フレーベルは幼児の自己活動と遊びを重視し、子供が自ら操作する教育遊具である恩物を考案するとともに、Kindergartenを創設した。"),
+      text_choice.call("ウ", "フレーベルは幼児の自己活動と遊びを重視し、子供が自ら操作する教育遊具である恩物を考案するとともに、幼稚園を創設した。"),
       text_choice.call("エ", "デューイは『学校と社会』などを通じ、学校を小さな社会と捉え、子供の経験に基づく活動と共同的な問題解決を重視する教育を展開した。"),
     ],
     explanation_blocks: [
-      text_block.call("アが不適切です。『世界図絵』は事物の図とことばを結び付けた絵入り教材であり、挿絵を避けた暗記中心の著作とする説明とは逆です。イは適切で、ルソーの消極教育の説明です。ウは適切で、フレーベルのKindergartenと恩物に対応します。エは適切で、デューイの経験主義的な教育思想を示しています。"),
+      text_block.call("アが不適切です。『世界図絵』は事物の図とことばを結び付けた絵入り教材であり、挿絵を避けた暗記中心の著作とする説明とは逆です。イは適切で、ルソーの消極教育の説明です。ウは適切で、フレーベルの幼稚園と恩物に対応します。エは適切で、デューイの経験主義的な教育思想を示しています。"),
     ],
     source_text: "国立国会図書館国際子ども図書館 Research Navi『コメニウス「世界図絵」』 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』 | https://plato.stanford.edu/entries/rousseau/\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN\nStanford Encyclopedia of Philosophy『John Dewey』5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/",
   },
@@ -439,7 +439,7 @@ questions = [
       text_choice.call("エ", "result = 16、max_depth = 4"),
     ],
     explanation_blocks: [
-      text_block.call("数はスタックに積み、演算子が現れたら後から取り出した値を右辺 y、先に取り出した値を左辺 x として計算します。式の値は 5 + ((1 + 2) × 4) - 3 = 14 です。最初の 5、1、2 を積んだ時点などで要素数が3となり、これを超えないため max_depth は3です。"),
+      text_block.call("数はスタックに積み、演算子が現れたら先に取り出した値を右辺 y、後から取り出した値を左辺 x として計算します。式の値は 5 + ((1 + 2) × 4) - 3 = 14 です。最初の 5、1、2 を積んだ時点などで要素数が3となり、これを超えないため max_depth は3です。"),
       {
         type: "code",
         title: "主なスタックの変化",
@@ -472,46 +472,4 @@ unless questions.size == 20 && questions.map { |question| question[:question_num
   raise "模擬試験2は問1から問20までの20問で構成してください"
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 2,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "draft"))
-    question.save!
-
-    question.question_choices.update_all(is_correct: false)
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験2 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-
-    question.update!(publication_status: "published")
-  end
-end
+QuestionSeedSync.import(exam_number: 2, questions: questions, publication_status: "published")

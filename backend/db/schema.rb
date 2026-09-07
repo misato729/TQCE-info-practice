@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_21_000005) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_07_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,6 +41,17 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_21_000005) do
     t.index ["question_id"], name: "index_question_choices_on_question_id"
     t.index ["question_id"], name: "index_question_choices_one_correct_answer", unique: true, where: "(is_correct = true)"
     t.check_constraint "display_order >= 1 AND display_order <= 4", name: "question_choices_display_order_range"
+  end
+
+  create_table "question_seed_states", force: :cascade do |t|
+    t.integer "exam_number", null: false
+    t.integer "question_number", null: false
+    t.string "seed_digest"
+    t.string "seed_publication_status"
+    t.boolean "deleted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exam_number", "question_number"], name: "index_question_seed_states_on_exam_number_and_question_number", unique: true
   end
 
   create_table "questions", force: :cascade do |t|

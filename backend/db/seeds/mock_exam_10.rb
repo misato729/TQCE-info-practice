@@ -233,17 +233,17 @@ questions = [
       },
       {
         type: "fill_in_quote",
-        text: "特別活動と総合的な探究の時間は，両者とも，各教科・科目等で身に付けた資質・能力を総合的に活用・発揮しながら，生徒が自ら現実の課題の解決に取り組むことを基本原理としている点に，共通性が見られる。体験的な学習を重視すること，協働的な学習を重視することも同様である。自己の生き方についての考えを深める点においても通じるところがある。\n\n両者の目標を比べると，特別活動は「実践」に，総合的な探究の時間は「探究」に本質があると言うことができる。\n\n特別活動の特質である「実践的に取り組む」とは，実生活に生かし，{{①}}を{{②}}するという意味をもっており，他の教科・科目等で学んだことやそれらを横断的・総合的に捉えたことを実生活の中で生かすことができるかという実践の場としての役割を重視している。\n\n特別活動における「解決」は，実生活における，{{③}}を改善することである。総合的な探究の時間における「解決」は，一つの疑問が解決されることにより，更に新たな問いが生まれ，{{④}}に向けて問い続けていくものである。",
+        text: "特別活動と総合的な探究の時間との関連を考えるに当たっては，まず，それぞれの目標や内容を正しく理解しておく必要がある。\n\n両者とも，各教科・科目等で身に付けた{{①}}を総合的に活用・発揮しながら，生徒が自ら現実の課題の解決に取り組むことを基本原理としている点に，共通性が見られる。体験的な学習を重視すること，{{②}}な学習を重視することも同様である。自己の生き方についての考えを深める点においても通じるところがある。\n\n両者の目標を比べると，特別活動は「{{③}}」に，総合的な探究の時間は「{{④}}」に本質があると言うことができる。",
       },
     ],
     choices: [
-      fill_in_choice.call("ア", ["学んだことを学校生活で活用すること", "習得", "集団生活の課題", "唯一の正解"]),
-      fill_in_choice.call("イ", ["学習成果を現在の生活改善に結び付けること", "理解", "解決方法そのもの", "新たな問い"]),
-      fill_in_choice.call("ウ", ["学びが実生活の中で活きること", "体得", "現実の問題そのもの", "物事の本質"], true),
-      fill_in_choice.call("エ", ["教科等の知識を総合的に働かせること", "実感", "自己の生活上の問題", "納得解"]),
+      fill_in_choice.call("ア", ["資質・能力", "個別的", "探究", "実践"]),
+      fill_in_choice.call("イ", ["知識・技能", "協働的", "実践", "探究"]),
+      fill_in_choice.call("ウ", ["資質・能力", "協働的", "実践", "探究"], true),
+      fill_in_choice.call("エ", ["知識・技能", "個別的", "探究", "実践"]),
     ],
     explanation_blocks: [
-      text_block.call("ウが原文と一致します。特別活動の「実践的に取り組む」とは、「学びが実生活の中で活きること」を「体得」することを意味します。また、特別活動の「解決」は「現実の問題そのもの」を改善することを指します。一方、総合的な探究の時間では、疑問の解決から新たな問いを生み、「物事の本質」に向けて問い続けます。アは特別活動の対象を学校生活に限定し、③・④も原文と異なります。イは実践と探究の相違を示す原文の語句に一致しません。エの「実感」「自己の生活上の問題」「納得解」も、この箇所の説明とは異なります。"),
+      text_block.call("ウが原文と一致します。両者に共通するのは「資質・能力」の総合的な活用・発揮と、体験的・「協働的」な学習です。目標を比較すると、特別活動は「実践」、総合的な探究の時間は「探究」に本質があります。アは②が異なり、③と④の対応が逆です。イは①を「知識・技能」に狭めており、原文の「資質・能力」と一致しません。エは①・②が異なり、③と④も逆です。"),
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 特別活動編』第2章第2節4（3）『総合的な探究の時間との関連』 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf",
   },
@@ -505,43 +505,4 @@ questions.each do |question|
   end
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 10,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "published"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験10 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-  end
-end
+QuestionSeedSync.import(exam_number: 10, questions: questions, publication_status: "published")

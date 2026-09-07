@@ -18,34 +18,37 @@ module Api
       end
 
       def answer
-        selected_choice = @question.question_choices.find_by(id: params[:selected_choice_id])
-        unless selected_choice
-          return render_error(
-            :validation_error,
-            "選択肢を確認してください",
-            :unprocessable_content,
-            details: { selected_choice_id: ["この問題の選択肢を指定してください"] },
-          )
-        end
+        @question.with_lock do
+          raise ActiveRecord::RecordNotFound unless @question.publication_status == "published"
+          selected_choice = @question.question_choices.find_by(id: params[:selected_choice_id])
+          unless selected_choice
+            return render_error(
+              :validation_error,
+              "選択肢を確認してください",
+              :unprocessable_content,
+              details: { selected_choice_id: ["この問題の選択肢を指定してください"] },
+            )
+          end
 
-        correct_choice = @question.question_choices.find_by!(is_correct: true)
-        answer_history = current_user&.answer_histories&.create!(
-          question: @question,
-          selected_choice: selected_choice,
-          is_correct: selected_choice.id == correct_choice.id,
-        )
-
-        render json: {
-          data: {
-            question_id: @question.id,
-            selected_choice_id: selected_choice.id,
+          correct_choice = @question.question_choices.find_by!(is_correct: true)
+          answer_history = current_user&.answer_histories&.create!(
+            question: @question,
+            selected_choice: selected_choice,
             is_correct: selected_choice.id == correct_choice.id,
-            correct_choice: serialize_choice(correct_choice),
-            explanation_blocks: @question.explanation_blocks,
-            source_text: @question.source_text,
-            answer_history_id: answer_history&.id,
-          },
-        }
+          )
+
+          render json: {
+            data: {
+              question_id: @question.id,
+              selected_choice_id: selected_choice.id,
+              is_correct: selected_choice.id == correct_choice.id,
+              correct_choice: serialize_choice(correct_choice),
+              explanation_blocks: @question.explanation_blocks,
+              source_text: @question.source_text,
+              answer_history_id: answer_history&.id,
+            },
+          }
+        end
       end
 
       private

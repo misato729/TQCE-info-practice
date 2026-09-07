@@ -48,10 +48,10 @@ questions = [
       text_choice.call("ア", "世界を具体的な事物と絵によって学ばせることを重視し、絵入り教科書『世界図絵』を著すとともに、あらゆる人を対象とする体系的な学校制度を構想した。"),
       text_choice.call("イ", "表象の明瞭化と観念の結合を通して道徳的品性を形成することを教育の目的とし、明瞭・連合・系統・方法からなる教授段階を授業構成の基礎とした。"),
       text_choice.call("ウ", "子供が自ら誤りに気付けるよう工夫された感覚教具と、整えられた環境における自発的活動を重視し、教師を子供の活動を観察する援助者として位置付けた。"),
-      text_choice.call("エ", "子供の内的な力が自己活動を通して発達すると捉え、遊びを幼児教育の中心に置いた。Kindergartenを創設し、子供の活動を導く教育遊具として恩物を考案した。", true),
+      text_choice.call("エ", "子供の内的な力が自己活動を通して発達すると捉え、遊びを幼児教育の中心に置いた。幼稚園を創設し、子供の活動を導く教育遊具として恩物を考案した。", true),
     ],
     explanation_blocks: [
-      text_block.call("アは誤りです。『世界図絵』と体系的な学校制度の構想はコメニウスに対応します。イは誤りです。道徳的品性の形成と教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。自己訂正的な感覚教具と整えられた環境はモンテッソーリ教育の特徴です。エが適切です。フレーベルは自己活動と遊びを重視し、Kindergartenを創設して恩物を考案しました。"),
+      text_block.call("アは誤りです。『世界図絵』と体系的な学校制度の構想はコメニウスに対応します。イは誤りです。道徳的品性の形成と教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。自己訂正的な感覚教具と整えられた環境はモンテッソーリ教育の特徴です。エが適切です。フレーベルは自己活動と遊びを重視し、幼稚園を創設して恩物を考案しました。"),
     ],
     source_text: "Friedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN\n国立国会図書館「コメニウスと『世界図絵』」 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
   },
@@ -481,45 +481,4 @@ unless questions.size == 20 && questions.map { |question| question[:question_num
   raise "模擬試験3は問1から問20までの20問で構成してください"
 end
 
-Question.transaction do
-  questions.each do |attributes|
-    choices = attributes.fetch(:choices)
-    question_attributes = attributes.except(:choices)
-    question = Question.find_or_initialize_by(
-      exam_number: 3,
-      question_number: attributes.fetch(:question_number),
-    )
-
-    content_changed =
-      question.persisted? &&
-        (
-          question.content_blocks != question_attributes.fetch(:content_blocks).as_json ||
-          question.explanation_blocks != question_attributes.fetch(:explanation_blocks).as_json ||
-          question.source_text != question_attributes.fetch(:source_text)
-        )
-    question.answer_histories.destroy_all if content_changed
-
-    question.assign_attributes(question_attributes.merge(publication_status: "draft"))
-    question.save!
-
-    labels = choices.map { |choice| choice.fetch(:label) }
-    question.question_choices.where.not(choice_label: labels).destroy_all
-    question.question_choices.update_all(is_correct: false)
-
-    choices.each_with_index do |choice_attributes, index|
-      choice = question.question_choices.find_or_initialize_by(choice_label: choice_attributes.fetch(:label))
-      choice.assign_attributes(
-        content_blocks: choice_attributes.fetch(:content_blocks),
-        is_correct: choice_attributes.fetch(:correct),
-        display_order: index + 1,
-      )
-      choice.save!
-    end
-
-    unless question.question_choices.count == 4 && question.question_choices.where(is_correct: true).count == 1
-      raise "模擬試験3 問#{question.question_number}の選択肢または正答数が不正です"
-    end
-
-    question.update!(publication_status: "published")
-  end
-end
+QuestionSeedSync.import(exam_number: 3, questions: questions, publication_status: "published")
