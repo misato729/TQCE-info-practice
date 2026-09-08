@@ -32,6 +32,7 @@ Authorization: Bearer <access_token>
 * 一般画面と管理画面は、フロントエンドに保持した同一のアクセストークンを使用する
 * 管理ログインでも一般ログインと同じ `POST /api/v1/auth/login` を使用し、レスポンスの `user.role` が `admin` であることを確認する
 * 本番環境ではHTTPSを必須とする
+* Nuxtのサーバー側ユーザー確認は、設定済みなら非公開の `NUXT_API_BASE_INTERNAL` を接続先に使う。未設定なら公開APIのURLを使う。ブラウザの接続先とBearer認証・管理者権限の検査は変更しない。
 
 Bearerトークン方式は、VercelとFly.ioでフロントエンドとバックエンドのドメインが分かれる構成を想定して採用する。
 

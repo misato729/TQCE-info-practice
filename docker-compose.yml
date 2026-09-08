@@ -5,6 +5,8 @@ services:
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     env_file:
       - .env
+    environment:
+      NUXT_API_BASE_INTERNAL: http://backend:3000
     ports:
       - "3000:3000"
     volumes:

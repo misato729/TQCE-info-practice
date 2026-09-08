@@ -68,7 +68,7 @@ export const useAuth = () => {
 
     try {
       const response = await $fetch<ApiResponse<AuthUser>>('/api/v1/me', {
-        baseURL: config.public.apiBase,
+        baseURL: import.meta.server && config.apiBaseInternal ? config.apiBaseInternal : config.public.apiBase,
         headers: authHeaders.value,
       })
       user.value = response.data

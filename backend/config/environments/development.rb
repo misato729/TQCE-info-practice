@@ -1,4 +1,6 @@
 Rails.application.configure do
+  # Docker Compose service name, used only for server-to-server development requests.
+  config.hosts << "backend"
   config.enable_reloading = true
   config.eager_load = false
   config.consider_all_requests_local = true
