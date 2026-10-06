@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験19（作成中：承認済みの問1〜5）
+# 模擬試験19（承認済みの問1〜15。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -125,15 +125,485 @@ questions = [
     ],
     source_text: "教育公務員特例法・第25条第1項〜第5項 | https://laws.e-gov.go.jp/law/324AC0000000001",
   },
+  {
+    question_number: 6,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（4）生徒が学習の見通しを立てたり学習したことを振り返ったりする活動を，{{①}}に取り入れるように工夫すること。\n\n（5）生徒が生命の有限性や自然の大切さ，主体的に挑戦してみることや多様な他者と協働することの重要性などを{{②}}ことができるよう，{{③}}に応じた体験活動を重視し，{{④}}と連携しつつ体系的・継続的に実施できるよう工夫すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["系統的", "実感しながら理解する", "生徒の興味・関心", "家庭や地域社会"]),
+      fill_in_choice.call("イ", ["計画的", "多面的に考察する", "各教科・科目等の特質", "専門機関や企業"]),
+      fill_in_choice.call("ウ", ["系統的", "多面的に考察する", "生徒の興味・関心", "専門機関や企業"]),
+      fill_in_choice.call("エ", ["計画的", "実感しながら理解する", "各教科・科目等の特質", "家庭や地域社会"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("見通しと振り返りは計画的に取り入れる。体験活動では重要性を実感しながら理解することを目指し，各教科・科目等の特質に応じ，家庭や地域社会と連携して実施する。アは①・③が異なる。イは②・④が異なり，理解の仕方と連携先を置き換えている。ウは四つとも異なる。"),
+    ],
+    source_text: "高等学校学習指導要領・第1章第3款1（4）・（5） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=30",
+  },
+  {
+    question_number: 7,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援 2 特別な配慮を必要とする生徒への指導」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "日本語の修得に困難のある生徒に対して，学校教育法施行規則第86条の２の規定に基づき，{{①}}を編成し，{{②}}に応じた特別の指導（以下「{{③}}」という。）を行う場合には，{{④}}に努め，指導についての計画を個別に作成することなどにより，効果的な指導に努めるものとする。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["特別の教育課程", "日本語の習得の期間", "通級による日本語指導", "学級担任による指導"]),
+      fill_in_choice.call("イ", ["特別の教育課程", "日本語の能力", "通級による日本語指導", "教師間の連携"], true),
+      fill_in_choice.call("ウ", ["特別支援学級の教育課程", "日本語の能力", "通級による指導", "教師間の連携"]),
+      fill_in_choice.call("エ", ["特別支援学級の教育課程", "日本語の習得の期間", "通級による指導", "学級担任による指導"]),
+    ],
+    explanation_blocks: [
+      text_block.call("日本語の能力に応じた特別の教育課程による指導を「通級による日本語指導」といい，教師間の連携や計画の個別作成を図る。アは②・④が異なる。ウは①・③が異なり，特別支援学級の教育課程や，障害に応じた特別の指導を指す「通級による指導」と混同している。エは四つとも異なる。"),
+    ],
+    source_text: "高等学校学習指導要領・第1章第5款2（2）ウ第1段落 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=33",
+  },
+  {
+    question_number: 8,
+    major_category_code: "teacher_education",
+    category_code: "integrated_inquiry",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』の「第9章 総合的な探究の時間の学習指導 第2節 総合的な探究の時間における『主体的・対話的で深い学び』」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「主体的な学び」とは，学習に積極的に取り組ませるだけでなく，学習後に自らの学びの{{①}}を振り返ることを通して，次の学びに主体的に取り組む態度を育む学びである。総合的な探究の時間においては，学習したことをまとめて表現し，そこからまた新たな課題を見付け，更なる問題の解決を始めるといった学習活動を{{②}}に繰り返していく過程を重視してきた。\n\nこうした学習過程の中で生徒が主体的に学んでいく上では，{{③}}が重要となる。課題設定については，生徒が実社会や実生活と自己との関わりから問いを見いだし自分で課題を立てることが大切である。また，学習活動の見通しを明らかにし，{{④}}を鮮明に描くことができるような学習活動の設定を行うことも大切になる。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["成果や達成度", "発展的", "課題設定と振り返り", "学習活動のゴールとそこに至るまでの道筋"]),
+      fill_in_choice.call("イ", ["成果や過程", "段階的", "学習方法の習得と定着", "学習活動の成果を評価する基準"]),
+      fill_in_choice.call("ウ", ["成果や過程", "発展的", "課題設定と振り返り", "学習活動のゴールとそこに至るまでの道筋"], true),
+      fill_in_choice.call("エ", ["成果や達成度", "段階的", "課題設定と振り返り", "学習活動の成果を評価する基準"]),
+    ],
+    explanation_blocks: [
+      text_block.call("成果と過程を振り返り，課題設定と振り返りを通して学習を発展的に繰り返す。見通しとして描くのは活動のゴールと道筋である。アは①が異なる。イは②・③・④が異なる。エは①・②・④が異なる。評価基準の明確化も重要だが，④は評価の基準ではなく，目標とそこまでの学習活動の道筋を指している。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編・第9章第2節1「『主体的な学び』の視点」冒頭2段落、本文120頁 | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=128",
+  },
+  {
+    question_number: 9,
+    major_category_code: "teacher_education",
+    category_code: "moral_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第7款 道徳教育に関する配慮事項」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "道徳教育を進めるに当たっては，{{①}}までの特別の教科である道徳の学習等を通じて深めた，主として{{②}}，人との関わり，{{③}}，{{④}}に関する道徳的諸価値についての理解を基にしながら，様々な体験や思索の機会等を通して，人間としての在り方生き方についての考えを深めるよう留意すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["中学校", "自分自身", "集団や社会との関わり", "生命や自然，崇高なものとの関わり"], true),
+      fill_in_choice.call("イ", ["高等学校", "自分自身", "学校や地域との関わり", "生命や自然，崇高なものとの関わり"]),
+      fill_in_choice.call("ウ", ["中学校", "個性や能力", "集団や社会との関わり", "歴史や文化，宗教との関わり"]),
+      fill_in_choice.call("エ", ["高等学校", "個性や能力", "学校や地域との関わり", "歴史や文化，宗教との関わり"]),
+    ],
+    explanation_blocks: [
+      text_block.call("中学校までに深めた，自分自身，人との関わり，集団や社会との関わり，生命や自然・崇高なものとの関わりという四つの視点に関する理解を基礎とする。イは①・③が異なる。ウは②・④が異なり，原文の視点を別の分類へ置き換えている。エは四つとも異なる。"),
+    ],
+    source_text: "高等学校学習指導要領・第1章第7款2第1文 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=34",
+  },
+  {
+    question_number: 10,
+    major_category_code: "teacher_education",
+    category_code: "special_activities",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 特別活動編』の「第3章 各活動・学校行事の目標と内容 第2節 生徒会活動」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "生徒会活動の指導に当たっては，次の事項についても留意することが大切である。\n\nア　教師の適切な指導の下に，生徒が主体的に考え，判断し，自主的に実践し，さらに活動の結果についても{{①}}し，生徒会活動全体の充実や改善・向上を図ることができるようにすること。このため，生徒会の各組織が活動計画を作成する際には，{{②}}を十分に取り入れるようにすること。\n\nイ　生徒会の組織は，学校や生徒の実態に即して適切に定め，個々の生徒のもつ考えや意見を十分に反映し，学校生活における規律と，望ましい校風を築く活動となるようにすること。なお，生徒会役員選挙等では，{{③}}を生徒自らが主体的に行えるよう工夫し，生徒が{{④}}を高められるような活動が重要である。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["相互に評価", "各ホームルームなどの意見", "選挙管理全般", "生徒会の一員としての自覚"]),
+      fill_in_choice.call("イ", ["自ら評価", "役員や委員長の意見", "候補者の選出", "学校の代表者としての責任感"]),
+      fill_in_choice.call("ウ", ["自ら評価", "役員や委員長の意見", "選挙管理全般", "学校の代表者としての責任感"]),
+      fill_in_choice.call("エ", ["自ら評価", "各ホームルームなどの意見", "選挙管理全般", "生徒会の一員としての自覚"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("生徒自身による評価と，各ホームルームなどの意見を取り入れた改善を重視する。役員選挙では選挙管理全般を主体的に行い，生徒会の一員としての自覚を高める。アは①が異なる。イは②・③・④が異なり，意見を集める範囲，選挙で担う活動，自覚の対象を置き換えている。ウは②・④が異なる。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 特別活動編・第3章第2節4（4）「その他の指導上の留意事項」冒頭及びア・イ、本文84頁 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=92",
+  },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "教育相談の目的は、児童生徒が将来において{{①}}ができるような資質・能力・態度を形成するように働きかけることであり、この点において生徒指導と教育相談は共通しています。ただ、生徒指導は集団や社会の一員として求められる資質や能力を身に付けるように働きかけるという発想が強く、教育相談は{{②}}を援助するという発想が強い傾向があります。\nこの発想の違いから、時には、毅然とした指導を重視すべきなのか、受容的な援助を重視すべきなのかという指導・援助の方法を巡る意見の違いが顕在化することもあります。しかし、教育相談は、{{③}}として位置付けられ、重要な役割を担うものであることを踏まえて、生徒指導と教育相談を一体化させて、全教職員が一致して取組を進めることが必要です。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["社会的な自己実現", "個人の資質や能力の伸長", "生徒指導の一環"],
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["心理的な適応", "個人の資質や能力の伸長", "生徒指導の基盤"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["社会的な自己実現", "集団や社会の一員としての資質や能力の育成", "生徒指導の基盤"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["心理的な適応", "集団や社会の一員としての資質や能力の育成", "生徒指導の一環"],
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "アが原文と一致します。生徒指導と教育相談は、将来の「社会的な自己実現」を支えるという目的が共通しています。教育相談には「個人の資質や能力の伸長」を援助する発想が強い傾向があり、「生徒指導の一環」として、一体的に取り組むことが必要です。",
+      },
+      {
+        type: "text",
+        text: "イ：①・③が異なります。この箇所の共通の目的は「心理的な適応」ではなく「社会的な自己実現」です。また、教育相談の位置付けは「生徒指導の基盤」ではなく「生徒指導の一環」です。",
+      },
+      {
+        type: "text",
+        text: "ウ：②・③が異なります。集団や社会の一員としての資質・能力への働きかけは、ここでは生徒指導に強い発想として示されています。教育相談に強い発想は「個人の資質や能力の伸長」であり、③は「生徒指導の一環」です。",
+      },
+      {
+        type: "text",
+        text: "エ：①・②が異なります。①は「社会的な自己実現」、②は「個人の資質や能力の伸長」です。共通の目的と、それぞれに強い働きかけの発想を区別します。",
+      },
+    ],
+    source_text: "生徒指導提要（令和4年12月）第3章 3.3.1「教育相談の基本的な考え方と活動の体制」・80頁 | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=83",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      {
+        type: "text",
+        text: "言語障害のある生徒の理解及び指導に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "構音障害では，ある音が別の音に置き換わったり，音が省略されたりするなどの特徴がみられる。指導では，発語器官の状態に加え，正しい音と自分の音との違いを聞き分ける力も把握する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "吃音では，同じ音の繰り返し，引き伸ばし，声の出にくさなどがみられる。日や相手，場面，話の内容によって状態が変動することがあるため，様々な状況での発語行動を把握する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "吃音の状態は場面によって変動するため，滑らかに話せる状況を把握する。その状況で吃音の頻度が低ければ，本人が他の場面で話すことへの不安や回避の程度も軽いと捉え，支援を計画する。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "吃音の支援では，話し言葉の状態と，本人が吃音をどのように受け止めているかを把握する。周囲の人の態度にも留意し，受容的な関係の中で楽に話せたと実感できる経験を重ねられるようにする。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切です。構音障害には，置換，省略，ひずみなどがあります。発語器官だけでなく，音を聞き分け，自分の構音と比較する力にも着目します。",
+      },
+      {
+        type: "text",
+        text: "イ：適切です。吃音には繰り返し，引き伸ばし，阻止などがあり，その現れ方には変動があります。一つの状況での発話だけで全体を評価しません。",
+      },
+      {
+        type: "text",
+        text: "ウ：適切ではありません。ある状況で吃音の頻度が低いことから，他の状況への不安や回避が軽いとは判断できません。外から見える状態と，本人の受け止めや心理的な負担をそれぞれ把握する必要があります。",
+      },
+      {
+        type: "text",
+        text: "エ：適切です。吃音への受け止めは，自己肯定感や対人関係にも関わります。本人と周囲の状態を捉え，楽に話せたという経験を重ねる指導が示されています。",
+      },
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅵ「言語障害」1(2)②ア・イ，3(2)②及び3(3)①・②・本文224～227・237～239ページ，分割PDF8～11・21～23ページ | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_10.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "レヴィンの場の理論と，それに基づく青年期の捉え方に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年の行動は，青年本人の特徴と周囲との関係を一つの全体として捉えて理解する。本人の目標や，学校・家庭の状況をどう認知しているかも，行動を規定する条件に含まれる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "生活空間は，ある時点で人の行動を規定する条件を捉える枠組みである。青年が将来の役割に抱いている期待や，自分の過去について抱いている見方も，現在の生活空間に関わる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年期には，子どもの世界から大人の世界へ移る中で，社会的な立場や関わり方が変化する。慣れ親しんだ領域から未知の領域への移行は，青年の緊張や情緒的な不安定さに関係する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "生活空間の環境は，教師や第三者が観察する学校・家庭の客観的な状況によって規定される。青年本人の願望や不安は，生活空間の外側にある内的な要因として行動に影響する。",
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切です。場の理論では，行動を本人と環境との相互関係から捉えます。環境には，本人にとって心理的な意味を持つ周囲の状況も含まれます。",
+      },
+      {
+        type: "text",
+        text: "イ：適切です。過去や未来の出来事そのものではなく，現在の本人がそれらをどう捉えているかが，現在の生活空間と行動に関わります。",
+      },
+      {
+        type: "text",
+        text: "ウ：適切です。レヴィンは青年期を社会的な所属や位置の移行として捉え，未知の領域への移行と情緒的な不安定さとの関係を論じました。",
+      },
+      {
+        type: "text",
+        text: "エ：誤りです。生活空間は第三者が観察する客観的な環境に限定されません。本人にとって心理的な意味を持つ環境や，現在抱いている目標，願望，不安なども含めて行動を理解します。",
+      },
+    ],
+    source_text: "東京大学山内研究室『【気になる研究者】クルト・レヴィン』・『生活空間と場の理論』・本人及び主観的な心理的環境を含む生活空間 | https://fukutake.iii.u-tokyo.ac.jp/ylab/2011/09/post-328.html\n野辺地正之『自我の変化について（三）―脅威に関する考察・その一―』・30～31頁（PDF13～14頁）・『脅威を生じる条件』の青年期の集団所属性の移行，未知の位置，情緒的不安定の説明 | https://doshisha.repo.nii.ac.jp/record/9550/files/j05902.pdf\n三重大学教育心理学研究室『問題と目的』・2『時間的展望』・2『時間的展望』の冒頭・Lewin（1951）の定義と，心理的な過去と未来が現在の生活空間に含まれること | https://educational-psychology.edu.mie-u.ac.jp/thesis/2005/takahashi/mondai.htm",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "長期記憶の代表的な分類に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "意味記憶は，一般的な知識や概念についての記憶である。エピソード記憶は，運動や操作の技能が練習によって身に付くことに関わる記憶であり，両者は宣言的記憶に分類される。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "意味記憶は，一般的な知識や概念についての記憶である。エピソード記憶は，経験した出来事とその時間的・空間的文脈に関わる記憶であり，両者は宣言的記憶に分類される。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "手続き記憶は，技能の習得やその遂行に関わる記憶である。技能を言語で説明できるようになった段階で，その技能を支える記憶は，非宣言的記憶から意味記憶へ分類が移る。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "エピソード記憶は，個人が経験した出来事を文脈とともに思い出すことに関わる。意味記憶では，一般的な知識を，それを初めて学習した日時や場所とともに想起することが成立の条件となる。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：意味記憶と，意味記憶・エピソード記憶が宣言的記憶に分類される点は適切です。技能の習得や遂行に関わるのは手続き記憶であり，エピソード記憶の説明ではありません。",
+      },
+      {
+        type: "text",
+        text: "イ：適切です。意味記憶は一般的知識，エピソード記憶は出来事と時間・場所の文脈に関わります。いずれも，意識的に内容を思い出して述べることに関わる宣言的記憶の代表的な区分です。",
+      },
+      {
+        type: "text",
+        text: "ウ：手続き記憶の説明は適切ですが，技能を説明する宣言的知識と，技能の遂行を支える手続き記憶とは区別されます。言語化できたことによって，手続き記憶自体が意味記憶へ分類し直されるわけではありません。",
+      },
+      {
+        type: "text",
+        text: "エ：エピソード記憶の説明は適切です。意味記憶では，知識の意味や関係が保持されていれば，それを初めて学んだ日時や場所まで思い出す必要はありません。取得時の文脈を伴う出来事の記憶と区別します。",
+      },
+    ],
+    source_text: "北海道大学公開講義『基礎心理学入門』・「意味記憶とエピソード記憶」「顕在記憶と潜在記憶」「その他」・PDF pp.16・18–19 | https://ocw.hokudai.ac.jp/wp-content/uploads/2016/02/Psychology-2009-Note-10.pdf",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）に示された「教職員の姿」に関する説明である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "教員養成，採用，免許制度を含めた方策により，教育界内外から多様な人材を確保する。教師と事務職員がチームの構成員となり，外部人材や専門スタッフは，構成員とは異なる学校外の協力者として整理され，共通の学校教育目標に向けて連携する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "教師，事務職員，外部人材や専門スタッフが専門性を生かし，家庭や地域社会との連携を進める。このチームでは，家庭や地域社会のリーダーシップの下，校長が個々の教職員の組織的・協働的に取り組む力を結び付け，学校を運営する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "教員養成，採用，免許制度も含めた方策により，教育界内外から多様な人材を確保し，教師の資質・能力を高める。教師，事務職員，多様な外部人材や専門スタッフ等がチームとなり，各教職員が組織的・協働的に取り組む力を発揮して，共通の学校教育目標へ向かう。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "教師，事務職員，外部人材や専門スタッフがチームとなり，校長のリーダーシップの下で家庭や地域と連携する。総務・財務等に通じる専門職としての力は，事務職員を含む個々の教職員に共通する基盤的な能力として示されている。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：外部人材や専門スタッフを，この箇所のチームの構成員とは別の協力者として位置付ける点が誤り。原典では，教師・事務職員とともにチームとなる者として挙げられている。教育界内外からの人材確保と共通の学校教育目標に関する部分は適切であり，外部組織との連携や個別の役割分担を否定する説明ではない。",
+      },
+      {
+        type: "text",
+        text: "イ：チームを率いる主体の対応が誤り。答申は，校長のリーダーシップの下，家庭や地域社会と連携しながら運営する姿を示している。各人の専門性や組織的・協働的に取り組む力の活用と，家庭・地域との連携に関する部分は適切である。",
+      },
+      {
+        type: "text",
+        text: "ウ：適切。教育界内外からの多様な人材の確保と教師の資質・能力の向上を併せて進め，異なる専門性を持つ人々がチームとなる。各教職員が組織的・協働的に取り組む力を発揮し，共通の学校教育目標へ向かう姿が示されている。",
+      },
+      {
+        type: "text",
+        text: "エ：専門性を対応させる対象が誤り。答申が総務・財務等に通じる専門職として位置付けているのは事務職員であり，個々の教職員に共通して求めるのは，チームの一員として組織的・協働的に取り組む力である。教師等が財務や総務について学ぶことの可否を問うものではない。",
+      },
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論3（2）「教職員の姿」・本文22ページ（PDF27ページ），第2段落 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=27",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..5).to_a
-  raise "模擬試験19は承認済みの問1〜5を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験19は承認済みの問1〜15を順番に登録してください"
 end
 
 questions.each do |question|
   number = question.fetch(:question_number)
-  expected_category = number <= 2 ? "education_foundations" : "education_system"
+  expected_category = case number
+  when 1, 2 then "education_foundations"
+  when 3, 4, 5 then "education_system"
+  when 6, 7 then "curriculum_organization"
+  when 8 then "integrated_inquiry"
+  when 9 then "moral_education"
+  when 10 then "special_activities"
+  when 11 then "student_guidance_career"
+  when 12 then "special_support_education"
+  when 13, 14 then "educational_psychology"
+  when 15 then "education_system"
+  end
   unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
     raise "模擬試験19 問#{number}の分類が不正です"
   end
@@ -151,14 +621,60 @@ questions.each do |question|
     raise "模擬試験19 問#{number}の出典リンク形式が不正です"
   end
 
-  next unless (3..5).cover?(number)
+  next unless (3..10).cover?(number)
 
   quotes = question.fetch(:content_blocks).select { |block| block[:type] == "fill_in_quote" }
   blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
-  unless question.fetch(:content_blocks).first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
-      quotes.first.fetch(:text).match?(/\A第\d+条/) && blank_labels == %w[① ② ③ ④] &&
+  prompt = question.fetch(:content_blocks).first
+  unless prompt.fetch(:type) == "fill_in_text" && quotes.size == 1 && blank_labels == %w[① ② ③ ④] &&
       choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 }
-    raise "模擬試験19 問#{number}の条番号、空欄または選択肢の対応が不正です"
+    raise "模擬試験19 問#{number}の空欄または選択肢の対応が不正です"
+  end
+  if [4, 5].include?(number) && !quotes.first.fetch(:text).match?(/\A第\d+条/)
+    raise "模擬試験19 問#{number}の条番号がありません"
+  end
+  next unless (6..10).cover?(number)
+
+  expected_heading = {
+    6 => "第1章 総則 第3款 教育課程の実施と学習評価",
+    7 => "第1章 総則 第5款 生徒の発達の支援 2 特別な配慮を必要とする生徒への指導",
+    8 => "第9章 総合的な探究の時間の学習指導 第2節 総合的な探究の時間における『主体的・対話的で深い学び』",
+    9 => "第1章 総則 第7款 道徳教育に関する配慮事項",
+    10 => "第3章 各活動・学校行事の目標と内容 第2節 生徒会活動",
+  }.fetch(number)
+  expected_source = {
+    6 => "第1章第3款",
+    7 => "第1章第5款",
+    8 => "解説 総合的な探究の時間編・第9章第2節",
+    9 => "第1章第7款",
+    10 => "解説 特別活動編・第3章第2節",
+  }.fetch(number)
+  unless prompt.fetch(:text).include?("「#{expected_heading}」からの抜粋である。") &&
+      prompt.fetch(:text).include?("空欄 {{①}} ～ {{④}}") &&
+      question.fetch(:source_text).include?(expected_source)
+    raise "模擬試験19 問#{number}の導入文または出典範囲が不正です"
+  end
+end
+
+questions.select { |question| question.fetch(:question_number) >= 11 }.each do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  unless blocks.any? && question.fetch(:explanation_blocks).any?
+    raise "模擬試験19 問#{number}の問題文または解説が空です"
+  end
+  if number == 11 && !prompt.start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
+    raise "模擬試験19 問11の導入文が不正です"
+  end
+  if number == 15 && !prompt.include?("「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）")
+    raise "模擬試験19 問15の答申名が不正です"
+  end
+  if number == 11 || (19 == 17 && number == 15)
+    blank_labels = blocks.flat_map { |block| block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten }.uniq.sort
+    unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ② ③] &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "模擬試験19 問#{number}の空欄と選択肢の対応が不正です"
+    end
   end
 end
 

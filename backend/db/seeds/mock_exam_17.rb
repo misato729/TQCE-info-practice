@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験17（承認済みの問1〜5。全20問がそろうまでは非公開）
+# 模擬試験17（承認済みの問1〜15。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -146,15 +146,494 @@ questions = [
     ],
     source_text: "教育公務員特例法・第22条の2〜第22条の4 | https://laws.e-gov.go.jp/law/324AC0000000001",
   },
+  {
+    question_number: 6,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "第２款の２の（1）に示す情報活用能力の育成を図るため，各学校において，{{①}}を活用するために{{②}}を整え，これらを適切に活用した{{③}}の充実を図ること。また，各種の統計資料や新聞，視聴覚教材や教育機器などの{{④}}の適切な活用を図ること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["コンピュータや情報通信ネットワークなどの情報手段", "統一された操作手順", "情報科の学習", "教材・教具"]),
+      fill_in_choice.call("イ", ["コンピュータや情報通信ネットワークなどの教材・教具", "必要な環境", "学習活動", "情報手段"]),
+      fill_in_choice.call("ウ", ["コンピュータや情報通信ネットワークなどの情報手段", "必要な環境", "学習活動", "教材・教具"], true),
+      fill_in_choice.call("エ", ["コンピュータや情報通信ネットワークなどの教材・教具", "統一された操作手順", "情報科の学習", "情報手段"]),
+    ],
+    explanation_blocks: [
+      text_block.call("原文では，コンピュータや情報通信ネットワークなどを情報手段とし，必要な環境を整えて学習活動を充実する。統計資料や新聞，視聴覚教材，教育機器などは教材・教具として挙げられる。アは②・③が異なる。イは情報手段と教材・教具の対応が逆である。エは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領（平成30年告示）』第1章第3款1（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=30",
+  },
+  {
+    question_number: 7,
+    major_category_code: "teacher_education",
+    category_code: "career_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援 1 生徒の発達を支える指導の充実」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "生徒が，{{①}}を見通しながら，社会的・職業的自立に向けて必要な基盤となる資質・能力を身に付けていくことができるよう，特別活動を要としつつ{{②}}に応じて，キャリア教育の充実を図ること。その中で，生徒が{{③}}を考え主体的に進路を選択することができるよう，学校の教育活動全体を通じ，組織的かつ計画的な{{④}}を行うこと。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学ぶことと自己の将来とのつながり", "各教科・科目等の特質", "自己の在り方生き方", "進路指導"], true),
+      fill_in_choice.call("イ", ["学ぶことと自己の将来とのつながり", "生徒の進路希望", "自己の在り方生き方", "生徒指導"]),
+      fill_in_choice.call("ウ", ["職業の内容と自己の適性とのつながり", "各教科・科目等の特質", "将来の職業生活", "進路指導"]),
+      fill_in_choice.call("エ", ["職業の内容と自己の適性とのつながり", "生徒の進路希望", "将来の職業生活", "生徒指導"]),
+    ],
+    explanation_blocks: [
+      text_block.call("学ぶことと自己の将来とのつながりを見通すキャリア教育と，自己の在り方生き方を考えて進路を選択するための進路指導を関連付けた規定である。イは②・④が異なる。ウは①・③が異なり，職業の内容と適性，職業生活に範囲を狭めている。エは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領（平成30年告示）』第1章第5款1（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32",
+  },
+  {
+    question_number: 8,
+    major_category_code: "teacher_education",
+    category_code: "integrated_inquiry",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』の「第3章 総合的な探究の時間の目標 第2節 目標の趣旨」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "収集した情報は，{{①}}・{{②}}する。{{①}}は，課題の解決にとってその情報が必要かどうかを判断し取捨選択することや，解決の見通しにしたがって情報を順序よく並べたり，書き直したりすることなどを含む。{{②}}は，{{①}}した情報を基に，比較・分類したりして傾向を読み取ったり，因果関係を見付けたりすることを含む。複数の情報を組み合わせて，{{③}}を創り出すことも重要である。\n\n{{①}}・{{②}}された情報からは，自分自身の意見や考えをまとめて，それを表現する。他者との相互交流や表現による振り返りを通して，{{④}}されたり，新たに調べることを見いだしたり，意見や考えが明らかになったりする。\n\nこれらの各プロセスで発揮される資質・能力の育成が期待されている。それは，探究のプロセスが何度も繰り返される中で確実に育っていくものと考えることができる。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["整理", "評価", "共通する結論", "課題が更新"]),
+      fill_in_choice.call("イ", ["集約", "分析", "新しい関係性", "結論が確定"]),
+      fill_in_choice.call("ウ", ["整理", "分析", "共通する結論", "結論が確定"]),
+      fill_in_choice.call("エ", ["整理", "分析", "新しい関係性", "課題が更新"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("取捨選択や順序付けは整理，傾向や因果関係の把握は分析に当たる。複数の情報から新しい関係性を創り出し，表現や相互交流を通して課題が更新される。アは②・③が異なる。イは①・④が異なり，整理を集約，課題の更新を結論の確定に置き換えている。ウは③・④が異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』第3章第2節2「総合的な探究の時間で育成することを目指す資質・能力」、思考力・判断力・表現力等の説明末尾3段落、本文18頁（PDF26頁） | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=26",
+  },
+  {
+    question_number: 9,
+    major_category_code: "teacher_education",
+    category_code: "moral_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第1款 高等学校教育の基本と教育課程の役割」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "学校における道徳教育は，{{①}}を{{②}}を通じて行うことによりその充実を図るものとし，各教科に属する科目（以下「各教科・科目」という。），総合的な探究の時間及び特別活動（以下「{{③}}」という。）の{{④}}に応じて，適切な指導を行うこと。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["人間としての在り方生き方に関する教育", "学校の教育課程", "各教科・科目等", "学習の系統性"]),
+      fill_in_choice.call("イ", ["人間としての在り方生き方に関する教育", "学校の教育活動全体", "各教科・科目等", "それぞれの特質"], true),
+      fill_in_choice.call("ウ", ["道徳的諸価値に関する教育", "学校の教育活動全体", "各教科・科目", "それぞれの特質"]),
+      fill_in_choice.call("エ", ["道徳的諸価値に関する教育", "学校の教育課程", "各教科・科目", "学習の系統性"]),
+    ],
+    explanation_blocks: [
+      text_block.call("人間としての在り方生き方に関する教育を，学校の教育活動全体を通じて行う。「各教科・科目」は各教科に属する科目，「各教科・科目等」は総合的な探究の時間と特別活動まで含めた呼称である。アは②・④が異なる。ウは①・③が異なり，二つの呼称の範囲も取り違えている。エは四つとも異なる。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』第1章第1款2（2）第1段落（PDF21ページ／冊子19ページ） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=21",
+  },
+  {
+    question_number: 10,
+    major_category_code: "teacher_education",
+    category_code: "special_activities",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第5章 特別活動 第3 指導計画の作成と内容の取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "学校生活への適応や人間関係の形成，教科・科目や進路の選択などについては，主に{{①}}で必要な指導や援助を行う{{②}}と，個々の生徒の多様な実態を踏まえ，一人一人が抱える課題に{{③}}に対応した指導を行う{{④}}（教育相談を含む。）の双方の趣旨を踏まえて指導を行うこと。特に入学当初においては，個々の生徒が学校生活に適応するとともに，希望や目標をもって生活をできるよう工夫すること。あわせて，生徒の家庭との連絡を密にすること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["集団の場面", "カウンセリング", "個別", "ガイダンス"]),
+      fill_in_choice.call("イ", ["個別の場面", "ガイダンス", "組織的", "カウンセリング"]),
+      fill_in_choice.call("ウ", ["集団の場面", "ガイダンス", "個別", "カウンセリング"], true),
+      fill_in_choice.call("エ", ["集団の場面", "ガイダンス", "組織的", "カウンセリング"]),
+    ],
+    explanation_blocks: [
+      text_block.call("集団の場面で必要な指導・援助を行うガイダンスと，一人一人の課題に個別に対応するカウンセリングを区別する。アは②・④が逆である。イは①・③が異なる。エは③が異なり，支援体制を組織的に整えることと，個々の課題に個別に対応することを混同している。"),
+    ],
+    source_text: "『高等学校学習指導要領』第5章第3の2（3）、本文481頁（PDF483頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=483",
+  },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "児童生徒が遵守すべき学習上、生活上の規律として定められる校則は、児童生徒が健全な学校生活を送り、よりよく成長・発達していくために設けられるものです。校則[*40]は、各学校が教育基本法等に沿って教育目標を実現していく過程において、児童生徒の発達段階や学校、地域の状況、時代の変化等を踏まえて、最終的には{{①}}により制定されるものです。\n\n校則の在り方は、特に法令上は規定されていないものの、これまでの判例では、{{②}}と認められる範囲において、教育目標の実現という観点から{{①}}が定めるものとされています。また、学校教育において社会規範の遵守について適切な指導を行うことは重要であり、学校の教育目標に照らして定められる校則は、{{③}}を有するものと考えられます。",
+      },
+      {
+        type: "text",
+        text: "[*40] 「校則」の代わりに、「生活のきまり」、「生徒心得」などと呼ぶ学校もある。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["教育委員会", "社会通念上合理的", "法的拘束力"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["校長", "学校経営上合理的", "法的拘束力"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["教育委員会", "学校経営上合理的", "教育的意義"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["校長", "社会通念上合理的", "教育的意義"],
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "エが原文と一致します。校則は最終的には「校長」により制定され、判例上は「社会通念上合理的」と認められる範囲において定められるものとされています。教育目標との関係から「教育的意義」が説明されています。",
+      },
+      {
+        type: "text",
+        text: "ア：①・③が異なります。最終的な制定主体は「教育委員会」ではなく「校長」です。③の箇所は、校則の法的拘束力ではなく「教育的意義」を述べています。",
+      },
+      {
+        type: "text",
+        text: "イ：②・③が異なります。原典の基準は「社会通念上合理的」であり、学校経営上の合理性に置き換えることはできません。③も「教育的意義」に直します。",
+      },
+      {
+        type: "text",
+        text: "ウ：①・②が異なります。①は「校長」、②は「社会通念上合理的」です。校則の制定主体と、判例上の合理性の基準を取り違えています。",
+      },
+    ],
+    source_text: "文部科学省『生徒指導提要』（令和4年12月）第3章3.6.1（1）「校則の意義・位置付け」、本文101ページ | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=104",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      {
+        type: "text",
+        text: "視覚障害のある生徒の理解に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "視野が周囲から狭くなっている場合には，中心部の見え方を確かめる。中心部で小さな文字を読めることを，横から近づく人や足元の段差を捉える力の指標として，移動時の支援を検討する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "視野が狭くても，中心部の視力が残っていれば小さな文字を読める場合がある。一方で，横から近づくものや段差に気付きにくい場合があるため，読字と移動の困難を区別して把握する。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "視野の中心部が見えにくい場合には，周囲の見え方を確かめる。周囲の状況を捉えて移動できる水準を，文字を読んだり物を詳しく見たりできる水準として，教材の提示方法を検討する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "光覚の障害には，明るさの変化に目が慣れにくい状態がある。明順応障害では暗い場所へ移った後の見え方を，暗順応障害では明るい場所へ移った後の見え方を確かめる。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：中心部で文字を読めることと，周辺から近づく人や段差に気付くことは同じではありません。視野の狭さによって，読字が可能でも移動や周囲の状況把握に困難が生じる場合があります。",
+      },
+      {
+        type: "text",
+        text: "イ：適切です。視力は細部を見分ける力，視野は一度に見える範囲に関わります。中心部の視力が残っている場合の読字能力から，移動に必要な視覚情報も得られると判断することはできません。",
+      },
+      {
+        type: "text",
+        text: "ウ：中心部が見えにくい場合には，周囲の状況を捉えて移動できても，文字や物の細部を見ることに困難が生じる場合があります。移動と読字の状態をそのまま対応させる点が誤りです。",
+      },
+      {
+        type: "text",
+        text: "エ：明順応と暗順応の対応が逆です。暗順応障害では暗い場所に目が慣れにくく，明順応障害では明るい場所に目が慣れにくく，見えにくくなります。",
+      },
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅰ「視覚障害」3(1)②イ及び④イ・ウ・本文82・84ページ，分割PDF23・25ページ | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_05.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "ハヴィガーストが発達課題として整理した項目と，青年期・成人初期という発達段階との対応に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年期には，職業を選択して準備し，行動の指針となる価値や倫理の体系を身に付ける。成人初期には，職業生活を開始し，市民としての責任を引き受けることが課題として位置付けられる。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年期には，結婚と家庭生活の準備をし，市民としての責任を引き受ける。成人初期には，家庭を管理することや，子供を養育することが課題として位置付けられる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年期には，自分の身体を受け入れ，職業を選択して準備する。成人初期には，親や他の大人から情緒的に自立することや，家庭を管理することが課題として位置付けられる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "青年期には，親や他の大人から情緒的に自立し，結婚と家庭生活の準備をする。成人初期には，配偶者を選ぶことや，行動の指針となる価値や倫理の体系を身に付けることが課題として位置付けられる。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切です。職業選択・準備及び価値や倫理の体系の獲得は青年期，職業生活の開始及び市民的責任の引受けは成人初期の課題として整理されています。",
+      },
+      {
+        type: "text",
+        text: "イ：結婚と家庭生活の準備は青年期，家庭の管理及び子供の養育は成人初期の課題です。しかし，市民としての責任を引き受けることは成人初期に位置付けられます。青年期の課題には，社会人として責任ある行動をとることが挙げられています。これは課題の分類上の区別であり，青年が市民的責任を担うことを否定するものではありません。",
+      },
+      {
+        type: "text",
+        text: "ウ：身体の受容及び職業の選択・準備は青年期，家庭の管理は成人初期の課題です。しかし，親や他の大人からの情緒的自立は，成人初期ではなく青年期の課題です。",
+      },
+      {
+        type: "text",
+        text: "エ：親などからの情緒的自立及び結婚と家庭生活の準備は青年期，配偶者の選択は成人初期の課題です。しかし，行動の指針となる価値や倫理の体系を身に付けることは青年期の課題です。",
+      },
+    ],
+    source_text: "琉球大学・望月道浩『令和5年度 第1回 学校司書連絡会 補足資料』・PDF3ページ・スライド5及び6『ハヴィガーストによる発達段階』 | https://www.ok3.edu.u-ryukyu.ac.jp/file/b/bm201.pdf\n向後礼子・豊川輝・神谷直樹『青年期・成人期の発達課題に関する考察―就職及び結婚に関する大学生の意識―』・1頁・表1『ハヴィガーストによる青年期・成人前期の発達課題（1972）』 | https://kindai.repo.nii.ac.jp/record/11312/files/AA12126544-20110226-0001.pdf",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "ワイナーの原因帰属理論における代表的な分類に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。なお，ここでいう努力は，当該課題に費やした努力を指す。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "能力と努力はともに内的な原因に分類される。能力は，その時々の課題によって変わる不安定な原因，努力は，学習者の特性として持続する安定した原因として位置付けられる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "課題の困難度と運はともに外的な原因に分類される。課題の困難度は不安定な原因，運は安定した原因として捉えられ，両者の違いが次の達成に対する期待に関係する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "能力は内的で安定した原因，努力は内的で不安定な原因に分類される。失敗を安定した原因に帰属する場合には，不安定な原因に帰属する場合より，次の成功への期待が低下しやすい。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "原因の所在と安定性は異なる分類軸である。原因の所在は次の達成に対する期待と，安定性は成功した際の誇りなどの感情と，それぞれ主に関連するものとして説明される。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：能力と努力が内的原因である点は適切です。代表的な分類では，能力は安定，当該課題に費やした努力は不安定とされ，安定性の対応が逆になっています。ここでの分類は能力が現実に変化しないという断定ではなく，原因をどう捉えるかに関するものです。",
+      },
+      {
+        type: "text",
+        text: "イ：課題の困難度と運が外的原因である点は適切です。安定性の対応は逆で，課題の困難度が安定，運が不安定とされます。",
+      },
+      {
+        type: "text",
+        text: "ウ：適切です。能力と努力の所在・安定性の分類が正しく，安定性が今後の結果への期待に関わることを示しています。努力の改善可能性や，能力を可変的に捉えるかなどによっても反応は異なり，個人差があります。",
+      },
+      {
+        type: "text",
+        text: "エ：二つの分類軸を区別する前半は適切です。代表的な説明では，次の成功や失敗への期待に主に関係するのは安定性です。原因の所在は，成功を自分に帰属した場合の誇りなど，自尊感情に関わる反応と結び付けられます。",
+      },
+    ],
+    source_text: "小林和久『因果帰属の方向性と学習遂行との関連について』・表1「ワイナーの帰属理論」及び原因帰属と期待・本文pp.52–54，PDF pp.2–4 | https://shobi-u.repo.nii.ac.jp/record/105/files/KJ00005552459.pdf",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅰ部 総論 4 『令和の日本型学校教育』の構築に向けた今後の方向性」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "家庭の経済状況や地域差，本人の特性等にかかわらず，全ての子供たちの知・徳・体を一体的に育むため，これまで日本型学校教育が果たしてきた，①学習機会と学力の保障，②社会の形成者としての全人的な発達・成長の保障，③安全・安心な居場所・セーフティネットとしての身体的，精神的な健康の保障，という３つの保障を学校教育の{{①}}として重視し，これを継承していくことが必要である。\n\nその上で，「令和の日本型学校教育」を，社会構造の変化や感染症・災害等をも乗り越えて発展するものとし，「全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学び」を実現するためには，今後，以下の方向性で改革を進める必要がある。\n\nその際，学校現場に対して新しい業務を次から次へと付加するという姿勢であってはならない。学校現場が力を存分に発揮できるよう，学校や教師がすべき業務・役割・指導の範囲・内容・量を，{{②}}するとともに，教職員定数，専門スタッフの拡充等の人的資源，ICT環境や学校施設の整備等の物的資源を十分に供給・支援することが，{{③}}に求められる役割である。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["本質的な役割", "拡充・再編・専門化", "学校の設置者"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["制度上の要件", "精選・縮減・重点化", "学校の設置者"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["制度上の要件", "拡充・再編・専門化", "国"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["本質的な役割", "精選・縮減・重点化", "国"],
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①は原文と一致しますが，②は「精選・縮減・重点化」，③は「国」です。学校現場に新たな業務を次々と付加するのではなく，担う範囲・内容・量を見直し，人的・物的資源を供給・支援する国の役割が示されています。",
+      },
+      {
+        type: "text",
+        text: "イ：②は一致しますが，①は「本質的な役割」，③は「国」です。三つの保障は，学校教育が果たしてきた本質的な役割として重視し，継承すべきものと位置付けられています。",
+      },
+      {
+        type: "text",
+        text: "ウ：③は一致しますが，①と②が異なります。学校教育の本質的な役割である三つの保障を継承しながら，業務・役割・指導の範囲・内容・量を精選・縮減・重点化するという原文の関係を押さえます。",
+      },
+      {
+        type: "text",
+        text: "エ：三つとも原文と一致します。三つの保障を継承することと，改革の実現を学校現場の業務の追加で進めることとは同じではありません。業務の精選等と，国による人的・物的資源の供給・支援を合わせて求めています。",
+      },
+    ],
+    source_text: "中央教育審議会『令和の日本型学校教育』答申・第Ⅰ部 総論4「構築に向けた今後の方向性」冒頭第1～第3段落・本文23頁 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=28",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..5).to_a
-  raise "模擬試験17は承認済みの問1〜5を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験17は承認済みの問1〜15を順番に登録してください"
 end
 
 questions.each do |question|
   number = question.fetch(:question_number)
-  expected_category = number <= 2 ? "education_foundations" : "education_system"
+  expected_category = case number
+  when 1, 2 then "education_foundations"
+  when 3, 4, 5 then "education_system"
+  when 6 then "curriculum_organization"
+  when 7 then "career_education"
+  when 8 then "integrated_inquiry"
+  when 9 then "moral_education"
+  when 10 then "special_activities"
+  when 11 then "student_guidance_career"
+  when 12 then "special_support_education"
+  when 13, 14 then "educational_psychology"
+  when 15 then "education_system"
+  end
   unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
     raise "模擬試験17 問#{number}の分類が不正です"
   end
@@ -170,17 +649,60 @@ questions.each do |question|
   end
 
   quotes = question.fetch(:content_blocks).select { |block| block[:type] == "fill_in_quote" }
-  if quotes.any?
+  if quotes.any? && number <= 10
     blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
-    unless question.fetch(:content_blocks).first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ② ③ ④] &&
-        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first[:cells].size == 4 }
+    expected_blank_labels = %w[① ② ③ ④]
+    unless question.fetch(:content_blocks).first.fetch(:type) == "fill_in_text" && blank_labels == expected_blank_labels &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first[:cells].size == blank_labels.size }
       raise "模擬試験17 問#{number}の空欄と選択肢の対応が不正です"
     end
-    unless quotes.first.fetch(:text).match?(/\A第\d+条/)
+    if [4, 5].include?(number) && !quotes.first.fetch(:text).match?(/\A第\d+条/)
       raise "模擬試験17 問#{number}は抜粋枠の冒頭に条番号を表示してください"
     end
-  elsif [3, 4, 5].include?(number)
-    raise "模擬試験17 問#{number}は条文の原文穴埋め問題にしてください"
+  elsif [3, 4, 5, 6, 7, 8, 9, 10].include?(number)
+    raise "模擬試験17 問#{number}は原文穴埋め問題にしてください"
+  end
+
+  if (6..10).cover?(number)
+    prompt = question.fetch(:content_blocks).first.fetch(:text)
+    source = question.fetch(:source_text)
+    expected_sections = {
+      6 => ["第1章 総則 第3款 教育課程の実施と学習評価", "第1章第3款"],
+      7 => ["第1章 総則 第5款 生徒の発達の支援", "第1章第5款"],
+      8 => ["解説 総合的な探究の時間編", "第3章第2節"],
+      9 => ["第1章 総則 第1款 高等学校教育の基本と教育課程の役割", "第1章第1款2"],
+      10 => ["第5章 特別活動", "第5章第3"],
+    }
+    prompt_section, source_section = expected_sections.fetch(number)
+    unless prompt.start_with?("次の文章は，") && prompt.include?("からの抜粋である。") &&
+        prompt.include?("空欄 {{①}} ～ {{#{blank_labels.last}}}") &&
+        prompt.include?(prompt_section) && source.include?(source_section) &&
+        source.match?(/https:\/\/www\.mext\.go\.jp\/content\/\S+\.pdf#page=\d+\z/) &&
+        quotes.size == 1
+      raise "模擬試験17 問#{number}の導入文または抜粋元が不正です"
+    end
+  end
+end
+
+questions.select { |question| question.fetch(:question_number) >= 11 }.each do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  unless blocks.any? && question.fetch(:explanation_blocks).any?
+    raise "模擬試験17 問#{number}の問題文または解説が空です"
+  end
+  if number == 11 && !prompt.start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
+    raise "模擬試験17 問11の導入文が不正です"
+  end
+  if number == 15 && !prompt.include?("「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）")
+    raise "模擬試験17 問15の答申名が不正です"
+  end
+  if number == 11 || (17 == 17 && number == 15)
+    blank_labels = blocks.flat_map { |block| block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten }.uniq.sort
+    unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ② ③] &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "模擬試験17 問#{number}の空欄と選択肢の対応が不正です"
+    end
   end
 end
 

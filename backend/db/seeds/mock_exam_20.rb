@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験20（承認済みの問1〜5。全20問がそろうまでは非公開）
+# 模擬試験20（承認済みの問1〜15。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -141,15 +141,502 @@ questions = [
     ],
     source_text: "教育公務員特例法・第24条 | https://laws.e-gov.go.jp/law/324AC0000000001",
   },
+  {
+    question_number: 6,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "特に，各教科・科目等において身に付けた知識及び技能を活用したり，思考力，判断力，表現力等や学びに向かう力，人間性等を発揮させたりして，{{①}}を捉え思考することにより，{{②}}に応じた物事を捉える視点や考え方（以下「{{③}}」という。）が鍛えられていくことに留意し，生徒が{{②}}に応じた{{③}}を働かせながら，知識を相互に関連付けてより深く理解したり，情報を精査して考えを形成したり，問題を見いだして解決策を考えたり，思いや考えを基に{{④}}したりすることに向かう過程を重視した学習の充実を図ること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学習の対象となる物事", "各教科・科目等の特質", "見方・考え方", "創造"], true),
+      fill_in_choice.call("イ", ["学習の成果や到達状況", "各教科・科目等の特質", "学習方略", "創造"]),
+      fill_in_choice.call("ウ", ["学習の対象となる物事", "生徒の興味・関心", "見方・考え方", "再構成"]),
+      fill_in_choice.call("エ", ["学習の成果や到達状況", "生徒の興味・関心", "学習方略", "再構成"]),
+    ],
+    explanation_blocks: [
+      text_block.call("学習の対象となる物事を捉え思考することで，各教科・科目等の特質に応じた見方・考え方が鍛えられる。知識の関連付け，考えの形成，問題解決，創造に向かう過程を重視する。イは①・③が異なり，学習成果の把握や学習方略に置き換えている。ウは②・④が異なる。エは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領』第1章第3款1（1）第2段落 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=30",
+  },
+  {
+    question_number: 7,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援 1 生徒の発達を支える指導の充実」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（4）{{①}}を通じて，個々の生徒の特性等の的確な把握に努め，その伸長を図ること。また，生徒が適切な各教科・科目や類型を選択し学校やホームルームでの生活によりよく適応するとともに，{{②}}の生き方を考え行動する態度や能力を育成することができるようにすること。\n\n（5）生徒が，基礎的・基本的な知識及び技能の習得も含め，学習内容を確実に身に付けることができるよう，生徒や学校の実態に応じ，個別学習やグループ別学習，繰り返し学習，学習内容の習熟の程度に応じた学習，{{③}}に応じた課題学習，補充的な学習や発展的な学習などの学習活動を取り入れることや，教師間の協力による指導体制を確保することなど，指導方法や指導体制の工夫改善により，{{④}}の充実を図ること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学校の教育活動全体", "卒業後", "生徒の進路希望等", "個に応じた指導"]),
+      fill_in_choice.call("イ", ["総合的な探究の時間", "現在及び将来", "生徒の興味・関心等", "習熟度別指導"]),
+      fill_in_choice.call("ウ", ["総合的な探究の時間", "卒業後", "生徒の進路希望等", "習熟度別指導"]),
+      fill_in_choice.call("エ", ["学校の教育活動全体", "現在及び将来", "生徒の興味・関心等", "個に応じた指導"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("特性の把握と伸長は学校の教育活動全体を通じて行い，現在及び将来の生き方を考える態度や能力を育てる。興味・関心等に応じた課題学習などを取り入れ，個に応じた指導を充実する。アは②・③が異なる。イは①・④が異なり，活動範囲を総合的な探究の時間に狭め，個に応じた指導を習熟度別指導に置き換えている。ウは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領』第1章第5款1（4）・（5）第1文 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32",
+  },
+  {
+    question_number: 8,
+    major_category_code: "teacher_education",
+    category_code: "integrated_inquiry",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』の「第3章 総合的な探究の時間の目標 第2節 目標の趣旨」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "総合的な探究の時間で育成することを目指す資質・能力は，{{①}}を考えながら，よりよく課題を発見し解決していくための資質・能力である。こうした資質・能力を育むためには，{{①}}と{{②}}な課題を自ら発見し，よりよい解決に向けて主体的に取り組むことが重要である。他方，複雑な現代社会においては，いかなる問題についても，一人だけの力で何かを成し遂げることは困難である。これが協働的に探究を進めることが求められる理由である。例えば，他の生徒と協働的に取り組むことで，学習活動が発展したり課題への意識が高まったりする。{{③}}があることで解決への糸口もつかみやすくなる。また，他者と協働的に学習する態度を育てることが求められている。この協働は，単に協力して事に当たるという意味ではなく，それぞれのよさを生かしながら{{④}}を生み出すことを意味している。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["自己の在り方生き方", "相互に補完的", "共通する見方", "個人ではつくりだすことができない価値"]),
+      fill_in_choice.call("イ", ["自己の在り方生き方", "一体的で不可分", "異なる見方", "個人ではつくりだすことができない価値"], true),
+      fill_in_choice.call("ウ", ["自己の進路や職業", "一体的で不可分", "異なる見方", "合意した計画に沿って達成される成果"]),
+      fill_in_choice.call("エ", ["自己の進路や職業", "相互に補完的", "共通する見方", "合意した計画に沿って達成される成果"]),
+    ],
+    explanation_blocks: [
+      text_block.call("探究の課題は自己の在り方生き方と一体的で不可分であり，協働では異なる見方や互いのよさを生かして，個人ではつくりだせない価値を生む。アは②・③が異なる。ウは①・④が異なり，在り方生き方を進路や職業に狭め，協働の意義を計画に沿った成果へ置き換えている。エは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』第3章第2節2、学びに向かう力・人間性等の説明中「総合的な探究の時間で育成することを目指す資質・能力は」で始まる段落、本文19頁 | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=27",
+  },
+  {
+    question_number: 9,
+    major_category_code: "teacher_education",
+    category_code: "moral_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第1款 高等学校教育の基本と教育課程の役割」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "道徳教育は，教育基本法及び学校教育法に定められた教育の根本精神に基づき，生徒が{{①}}に努め国家・社会の一員としての自覚に基づき行為しうる発達の段階にあることを考慮し，{{②}}を考え，主体的な判断の下に行動し，{{③}}として{{④}}ための基盤となる道徳性を養うことを目標とすること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["自己探求と自己実現", "社会の形成者としての責任", "自立した人間", "社会の一員として役割を果たす"]),
+      fill_in_choice.call("イ", ["自己理解と社会参加", "人間としての在り方生き方", "責任ある社会人", "他者と共によりよく生きる"]),
+      fill_in_choice.call("ウ", ["自己探求と自己実現", "人間としての在り方生き方", "自立した人間", "他者と共によりよく生きる"], true),
+      fill_in_choice.call("エ", ["自己理解と社会参加", "社会の形成者としての責任", "責任ある社会人", "社会の一員として役割を果たす"]),
+    ],
+    explanation_blocks: [
+      text_block.call("自己探求と自己実現に努める発達の段階を考慮し，人間としての在り方生き方を考え，自立した人間として他者と共によりよく生きるための道徳性を養う。アは②・④が異なる。イは①・③が異なり，自己探求・自己実現と自立した人間という語句を置き換えている。エは四つとも異なる。"),
+    ],
+    source_text: "『高等学校学習指導要領』第1章第1款2（2）第2段落 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=21",
+  },
+  {
+    question_number: 10,
+    major_category_code: "teacher_education",
+    category_code: "special_activities",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第5章 特別活動 第3 指導計画の作成と内容の取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "特別活動の各活動及び学校行事を見通して，その中で育む{{①}}の育成に向けて，生徒の主体的・対話的で深い学びの実現を図るようにすること。その際，よりよい人間関係の形成，よりよい集団生活の構築や社会への参画及び自己実現に資するよう，生徒が{{②}}としての見方・考え方を働かせ，様々な集団活動に自主的，実践的に取り組む中で，互いのよさや個性，{{③}}を認め合い，等しく{{④}}に関わり役割を担うようにすることを重視すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["資質・能力", "集団や社会の形成者", "多様な考え", "合意形成"], true),
+      fill_in_choice.call("イ", ["各教科等の知識及び技能", "集団や社会の形成者", "個別の目標", "意思決定"]),
+      fill_in_choice.call("ウ", ["資質・能力", "持続可能な社会の担い手", "多様な考え", "合意形成"]),
+      fill_in_choice.call("エ", ["資質・能力", "集団や社会の形成者", "個別の目標", "意思決定"]),
+    ],
+    explanation_blocks: [
+      text_block.call("資質・能力の育成を見通し，集団や社会の形成者としての見方・考え方を働かせ，多様な考えを認め合って合意形成に関わる。イは①・③・④が異なる。ウは②が異なり，特別活動固有の見方・考え方の主体を置き換えている。エは③・④が異なり，集団としての合意形成と個人の意思決定を混同している。"),
+    ],
+    source_text: "『高等学校学習指導要領』第5章第3の1（1） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=483",
+  },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。また，下の表は，同書の図13「児童虐待への対応における役割」の一部を表に整理したものである。図13に示される職名と役割の対応を踏まえ，表中の空欄 {{①}}，{{②}}，{{③}} に当てはまる職名の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "quote",
+        text: "関係機関との連携を効果的なものにするためには、校内のチーム体制の充実が不可欠です。児童生徒の見守りと、状況の変化への対応、保護者への対応など学校が組織として取り組むべきことが多く、そのため図13のような、学校配置の専門職も交えた体制を確立することが有効です。\n\nまた、児童虐待の再発や虐待の影響から生じる様々な課題については、予防も含めた有効な対応をとるため、学校内及び関係機関を交えた丁寧なアセスメントにより、常に適切な支援を行うことが求められます。",
+      },
+      {
+        type: "text",
+        text: "原図中のSSWはスクールソーシャルワーカー，SCはスクールカウンセラーを指す。選択肢では職名を日本語で表している。",
+      },
+      {
+        type: "table",
+        headers: ["職名", "通常時", "通告時，通告後"],
+        rows: [
+          ["【①】", "校内体制整備状況への助言\n関係機関との連携体制について助言", "保護者との調整\n関係機関との連携"],
+          ["【②】", "虐待に関する校内研修等の実施\n学級・ホームルーム担任等からの情報の収集・集約", "関係機関との連携（特に警察）"],
+          ["【③】", "教育相談", "幼児児童生徒の心のケア\nカウンセリング"],
+        ],
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["養護教諭", "生徒指導主事", "学校医"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["スクールソーシャルワーカー", "学級・ホームルーム担任", "学校医"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["養護教諭", "学級・ホームルーム担任", "スクールカウンセラー"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["スクールソーシャルワーカー", "生徒指導主事", "スクールカウンセラー"],
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "エが図13の対応と一致します。①はスクールソーシャルワーカー（SSW）、②は生徒指導主事、③はスクールカウンセラー（SC）です。",
+      },
+      {
+        type: "text",
+        text: "ア：①・③が異なります。図13で養護教諭の通常時の役割は、健康相談・健康診断・救急処置等における早期発見です。①は校内体制や関係機関との連携体制に助言するSSWに対応します。また、学校医・学校歯科医には健康診断等における早期発見・早期対応や専門的な指導助言が示され、③の教育相談・カウンセリングの欄はSCに対応します。",
+      },
+      {
+        type: "text",
+        text: "イ：②・③が異なります。学級・ホームルーム担任には、日常的な子供・保護者の観察・把握や相談窓口の案内・周知等が示されています。②の校内研修や担任等からの情報の収集・集約は生徒指導主事、③はSCに対応します。",
+      },
+      {
+        type: "text",
+        text: "ウ：①・②が異なります。①はSSW、②は生徒指導主事です。養護教諭や担任にも重要な役割がありますが、提示した図13の各欄との対応が異なります。",
+      },
+      {
+        type: "text",
+        text: "これは原図における役割の整理を問うものであり、各職種の業務が排他的に限定されるという意味ではありません。",
+      },
+    ],
+    source_text: "『生徒指導提要』第7章7.6.1「虐待対応に関する校内体制とアセスメント」、図13「児童虐待への対応における役割」（本文183～184ページ） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=186",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次の①～④は，自閉症スペクトラム障害（ASD）のある生徒の理解及び指導に関する記述である。適切なものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\n① 興味のある一部分に注意が集中し，活動の全体像を把握しにくいことがある。手順などを視覚的に示し，順序に沿って全体を捉えられるようにすることが考えられる。\n② 経験した活動の手順を正確に記憶している場合には，その記憶の正確さを，別の場面でも状況に応じて行動できる水準として評価する。\n③ 構造化によって，課題で何を行い，どのように進めるかを理解しやすくする。予測できる手順を示すことは，見通しがもてないために生じる不安の軽減にもつながる。\n④ 話の中の特定の単語に注意が集中することは，その音を不快に感じる聴覚過敏の状態を示す。会話の全体的な意味を捉えにくい場合には，音量の調整を中心として支援を組み立てる。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "①・②",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "②・④",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "①・③",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "③・④",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：②が誤りです。経験した手順を覚えていることと，それを別の場面の状況に結び付けて行動できることは同じではありません。場に応じた行動の仕方の指導が必要な場合があります。①は適切です。",
+      },
+      {
+        type: "text",
+        text: "イ：②・④が誤りです。②は手順の記憶と場面を越えた行動を混同しています。④の，特定の単語などに注意が集まり，他の情報に注意が向きにくい状態は刺激の過剰選択性に関わり，その音を不快に感じる聴覚過敏とは区別します。",
+      },
+      {
+        type: "text",
+        text: "ウ：適切です。①は全体像を捉えるための支援，③は構造化の目的と効果を説明しています。構造化は，課題の内容や遂行の手順を理解しやすくし，見通しを支えるために用います。",
+      },
+      {
+        type: "text",
+        text: "エ：④が誤りです。特定の語への注意集中や，全体的な文脈の処理の困難を，音の不快さとして判断することはできません。情報の整理・統合や，全体の関係を捉えるための支援も検討します。③は適切です。",
+      },
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅶ「自閉症」1(2)②ウ・カ，3(3)⑤及び3(4)・本文250～251・261ページ，分割PDF8～9・19ページ | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_11.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "ヴィゴツキーの発達理論における言語の働きと，思考の発達に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "他者とのやり取りに用いられる外言が内化され，思考や行動を調整する内言へと発達する。自分に向けた独り言である自己中心的言語は，この移行を考える上で重要な働きを持つ。",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "言語は，他者との関係で用いられる機能を，自分の思考や行動を調整する機能へと変化させていく。他者との伝達に用いる言語を内言，自分の思考に用いる言語を外言と呼ぶ。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "自己中心的言語は，独り言の形を取りながら自分の行動を調整する。発達に伴って音声として聞かれる程度が減るのは，思考を調整する機能も弱まり，この言語が消失するためである。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "内言は心の中で思考を進める言語であり，外言は他者との伝達に用いる言語である。この発達は，まず個人の内面に成立した思考の働きが，他者とのやり取りへと展開する過程として説明される。",
+          },
+        ],
+        correct: false,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切です。ヴィゴツキーは，社会的なやり取りで用いられる言語が内化され，個人の思考や行動を調整する働きになると考えました。自己中心的言語を，外言から内言への移行に関わるものとして捉えます。",
+      },
+      {
+        type: "text",
+        text: "イ：発達の方向の説明は適切ですが，外言と内言の名称が逆です。他者との伝達に用いられるのが外言，心の中で思考を進めるのが内言です。",
+      },
+      {
+        type: "text",
+        text: "ウ：自己中心的言語の機能の説明は適切です。しかし，音声として聞かれにくくなることを機能の消失とみなす部分が誤りです。ヴィゴツキーは，これを内言への移行として捉えました。",
+      },
+      {
+        type: "text",
+        text: "エ：外言と内言の定義は適切です。しかし，発達の方向が逆です。他者との社会的なやり取りにある働きが，個人の内面の働きへと内化されると考えます。",
+      },
+    ],
+    source_text: "東京大学山内研究室『学者紹介 ヴィゴツキー』・②『心的機能の社会的起源』・精神間から精神内，外言から内言への内化；参考文献に日本語訳『思考と言語』等 | https://fukutake.iii.u-tokyo.ac.jp/ylab/2014/09/lsvygotsky.html\n人間環境大学『発達心理学』・言語の発達・幼児期Ⅰ 細目②・外言，内言，移行過程の自己中心的言語 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PSC22001&jn=2026",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "内発的動機づけ及びデシの認知的評価理論に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "内発的動機づけは，活動そのものへの興味や楽しみに基づく。活動の成績に応じた報酬を予告して取り組ませることは，行為の原因を自分の内側に位置付ける働きをもち，内発的動機づけを高める。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "外的報酬には，制御的側面と情報的側面がある。制御的側面は，自分の有能さを確認して意欲を高めることに，情報的側面は，報酬獲得を行動の目的として意識させることに関わる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "活動の結果得られる利益や報酬を目的とする場合は，外発的動機づけに当たる。ただし，その目的を学習者自身が選び，自発的に取り組んでいる場合は，内発的動機づけとして分類する。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "外的報酬が行動を外部から制御するものとして働く場合と，有能さを知らせる情報として働く場合とを区別する。情報的側面が優位となり，自己の有能さを確認できる場合には，内発的動機づけを高め得る。",
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：内発的動機づけの定義は適切です。報酬を予告し，報酬を得るための活動として捉えさせる制御的な働きは，認知される行為の原因を外側へ移し，内発的動機づけを低下させることがあります。報酬が自律性を高めるとする後半が誤りです。",
+      },
+      {
+        type: "text",
+        text: "イ：二つの側面がある点は適切ですが，説明の対応が逆です。有能さを知らせることに関わるのは情報的側面であり，外部から行動を制御し，報酬を活動の理由として意識させることに関わるのは制御的側面です。",
+      },
+      {
+        type: "text",
+        text: "ウ：外発的動機づけの説明は適切です。自分で目的を選び自発的に行動していても，活動自体の楽しみではなく，活動によって得られる別の結果を目的とする場合は，外発的動機づけに分類され得ます。自発性と内発性を同一視してはいけません。",
+      },
+      {
+        type: "text",
+        text: "エ：適切です。認知的評価理論では，外的報酬がどのような機能をもつかによって効果を説明します。報酬があることだけから，内発的動機づけが必ず低下すると結論付けるものではありません。",
+      },
+    ],
+    source_text: "桜井茂男『児童の内発的動機づけに及ぼす言語的報酬と物質的報酬の効果の比較―デシの認知的評価理論の検討―』・図1及び理論の説明・本文pp.71–72/PDF pp.1–2 | https://nara-edu.repo.nii.ac.jp/record/9844/files/ier26_71-78.pdf\n東京大学山内研究室『内発的動機づけと外発的動機づけ』・「外発的動機と内発的動機の違いとは？」・活動そのものの楽しみと別の目的の区別 | https://fukutake.iii.u-tokyo.ac.jp/ylab/2015/07/post-587.html",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）に示された「学校教育の質の向上に向けたICTの活用」に関する説明である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "各教科等で育成を目指す資質・能力を把握し，ICTを授業改善に生かす。ICTを「文房具」として自由な発想で使う主体は教師として位置付けられ，教師が教材を提示する方法を工夫できる環境を整えることが，学校教育の現代化として示されている。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "1人1台端末を日常的に活用し，学校外での学びにもICTを生かす。特別な支援が必要な児童生徒への対応を「高度な学びの機会の提供」とし，個々の才能を伸ばすことを「きめ細かな支援」として，ICTの活用先を整理している。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "学校教育の質を高めるため，育成を目指す資質・能力を把握し，ICTを授業改善や学校外での学びに生かす。個別最適な学びと協働的な学びの実現を支える「両輪」は，ICTの効果的活用とデジタル教科書・教材の整備とされ，両者によって学習活動・機会を充実させる。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "児童生徒がICTを「文房具」として自由な発想で使える環境を整え，授業をデザインする。特別な支援や個々の才能を伸ばす高度な学びにもICTを活用し，効果的な活用と少人数によるきめ細かな指導体制の整備を両輪として，学習活動・機会を充実させる。",
+          },
+        ],
+        correct: true,
+      },
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：「文房具」として自由な発想でICTを使う主体の対応が誤り。この箇所で示されているのは児童生徒自身であり，教師には，そのための環境整備と授業のデザインが求められている。教師がICTを使って教材の提示を工夫する一般的な取組を否定するものではない。",
+      },
+      {
+        type: "text",
+        text: "イ：二つの活用先との対応が逆。答申は，特別な支援が必要な児童生徒に対する「きめ細かな支援」と，個々の才能を伸ばすための「高度な学びの機会の提供」を挙げている。これは，支援が必要な児童生徒には才能を伸ばす学びを提供しないという区分ではない。",
+      },
+      {
+        type: "text",
+        text: "ウ：前半は適切だが，「両輪」の第二の構成要素が誤り。本項が明示するのは「ICTの効果的活用」と「少人数によるきめ細かな指導体制の整備」であり，デジタル教科書・教材の整備との組合せではない。教材整備一般の必要性を否定するものではない。",
+      },
+      {
+        type: "text",
+        text: "エ：適切。ICTを児童生徒自身の自由な発想に基づく学習の道具として捉え，支援の必要性への対応と個々の才能の伸長の双方に生かす。ICTの効果的活用と少人数による指導体制を併せて進めることも，答申の内容に一致する。",
+      },
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論5（1）「学校教育の質の向上に向けたICTの活用」・本文31ページ（PDF36ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=36",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..5).to_a
-  raise "模擬試験20は承認済みの問1〜5を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験20は承認済みの問1〜15を順番に登録してください"
 end
 
 questions.each do |question|
   number = question.fetch(:question_number)
-  expected_category = number <= 2 ? "education_foundations" : "education_system"
+  expected_category = case number
+                      when 1..2 then "education_foundations"
+                      when 3..5 then "education_system"
+                      when 6..7 then "curriculum_organization"
+                      when 8 then "integrated_inquiry"
+                      when 9 then "moral_education"
+                      when 10 then "special_activities"
+                      when 11 then "student_guidance_career"
+                      when 12 then "special_support_education"
+                      when 13, 14 then "educational_psychology"
+                      when 15 then "education_system"
+                      end
   unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
     raise "模擬試験20 問#{number}の分類が不正です"
   end
@@ -165,14 +652,61 @@ questions.each do |question|
   end
 
   quotes = question.fetch(:content_blocks).select { |block| block[:type] == "fill_in_quote" }
+  if (6..10).cover?(number) && quotes.size != 1
+    raise "模擬試験20 問#{number}は一つの連続した抜粋による原文穴埋めにしてください"
+  end
   next if quotes.empty?
 
   blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
-  unless blank_labels == %w[① ② ③ ④] && choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first[:cells].size == blank_labels.size }
+  valid_blank_labels = (3..4).cover?(blank_labels.size) && blank_labels == %w[① ② ③ ④].take(blank_labels.size)
+  valid_blank_labels &&= blank_labels.size == 4 if [4, 5].include?(number)
+  unless valid_blank_labels && choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first[:cells].size == blank_labels.size }
     raise "模擬試験20 問#{number}の空欄と選択肢の対応が不正です"
   end
-  unless question.fetch(:content_blocks).first.fetch(:type) == "fill_in_text" && quotes.first.fetch(:text).match?(/\A第\d+条/)
-    raise "模擬試験20 問#{number}は原文穴埋めとし抜粋枠の冒頭に条番号を表示してください"
+  unless question.fetch(:content_blocks).first.fetch(:type) == "fill_in_text"
+    raise "模擬試験20 問#{number}は原文穴埋めの導入文を表示してください"
+  end
+  if [4, 5].include?(number) && !quotes.first.fetch(:text).match?(/\A第\d+条/)
+    raise "模擬試験20 問#{number}は抜粋枠の冒頭に条番号を表示してください"
+  end
+
+  next unless (6..10).cover?(number)
+
+  introduction = question.fetch(:content_blocks).first.fetch(:text)
+  unless introduction.start_with?("次の文章は，") && introduction.include?("からの抜粋である。文章中の空欄 {{①}} ～ {{#{blank_labels.last}}}") && introduction.end_with?("に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。")
+    raise "模擬試験20 問#{number}の抜粋穴埋め導入文が不正です"
+  end
+  expected_source = {
+    6 => ["第1章 総則 第3款 教育課程の実施と学習評価", "第1章第3款"],
+    7 => ["第1章 総則 第5款 生徒の発達の支援", "第1章第5款"],
+    8 => ["解説 総合的な探究の時間編", "解説 総合的な探究の時間編"],
+    9 => ["第1章 総則 第1款 高等学校教育の基本と教育課程の役割", "第1章第1款"],
+    10 => ["第5章 特別活動", "第5章"],
+  }.fetch(number)
+  unless introduction.include?(expected_source.first) && question.fetch(:source_text).include?(expected_source.last)
+    raise "模擬試験20 問#{number}の導入文または出典範囲が不正です"
+  end
+end
+
+questions.select { |question| question.fetch(:question_number) >= 11 }.each do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  unless blocks.any? && question.fetch(:explanation_blocks).any?
+    raise "模擬試験20 問#{number}の問題文または解説が空です"
+  end
+  if number == 11 && !prompt.start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
+    raise "模擬試験20 問11の導入文が不正です"
+  end
+  if number == 15 && !prompt.include?("「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）")
+    raise "模擬試験20 問15の答申名が不正です"
+  end
+  if number == 11 || (20 == 17 && number == 15)
+    blank_labels = blocks.flat_map { |block| block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten }.uniq.sort
+    unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ② ③] &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "模擬試験20 問#{number}の空欄と選択肢の対応が不正です"
+    end
   end
 end
 
