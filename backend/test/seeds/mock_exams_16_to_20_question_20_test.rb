@@ -10,10 +10,10 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
     synchronize_question_20
   end
 
-  test "承認済み五問は四択一正答と全選択肢の解説及び出典を持つ下書きである" do
+  test "承認済み五問は四択一正答と全選択肢の解説及び出典を持つ公開問題である" do
     assert_equal 5, questions.count
     questions.each do |question|
-      assert_equal "draft", question.publication_status
+      assert_equal "published", question.publication_status
       assert_equal "information", question.major_category_code
       assert_equal "information_specialized", question.category_code
       choices = question.question_choices.order(:display_order)
@@ -25,31 +25,49 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
       question.source_text.lines.each { |line| assert_match(/\A.+ \| https:\/\/\S+\z/, line.strip) }
       payload = QuestionPayload.from_record(question)
       QuestionWriter.validate_publication!(question, payload.fetch("choices").map(&:symbolize_keys))
-      assert_equal "draft", question.reload.publication_status
+      assert_equal "published", question.reload.publication_status
     end
   end
 
-  test "下書き五問を一般APIから表示及び回答できず管理APIから確認できる" do
+  test "公開五問を一般APIから表示及び回答し管理APIから確認できる" do
     admin = User.create!(name: "問20下書き検証", email: "draft-q20-check@example.com", role: "admin", password: "password123", password_confirmation: "password123")
     headers = { "Authorization" => "Bearer #{AuthToken.issue(admin)}" }
     questions.each do |question|
       get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }
-      assert_response :not_found
+      assert_response :success
+      assert_equal question.content_blocks, response.parsed_body.dig("data", "content_blocks")
       get api_v1_question_path(question)
-      assert_response :not_found
+      assert_response :success
+      assert_not response.parsed_body.fetch("data").key?("explanation_blocks")
       assert_no_difference "AnswerHistory.count" do
-        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.first.id }, as: :json
+        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.find_by!(is_correct: true).id }, as: :json
       end
-      assert_response :not_found
+      assert_response :success
+      assert response.parsed_body.dig("data", "is_correct")
       get "/api/v1/admin/questions/#{question.id}", headers: headers
       assert_response :success
       data = response.parsed_body.fetch("data")
       assert_equal question.content_blocks, data.fetch("content_blocks")
       assert_equal question.explanation_blocks, data.fetch("explanation_blocks")
       assert_equal question.source_text, data.fetch("source_text")
-      assert_equal "draft", data.fetch("publication_status")
+      assert_equal "published", data.fetch("publication_status")
       assert_equal 1, data.fetch("choices").count { |choice| choice.fetch("is_correct") }
     end
+  end
+
+  test "管理画面で下書きに変更した問20は一般APIから利用できない" do
+    question = questions.first
+    question.update!(publication_status: "draft")
+    get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }
+    assert_response :not_found
+    get api_v1_question_path(question)
+    assert_response :not_found
+    assert_no_difference "AnswerHistory.count" do
+      post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.first.id }, as: :json
+    end
+    assert_response :not_found
+    synchronize_question_20
+    assert_equal "draft", question.reload.publication_status
   end
 
   test "再実行で五問と選択肢のID及び回答履歴を保持する" do

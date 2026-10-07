@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験18（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
+# 模擬試験18（全20問）
 questions = [
   {
     question_number: 1,
@@ -584,6 +584,102 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』第Ⅰ部3(1)「子供の学び」・本文18～19ページ（PDF23～24ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=23",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第3章 第7節 情報 第2款 各科目 第8 データベース 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「データとデータベースの操作」の「データの操作」については，関係演算を扱うこと。「データベースの定義」については，{{①}}を取り上げ，データベースの作成，表の作成や削除などを扱うこと。「データベースの操作」については，{{②}}を取り上げ，表の問合わせや結合，ビューの作成などを扱うこと。\n「データベースの運用と保守」の「{{③}}」については，{{③}}のための組織体制，データベースの動作管理，セキュリティ管理及びバックアップなどについて扱うこと。「データベースの保守」については，運用に伴う{{④}}などの保守について扱うこと。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["データ定義言語", "データ定義言語", "データベースの保守", "表の問合わせや結合"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["データベース操作言語", "データベース操作言語", "データベースの保守", "障害管理やリカバリ"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["データ定義言語", "データベース操作言語", "データベースの運用管理", "障害管理やリカバリ"] }], correct: true },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["データベース操作言語", "データ定義言語", "データベースの運用管理", "表の問合わせや結合"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「データ定義言語」ではなく「データベース操作言語」である。この項では，表の問合わせや結合，ビューの作成等をデータベース操作言語に対応させている。ここで問うのは学習指導要領上の取扱いであり，SQLの個々の文を一般的なDDL・DMLへ分類する問題ではない。③は「データベースの保守」ではなく「データベースの運用管理」である。組織体制，動作管理，セキュリティ管理，バックアップは，この指導項目では「データベースの運用管理」に対応する。保守に対応するのは次に示された障害管理やリカバリである。④は「表の問合わせや結合」ではなく「障害管理やリカバリ」である。運用に伴う障害を管理し回復することが保守に対応する。表の問合わせや結合はデータベースの操作であり，障害への対応と取り違えている。" },
+      { type: "text", text: "イ：①は「データベース操作言語」ではなく「データ定義言語」である。データベースや表を作成・削除する定義を扱うのはデータ定義言語である。表の問合わせや結合等を扱うデータベース操作言語と取り違えない。③は「データベースの保守」ではなく「データベースの運用管理」である。組織体制，動作管理，セキュリティ管理，バックアップは，この指導項目では「データベースの運用管理」に対応する。保守に対応するのは次に示された障害管理やリカバリである。" },
+      { type: "text", text: "ウ：正しい組合せである。①は「データ定義言語」である。データベースや表を作成・削除する定義を扱うのはデータ定義言語である。表の問合わせや結合等を扱うデータベース操作言語と取り違えない。②は「データベース操作言語」である。この項では，表の問合わせや結合，ビューの作成等をデータベース操作言語に対応させている。ここで問うのは学習指導要領上の取扱いであり，SQLの個々の文を一般的なDDL・DMLへ分類する問題ではない。③は「データベースの運用管理」である。組織体制，動作管理，セキュリティ管理，バックアップは，この指導項目では「データベースの運用管理」に対応する。保守に対応するのは次に示された障害管理やリカバリである。④は「障害管理やリカバリ」である。運用に伴う障害を管理し回復することが保守に対応する。表の問合わせや結合はデータベースの操作であり，障害への対応と取り違えている。" },
+      { type: "text", text: "エ：①は「データベース操作言語」ではなく「データ定義言語」である。データベースや表を作成・削除する定義を扱うのはデータ定義言語である。表の問合わせや結合等を扱うデータベース操作言語と取り違えない。②は「データ定義言語」ではなく「データベース操作言語」である。この項では，表の問合わせや結合，ビューの作成等をデータベース操作言語に対応させている。ここで問うのは学習指導要領上の取扱いであり，SQLの個々の文を一般的なDDL・DMLへ分類する問題ではない。④は「表の問合わせや結合」ではなく「障害管理やリカバリ」である。運用に伴う障害を管理し回復することが保守に対応する。表の問合わせや結合はデータベースの操作であり，障害への対応と取り違えている。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第3章 第7節 情報 第2款 各科目 第8 データベース 3 内容の取扱い（2）ウ・エ・416頁（PDF418頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=418",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "ア（イ）　情報システムの設計を表記する方法，設計，実装，テスト，運用等のソフトウェア開発のプロセスとプロジェクト・マネジメントについて理解することでは，よりよい情報システムを開発するために，情報システムに求められる機能や性能を明確化する{{①}}，ユーザ－が利用する画面やその遷移などを設計する{{②}}，プログラミングの観点からユーザーから見えない部分を設計する{{③}}，設計に基づいてプログラムを作成する実装，仕様通りに正しく動作するかを確認するテスト，完成したシステムを稼働させる運用などを経て開発されること，複数人が役割を分担し協力しながら開発を進めていく方法について理解するようにする。\nなお，{{①}}については，その前に，日常生活の中にある課題をどのような情報技術を使って解決するかを構想し企画することが重要であることも理解するようにする。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["要件定義", "内部設計", "外部設計"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["要件定義", "外部設計", "内部設計"] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["運用管理", "外部設計", "外部設計"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["運用管理", "内部設計", "内部設計"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「外部設計」であり、「内部設計」ではない。③は「内部設計」であり、「外部設計」ではない。求められる機能・性能を明確にするのが要件定義，利用者が目にする画面や画面遷移などを設計するのが外部設計，プログラミングの観点から利用者には見えない部分を設計するのが内部設計である。運用管理は完成したシステムを稼働させる段階の管理であり，要件定義とは対応しない。" },
+      { type: "text", text: "イ：①「要件定義」，②「外部設計」，③「内部設計」が原文と一致する。求められる機能・性能を明確にするのが要件定義，利用者が目にする画面や画面遷移などを設計するのが外部設計，プログラミングの観点から利用者には見えない部分を設計するのが内部設計である。運用管理は完成したシステムを稼働させる段階の管理であり，要件定義とは対応しない。" },
+      { type: "text", text: "ウ：①は「要件定義」であり、「運用管理」ではない。③は「内部設計」であり、「外部設計」ではない。求められる機能・性能を明確にするのが要件定義，利用者が目にする画面や画面遷移などを設計するのが外部設計，プログラミングの観点から利用者には見えない部分を設計するのが内部設計である。運用管理は完成したシステムを稼働させる段階の管理であり，要件定義とは対応しない。" },
+      { type: "text", text: "エ：①は「要件定義」であり、「運用管理」ではない。②は「外部設計」であり、「内部設計」ではない。求められる機能・性能を明確にするのが要件定義，利用者が目にする画面や画面遷移などを設計するのが外部設計，プログラミングの観点から利用者には見えない部分を設計するのが内部設計である。運用管理は完成したシステムを稼働させる段階の管理であり，要件定義とは対応しない。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い 2（4）ア（イ）・55頁（PDF63頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=63",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "text", text: "次の①～③は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第2部 主として専門学科において開設される教科『情報』 第2章 専門教科情報科の各科目 第9節 情報デザイン」に示された内容に基づく記述である。正しいものはいくつあるか。下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "①　社会における情報デザインの役割では，インフォグラフィックスやピクトグラムなどの事例を取り上げ，情報伝達やコミュニケーションの課題を合理的に解決する役割と合目的性を扱う。ISOで規定された人間中心設計のプロセスなどを取り上げ，デザインを考えながら評価・改善を繰り返すことによって，目的にかなうデザインに仕上げる作業の流れを扱う。" },
+      { type: "text", text: "②　情報デザインの対象では，外見的なデザインに加え，利用者の環境を含めたデザインや使いやすさの向上を取り上げる。その際，シャノンとウィーバーのコミュニケーションモデルを，評価・改善を繰り返して目的にかなうデザインに仕上げる人間中心設計のプロセスを示す基本モデルとして扱う。" },
+      { type: "text", text: "③　表現手法と心理に与える影響では，適切な情報伝達やコミュニケーションのために，造形と色彩の組み合わせを扱う。造形については暖色，寒色，膨張色，収縮色などを，色彩については図と地の関係，錯視，ゲシュタルト要因などを取り上げ，それらが人間の心理に与える影響を扱う。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "text", text: "3つ" }], correct: false },
+      { label: "イ", content_blocks: [{ type: "text", text: "2つ" }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "text", text: "1つ" }], correct: true },
+      { label: "エ", content_blocks: [{ type: "text", text: "0" }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "①：情報デザインには課題を合理的に解決する役割と合目的性があり，人間中心設計のプロセスなどを通して評価・改善を繰り返すという取扱いである。" },
+      { type: "text", text: "②：利用者の環境や使いやすさを情報デザインの対象に含める前半は適切である。シャノンとウィーバーのコミュニケーションモデルは，情報伝達やコミュニケーションの仕組みを捉えるために扱う基本モデルであり，人間中心設計の作業プロセスと同一ではない。" },
+      { type: "text", text: "③：造形について取り上げるのは図と地の関係，錯視，ゲシュタルト要因などである。暖色，寒色，膨張色，収縮色などは色彩について取り上げる事項であり，対応が逆になっている。" },
+      { type: "text", text: "ア：③の造形と色彩の対応，②のシャノンとウィーバーのコミュニケーションモデルの位置付けが誤っている。正しいのは①だけであり，3つではない。" },
+      { type: "text", text: "イ：②と③が誤りであるため，正しいものは2つではない。シャノンとウィーバーのモデルは情報伝達・コミュニケーションの仕組みを捉えるための基本モデルであり，人間中心設計の作業プロセスそのものを示したモデルではない。" },
+      { type: "text", text: "ウ：正しいのは①の1つである。②はコミュニケーションの仕組みを表す基本モデルと，評価・改善を繰り返す人間中心設計のプロセスを取り違えている。③は造形と色彩について取り上げる事項を逆にしている。" },
+      { type: "text", text: "エ：①は原典が示す社会における情報デザインの役割・合目的性，人間中心設計のプロセス，評価・改善の反復と一致するため，正しいものは0ではない。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第2部 第2章 専門教科情報科の各科目 第9節 情報デザイン 第2 内容とその取扱い 2（1）ア・イ，2（2）イ・145〜147頁（PDF152〜154頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=152",
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "配列Dataの隣接する要素について，後の値から直前の値を引いた差を，先頭側から順に配列Diffへ保存したい。例えば，Dataが［5，8，6］ならば，Diffは［3，−2］となる。次のプログラムの空欄{{①}}・{{②}}に当てはまる組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "疑似コードはPythonを模した表記であり，配列の添字は0から始まる。インデントの深さが同じ部分を同一ブロックとする。反復の範囲は両端を含む。Dataの要素数は2以上とし，Data自体は変更しない。prevは，差を計算する時点で直前の要素の値を保持する。" },
+      { type: "code", title: "プログラム（Pythonを模した疑似コード）", code: "01 Data = [12, 15, 11, 18, 18, 13]\n02 prev = Data[0]\n03 Diff = []\n04 iを1から要素数(Data)-1まで1ずつ増やしながら繰り返す:\n05     delta = 【①】\n06     Diffの末尾にdeltaを追加する\n07     prev = 【②】\n08 表示する(Diff)" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["Data[i] − prev", "delta"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["prev − Data[i]", "Data[i]"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["prev − Data[i]", "delta"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["Data[i] − prev", "Data[i]"] }], correct: true },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "差は後の値Data[i]から直前の値prevを引く。差を保存した後，次の反復で使う直前の値としてData[i]をprevに代入する。出力は［3，−4，7，0，−5］となる。" },
+      { type: "table", headers: ["i", "Data[i]", "計算前のprev", "delta", "更新後のprev"], rows: [["1", "15", "12", "3", "15"], ["2", "11", "15", "-4", "11"], ["3", "18", "11", "7", "18"], ["4", "18", "18", "0", "18"], ["5", "13", "18", "-5", "13"]] },
+      { type: "text", text: "ア：差の計算方向は正しいが，prevへ差deltaを保存している。次の反復で要素の値ではなく前回の差を引くため，出力は［3，8，10，8，5］となる。" },
+      { type: "text", text: "イ：prevの更新は正しいが，差の引く方向が逆である。出力は［−3，4，−7，0，5］となる。" },
+      { type: "text", text: "ウ：差の引く方向とprevへ保存する値の両方が誤っている。出力は［−3，−14，−32，−50，−63］となる。" },
+      { type: "text", text: "エ：後の値から直前の値を引き，差の計算後にprevを現在の要素の値へ更新するため，目的どおり動作する。" },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（2）制御構造，本文114頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20\n同教材・学習14「応用的プログラム」（1）リスト，本文122頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
     question_number: 20,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -617,8 +713,8 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
-  raise "模擬試験18は承認済みの問1〜15・問20を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験18は問1〜20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -635,9 +731,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
-  when 20 then "information_specialized"
+  when 16..18 then %w[information_specialized information_specialized information_education][number - 16]
+  when 19, 20 then "information_specialized"
   end
-  expected_major_category = number == 20 ? "information" : "teacher_education"
+  expected_major_category = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験18 問#{number}の分類が不正です"
   end
@@ -713,4 +810,68 @@ questions.select { |question| question.fetch(:question_number) >= 11 }.each do |
   end
 end
 
-QuestionSeedSync.import(exam_number: 18, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章 第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless prompt.delete(" ").include?(section) && source.delete(" ").include?(section) &&
+      prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      source.match?(%r{https://www\.mext\.go\.jp/content/\S+\.pdf#page=\d+\z})
+    raise "模擬試験18 問#{number}の導入文と出典範囲が一致しません"
+  end
+  if prompt.include?("正しいものはいくつあるか")
+    unless 18 == 18 && number == 18 && blocks.size == 4 &&
+        blocks.drop(1).map { |block| block.fetch(:text)[0] } == %w[① ② ③] &&
+        blocks.all? { |block| block.fetch(:type) == "text" }
+      raise "模擬試験18 問#{number}の正誤記述の体裁が不正です"
+    end
+  else
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq.sort
+    prompt_labels = prompt.scan(/\{\{([①②③④])\}\}/).flatten.uniq
+    unless blocks.first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
+        [%w[① ② ③], %w[① ② ③ ④]].include?(blank_labels) &&
+        prompt_labels == [blank_labels.first, blank_labels.last] &&
+        (prompt.include?("からの抜粋である。") || prompt.include?("に示された内容に基づく記述である。")) &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == blank_labels.size }
+      raise "模擬試験18 問#{number}の空欄と選択肢の対応が不正です"
+    end
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "模擬試験18の問16〜18は指定4範囲から異なる3範囲を資料順に並べてください"
+end
+
+question_19 = questions.fetch(18)
+blocks = question_19.fetch(:content_blocks)
+unless blocks.count { |block| block[:type] == "code" } == 1 &&
+    question_19.fetch(:explanation_blocks).any? { |block| block[:type] == "table" }
+  raise "模擬試験18 問19はプログラムと途中経過表を表示してください"
+end
+if 18 == 20
+  unless question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "table" && choice.fetch(:content_blocks).first.fetch(:headers) == %w[checks pairs] }
+    raise "模擬試験18 問19の出力の組合せが不正です"
+  end
+else
+  blank_labels = blocks.find { |block| block[:type] == "code" }.fetch(:code).scan(/【([①②])】/).flatten.uniq
+  unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ②] &&
+      blocks.first.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+      question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+    raise "模擬試験18 問19の空欄と選択肢の対応が不正です"
+  end
+end
+
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験18の正答位置はア〜エ各5問にしてください"
+end
+
+QuestionSeedSync.import(exam_number: 18, questions: questions, publication_status: "published")

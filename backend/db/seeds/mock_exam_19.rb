@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験19（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
+# 模擬試験19（全20問）
 questions = [
   {
     question_number: 1,
@@ -585,6 +585,97 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論3（2）「教職員の姿」・本文22ページ（PDF27ページ），第2段落 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=27",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第2章 第10節 情報 第2款 各科目 第2 情報Ⅱ 2 内容（1）情報社会の進展と情報技術」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1）情報社会の進展と情報技術\n情報技術の発展による人や社会への影響に着目し，情報社会の進展と情報技術との関係を歴史的に捉え，将来の情報技術を展望する活動を通して，次の事項を身に付けることができるよう指導する。\nア 次のような知識を身に付けること。\n（ｱ）情報技術の発展の歴史を踏まえ，情報社会の進展について理解すること。\n（ｲ）情報技術の発展によるコミュニケーションの多様化について理解すること。\n（ｳ）情報技術の発展による{{①}}への影響について理解すること。\nイ 次のような思考力，判断力，表現力等を身に付けること。\n（ｱ）情報技術の発展や情報社会の進展を踏まえ，将来の情報技術と情報社会の在り方について考察すること。\n（ｲ）コミュニケーションが多様化する社会における{{②}}の意義について考察すること。\n（ｳ）{{①}}が変化する社会における{{③}}の意義について考察すること。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["人の知的活動", "コンテンツの創造と活用", "情報システムの創造やデータ活用"] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["人の知的活動", "データの収集と整形", "情報デザインの構築やメディア編集"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["コンピュータの演算性能", "コンテンツの創造と活用", "情報デザインの構築やメディア編集"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["コンピュータの演算性能", "データの収集と整形", "情報システムの創造やデータ活用"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：正しい組合せである。①は「人の知的活動」である。情報技術が人間の知的活動へ及ぼす影響と，知的活動の変化に伴う社会的な意義を問う。コンピュータの演算性能の変化を主語に置くのは，この項目の人・社会への視点と異なる。②は「コンテンツの創造と活用」である。コミュニケーションの多様化と結び付けて考察するのは，コンテンツの創造と活用の意義である。データの収集と整形はデータサイエンスの具体的な技能と取り違えている。③は「情報システムの創造やデータ活用」である。人の知的活動が変わる社会と結び付けて考察するのは，情報システムの創造やデータ活用の意義である。情報デザインやメディア編集への置換は，この項目で示した対象との対応が異なる。" },
+      { type: "text", text: "イ：②は「データの収集と整形」ではなく「コンテンツの創造と活用」である。コミュニケーションの多様化と結び付けて考察するのは，コンテンツの創造と活用の意義である。データの収集と整形はデータサイエンスの具体的な技能と取り違えている。③は「情報デザインの構築やメディア編集」ではなく「情報システムの創造やデータ活用」である。人の知的活動が変わる社会と結び付けて考察するのは，情報システムの創造やデータ活用の意義である。情報デザインやメディア編集への置換は，この項目で示した対象との対応が異なる。" },
+      { type: "text", text: "ウ：①は「コンピュータの演算性能」ではなく「人の知的活動」である。情報技術が人間の知的活動へ及ぼす影響と，知的活動の変化に伴う社会的な意義を問う。コンピュータの演算性能の変化を主語に置くのは，この項目の人・社会への視点と異なる。③は「情報デザインの構築やメディア編集」ではなく「情報システムの創造やデータ活用」である。人の知的活動が変わる社会と結び付けて考察するのは，情報システムの創造やデータ活用の意義である。情報デザインやメディア編集への置換は，この項目で示した対象との対応が異なる。" },
+      { type: "text", text: "エ：①は「コンピュータの演算性能」ではなく「人の知的活動」である。情報技術が人間の知的活動へ及ぼす影響と，知的活動の変化に伴う社会的な意義を問う。コンピュータの演算性能の変化を主語に置くのは，この項目の人・社会への視点と異なる。②は「データの収集と整形」ではなく「コンテンツの創造と活用」である。コミュニケーションの多様化と結び付けて考察するのは，コンテンツの創造と活用の意義である。データの収集と整形はデータサイエンスの具体的な技能と取り違えている。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章 第10節 情報 第2款 各科目 第2 情報Ⅱ 2 内容（1）情報社会の進展と情報技術・192〜193頁（PDF194〜195頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=194",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第3章 第7節 情報 第2款 各科目 第10 コンテンツの制作と発信 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1）内容を取り扱う際には，次の事項に配慮するものとする。\nア 生徒や地域の実態，学科の特色等に応じて，適切な{{①}}を選択すること。その際，{{②}}を効果的に取り入れるとともに，コンテンツの制作と発信について{{③}}に配慮すること。\nイ 「静止画のコンテンツ」，「動画のコンテンツ」及び「音・音声のコンテンツ」については，生徒や地域の実態，学科の特色等に応じて，{{④}}を選択して扱うことができること。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["アプリケーションソフトウェア", "講義", "ネットワークの伝送速度", "いずれか二つ以上"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["アプリケーションソフトウェア", "実習", "知的財産権", "いずれか一つ以上"] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["プログラミング言語", "実習", "ネットワークの伝送速度", "いずれか一つ以上"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["プログラミング言語", "講義", "知的財産権", "いずれか二つ以上"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「講義」ではなく「実習」である。コンテンツの制作と発信の学習では，実習を効果的に取り入れることを示している。手を動かして制作する学習としての位置付けを，講義へ置き換えない。③は「ネットワークの伝送速度」ではなく「知的財産権」である。コンテンツの制作と発信に際して配慮する対象として挙げるのは知的財産権である。ネットワークの伝送速度は技術的な性能の指標で，権利に関する配慮との対応ではない。④は「いずれか二つ以上」ではなく「いずれか一つ以上」である。静止画・動画・音や音声の三つの指導項目からは，一つ以上を選択できる。二つ以上という下限を設ける記述ではない。" },
+      { type: "text", text: "イ：正しい組合せである。①は「アプリケーションソフトウェア」である。この科目では，制作・発信に用いる適切なアプリケーションソフトウェアを生徒・地域・学科の実態に合わせて選択する。プログラミング言語の選択は「情報システムのプログラミング」の取扱いと取り違えている。②は「実習」である。コンテンツの制作と発信の学習では，実習を効果的に取り入れることを示している。手を動かして制作する学習としての位置付けを，講義へ置き換えない。③は「知的財産権」である。コンテンツの制作と発信に際して配慮する対象として挙げるのは知的財産権である。ネットワークの伝送速度は技術的な性能の指標で，権利に関する配慮との対応ではない。④は「いずれか一つ以上」である。静止画・動画・音や音声の三つの指導項目からは，一つ以上を選択できる。二つ以上という下限を設ける記述ではない。" },
+      { type: "text", text: "ウ：①は「プログラミング言語」ではなく「アプリケーションソフトウェア」である。この科目では，制作・発信に用いる適切なアプリケーションソフトウェアを生徒・地域・学科の実態に合わせて選択する。プログラミング言語の選択は「情報システムのプログラミング」の取扱いと取り違えている。③は「ネットワークの伝送速度」ではなく「知的財産権」である。コンテンツの制作と発信に際して配慮する対象として挙げるのは知的財産権である。ネットワークの伝送速度は技術的な性能の指標で，権利に関する配慮との対応ではない。" },
+      { type: "text", text: "エ：①は「プログラミング言語」ではなく「アプリケーションソフトウェア」である。この科目では，制作・発信に用いる適切なアプリケーションソフトウェアを生徒・地域・学科の実態に合わせて選択する。プログラミング言語の選択は「情報システムのプログラミング」の取扱いと取り違えている。②は「講義」ではなく「実習」である。コンテンツの制作と発信の学習では，実習を効果的に取り入れることを示している。手を動かして制作する学習としての位置付けを，講義へ置き換えない。④は「いずれか二つ以上」ではなく「いずれか一つ以上」である。静止画・動画・音や音声の三つの指導項目からは，一つ以上を選択できる。二つ以上という下限を設ける記述ではない。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第3章 第7節 情報 第2款 各科目 第10 コンテンツの制作と発信 3 内容の取扱い（1）ア・イ・418頁（PDF420頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=420",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第2部 主として専門学科において開設される教科『情報』 第2章 専門教科情報科の各科目 第8節 データベース 第2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "ウ　データベースの正規化\nここでは，データベースの正規化を取り上げ，データベースを設計する上において表の{{①}}を保ったまま，データの{{②}}を排除して，データを効率的に扱えるようにするための技法であること，正規化の必要性や重要性などについて扱う。その際，具体的な例題や実習を通して第一正規形から{{③}}までを扱う。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["物理的な配置", "データ間の関連", "第三正規形"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["整合性", "データ間の関連", "第五正規形"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["物理的な配置", "重複や冗長性", "第五正規形"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["整合性", "重複や冗長性", "第三正規形"] }], correct: true },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：①は「整合性」であり、「物理的な配置」ではない。②は「重複や冗長性」であり、「データ間の関連」ではない。正規化は，表の整合性を保ちながらデータの重複・冗長性を排除する技法であり，データ間の関連を排除することでも物理的配置を固定することでもない。この解説で取り扱う範囲として示されているのは第一正規形から第三正規形までである。" },
+      { type: "text", text: "イ：②は「重複や冗長性」であり、「データ間の関連」ではない。③は「第三正規形」であり、「第五正規形」ではない。正規化は，表の整合性を保ちながらデータの重複・冗長性を排除する技法であり，データ間の関連を排除することでも物理的配置を固定することでもない。この解説で取り扱う範囲として示されているのは第一正規形から第三正規形までである。" },
+      { type: "text", text: "ウ：①は「整合性」であり、「物理的な配置」ではない。③は「第三正規形」であり、「第五正規形」ではない。正規化は，表の整合性を保ちながらデータの重複・冗長性を排除する技法であり，データ間の関連を排除することでも物理的配置を固定することでもない。この解説で取り扱う範囲として示されているのは第一正規形から第三正規形までである。" },
+      { type: "text", text: "エ：①「整合性」，②「重複や冗長性」，③「第三正規形」が原文と一致する。正規化は，表の整合性を保ちながらデータの重複・冗長性を排除する技法であり，データ間の関連を排除することでも物理的配置を固定することでもない。この解説で取り扱う範囲として示されているのは第一正規形から第三正規形までである。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第2部 第2章 専門教科情報科の各科目 第8節 データベース 第2 内容とその取扱い 2（2）ウ・139頁（PDF146頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=146",
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "正の整数xの十進表記の桁を逆順に並べた整数を求めたい。例えば，xが120ならば求める整数は21である。逆順にしたとき先頭になる0は省く。次のプログラムの空欄{{①}}・{{②}}に当てはまる組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "疑似コードはPythonを模した表記であり，インデントの深さが同じ部分を同一ブロックとする。%は整数の除算の余りを，//は整数の除算の商を表す。整数を格納する変数には，このプログラムで計算する値を十分に格納できるものとする。" },
+      { type: "code", title: "プログラム（Pythonを模した疑似コード）", code: "01 x = 40720\n02 rev = 0\n03 x > 0 の間繰り返す:\n04     digit = x % 10\n05     rev = 【①】\n06     x = 【②】\n07 表示する(rev)" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["rev ＋ digit", "x // 10"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["rev × 10 ＋ digit", "x // 10"] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["rev × 10 ＋ digit", "x // 100"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["rev ＋ digit", "x // 100"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "x%10で右端の桁を取り出す。revを10倍してからその桁を加えることで，既に取り出した桁の右側へ新しい桁をつなぐ。x//10で処理済みの右端の桁を除く。出力は2704となる。" },
+      { type: "table", headers: ["反復", "処理前のx", "digit", "更新後のrev", "更新後のx"], rows: [["1", "40720", "0", "0", "4072"], ["2", "4072", "2", "2", "407"], ["3", "407", "7", "27", "40"], ["4", "40", "0", "270", "4"], ["5", "4", "4", "2704", "0"]] },
+      { type: "text", text: "ア：各桁を単に足しており，桁の位置を保持しない。出力は0＋2＋7＋0＋4＝13となる。" },
+      { type: "text", text: "イ：一桁ずつ右端から取り出し，revの右側へつないでいくため，40720の逆順から先頭の0を省いた2704となる。" },
+      { type: "text", text: "ウ：xを100で割るため，二桁ずつ除いてしまう。取り出す桁は0，7，4となり，出力は74となる。" },
+      { type: "text", text: "エ：二桁ずつ除いて取り出した0，7，4を単に足すため，出力は11となる。" },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（4）制御構造のプログラム例，本文117〜118頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=23\nPython公式日本語ドキュメント『Pythonチュートリアル』3.1.1「数」・整数除算と剰余 | https://docs.python.org/ja/3/tutorial/introduction.html#numbers",
+  },
+  {
     question_number: 20,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -612,8 +703,8 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
-  raise "模擬試験19は承認済みの問1〜15・問20を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験19は問1〜20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -629,9 +720,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
-  when 20 then "information_specialized"
+  when 16..18 then %w[information_specialized information_education information_specialized][number - 16]
+  when 19, 20 then "information_specialized"
   end
-  expected_major_category = number == 20 ? "information" : "teacher_education"
+  expected_major_category = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験19 問#{number}の分類が不正です"
   end
@@ -706,4 +798,68 @@ questions.select { |question| question.fetch(:question_number) >= 11 }.each do |
   end
 end
 
-QuestionSeedSync.import(exam_number: 19, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章 第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless prompt.delete(" ").include?(section) && source.delete(" ").include?(section) &&
+      prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      source.match?(%r{https://www\.mext\.go\.jp/content/\S+\.pdf#page=\d+\z})
+    raise "模擬試験19 問#{number}の導入文と出典範囲が一致しません"
+  end
+  if prompt.include?("正しいものはいくつあるか")
+    unless 19 == 18 && number == 18 && blocks.size == 4 &&
+        blocks.drop(1).map { |block| block.fetch(:text)[0] } == %w[① ② ③] &&
+        blocks.all? { |block| block.fetch(:type) == "text" }
+      raise "模擬試験19 問#{number}の正誤記述の体裁が不正です"
+    end
+  else
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq.sort
+    prompt_labels = prompt.scan(/\{\{([①②③④])\}\}/).flatten.uniq
+    unless blocks.first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
+        [%w[① ② ③], %w[① ② ③ ④]].include?(blank_labels) &&
+        prompt_labels == [blank_labels.first, blank_labels.last] &&
+        (prompt.include?("からの抜粋である。") || prompt.include?("に示された内容に基づく記述である。")) &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == blank_labels.size }
+      raise "模擬試験19 問#{number}の空欄と選択肢の対応が不正です"
+    end
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "模擬試験19の問16〜18は指定4範囲から異なる3範囲を資料順に並べてください"
+end
+
+question_19 = questions.fetch(18)
+blocks = question_19.fetch(:content_blocks)
+unless blocks.count { |block| block[:type] == "code" } == 1 &&
+    question_19.fetch(:explanation_blocks).any? { |block| block[:type] == "table" }
+  raise "模擬試験19 問19はプログラムと途中経過表を表示してください"
+end
+if 19 == 20
+  unless question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "table" && choice.fetch(:content_blocks).first.fetch(:headers) == %w[checks pairs] }
+    raise "模擬試験19 問19の出力の組合せが不正です"
+  end
+else
+  blank_labels = blocks.find { |block| block[:type] == "code" }.fetch(:code).scan(/【([①②])】/).flatten.uniq
+  unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ②] &&
+      blocks.first.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+      question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+    raise "模擬試験19 問19の空欄と選択肢の対応が不正です"
+  end
+end
+
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験19の正答位置はア〜エ各5問にしてください"
+end
+
+QuestionSeedSync.import(exam_number: 19, questions: questions, publication_status: "published")

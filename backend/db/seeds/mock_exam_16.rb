@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験16（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
+# 模擬試験16（全20問）
 questions = [
   {
     question_number: 1,
@@ -597,6 +597,101 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』第Ⅰ部3(1)「子供の学び」・本文17～18ページ（PDF22～23ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=22",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第2章 第10節 情報 第2款 各科目 第2 情報Ⅱ 2 内容（3）情報とデータサイエンス」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（3）情報とデータサイエンス\n多様かつ大量のデータを活用することの有用性に着目し，データサイエンスの手法によりデータを分析し，その結果を読み取り解釈する活動を通して，次の事項を身に付けることができるよう指導する。\nア 次のような知識及び技能を身に付けること。\n（ｱ）多様かつ大量のデータの存在やデータ活用の有用性，データサイエンスが社会に果たす役割について理解し，目的に応じた適切なデータの{{①}}について理解し技能を身に付けること。\n（ｲ）データに基づく現象のモデル化やデータの処理を行い{{②}}する方法について理解し技能を身に付けること。\n（ｳ）データ処理の結果を基に{{③}}することの意義とその方法について理解し技能を身に付けること。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["収集や整理，整形", "保存・検索", "データを符号化"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["分類や集計，検索", "解釈・表現", "データを符号化"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["分類や集計，検索", "保存・検索", "モデルを評価"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["収集や整理，整形", "解釈・表現", "モデルを評価"] }], correct: true },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「保存・検索」ではなく「解釈・表現」である。現象のモデル化やデータの処理の結果から意味を読み取って解釈・表現する方法を扱う。データを保存したり検索したりする操作へ対象を置き換えない。③は「データを符号化」ではなく「モデルを評価」である。データ処理の結果を受けて行うのはモデルの評価であり，データの表現を変換する符号化ではない。" },
+      { type: "text", text: "イ：①は「分類や集計，検索」ではなく「収集や整理，整形」である。分析の目的に合わせて適切なデータを集め，使える形へ整理・整形することを知識及び技能として位置付けている。分類・集計・検索はこの記述の一連の準備過程とは異なる。③は「データを符号化」ではなく「モデルを評価」である。データ処理の結果を受けて行うのはモデルの評価であり，データの表現を変換する符号化ではない。" },
+      { type: "text", text: "ウ：①は「分類や集計，検索」ではなく「収集や整理，整形」である。分析の目的に合わせて適切なデータを集め，使える形へ整理・整形することを知識及び技能として位置付けている。分類・集計・検索はこの記述の一連の準備過程とは異なる。②は「保存・検索」ではなく「解釈・表現」である。現象のモデル化やデータの処理の結果から意味を読み取って解釈・表現する方法を扱う。データを保存したり検索したりする操作へ対象を置き換えない。" },
+      { type: "text", text: "エ：正しい組合せである。①は「収集や整理，整形」である。分析の目的に合わせて適切なデータを集め，使える形へ整理・整形することを知識及び技能として位置付けている。分類・集計・検索はこの記述の一連の準備過程とは異なる。②は「解釈・表現」である。現象のモデル化やデータの処理の結果から意味を読み取って解釈・表現する方法を扱う。データを保存したり検索したりする操作へ対象を置き換えない。③は「モデルを評価」である。データ処理の結果を受けて行うのはモデルの評価であり，データの表現を変換する符号化ではない。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章 第10節 情報 第2款 各科目 第2 情報Ⅱ 2 内容（3）情報とデータサイエンス・193頁（PDF195頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=195",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第3章 第7節 情報 第2款 各科目 第5 情報セキュリティ 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「情報社会と情報セキュリティ」の「情報セキュリティの現状」については，情報セキュリティの三要素である{{①}}に加えて，{{②}}についても扱うこと。「情報セキュリティの必要性」については，{{③}}についても扱うこと。\n「情報セキュリティと法規」の「情報セキュリティ関連法規」については，具体的な事例を取り上げ，情報セキュリティに関連する法規や個人情報保護に関連する法規，知的財産権に関連する法規などについて扱うこと。「情報セキュリティ関連ガイドライン」については，具体的な事例を取り上げ，情報セキュリティに関連するガイドラインについて扱うこと。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["機密性，完全性，可用性", "完全性，責任追跡性，信頼性", "情報セキュリティポリシーの策定手順"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["機密性，真正性，可用性", "責任追跡性，真正性，信頼性", "情報セキュリティポリシーの策定手順"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["機密性，完全性，可用性", "責任追跡性，真正性，信頼性", "情報技術者の役割"] }], correct: true },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["機密性，真正性，可用性", "完全性，責任追跡性，信頼性", "情報技術者の役割"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「完全性，責任追跡性，信頼性」ではなく「責任追跡性，真正性，信頼性」である。基本の三要素に追加して扱うのは責任追跡性・真正性・信頼性である。完全性は基本の三要素に含まれ，この追加特性の組合せは真正性を欠いている。③は「情報セキュリティポリシーの策定手順」ではなく「情報技術者の役割」である。情報セキュリティの必要性と関連付けて扱うのは情報技術者の役割である。情報セキュリティポリシーは，同科目の「情報セキュリティマネジメント」で扱う対象であり，この空欄は指導項目間の位置付けを取り違えている。" },
+      { type: "text", text: "イ：①は「機密性，真正性，可用性」ではなく「機密性，完全性，可用性」である。情報セキュリティの基本となる三要素は機密性・完全性・可用性である。真正性はこの三要素に加えて扱う特性であり，完全性と同じ位置に置き換えない。③は「情報セキュリティポリシーの策定手順」ではなく「情報技術者の役割」である。情報セキュリティの必要性と関連付けて扱うのは情報技術者の役割である。情報セキュリティポリシーは，同科目の「情報セキュリティマネジメント」で扱う対象であり，この空欄は指導項目間の位置付けを取り違えている。" },
+      { type: "text", text: "ウ：正しい組合せである。①は「機密性，完全性，可用性」である。情報セキュリティの基本となる三要素は機密性・完全性・可用性である。真正性はこの三要素に加えて扱う特性であり，完全性と同じ位置に置き換えない。②は「責任追跡性，真正性，信頼性」である。基本の三要素に追加して扱うのは責任追跡性・真正性・信頼性である。完全性は基本の三要素に含まれ，この追加特性の組合せは真正性を欠いている。③は「情報技術者の役割」である。情報セキュリティの必要性と関連付けて扱うのは情報技術者の役割である。情報セキュリティポリシーは，同科目の「情報セキュリティマネジメント」で扱う対象であり，この空欄は指導項目間の位置付けを取り違えている。" },
+      { type: "text", text: "エ：①は「機密性，真正性，可用性」ではなく「機密性，完全性，可用性」である。情報セキュリティの基本となる三要素は機密性・完全性・可用性である。真正性はこの三要素に加えて扱う特性であり，完全性と同じ位置に置き換えない。②は「完全性，責任追跡性，信頼性」ではなく「責任追跡性，真正性，信頼性」である。基本の三要素に追加して扱うのは責任追跡性・真正性・信頼性である。完全性は基本の三要素に含まれ，この追加特性の組合せは真正性を欠いている。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第3章 第7節 情報 第2款 各科目 第5 情報セキュリティ 3 内容の取扱い（2）ア・イ・412頁（PDF414頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=414",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "静止画については，デジタルカメラで撮影する際に解像度に応じてファイルサイズが変化したり，同じ解像度でもファイル形式を変えることで圧縮方法が変わってファイルサイズが変化したりすることから，画質とファイルサイズがトレードオフの関係になっていることを確認する学習活動が考えられる。また，静止画を点の集まりとして扱う{{①}}と座標として扱う{{②}}について，実際に静止画を扱って特性の違いを理解し，用途に応じて使い分ける学習活動が考えられる。\nファイルの圧縮方法については，完全に元に戻せる{{③}}と完全には元に戻せない{{④}}を用いて，実際にファイルを圧縮・展開してそれぞれの特性の違いを把握する学習活動が考えられる。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["ラスタ形式", "ベクタ形式", "可逆圧縮", "非可逆圧縮"] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["ラスタ形式", "ベクタ形式", "非可逆圧縮", "可逆圧縮"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["ベクタ形式", "ラスタ形式", "可逆圧縮", "非可逆圧縮"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["ベクタ形式", "ラスタ形式", "非可逆圧縮", "可逆圧縮"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：①「ラスタ形式」，②「ベクタ形式」，③「可逆圧縮」，④「非可逆圧縮」が原文と一致する。ラスタ形式は点（画素）の集まりとして，ベクタ形式は座標に基づいて図形を表現する。可逆圧縮は圧縮前のデータを完全に復元できるのに対し，非可逆圧縮は完全には復元できない。" },
+      { type: "text", text: "イ：③は「可逆圧縮」であり、「非可逆圧縮」ではない。④は「非可逆圧縮」であり、「可逆圧縮」ではない。ラスタ形式は点（画素）の集まりとして，ベクタ形式は座標に基づいて図形を表現する。可逆圧縮は圧縮前のデータを完全に復元できるのに対し，非可逆圧縮は完全には復元できない。" },
+      { type: "text", text: "ウ：①は「ラスタ形式」であり、「ベクタ形式」ではない。②は「ベクタ形式」であり、「ラスタ形式」ではない。ラスタ形式は点（画素）の集まりとして，ベクタ形式は座標に基づいて図形を表現する。可逆圧縮は圧縮前のデータを完全に復元できるのに対し，非可逆圧縮は完全には復元できない。" },
+      { type: "text", text: "エ：①は「ラスタ形式」であり、「ベクタ形式」ではない。②は「ベクタ形式」であり、「ラスタ形式」ではない。③は「可逆圧縮」であり、「非可逆圧縮」ではない。④は「非可逆圧縮」であり、「可逆圧縮」ではない。ラスタ形式は点（画素）の集まりとして，ベクタ形式は座標に基づいて図形を表現する。可逆圧縮は圧縮前のデータを完全に復元できるのに対し，非可逆圧縮は完全には復元できない。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い 2（2）イ（ア）・29頁（PDF37頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=37",
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次のプログラムは，配列 data に含まれる各整数の出現回数を数え，最も多く現れた整数とその出現回数を表示するものである。最も多く現れた整数が複数ある場合は，その中で最も大きい整数を表示する。空欄 {{①}}，{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "配列の添字は0から始まる。data と freq はいずれも9個の要素を持つ。" },
+      { type: "text", text: "freq[v] は整数 v の出現回数を記録するために用いる。" },
+      { type: "text", text: "range(a, b) は a から b−1 までの整数を小さい順に取り出す。= は代入を表し，行頭の字下げは処理の範囲を表す。" },
+      { type: "text", text: "同じ番号の空欄には同じものを入れる。print(x, y) は x，y の順に値を表示する。" },
+      { type: "code", title: "プログラム（Pythonを模した疑似コード）", code: "01 data = [7, 0, 2, 7, 5, 2, 8, 0, 3]\n02 freq = [0, 0, 0, 0, 0, 0, 0, 0, 0]\n03 for i in range(0, 9):\n04     freq[【①】] = freq[【①】] + 1\n05 best = 0\n06 for v in range(1, 9):\n07     if freq[v] 【②】 freq[best]:\n08         best = v\n09 print(best, freq[best])" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["data[i]", ">="] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["data[i]", ">"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["i", ">="] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["i", ">"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "data[i] の値を freq の添字として使えば，その整数の出現回数を1増やせる。v は小さい順に調べるため，出現回数が等しい場合にも best を v に更新する >= を使うと，同数の候補の中で最も大きい整数が残る。集計後の freq は [2, 0, 2, 1, 0, 1, 0, 2, 1] である。0，2，7 が各2回現れ，最大の7を選ぶため，表示は 7 2 となる。" },
+      { type: "table", headers: ["整数 v", "freq[v]"], rows: [["0", "2"], ["1", "0"], ["2", "2"], ["3", "1"], ["4", "0"], ["5", "1"], ["6", "0"], ["7", "2"], ["8", "1"]] },
+      { type: "table", headers: ["調べる v", "freq[v]", "調べる前の best", "更新の有無", "調べた後の best"], rows: [["1", "0", "0", "なし", "0"], ["2", "2", "0", "あり", "2"], ["3", "1", "2", "なし", "2"], ["4", "0", "2", "なし", "2"], ["5", "1", "2", "なし", "2"], ["6", "0", "2", "なし", "2"], ["7", "2", "2", "あり", "7"], ["8", "1", "7", "なし", "7"]] },
+      { type: "text", text: "ア：値ごとの出現回数を集計し，同数時には後から調べる大きい整数へ更新するため正しい。" },
+      { type: "text", text: "イ：集計は正しいが，> では同じ出現回数の候補へ更新されない。best は初期値0のままとなり，表示は 0 2 である。最も大きい整数を選ぶ条件を満たさない。" },
+      { type: "text", text: "ウ：freq[i] を増やすと，data[i] の値ではなく配列の位置ごとに1を記録する。freq の全要素が1となり，>= によって best が最後の8まで更新され，表示は 8 1 となる。" },
+      { type: "text", text: "エ：freq[i] を増やすため，全ての位置の回数が1になる。その後は > の条件が一度も成立せず，best は0のままで，表示は 0 1 となる。出現回数の集計も同数時の選択も満たさない。" },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（制御構造，分岐と反復），本文114〜118頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20\n同教材・学習14「応用的プログラム」（1）リスト，本文122頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
     question_number: 20,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -619,8 +714,8 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
-  raise "模擬試験16は承認済みの問1〜15・問20を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験16は問1〜20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -637,9 +732,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
-  when 20 then "information_specialized"
+  when 16..18 then %w[information_specialized information_specialized information_specialized][number - 16]
+  when 19, 20 then "information_specialized"
   end
-  expected_major_category = number == 20 ? "information" : "teacher_education"
+  expected_major_category = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験16 問#{number}の分類が不正です"
   end
@@ -712,4 +808,68 @@ questions.select { |question| question.fetch(:question_number) >= 11 }.each do |
   end
 end
 
-QuestionSeedSync.import(exam_number: 16, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章 第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless prompt.delete(" ").include?(section) && source.delete(" ").include?(section) &&
+      prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      source.match?(%r{https://www\.mext\.go\.jp/content/\S+\.pdf#page=\d+\z})
+    raise "模擬試験16 問#{number}の導入文と出典範囲が一致しません"
+  end
+  if prompt.include?("正しいものはいくつあるか")
+    unless 16 == 18 && number == 18 && blocks.size == 4 &&
+        blocks.drop(1).map { |block| block.fetch(:text)[0] } == %w[① ② ③] &&
+        blocks.all? { |block| block.fetch(:type) == "text" }
+      raise "模擬試験16 問#{number}の正誤記述の体裁が不正です"
+    end
+  else
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq.sort
+    prompt_labels = prompt.scan(/\{\{([①②③④])\}\}/).flatten.uniq
+    unless blocks.first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
+        [%w[① ② ③], %w[① ② ③ ④]].include?(blank_labels) &&
+        prompt_labels == [blank_labels.first, blank_labels.last] &&
+        (prompt.include?("からの抜粋である。") || prompt.include?("に示された内容に基づく記述である。")) &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == blank_labels.size }
+      raise "模擬試験16 問#{number}の空欄と選択肢の対応が不正です"
+    end
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "模擬試験16の問16〜18は指定4範囲から異なる3範囲を資料順に並べてください"
+end
+
+question_19 = questions.fetch(18)
+blocks = question_19.fetch(:content_blocks)
+unless blocks.count { |block| block[:type] == "code" } == 1 &&
+    question_19.fetch(:explanation_blocks).any? { |block| block[:type] == "table" }
+  raise "模擬試験16 問19はプログラムと途中経過表を表示してください"
+end
+if 16 == 20
+  unless question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "table" && choice.fetch(:content_blocks).first.fetch(:headers) == %w[checks pairs] }
+    raise "模擬試験16 問19の出力の組合せが不正です"
+  end
+else
+  blank_labels = blocks.find { |block| block[:type] == "code" }.fetch(:code).scan(/【([①②])】/).flatten.uniq
+  unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ②] &&
+      blocks.first.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+      question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+    raise "模擬試験16 問19の空欄と選択肢の対応が不正です"
+  end
+end
+
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験16の正答位置はア〜エ各5問にしてください"
+end
+
+QuestionSeedSync.import(exam_number: 16, questions: questions, publication_status: "published")

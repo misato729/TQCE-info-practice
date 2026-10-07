@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験17（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
+# 模擬試験17（全20問）
 questions = [
   {
     question_number: 1,
@@ -614,6 +614,100 @@ questions = [
     source_text: "中央教育審議会『令和の日本型学校教育』答申・第Ⅰ部 総論4「構築に向けた今後の方向性」冒頭第1～第3段落・本文23頁 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=28",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第2章 第10節 情報 第2款 各科目 第1 情報Ⅰ 2 内容（2）コミュニケーションと情報デザイン」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（2）コミュニケーションと情報デザイン\nメディアとコミュニケーション手段及び情報デザインに着目し，目的や状況に応じて受け手に分かりやすく情報を伝える活動を通して，次の事項を身に付けることができるよう指導する。\nア 次のような知識及び技能を身に付けること。\n（ｱ）メディアの特性とコミュニケーション手段の特徴について，{{①}}も踏まえて科学的に理解すること。\n（ｲ）情報デザインが{{②}}を理解すること。\n（ｳ）効果的なコミュニケーションを行うための情報デザインの考え方や方法を理解し{{③}}を身に付けること。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["その変遷", "コンピュータ内部の処理を制御する役割", "収集する技能"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["その変遷", "人や社会に果たしている役割", "表現する技能"] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["利用者の嗜好", "人や社会に果たしている役割", "収集する技能"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["利用者の嗜好", "コンピュータ内部の処理を制御する役割", "表現する技能"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「コンピュータ内部の処理を制御する役割」ではなく「人や社会に果たしている役割」である。ここで理解する対象は，情報デザインが人や社会に果たす役割である。コンピュータ内部の処理を制御するのはプログラムや制御装置の機能であり，情報デザインの役割と取り違えている。③は「収集する技能」ではなく「表現する技能」である。情報デザインの考え方や方法を理解した上で身に付けるのは，効果的なコミュニケーションのために表現する技能である。素材や情報を集める準備過程ではなく，情報を伝えるための表現をこの項目に位置付けている。" },
+      { type: "text", text: "イ：正しい組合せである。①は「その変遷」である。メディアとコミュニケーション手段の理解では，それらがどのように移り変わってきたかという変遷も踏まえる。利用者の好みによる選択へ焦点を移した記述ではない。②は「人や社会に果たしている役割」である。ここで理解する対象は，情報デザインが人や社会に果たす役割である。コンピュータ内部の処理を制御するのはプログラムや制御装置の機能であり，情報デザインの役割と取り違えている。③は「表現する技能」である。情報デザインの考え方や方法を理解した上で身に付けるのは，効果的なコミュニケーションのために表現する技能である。素材や情報を集める準備過程ではなく，情報を伝えるための表現をこの項目に位置付けている。" },
+      { type: "text", text: "ウ：①は「利用者の嗜好」ではなく「その変遷」である。メディアとコミュニケーション手段の理解では，それらがどのように移り変わってきたかという変遷も踏まえる。利用者の好みによる選択へ焦点を移した記述ではない。③は「収集する技能」ではなく「表現する技能」である。情報デザインの考え方や方法を理解した上で身に付けるのは，効果的なコミュニケーションのために表現する技能である。素材や情報を集める準備過程ではなく，情報を伝えるための表現をこの項目に位置付けている。" },
+      { type: "text", text: "エ：①は「利用者の嗜好」ではなく「その変遷」である。メディアとコミュニケーション手段の理解では，それらがどのように移り変わってきたかという変遷も踏まえる。利用者の好みによる選択へ焦点を移した記述ではない。②は「コンピュータ内部の処理を制御する役割」ではなく「人や社会に果たしている役割」である。ここで理解する対象は，情報デザインが人や社会に果たす役割である。コンピュータ内部の処理を制御するのはプログラムや制御装置の機能であり，情報デザインの役割と取り違えている。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章 第10節 情報 第2款 各科目 第1 情報Ⅰ 2 内容（2）コミュニケーションと情報デザイン・191頁（PDF193頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=193",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "また，機械学習を扱う際は，あらかじめ用意した{{①}}で学習させた結果について，どの程度の予測や判断ができているのかを{{①}}とは異なる{{②}}によって試し，モデルのあてはめの度合いについての評価・判断を行う方法について理解するようにする。また，この際，{{①}}の多様性の不足などにより単純すぎるモデルを作ってしまうために認識率が落ちる{{③}}や，{{①}}での認識率は高いが実際の認識率が上がらない{{④}}についても触れる。\nここにおけるデータ処理の目的は問題解決であり，単にデータ処理を行うことで，必ずしも目的が達成できるわけではないことを理解するようにする。また，{{③}}や{{④}}に関しては，{{①}}に合うモデルを作成するだけでは，それ以外のデータについての予測ができない場合があることを理解するようにすることも考えられる。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["訓練データ", "テストデータ", "適合不足", "過剰適合"] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["訓練データ", "テストデータ", "過剰適合", "適合不足"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["テストデータ", "訓練データ", "適合不足", "過剰適合"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["テストデータ", "訓練データ", "過剰適合", "適合不足"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：①「訓練データ」，②「テストデータ」，③「適合不足」，④「過剰適合」が原文と一致する。学習に用いる訓練データと，学習後の予測・判断を確かめる別のテストデータを区別する。単純すぎるモデルによる認識率の低下が適合不足，訓練データに対しては高い認識率でも別のデータに対する認識率が上がらない状態が過剰適合である。" },
+      { type: "text", text: "イ：③は「適合不足」であり、「過剰適合」ではない。④は「過剰適合」であり、「適合不足」ではない。学習に用いる訓練データと，学習後の予測・判断を確かめる別のテストデータを区別する。単純すぎるモデルによる認識率の低下が適合不足，訓練データに対しては高い認識率でも別のデータに対する認識率が上がらない状態が過剰適合である。" },
+      { type: "text", text: "ウ：①は「訓練データ」であり、「テストデータ」ではない。②は「テストデータ」であり、「訓練データ」ではない。学習に用いる訓練データと，学習後の予測・判断を確かめる別のテストデータを区別する。単純すぎるモデルによる認識率の低下が適合不足，訓練データに対しては高い認識率でも別のデータに対する認識率が上がらない状態が過剰適合である。" },
+      { type: "text", text: "エ：①は「訓練データ」であり、「テストデータ」ではない。②は「テストデータ」であり、「訓練データ」ではない。③は「適合不足」であり、「過剰適合」ではない。④は「過剰適合」であり、「適合不足」ではない。学習に用いる訓練データと，学習後の予測・判断を確かめる別のテストデータを区別する。単純すぎるモデルによる認識率の低下が適合不足，訓練データに対しては高い認識率でも別のデータに対する認識率が上がらない状態が過剰適合である。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い 2（3）ア（ウ）・52頁（PDF60頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=60",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第2部 主として専門学科において開設される教科『情報』 第2章 専門教科情報科の各科目 第5節 情報セキュリティ 第2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "ア　{{①}}\nここでは，企業や組織における情報セキュリティ対策の方針や行動指針を取り上げ，情報セキュリティを確保するための体制，運用規定，基本方針，対策基準などの策定に必要な知識と技術について扱う。また，情報システムの評価指標として，信頼性，可用性，保守性，保全性，安全性などについて扱う。\nイ　{{②}}\nここでは，守るべき対象である情報資産で発生する可能性のある脅威を取り上げ，脅威の発生確率や発生した場合の影響度などを評価する{{③}}，実効性のある対策とその運用について必要な知識と技術などを扱う。\nウ　{{④}}\nここでは，インシデント発生時の対策を取り上げ，{{①}}に基づいて，適切かつ迅速な処理を行い，被害や損失を最小限に抑えるために必要な知識と技術について扱う。その際，{{④}}計画の重要性，監査及び第三者認証についても扱う。\nここでいうインシデントとは，事業運営に影響を与えたり，情報セキュリティを脅かしたりする事件や事故などを指す。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["情報セキュリティガイドライン", "インシデント管理", "リスク回避", "事業継続"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["情報セキュリティポリシー", "リスク管理", "リスク回避", "プロジェクト管理"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["情報セキュリティガイドライン", "インシデント管理", "リスクアセスメント", "プロジェクト管理"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["情報セキュリティポリシー", "リスク管理", "リスクアセスメント", "事業継続"] }], correct: true },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：①は「情報セキュリティポリシー」であり、「情報セキュリティガイドライン」ではない。②は「リスク管理」であり、「インシデント管理」ではない。③は「リスクアセスメント」であり、「リスク回避」ではない。組織の対策方針・行動指針は情報セキュリティポリシーである。脅威の発生確率・影響度を評価するリスクアセスメントと，実効性のある対策・運用を扱うリスク管理を対応させる。インシデントによる被害や損失を抑え，事業継続計画などを扱うのは事業継続であり，プロジェクトの進捗を扱うプロジェクト管理とは異なる。" },
+      { type: "text", text: "イ：③は「リスクアセスメント」であり、「リスク回避」ではない。④は「事業継続」であり、「プロジェクト管理」ではない。組織の対策方針・行動指針は情報セキュリティポリシーである。脅威の発生確率・影響度を評価するリスクアセスメントと，実効性のある対策・運用を扱うリスク管理を対応させる。インシデントによる被害や損失を抑え，事業継続計画などを扱うのは事業継続であり，プロジェクトの進捗を扱うプロジェクト管理とは異なる。" },
+      { type: "text", text: "ウ：①は「情報セキュリティポリシー」であり、「情報セキュリティガイドライン」ではない。②は「リスク管理」であり、「インシデント管理」ではない。④は「事業継続」であり、「プロジェクト管理」ではない。組織の対策方針・行動指針は情報セキュリティポリシーである。脅威の発生確率・影響度を評価するリスクアセスメントと，実効性のある対策・運用を扱うリスク管理を対応させる。インシデントによる被害や損失を抑え，事業継続計画などを扱うのは事業継続であり，プロジェクトの進捗を扱うプロジェクト管理とは異なる。" },
+      { type: "text", text: "エ：①「情報セキュリティポリシー」，②「リスク管理」，③「リスクアセスメント」，④「事業継続」が原文と一致する。組織の対策方針・行動指針は情報セキュリティポリシーである。脅威の発生確率・影響度を評価するリスクアセスメントと，実効性のある対策・運用を扱うリスク管理を対応させる。インシデントによる被害や損失を抑え，事業継続計画などを扱うのは事業継続であり，プロジェクトの進捗を扱うプロジェクト管理とは異なる。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第2部 第2章 専門教科情報科の各科目 第5節 情報セキュリティ 第2 内容とその取扱い 2（4）ア〜ウ・120頁（PDF127頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=127",
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次のプログラムは，配列 a に含まれる正の偶数を，元の並び順を保ったまま，同じ配列 a の先頭から順に書き戻すものである。書き戻した要素の個数を k に記録し，最後に k と，書き戻した要素を順に表示する。空欄 {{①}}，{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "配列の添字は0から始まる。range(a, b) は a から b−1 までの整数を小さい順に取り出す。" },
+      { type: "text", text: "= は代入，== は等しいかの比較，% は割り算の余りを表す。and は両方の条件を満たすときに真となる。" },
+      { type: "text", text: "行頭の字下げは処理の範囲を表す。代入では右辺の値を求めた後，左辺へ書き込む。" },
+      { type: "text", text: "配列の要素数は変えない。処理後に有効な結果とするのは a[0] から a[k−1] までであり，それ以降の要素は結果として扱わない。" },
+      { type: "code", title: "プログラム（Pythonを模した疑似コード）", code: "01 a = [6, -2, 5, 0, 8, 3, 4, -6, 2]\n02 k = 0\n03 for i in range(0, 9):\n04     if a[i] > 0 and a[i] % 2 == 0:\n05         a[【①】] = a[i]\n06         k = 【②】\n07 print(k)\n08 for j in range(0, k):\n09     print(a[j])" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["k", "i + 1"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["i", "k + 1"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["k", "k + 1"] }], correct: true },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["i", "i + 1"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "i は読み取る位置，k は次に書き込む位置である。正の偶数が見つかった場合だけ a[k] に書き込み，k を1増やせば，該当する要素を先頭から隙間なく元の順序で並べられる。i が0，4，6，8のときに6，8，4，2を書き込み，最終的な k は4となる。k はその時点までに選んだ要素数なので，書込位置が未読の位置より先になることはなく，後で読む元の値を壊さない。表示は4，6，8，4，2の順となる。" },
+      { type: "table", headers: ["読取位置 i", "読み取った a[i]", "正の偶数か", "書込位置", "処理後の k", "書戻し済み部分"], rows: [["0", "6", "はい", "0", "1", "[6]"], ["1", "-2", "いいえ", "―", "1", "[6]"], ["2", "5", "いいえ", "―", "1", "[6]"], ["3", "0", "いいえ", "―", "1", "[6]"], ["4", "8", "はい", "1", "2", "[6, 8]"], ["5", "3", "いいえ", "―", "2", "[6, 8]"], ["6", "4", "はい", "2", "3", "[6, 8, 4]"], ["7", "-6", "いいえ", "―", "3", "[6, 8, 4]"], ["8", "2", "はい", "3", "4", "[6, 8, 4, 2]"]] },
+      { type: "text", text: "ア：a[k] に書く点は正しいが，i + 1 は読取り位置に基づくため，条件に合わない要素を飛ばした分だけ次の書込位置に隙間ができる。最終的に k は9となり，表示する要素は [6, 8, 5, 0, 8, 4, 4, 2, 2] となる。" },
+      { type: "text", text: "イ：k の増やし方は正しいが，a[i] に a[i] を代入しても要素の位置は変わらない。k は4となるものの，先頭4要素は [6, -2, 5, 0] のままである。" },
+      { type: "text", text: "ウ：書込位置として k を使い，書き込んだ場合だけ k を1増やすため，条件を満たす要素が元の順序のまま先頭に並ぶ。" },
+      { type: "text", text: "エ：a[i] に a[i] を代入するため配列は変わらず，i + 1 を k に代入するため最後には k が9となる。元の9要素全てを表示してしまう。" },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（分岐と反復を組み合わせた例），本文117〜118頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=23\n同教材・学習14「応用的プログラム」（1）リスト，本文122頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
     question_number: 20,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -636,8 +730,8 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
-  raise "模擬試験17は承認済みの問1〜15・問20を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験17は問1〜20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -654,9 +748,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
-  when 20 then "information_specialized"
+  when 16..18 then %w[information_specialized information_specialized information_specialized][number - 16]
+  when 19, 20 then "information_specialized"
   end
-  expected_major_category = number == 20 ? "information" : "teacher_education"
+  expected_major_category = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験17 問#{number}の分類が不正です"
   end
@@ -729,4 +824,68 @@ questions.select { |question| question.fetch(:question_number) >= 11 }.each do |
   end
 end
 
-QuestionSeedSync.import(exam_number: 17, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章 第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless prompt.delete(" ").include?(section) && source.delete(" ").include?(section) &&
+      prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      source.match?(%r{https://www\.mext\.go\.jp/content/\S+\.pdf#page=\d+\z})
+    raise "模擬試験17 問#{number}の導入文と出典範囲が一致しません"
+  end
+  if prompt.include?("正しいものはいくつあるか")
+    unless 17 == 18 && number == 18 && blocks.size == 4 &&
+        blocks.drop(1).map { |block| block.fetch(:text)[0] } == %w[① ② ③] &&
+        blocks.all? { |block| block.fetch(:type) == "text" }
+      raise "模擬試験17 問#{number}の正誤記述の体裁が不正です"
+    end
+  else
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq.sort
+    prompt_labels = prompt.scan(/\{\{([①②③④])\}\}/).flatten.uniq
+    unless blocks.first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
+        [%w[① ② ③], %w[① ② ③ ④]].include?(blank_labels) &&
+        prompt_labels == [blank_labels.first, blank_labels.last] &&
+        (prompt.include?("からの抜粋である。") || prompt.include?("に示された内容に基づく記述である。")) &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == blank_labels.size }
+      raise "模擬試験17 問#{number}の空欄と選択肢の対応が不正です"
+    end
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "模擬試験17の問16〜18は指定4範囲から異なる3範囲を資料順に並べてください"
+end
+
+question_19 = questions.fetch(18)
+blocks = question_19.fetch(:content_blocks)
+unless blocks.count { |block| block[:type] == "code" } == 1 &&
+    question_19.fetch(:explanation_blocks).any? { |block| block[:type] == "table" }
+  raise "模擬試験17 問19はプログラムと途中経過表を表示してください"
+end
+if 17 == 20
+  unless question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "table" && choice.fetch(:content_blocks).first.fetch(:headers) == %w[checks pairs] }
+    raise "模擬試験17 問19の出力の組合せが不正です"
+  end
+else
+  blank_labels = blocks.find { |block| block[:type] == "code" }.fetch(:code).scan(/【([①②])】/).flatten.uniq
+  unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ②] &&
+      blocks.first.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+      question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+    raise "模擬試験17 問19の空欄と選択肢の対応が不正です"
+  end
+end
+
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験17の正答位置はア〜エ各5問にしてください"
+end
+
+QuestionSeedSync.import(exam_number: 17, questions: questions, publication_status: "published")

@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験20（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
+# 模擬試験20（全20問）
 questions = [
   {
     question_number: 1,
@@ -618,6 +618,97 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論5（1）「学校教育の質の向上に向けたICTの活用」・本文31ページ（PDF36ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=36",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第2章 第10節 情報 第3款 各科目にわたる指導計画の作成と内容の取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "１ 指導計画の作成に当たっては，次の事項に配慮するものとする。\n（1）単元など内容や時間のまとまりを見通して，その中で育む資質・能力の育成に向けて，生徒の主体的・対話的で深い学びの実現を図るようにすること。その際，情報に関する{{①}}を働かせ，情報と情報技術を活用して問題を発見し主体的，協働的に制作や討論等を行うことを通して解決策を考えるなどの{{②}}の充実を図ること。\n（2）学習の基盤となる情報活用能力が，中学校までの各教科等において，{{③}}視点から育成されてきたことを踏まえ，情報科の学習を通して生徒の情報活用能力を更に高めるようにすること。また，{{④}}の学習において情報活用能力を生かし高めることができるよう，{{④}}との連携を図ること。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["科学的な見方・考え方", "反復的な学習活動", "技術・家庭科を中心とする", "情報科の他の科目"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["科学的な見方・考え方", "探究的な学習活動", "教科等横断的な", "他の各教科・科目等"] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["社会的な見方・考え方", "探究的な学習活動", "技術・家庭科を中心とする", "他の各教科・科目等"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["社会的な見方・考え方", "反復的な学習活動", "教科等横断的な", "情報科の他の科目"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「反復的な学習活動」ではなく「探究的な学習活動」である。問題を発見し，主体的・協働的な制作や討論を通して解決策を考える一連の活動を探究的な学習活動として位置付けている。同じ手順を繰り返すことを中心とする反復的な学習とは異なる。③は「技術・家庭科を中心とする」ではなく「教科等横断的な」である。中学校までの情報活用能力は各教科等を通じて教科等横断的に育成されてきたものとして踏まえる。技術・家庭科を中心とする取扱いへ対象を狭めない。④は「情報科の他の科目」ではなく「他の各教科・科目等」である。情報科で高めた情報活用能力を他の各教科・科目等の学習でも生かし高めるための連携を図る。情報科内部の科目間連携だけを示す記述ではない。" },
+      { type: "text", text: "イ：正しい組合せである。①は「科学的な見方・考え方」である。情報科の探究では，情報に関する科学的な見方・考え方を働かせる。教科固有の見方・考え方を，社会的な見方・考え方と同一視しない。②は「探究的な学習活動」である。問題を発見し，主体的・協働的な制作や討論を通して解決策を考える一連の活動を探究的な学習活動として位置付けている。同じ手順を繰り返すことを中心とする反復的な学習とは異なる。③は「教科等横断的な」である。中学校までの情報活用能力は各教科等を通じて教科等横断的に育成されてきたものとして踏まえる。技術・家庭科を中心とする取扱いへ対象を狭めない。④は「他の各教科・科目等」である。情報科で高めた情報活用能力を他の各教科・科目等の学習でも生かし高めるための連携を図る。情報科内部の科目間連携だけを示す記述ではない。" },
+      { type: "text", text: "ウ：①は「社会的な見方・考え方」ではなく「科学的な見方・考え方」である。情報科の探究では，情報に関する科学的な見方・考え方を働かせる。教科固有の見方・考え方を，社会的な見方・考え方と同一視しない。③は「技術・家庭科を中心とする」ではなく「教科等横断的な」である。中学校までの情報活用能力は各教科等を通じて教科等横断的に育成されてきたものとして踏まえる。技術・家庭科を中心とする取扱いへ対象を狭めない。" },
+      { type: "text", text: "エ：①は「社会的な見方・考え方」ではなく「科学的な見方・考え方」である。情報科の探究では，情報に関する科学的な見方・考え方を働かせる。教科固有の見方・考え方を，社会的な見方・考え方と同一視しない。②は「反復的な学習活動」ではなく「探究的な学習活動」である。問題を発見し，主体的・協働的な制作や討論を通して解決策を考える一連の活動を探究的な学習活動として位置付けている。同じ手順を繰り返すことを中心とする反復的な学習とは異なる。④は「情報科の他の科目」ではなく「他の各教科・科目等」である。情報科で高めた情報活用能力を他の各教科・科目等の学習でも生かし高めるための連携を図る。情報科内部の科目間連携だけを示す記述ではない。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章 第10節 情報 第3款 各科目にわたる指導計画の作成と内容の取扱い 1（1）・（2）・194〜195頁（PDF196〜197頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=196",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月30日文部科学省告示第68号）の「第3章 第7節 情報 第2款 各科目 第9 情報デザイン 1 目標」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "情報に関する科学的な見方・考え方を働かせ，実践的・体験的な学習活動を行うことなどを通して，情報デザインの構築に必要な資質・能力を次のとおり育成することを目指す。\n（1）{{①}}と情報デザインとの関係について体系的・系統的に理解するとともに，関連する技術を身に付けるようにする。\n（2）情報デザインの{{②}}に関する課題を発見し，情報産業に携わる者として合理的かつ創造的に解決する力を養う。\n（3）情報デザインによる効果的な{{①}}の実現を目指して自ら学び，{{③}}のデザインなどの構築に主体的かつ協働的に取り組む態度を養う。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["情報伝達やコミュニケーション", "開発，運用，保守", "データベースやネットワークシステム"] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["コンピュータの演算や記憶", "手法，構成，活用", "データベースやネットワークシステム"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["情報伝達やコミュニケーション", "手法，構成，活用", "コンテンツやユーザインタフェース"] }], correct: true },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["コンピュータの演算や記憶", "開発，運用，保守", "コンテンツやユーザインタフェース"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：②は「開発，運用，保守」ではなく「手法，構成，活用」である。情報デザインに関する課題として挙げるのは手法・構成・活用である。開発・運用・保守は情報システム等の工程の観点へ取り違えている。③は「データベースやネットワークシステム」ではなく「コンテンツやユーザインタフェース」である。主体的・協働的に構築へ取り組む対象は，コンテンツやユーザインタフェースのデザイン等である。データベースやネットワークシステムは別科目で扱う対象との混同である。" },
+      { type: "text", text: "イ：①は「コンピュータの演算や記憶」ではなく「情報伝達やコミュニケーション」である。情報デザインは情報伝達やコミュニケーションとの関係を理解し，その効果的な実現を目指す。コンピュータの演算や記憶との対応を中心に据える記述ではない。③は「データベースやネットワークシステム」ではなく「コンテンツやユーザインタフェース」である。主体的・協働的に構築へ取り組む対象は，コンテンツやユーザインタフェースのデザイン等である。データベースやネットワークシステムは別科目で扱う対象との混同である。" },
+      { type: "text", text: "ウ：正しい組合せである。①は「情報伝達やコミュニケーション」である。情報デザインは情報伝達やコミュニケーションとの関係を理解し，その効果的な実現を目指す。コンピュータの演算や記憶との対応を中心に据える記述ではない。②は「手法，構成，活用」である。情報デザインに関する課題として挙げるのは手法・構成・活用である。開発・運用・保守は情報システム等の工程の観点へ取り違えている。③は「コンテンツやユーザインタフェース」である。主体的・協働的に構築へ取り組む対象は，コンテンツやユーザインタフェースのデザイン等である。データベースやネットワークシステムは別科目で扱う対象との混同である。" },
+      { type: "text", text: "エ：①は「コンピュータの演算や記憶」ではなく「情報伝達やコミュニケーション」である。情報デザインは情報伝達やコミュニケーションとの関係を理解し，その効果的な実現を目指す。コンピュータの演算や記憶との対応を中心に据える記述ではない。②は「開発，運用，保守」ではなく「手法，構成，活用」である。情報デザインに関する課題として挙げるのは手法・構成・活用である。開発・運用・保守は情報システム等の工程の観点へ取り違えている。" },
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第3章 第7節 情報 第2款 各科目 第9 情報デザイン 1 目標・416頁（PDF418頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=418",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "イの（イ）　情報に関する法規や制度及びマナーの意義，情報社会において個人の果たす役割や責任，情報モラルなどについて，それらの背景を科学的に捉え，考察することでは，情報社会で責任をもって生活していくために，情報に関する法規や制度に適切に対応する力，情報モラルに配慮して情報を発信する力，情報セキュリティを確保する力などを養う。その際，科学的な根拠に基づいた判断ができるようにし，法規や制度が改正されたり，マナーが変わったりしても，科学的な根拠や，法規や制度及びマナーの意義に基づいて正しい対応ができるようにする。\n例えば，サイバー犯罪などの原因を調べ，対策を考えることを通して，推測されにくいパスワードや{{①}}などの個人認証の必要性，ソフトウェアの{{②}}を適用する必要性，その提供が終了したソフトウェアを使い続けることの危険性を扱うことが考えられる。また，個人情報の保護に関する法律における個人データの例外的な{{③}}について考えることによって，個人情報の保護と活用の在り方を扱うことが考えられる。" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["生体認証", "セキュリティ更新プログラム", "第三者提供"] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["生体認証", "ドライバ更新プログラム", "目的外利用"] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["暗号化", "セキュリティ更新プログラム", "目的外利用"] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["暗号化", "ドライバ更新プログラム", "第三者提供"] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "ア：①「生体認証」，②「セキュリティ更新プログラム」，③「第三者提供」が原文と一致する。生体認証は身体・行動上の特徴を用いて本人を確かめる方式であり，情報を読めない形に変換する暗号化とは区別する。サイバー犯罪への対策としてここで示されるのは脆弱性などに対応するセキュリティ更新プログラムの適用であり，機器を制御するドライバの更新とは異なる。個人情報の保護と活用を考える題材として原文が挙げているのは個人データの例外的な第三者提供である。" },
+      { type: "text", text: "イ：②は「セキュリティ更新プログラム」であり、「ドライバ更新プログラム」ではない。③は「第三者提供」であり、「目的外利用」ではない。生体認証は身体・行動上の特徴を用いて本人を確かめる方式であり，情報を読めない形に変換する暗号化とは区別する。サイバー犯罪への対策としてここで示されるのは脆弱性などに対応するセキュリティ更新プログラムの適用であり，機器を制御するドライバの更新とは異なる。個人情報の保護と活用を考える題材として原文が挙げているのは個人データの例外的な第三者提供である。" },
+      { type: "text", text: "ウ：①は「生体認証」であり、「暗号化」ではない。③は「第三者提供」であり、「目的外利用」ではない。生体認証は身体・行動上の特徴を用いて本人を確かめる方式であり，情報を読めない形に変換する暗号化とは区別する。サイバー犯罪への対策としてここで示されるのは脆弱性などに対応するセキュリティ更新プログラムの適用であり，機器を制御するドライバの更新とは異なる。個人情報の保護と活用を考える題材として原文が挙げているのは個人データの例外的な第三者提供である。" },
+      { type: "text", text: "エ：①は「生体認証」であり、「暗号化」ではない。②は「セキュリティ更新プログラム」であり、「ドライバ更新プログラム」ではない。生体認証は身体・行動上の特徴を用いて本人を確かめる方式であり，情報を読めない形に変換する暗号化とは区別する。サイバー犯罪への対策としてここで示されるのは脆弱性などに対応するセキュリティ更新プログラムの適用であり，機器を制御するドライバの更新とは異なる。個人情報の保護と活用を考える題材として原文が挙げているのは個人データの例外的な第三者提供である。" },
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い 2（1）イの（イ）・25頁（PDF33頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=33",
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "text", text: "次のプログラムは，配列Dataの異なる添字にある二つの要素の組を調べ，値の和が6になる組の個数を求めるものである。同じ値でも添字が異なれば別の要素として扱う。また，添字の組（i，j）と（j，i）は同じ組として1回だけ数える。実行後のchecksとpairsの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "疑似コードはPythonを模した表記であり，配列の添字は0から始まる。インデントの深さが同じ部分を同一ブロックとする。反復の範囲は両端を含む。checksは7行目の条件判定の実行回数，pairsは条件が真となった回数を数える。" },
+      { type: "code", title: "プログラム（Pythonを模した疑似コード）", code: "01 Data = [2, 5, 1, 4, 3, 4]\n02 n = 要素数(Data)\n03 checks = 0\n04 pairs = 0\n05 iを0からn-2まで1ずつ増やしながら繰り返す:\n06     jをi+1からn-1まで1ずつ増やしながら繰り返す:\n07         もし Data[i] + Data[j] == 6 ならば:\n08             pairs = pairs + 1\n09         checks = checks + 1\n10 表示する(checks, pairs)" },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "table", headers: ["checks", "pairs"], rows: [["15", "2"]] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "table", headers: ["checks", "pairs"], rows: [["21", "4"]] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "table", headers: ["checks", "pairs"], rows: [["15", "3"]] }], correct: true },
+      { label: "エ", content_blocks: [{ type: "table", headers: ["checks", "pairs"], rows: [["30", "6"]] }], correct: false },
+    ],
+    explanation_blocks: [
+      { type: "text", text: "i<jとなる添字の組を1回ずつ調べる。各iでの判定回数は5，4，3，2，1で合計15回。和が6となるのは（0，3），（0，5），（1，2）の3組である。" },
+      { type: "table", headers: ["i", "jの範囲", "判定回数", "和が6になる添字の組"], rows: [["0", "1〜5", "5", "（0，3），（0，5）"], ["1", "2〜5", "4", "（1，2）"], ["2", "3〜5", "3", "なし"], ["3", "4〜5", "2", "なし"], ["4", "5", "1", "なし"]] },
+      { type: "text", text: "ア：判定回数は正しいが，添字3と5にある二つの4を同じ要素としてまとめている。値の組が同じでも添字の組が異なる（0，3）と（0，5）は別々に数える。" },
+      { type: "text", text: "イ：外側の反復をi=0からn-1まで，内側の反復をj=iからn-1までに変更した場合の結果に対応する。同じ添字同士の組も調べ，判定回数は6＋5＋4＋3＋2＋1＝21回となり，Data[4]＋Data[4]＝3＋3の組を含めて4組となるが，提示されたコードではiはn-2まで，jはi+1から始める。" },
+      { type: "text", text: "ウ：異なる添字の組を順序による重複なく調べるため，判定15回，条件を満たす組3個となる。" },
+      { type: "text", text: "エ：異なる添字の順序付きの組を全て調べた場合の結果に対応する。（i，j）と（j，i）を両方数えると判定30回，条件を満たす組6個となるが，このプログラムではj>iの組だけを扱う。" },
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（2）制御構造，本文114頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20\n同教材・学習14「応用的プログラム」（1）リスト，本文122頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
     question_number: 20,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -645,8 +736,8 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
-  raise "模擬試験20は承認済みの問1〜15・問20を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験20は問1〜20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -662,9 +753,10 @@ questions.each do |question|
                       when 12 then "special_support_education"
                       when 13, 14 then "educational_psychology"
                       when 15 then "education_system"
-                      when 20 then "information_specialized"
+                      when 16..18 then %w[information_education information_education information_specialized][number - 16]
+  when 19, 20 then "information_specialized"
                       end
-  expected_major_category = number == 20 ? "information" : "teacher_education"
+  expected_major_category = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験20 問#{number}の分類が不正です"
   end
@@ -738,4 +830,68 @@ questions.select { |question| question.fetch(:question_number) >= 11 }.each do |
   end
 end
 
-QuestionSeedSync.import(exam_number: 20, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  number = question.fetch(:question_number)
+  blocks = question.fetch(:content_blocks)
+  prompt = blocks.first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章 第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless prompt.delete(" ").include?(section) && source.delete(" ").include?(section) &&
+      prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      source.match?(%r{https://www\.mext\.go\.jp/content/\S+\.pdf#page=\d+\z})
+    raise "模擬試験20 問#{number}の導入文と出典範囲が一致しません"
+  end
+  if prompt.include?("正しいものはいくつあるか")
+    unless 20 == 18 && number == 18 && blocks.size == 4 &&
+        blocks.drop(1).map { |block| block.fetch(:text)[0] } == %w[① ② ③] &&
+        blocks.all? { |block| block.fetch(:type) == "text" }
+      raise "模擬試験20 問#{number}の正誤記述の体裁が不正です"
+    end
+  else
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    blank_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq.sort
+    prompt_labels = prompt.scan(/\{\{([①②③④])\}\}/).flatten.uniq
+    unless blocks.first.fetch(:type) == "fill_in_text" && quotes.size == 1 &&
+        [%w[① ② ③], %w[① ② ③ ④]].include?(blank_labels) &&
+        prompt_labels == [blank_labels.first, blank_labels.last] &&
+        (prompt.include?("からの抜粋である。") || prompt.include?("に示された内容に基づく記述である。")) &&
+        question.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == blank_labels.size }
+      raise "模擬試験20 問#{number}の空欄と選択肢の対応が不正です"
+    end
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "模擬試験20の問16〜18は指定4範囲から異なる3範囲を資料順に並べてください"
+end
+
+question_19 = questions.fetch(18)
+blocks = question_19.fetch(:content_blocks)
+unless blocks.count { |block| block[:type] == "code" } == 1 &&
+    question_19.fetch(:explanation_blocks).any? { |block| block[:type] == "table" }
+  raise "模擬試験20 問19はプログラムと途中経過表を表示してください"
+end
+if 20 == 20
+  unless question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "table" && choice.fetch(:content_blocks).first.fetch(:headers) == %w[checks pairs] }
+    raise "模擬試験20 問19の出力の組合せが不正です"
+  end
+else
+  blank_labels = blocks.find { |block| block[:type] == "code" }.fetch(:code).scan(/【([①②])】/).flatten.uniq
+  unless blocks.first.fetch(:type) == "fill_in_text" && blank_labels == %w[① ②] &&
+      blocks.first.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+      question_19.fetch(:choices).all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+    raise "模擬試験20 問19の空欄と選択肢の対応が不正です"
+  end
+end
+
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験20の正答位置はア〜エ各5問にしてください"
+end
+
+QuestionSeedSync.import(exam_number: 20, questions: questions, publication_status: "published")
