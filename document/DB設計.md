@@ -4,7 +4,7 @@
 
 教員資格認定試験（高等学校・情報）の問題演習サービスで使用するDBを定義する。
 
-本設計では、問題を1問ずつ解くシンプルな演習を前提とする。問題は試験ナンバーごとに20問を配置するが、受験セッションや試験結果は管理しない。未ログイン時の解答は保存せず、ログインユーザーについてのみ解答履歴とお気に入りを保存する。
+本設計では、問題を1問ずつ解くシンプルな演習を前提とする。問題は試験ナンバーごとに20問を配置するが、受験セッションや試験結果は管理しない。未ログイン時の解答は保存せず、ログインユーザーについてのみ解答履歴とお気に入りを保存する。模擬試験1〜5は無料、模擬試験6以降は500円の買い切りを完了した有料会員向けとし、決済と利用資格をStripeの識別子により管理する。
 
 ### 対象テーブル
 
@@ -15,6 +15,9 @@
 | `question_choices` | 問題の選択肢と正解情報 |
 | `answer_histories` | ログインユーザーの解答履歴 |
 | `favorites` | ログインユーザーのお気に入り |
+| `payments` | Stripe Checkoutによる決済と返金・異議申立て状態 |
+| `memberships` | ユーザーの有料コンテンツ利用資格 |
+| `stripe_webhook_events` | 処理済みStripe Event IDを保持する冪等性記録 |
 | `question_seed_states` | seedの前回内容と公開状態、管理画面での削除を保持する同期記録 |
 
 ### seed同期記録
@@ -35,6 +38,9 @@
 erDiagram
     users ||--o{ answer_histories : answers
     users ||--o{ favorites : registers
+    users o|--o{ payments : makes
+    users ||--o| memberships : owns
+    payments ||--o| memberships : grants
     questions ||--|{ question_choices : has
     questions ||--o{ answer_histories : answered
     questions ||--o{ favorites : favorited
@@ -94,6 +100,45 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
+
+    payments {
+        bigint id PK
+        bigint user_id FK
+        varchar stripe_checkout_session_id UK
+        varchar stripe_payment_intent_id UK
+        varchar stripe_charge_id UK
+        varchar stripe_price_id
+        integer amount
+        integer refunded_amount
+        varchar currency
+        varchar status
+        datetime paid_at
+        datetime refunded_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    memberships {
+        bigint id PK
+        bigint user_id FK,UK
+        bigint source_payment_id FK,UK
+        varchar status
+        datetime activated_at
+        datetime revoked_at
+        varchar revocation_reason
+        datetime created_at
+        datetime updated_at
+    }
+
+    stripe_webhook_events {
+        bigint id PK
+        varchar stripe_event_id UK
+        varchar event_type
+        boolean livemode
+        datetime processed_at
+        datetime created_at
+        datetime updated_at
+    }
 ```
 
 ## 3. テーブル定義
@@ -124,7 +169,8 @@ erDiagram
 
 - パスワードは平文で保存しない。
 - メールアドレスは登録・更新時に前後の空白を除去し、小文字へ正規化する。
-- アカウント削除時は、そのユーザーの `answer_histories` と `favorites` を削除する。
+- 有料会員資格は `role` で表さず、`memberships` で管理する。管理者権限と購入状態を混在させない。
+- アカウント削除時は、そのユーザーの `answer_histories`、`favorites`、`memberships` を削除し、`payments.user_id` は `NULL` にする。
 
 ### 3.2 questions
 
@@ -271,6 +317,115 @@ erDiagram
 - お気に入り登録は、対象問題が公開中であれば回答履歴の有無にかかわらず許可する。
 - お気に入り登録APIは冪等とし、登録済みの場合も同じレコードを返す。
 
+### 3.6 payments
+
+Stripe Checkout Sessionごとの決済状態を管理する。カード番号、カード有効期限、セキュリティコード及びPaymentMethodの詳細は保存しない。
+
+| カラム | 型 | NULL | デフォルト | 制約・説明 |
+|---|---|---:|---|---|
+| `id` | BIGINT | NO | - | 主キー |
+| `user_id` | BIGINT | YES | `NULL` | 購入した `users.id`。アカウント削除時は `NULL` |
+| `stripe_checkout_session_id` | VARCHAR(255) | NO | - | Stripe Checkout Session ID |
+| `stripe_payment_intent_id` | VARCHAR(255) | YES | `NULL` | Stripe PaymentIntent ID |
+| `stripe_charge_id` | VARCHAR(255) | YES | `NULL` | 返金・異議申立て照合用のStripe Charge ID |
+| `stripe_price_id` | VARCHAR(255) | NO | - | 使用したStripe Price ID |
+| `amount` | INTEGER | NO | `500` | 支払総額。日本円のため円単位 |
+| `refunded_amount` | INTEGER | NO | `0` | Stripeで成立した返金額。円単位 |
+| `currency` | VARCHAR(3) | NO | `jpy` | ISO 4217通貨コードを小文字で保存 |
+| `status` | VARCHAR(30) | NO | `pending` | 決済状態 |
+| `paid_at` | DATETIME | YES | `NULL` | 支払完了日時 |
+| `refunded_at` | DATETIME | YES | `NULL` | 全額返金完了日時 |
+| `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
+| `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
+
+#### インデックス・制約
+
+| 種別 | 対象 | 内容 |
+|---|---|---|
+| PRIMARY KEY | `id` | 主キー |
+| FOREIGN KEY | `user_id` | `users.id`。ユーザー削除時は `NULL` |
+| UNIQUE INDEX | `stripe_checkout_session_id` | 同じCheckout Sessionの重複保存を禁止 |
+| UNIQUE INDEX | `stripe_payment_intent_id` | `NULL` 以外のPaymentIntent IDの重複を禁止 |
+| UNIQUE INDEX | `stripe_charge_id` | `NULL` 以外のCharge IDの重複を禁止 |
+| PARTIAL UNIQUE INDEX | `user_id WHERE status = 'pending'` | 同じユーザーの有効な未完了決済を1件に制限 |
+| INDEX | `user_id, created_at` | ユーザー別の決済照合 |
+| INDEX | `status, updated_at` | 未完了・要確認決済の抽出 |
+| CHECK | `amount` | 0より大きい |
+| CHECK | `refunded_amount` | 0以上かつ `amount` 以下 |
+| CHECK | `currency` | 初期実装では `jpy` のみ |
+| CHECK | `status` | 「4.7 決済状態」の値のみ許可 |
+
+#### 補足
+
+- Checkout Session作成後、フロントエンドへURLを返す前に `pending` として保存する。
+- 商品、金額、通貨及び数量はブラウザの入力値から保存せず、サーバー設定とStripe上のPriceを照合する。
+- 支払完了は署名検証済みWebhookの `payment_status = paid` を確認した場合だけ記録する。
+- 返金はStripe Refundの状態を確認し、成立済みの金額だけを `refunded_amount` に反映する。
+- 全額返金、部分返金及び異議申立ての状態を決済記録に残す。部分返金は初期サービスでは提供せず、発生時は運営確認対象とする。
+- アカウント削除後も、会計、返金及びStripeとの照合に必要な最小限の情報を保持し、ユーザーとの関連は外す。
+
+### 3.7 memberships
+
+有料コンテンツの利用資格を管理する。無料会員はレコードがない状態、または `active` でない状態として扱う。
+
+| カラム | 型 | NULL | デフォルト | 制約・説明 |
+|---|---|---:|---|---|
+| `id` | BIGINT | NO | - | 主キー |
+| `user_id` | BIGINT | NO | - | `users.id` を参照 |
+| `source_payment_id` | BIGINT | NO | - | 資格付与の根拠となる `payments.id` |
+| `status` | VARCHAR(20) | NO | `active` | 有料会員資格の状態 |
+| `activated_at` | DATETIME | NO | - | 資格付与日時 |
+| `revoked_at` | DATETIME | YES | `NULL` | 資格失効日時 |
+| `revocation_reason` | VARCHAR(30) | YES | `NULL` | `refund`, `dispute`, `manual` のいずれか |
+| `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
+| `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
+
+#### インデックス・制約
+
+| 種別 | 対象 | 内容 |
+|---|---|---|
+| PRIMARY KEY | `id` | 主キー |
+| FOREIGN KEY | `user_id` | `users.id`。ユーザー削除時に削除 |
+| FOREIGN KEY | `source_payment_id` | `payments.id`。決済記録は削除しない |
+| UNIQUE INDEX | `user_id` | 1ユーザーにつき資格レコードは1件 |
+| UNIQUE INDEX | `source_payment_id` | 1決済から複数資格が作られることを禁止 |
+| CHECK | `status` | 「4.6 有料会員資格状態」の値のみ許可 |
+
+#### 補足
+
+- `active` の場合だけ模擬試験6以降を利用できる。`users.role = admin` は購入状態とは別の例外として全公開問題を利用できる。
+- 有効期限は設けず、`expires_at` カラムは持たない。
+- 全額返金又は異議申立てにより資格を失効させる場合は `revoked_at` と `revocation_reason` を保存する。
+- 再購入を認める場合は、署名検証済みの新しい支払完了Webhookにより `source_payment_id`、`status` 及び日時を同一トランザクションで更新する。
+
+### 3.8 stripe_webhook_events
+
+Stripe Webhookの再送に対して冪等に処理するため、正常に処理したEvent IDを保存する。Webhook本文全体は保存しない。
+
+| カラム | 型 | NULL | デフォルト | 制約・説明 |
+|---|---|---:|---|---|
+| `id` | BIGINT | NO | - | 主キー |
+| `stripe_event_id` | VARCHAR(255) | NO | - | Stripe Event ID |
+| `event_type` | VARCHAR(100) | NO | - | 例: `checkout.session.completed` |
+| `livemode` | BOOLEAN | NO | - | Stripe本番モードのイベントか |
+| `processed_at` | DATETIME | NO | - | 正常処理完了日時 |
+| `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
+| `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
+
+#### インデックス・制約
+
+| 種別 | 対象 | 内容 |
+|---|---|---|
+| PRIMARY KEY | `id` | 主キー |
+| UNIQUE INDEX | `stripe_event_id` | 同じイベントの重複処理を禁止 |
+| INDEX | `event_type, processed_at` | イベント種別ごとの運用確認 |
+
+#### 補足
+
+- Event IDの保存、`payments` の更新及び `memberships` の更新を同一DBトランザクションで行う。
+- 処理に失敗した場合はトランザクションをロールバックし、Event IDを処理済みとして残さない。
+- 実行環境と `livemode` が一致しないイベントは拒否する。
+
 ## 4. 固定値
 
 ### 4.1 ユーザーロール
@@ -376,6 +531,24 @@ erDiagram
 - `code_group.items` は2件以上とする。
 - 令和8年度科目Ⅰを基準とする現在の設計では、画像ブロックは設けない。
 
+### 4.6 有料会員資格状態
+
+| 値 | 内容 | 模擬試験6以降 |
+|---|---|---:|
+| `active` | 支払確認済みで有効 | 利用可 |
+| `revoked` | 全額返金、異議申立て又は運営判断により失効 | 利用不可 |
+
+### 4.7 決済状態
+
+| 値 | 内容 |
+|---|---|
+| `pending` | Checkout Session作成済み、支払未確認 |
+| `paid` | 支払完了確認済み |
+| `expired` | Checkout Sessionが未払いのまま失効 |
+| `partially_refunded` | 一部返金済み。初期サービスでは運営確認対象 |
+| `refunded` | 全額返金済み |
+| `disputed` | 異議申立てにより利用停止中 |
+
 ## 5. 整合性ルール
 
 ### 5.1 問題登録・更新
@@ -393,15 +566,26 @@ erDiagram
 ### 5.2 解答保存
 
 - 認証済みユーザーの解答だけを保存する。
+- 模擬試験6以降では、解答判定前に `memberships.status = active` または `users.role = admin` を確認する。
 - 選択した選択肢が対象問題に属することを確認する。
 - 正誤は選択肢の `is_correct` からサーバー側で判定する。
 - 解答履歴の保存とレスポンス生成は同じ判定結果を使用する。
 
-### 5.3 削除方針
+### 5.3 決済・資格更新
+
+- Checkout Session作成時は、有効な有料会員資格と同一ユーザーの `pending` 決済がないことを確認する。
+- `checkout.session.completed` は、署名、`payment_status = paid`、Checkout Session ID、ユーザー、Stripe Price ID、金額及び通貨がすべて一致する場合だけ処理する。
+- 決済の `paid` 更新、有料会員資格の作成・更新及び処理済みEvent IDの保存を同一トランザクションで行う。
+- 同じCheckout Session ID又はStripe Event IDを再処理しても、決済記録と資格を重複作成しない。
+- 全額返金時は `payments.status = refunded` と `memberships.status = revoked` を同一トランザクションで更新する。
+- 異議申立て発生時は `payments.status = disputed` と `memberships.status = revoked` を同一トランザクションで更新する。
+- `success_url` への遷移やブラウザからの申告だけでは `memberships` を作成・更新しない。
+
+### 5.4 削除方針
 
 | 削除対象 | 関連データの扱い |
 |---|---|
-| 一般ユーザー | 解答履歴、お気に入りを削除 |
+| 一般ユーザー | 解答履歴、お気に入り、有料会員資格を削除し、決済記録の `user_id` を `NULL` にする。自動返金は行わない |
 | 管理者ユーザー | 作成者・更新者参照を `NULL` にする |
 | 問題 | 解答履歴、お気に入り、選択肢を同一トランザクションで削除 |
 | 選択肢 | 問題単位の削除を原則とし、履歴参照中の個別削除は許可しない |
@@ -411,6 +595,10 @@ erDiagram
 - パスワードには十分な強度のハッシュ関数を使用する。
 - APIレスポンスへ `password_digest` を含めない。
 - 管理者権限の判定は `users.role` をサーバー側で確認する。
+- 有料コンテンツの利用権限は `memberships.status` をサーバー側で確認し、フロントエンドの表示制御だけに依存しない。
+- Stripeのシークレットキー、Webhook署名シークレット及びPrice IDは環境変数で管理し、DB、コード及びログへ値を記録しない。
+- Webhookは未加工のリクエスト本文と `Stripe-Signature` ヘッダーで署名を検証してから状態を更新する。
+- カード番号、カード有効期限、セキュリティコード及びStripe Webhook本文全体を保存しない。
 - DBバックアップにはユーザー情報が含まれるため、保存先と閲覧権限を制限する。
 - 解答履歴とお気に入りは本人または管理者以外から参照できないようにする。
 
@@ -423,5 +611,8 @@ erDiagram
 | 解答判定 | `questions`, `question_choices` |
 | ログイン時の解答保存・履歴 | `answer_histories` |
 | お気に入り | `favorites` |
+| Checkout Session作成・決済状態 | `payments` |
+| 有料コンテンツ利用権限 | `memberships`, `payments` |
+| Stripe Webhookの冪等処理 | `stripe_webhook_events`, `payments`, `memberships` |
 
 未ログイン時の解答判定はリクエスト内の選択肢を使って行い、DBには履歴を追加しない。

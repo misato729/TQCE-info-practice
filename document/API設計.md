@@ -11,9 +11,11 @@
 * 分野、公開状態などの固定値はDBから取得せず、フロントエンドとバックエンドの `utils` で管理する
 * 問題は1問ずつ取得し、演習セッションや演習完了処理は設けない
 * 問題は `exam_number` ごとに20問を配置し、各問を `question_number` で並べる
-* 未ログインユーザーも問題に回答できるが、回答履歴は保存しない
+* 未ログインユーザーも模擬試験1〜5には回答できるが、回答履歴は保存しない
 * ログインユーザーが回答した場合のみ、回答履歴を1問単位で保存する
 * 回答前のレスポンスには、正答や解答解説を含めない
+* 模擬試験6以降は、有効な有料会員資格を持つユーザーまたは管理者だけが取得・回答できる
+* 有料会員資格は `users.role` と分離し、Stripeの署名検証済みWebhookを起点に更新する
 
 ## 認証方式
 
@@ -29,6 +31,7 @@ Authorization: Bearer <access_token>
 * リフレッシュトークンとパスワード再設定は初期実装では設けない
 * ログアウトはフロントエンド側でアクセストークンを破棄して行う
 * 管理APIではトークンの `role = admin` を確認する
+* 有料コンテンツの利用可否はトークン内へ固定せず、リクエストごとにDBの有料会員資格を確認する
 * 一般画面と管理画面は、フロントエンドに保持した同一のアクセストークンを使用する
 * 管理ログインでも一般ログインと同じ `POST /api/v1/auth/login` を使用し、レスポンスの `user.role` が `admin` であることを確認する
 * 本番環境ではHTTPSを必須とする
@@ -38,10 +41,10 @@ Bearerトークン方式は、VercelとFly.ioでフロントエンドとバッ�
 
 ### 任意認証
 
-問題回答APIは認証を任意とする。
+試験一覧、問題取得及び問題回答APIは認証を任意とする。
 
-* Authorizationヘッダーがない場合は、回答を判定するだけで履歴を保存しない
-* 有効なAuthorizationヘッダーがある場合は、回答を判定して履歴を保存する
+* Authorizationヘッダーがない場合は、模擬試験1〜5だけを利用でき、回答履歴を保存しない
+* 有効なAuthorizationヘッダーがある場合は、DBの有料会員資格と管理者権限に応じて利用範囲を判定し、回答時は履歴を保存する
 * Authorizationヘッダーがあるにもかかわらずトークンが不正または期限切れの場合は、匿名扱いにせず `401 Unauthorized` を返す
 
 ## 共通仕様
@@ -129,8 +132,9 @@ Accept: application/json
 | --- | --- | --- |
 | `400 Bad Request` | `bad_request` | JSON形式不正、パラメータ形式不正 |
 | `401 Unauthorized` | `unauthorized` | 未ログイン、トークン不正・期限切れ |
-| `403 Forbidden` | `forbidden` | 管理者権限不足、他ユーザーのデータへのアクセス |
+| `403 Forbidden` | `forbidden`, `paid_membership_required` | 管理者権限不足、他ユーザーのデータへのアクセス、有料会員資格不足 |
 | `404 Not Found` | `not_found` | 対象が存在しない、非公開問題への一般アクセス |
+| `409 Conflict` | `membership_already_active`, `checkout_session_in_progress` | 有料会員の重複購入、未完了の決済が存在する |
 | `422 Unprocessable Entity` | `validation_error` | バリデーションエラー、選択肢の指定不正 |
 | `500 Internal Server Error` | `internal_server_error` | サーバー内部エラー |
 
@@ -155,9 +159,17 @@ Accept: application/json
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
-| GET | `/api/v1/questions/next` | 不要 | 公開中の問題を1問取得する |
-| GET | `/api/v1/questions/{question_id}` | 不要 | 指定した公開問題を取得する |
+| GET | `/api/v1/exams` | 任意 | 公開中の試験ナンバーと現在のユーザーの利用可否を取得する |
+| GET | `/api/v1/questions/next` | 任意 | 利用可能な公開中の問題を1問取得する |
+| GET | `/api/v1/questions/{question_id}` | 任意 | 利用可能な指定問題を取得する |
 | POST | `/api/v1/questions/{question_id}/answer` | 任意 | 回答を判定し、ログイン時のみ履歴を保存する |
+
+### 有料会員・決済
+
+| メソッド | パス | 認証 | 概要 |
+| --- | --- | --- | --- |
+| POST | `/api/v1/payments/checkout_sessions` | 必要 | 500円の買い切り用Stripe Checkout Sessionを作成する |
+| POST | `/api/v1/webhooks/stripe` | Stripe署名 | Stripeの決済・返金・異議申立てイベントを処理する |
 
 ### 回答履歴
 
@@ -213,7 +225,13 @@ Accept: application/json
       "id": 1,
       "name": "学習ユーザー",
       "email": "user@example.com",
-      "role": "user"
+      "role": "user",
+      "paid_content_access": false,
+      "membership": {
+        "status": "free",
+        "purchased_at": null,
+        "expires_at": null
+      }
     }
   }
 }
@@ -247,10 +265,19 @@ Accept: application/json
     "name": "学習ユーザー",
     "email": "user@example.com",
     "role": "user",
+    "paid_content_access": true,
+    "membership": {
+      "status": "active",
+      "purchased_at": "2026-10-07T03:00:00Z",
+      "expires_at": null
+    },
     "created_at": "2026-06-25T03:00:00Z"
   }
 }
 ```
+
+* `membership.status = free` は有効な `memberships` レコードがない場合にAPIが返す表示用の状態とする
+* `paid_content_access` は、有料会員または管理者なら `true` とする
 
 ### アカウント削除
 
@@ -264,15 +291,52 @@ Accept: application/json
 }
 ```
 
-現在のパスワードが一致した場合、ユーザー、回答履歴、お気に入りを物理削除し、`204 No Content` を返す。
+現在のパスワードが一致した場合、ユーザー、回答履歴、お気に入り及び有料会員資格を物理削除し、`204 No Content` を返す。決済記録は、ユーザーとの関連を `NULL` にして、会計、返金及びStripeとの照合に必要な最小限の情報だけを保持する。削除による自動返金と、再登録時の有料会員資格の復元は行わない。
 
 ## 問題演習API
+
+### 利用権限の共通ルール
+
+| 利用者 | 模擬試験1〜5 | 模擬試験6以降 |
+| --- | --- | --- |
+| 未ログインユーザー | 利用可 | 利用不可 |
+| 無料会員 | 利用可 | 利用不可 |
+| 有料会員 | 利用可 | 利用可 |
+| 管理者 | 利用可 | 利用可 |
+
+* 判定対象は試験一覧、次の問題取得、指定問題取得、回答、回答履歴詳細及びお気に入り登録とする
+* 未ログインユーザーが模擬試験6以降を要求した場合は `401 Unauthorized` を返す
+* 無料会員が模擬試験6以降を要求した場合は `403 Forbidden` と `paid_membership_required` を返す
+* 非公開問題は権限の有無にかかわらず一般向けAPIから取得できず、`404 Not Found` を返す
+
+### 試験一覧
+
+`GET /api/v1/exams`
+
+公開中の問題がある試験ナンバーを、現在のユーザーの利用可否とともに返す。利用不可の試験でも問題本文、選択肢、正答及び解説は返さない。
+
+```json
+{
+  "data": [
+    {
+      "exam_number": 1,
+      "published_question_count": 20,
+      "access": "available"
+    },
+    {
+      "exam_number": 6,
+      "published_question_count": 20,
+      "access": "paid_membership_required"
+    }
+  ]
+}
+```
 
 ### 次の問題取得
 
 `GET /api/v1/questions/next`
 
-公開状態が `published` の問題から1問取得する。
+公開状態が `published` で、現在のユーザーが利用できる問題から1問取得する。
 
 任意のクエリパラメータ:
 
@@ -320,6 +384,7 @@ Accept: application/json
 * プログラムの `code` は改行と字下げを変更せず返す
 * `exam_number` のみ指定した場合は、その試験ナンバーの問1を取得する
 * `exam_number` と `after_question_number` を指定した場合は、同じ試験ナンバーの次の問番号を取得する
+* `exam_number` を指定しない場合も、現在のユーザーが利用できない試験ナンバーを候補に含めない
 * 問20より後の問題を要求した場合は `404 Not Found` を返す
 * `is_correct`、正答、解答解説、根拠資料は返さない
 * ログイン中の場合に限り、レスポンスへ `is_favorite` を追加してよい
@@ -379,6 +444,64 @@ Accept: application/json
 * `source_text` は1行ごとに `資料名・章節 | https://...` 形式とし、クライアントはURL部分を外部リンクとして表示する
 * 同じ問題へ複数回答した場合も、回答ごとに履歴を作成する
 * 非公開問題に対する回答は `404 Not Found` とする
+* 問題取得時と同じ利用権限を回答前にも再検査する
+
+## 有料会員・決済API
+
+### Checkout Session作成
+
+`POST /api/v1/payments/checkout_sessions`
+
+ログイン中の無料会員に対し、Stripe Checkoutのホスト型決済ページへ進むためのSessionを作成する。リクエスト本文から商品、金額、通貨又は数量を受け取らず、サーバーに設定したStripe Price IDを使用する。
+
+リクエスト:
+
+```json
+{}
+```
+
+レスポンス `201 Created`:
+
+```json
+{
+  "data": {
+    "checkout_session_id": "cs_test_example",
+    "checkout_url": "https://checkout.stripe.com/c/pay/example"
+  }
+}
+```
+
+* Stripe Checkout Sessionは `mode = payment`、数量1、初期対応の決済手段はカードとして作成する
+* 金額は500円、通貨は `jpy` とし、Stripe上のPrice設定とサーバーの期待値が一致しない場合はSessionを作成しない
+* ログインユーザーIDをStripeの `client_reference_id` または `metadata` に設定し、ローカルの決済記録と照合する
+* Session作成後、Checkout Session IDを持つ `pending` の決済記録を保存してからURLを返す
+* Stripe APIへの作成要求には冪等性キーを使用し、同一ユーザーからの再送でSessionを重複作成しない
+* 有料会員または管理者からの要求は `409 Conflict` と `membership_already_active` を返す
+* 有効な未完了Sessionが存在する場合は、そのSessionの再利用または `409 Conflict` と `checkout_session_in_progress` のいずれかに統一し、二重決済を防ぐ
+* `success_url` は `/premium/complete`、`cancel_url` は `/premium` を基準とし、許可済みフロントエンドURLからサーバー側で組み立てる
+
+### Stripe Webhook
+
+`POST /api/v1/webhooks/stripe`
+
+Bearerトークンは使用しない。未加工のリクエスト本文、`Stripe-Signature` ヘッダー及び環境変数のWebhook署名シークレットをStripe公式ライブラリへ渡し、署名を検証する。署名不正またはJSON不正は `400 Bad Request` とし、状態を更新しない。
+
+初期実装で処理するイベント:
+
+| イベント | 処理 |
+| --- | --- |
+| `checkout.session.completed` | `payment_status = paid`、商品、金額、通貨、ユーザー及びCheckout Session IDを照合し、決済を `paid`、有料会員資格を `active` にする |
+| `checkout.session.expired` | 未完了の決済を `expired` にする |
+| `refund.created`, `refund.updated` | Refundの状態を確認し、成立済みの返金額を反映する。全額返金が成立した場合は決済を `refunded`、資格を `revoked` にする |
+| `refund.failed` | 返金失敗を記録し、運営者が確認できるようにする |
+| `charge.dispute.created` | 決済を `disputed`、資格を `revoked` にして利用を停止する |
+| `charge.dispute.closed` | 結果を記録する。資金回復後の資格再開は自動化せず、運営者がStripeの状態を確認して行う |
+
+* Stripe Event IDを一意に保存し、処理済みイベントの再送には状態を変更せず `200 OK` を返す
+* Event IDの保存、決済状態の更新及び資格の更新は同一DBトランザクションで確定する
+* 処理に失敗した場合はDBをロールバックし、Stripeが再送できるように `5xx` を返す
+* 部分返金は購入者向け機能として提供しない。発生した場合は返金額を記録して運営確認とし、全額返金になるまで資格を自動失効させない
+* ブラウザの戻り先、URLクエリ、Checkout Sessionの `status = complete` だけでは資格を付与せず、`payment_status = paid` の署名検証済みイベントを必要とする
 
 ## 回答履歴API
 
@@ -399,7 +522,7 @@ Accept: application/json
         "question_number": 1,
         "body_excerpt": "教育基本法について正しいものを選びなさい。",
         "major_category_code": "teacher_education",
-        "category_code": "education_system",
+        "category_code": "education_system"
       },
       "selected_choice": {
         "id": 101,
@@ -421,12 +544,13 @@ Accept: application/json
 
 * `body_excerpt` は、最初の `text` または `quote` ブロックから装飾を除いて生成する
 * `body_excerpt` は一覧表示用であり、問題の完全な内容は指定問題取得APIで取得する
+* 現在の利用権限で閲覧できない模擬試験6以降の履歴は、`locked = true`、試験ナンバー、問番号及び回答日時だけを返し、問題・選択肢の概要、正答、正誤及び解説を返さない
 
 ### 回答履歴詳細
 
 `GET /api/v1/answer_histories/{answer_history_id}`
 
-一覧の内容に加えて、正答、解答解説、根拠資料を返す。他ユーザーの回答履歴には `404 Not Found` を返す。
+一覧の内容に加えて、正答、解答解説、根拠資料を返す。他ユーザーの回答履歴には `404 Not Found` を返す。現在の利用権限で閲覧できない模擬試験6以降の履歴には `403 Forbidden` と `paid_membership_required` を返す。
 
 ## お気に入りAPI
 
@@ -434,13 +558,14 @@ Accept: application/json
 
 `GET /api/v1/favorites`
 
-ログインユーザー本人のお気に入りを新しい順に返す。各項目には問題ID、試験ナンバー、問番号、問題文の概要、大分類、小分類、登録日時を含める。
+ログインユーザー本人のお気に入りを新しい順に返す。各項目には問題ID、試験ナンバー、問番号、問題文の概要、大分類、小分類、登録日時を含める。現在の利用権限で閲覧できない模擬試験6以降は `locked = true` とし、問題文の概要、分類及び選択肢を返さない。
 
 ### お気に入り登録
 
 `PUT /api/v1/questions/{question_id}/favorite`
 
 * 対象は公開中の問題に限る
+* 対象問題が模擬試験6以降の場合は、有効な有料会員資格または管理者権限を必要とする
 * 同じ問題を再度登録しても重複データを作成しない
 * 回答済みかどうかにかかわらず、問題表示中に登録できる
 * 新規登録時は `201 Created`、登録済みの場合は `200 OK` を返す
@@ -594,6 +719,7 @@ Accept: application/json
 * 公開問題取得時は `question_choices.is_correct`、解答解説、根拠資料を返さない
 * 回答判定は必ずサーバー側で行う
 * 一般ユーザーは自分の回答履歴とお気に入りだけ取得できる
+* 模擬試験6以降の利用権限は、試験一覧、問題取得、回答、回答履歴及びお気に入りの各APIでサーバー側が確認する
 * 管理APIはすべて管理者権限を確認する
 * 問題の更新はseedと共通の保存処理を使用する。本文・選択肢・正答・解説・出典・分類の変更時は、その問題の古い回答履歴を同一トランザクション内で削除する。公開状態だけの変更では削除しない
 * 選択肢はア・イ・ウ・エ各1件・正答1件を保存前後で保証する。重複ID、他の問題のID、IDとラベルの不一致を拒否する
@@ -601,5 +727,26 @@ Accept: application/json
 * seed管理中の試験ナンバー・問番号の変更は `422` で拒否する。管理APIでの削除は同期記録にも残し、seedによる再作成を防ぐ
 * 管理画面のルートガードと管理APIの両方で権限を確認し、フロントエンドの画面制御だけに依存しない
 * コンテンツブロックでは許可したキーと文字列だけを受け付け、任意のHTMLやスクリプトを保存・描画しない
-* 会員登録、ログイン、回答APIには必要に応じてレート制限を設ける
+* 会員登録、ログイン、回答及びCheckout Session作成APIには必要に応じてレート制限を設ける
 * アカウント削除と問題削除はトランザクションで実行する
+* Stripeのシークレットキー、Webhook署名シークレット及びPrice IDは環境変数で管理し、ログやAPIレスポンスへ出力しない
+* Webhookは未加工の本文で署名検証し、Stripe Event ID及びCheckout Session IDの一意制約とDBトランザクションで冪等に処理する
+
+### Stripe関連の環境変数
+
+| 環境変数 | 用途 | 公開範囲 |
+| --- | --- | --- |
+| `STRIPE_SECRET_KEY` | RailsからStripe APIを呼び出すシークレットキー | バックエンドのみ |
+| `STRIPE_WEBHOOK_SECRET` | Stripe Webhookの署名検証 | バックエンドのみ |
+| `STRIPE_PRICE_ID` | 500円の買い切り商品に対応するPrice ID | バックエンドのみ |
+| `FRONTEND_URL` | Checkoutの成功・中止時の戻り先を組み立てる許可済みURL | バックエンドのみ |
+
+* テスト環境と本番環境のキー、Webhook署名シークレット及びPrice IDを混在させない
+* 上記の値はリポジトリへ保存せず、ローカルの `.env` とデプロイ先のSecretで管理する
+
+## Stripe公式資料
+
+* Checkout Session作成: https://docs.stripe.com/api/checkout/sessions/create
+* Checkout Sessionの `payment_status`: https://docs.stripe.com/api/checkout/sessions/object
+* Webhook署名検証と再送時の処理: https://docs.stripe.com/events/manage-webhook-endpoints
+* 返金イベント: https://docs.stripe.com/refunds
