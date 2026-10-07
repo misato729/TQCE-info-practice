@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験18（承認済みの問1〜15。全20問がそろうまでは非公開）
+# 模擬試験18（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -583,10 +583,42 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』第Ⅰ部3(1)「子供の学び」・本文18～19ページ（PDF23～24ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=23",
   },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("ある集団について，身長X（cm）と100点満点のテストの得点Y（点）を調べたところ，二つの変量の相関係数は0.60であった。次の①～③の処理を，それぞれ元のデータに対して独立に行うとき，処理後の相関係数の組合せとして適切なものを，下のア～エの中から一つ選んで記号で答えなさい。ここで，相関係数はピアソンの積率相関係数をいう。"),
+      text_block.call("① XとYの順序を入れ替え，YとXの相関係数を求める。"),
+      text_block.call("② 身長の単位をcmからmに換算し，X/100とYの相関係数を求める。"),
+      text_block.call("③ 得点を100−Yに置き換え，Xと100−Yの相関係数を求める。"),
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "table", headers: %w[① ② ③], rows: [["−0.60", "0.60", "0.60"]] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "table", headers: %w[① ② ③], rows: [["0.60", "0.60", "−0.60"]] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "table", headers: %w[① ② ③], rows: [["0.60", "0.006", "0.60"]] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "table", headers: %w[① ② ③], rows: [["−0.60", "0.006", "−0.60"]] }], correct: false },
+    ],
+    explanation_blocks: [
+      text_block.call("① 相関係数は二つの変量について対称であり，XとYを入れ替えても値は変わらないので，0.60である。"),
+      text_block.call("② 相関係数は，共分散を二つの変量の標準偏差の積で割った値である。Xを100分の1にすると，共分散とXの標準偏差がともに100分の1になるため，比である相関係数は0.60のままである。"),
+      text_block.call("③ 100−Yの平均との差は，Yの平均との差の符号を反転させたものになる。標準偏差は変わらず，共分散の符号が反転するため，相関係数は−0.60である。"),
+      {
+        type: "table",
+        headers: ["処理", "相関係数"],
+        rows: [["① 変量の順序を入れ替える", "0.60"], ["② 身長をmへ換算する", "0.60"], ["③ 得点を100−Yにする", "−0.60"]],
+      },
+      text_block.call("ア：②は適切だが，①で変量を入れ替えたことによる符号反転は起こらず，③では得点の向きを反転させたことによる符号反転が起こる。"),
+      text_block.call("イ：①～③の全てが適切である。"),
+      text_block.call("ウ：①は適切だが，②で相関係数自体を100分の1にしている点と，③で符号を反転させていない点が誤りである。"),
+      text_block.call("エ：③は適切だが，①で相関係数の符号を反転させている点と，②で相関係数自体を100分の1にしている点が誤りである。"),
+    ],
+    source_text: "総務省統計局『なるほど統計学園』複数の変数の関係性を見る・相関係数 | https://www.stat.go.jp/naruhodo/10_tokucho/hukusu.html\n名古屋市立大学 講義資料『相関行列を計算するEXCELマクロ』相関係数の定義と対称性 | https://www.econ.nagoya-cu.ac.jp/~kamiyama/siryou/corel.html",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験18は承認済みの問1〜15を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
+  raise "模擬試験18は承認済みの問1〜15・問20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -603,8 +635,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
+  when 20 then "information_specialized"
   end
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  expected_major_category = number == 20 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験18 問#{number}の分類が不正です"
   end
 

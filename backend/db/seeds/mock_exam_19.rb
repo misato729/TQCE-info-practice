@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験19（承認済みの問1〜15。全20問がそろうまでは非公開）
+# 模擬試験19（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -584,10 +584,36 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論3（2）「教職員の姿」・本文22ページ（PDF27ページ），第2段落 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=27",
   },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次の8個のデータについて，最大値18を34に置き換えた。置き換える前と後の代表値に関する記述として適切なものを，下のア～エの中から一つ選んで記号で答えなさい。\n\n2，4，4，6，8，10，12，18"),
+    ],
+    choices: [
+      text_choice.call("ア", "合計が16増えるので，平均値は16増加する。中央値を定める中央の2個の値は変わらないため，中央値は7のままである。"),
+      text_choice.call("イ", "平均値は8から10に増加する。新しい平均値が10なので，それより小さい値と大きい値の境界となる中央値も10となる。"),
+      text_choice.call("ウ", "平均値は8から10に増加する。一方，中央値を定める6と8及び最も多く現れる4は変わらないため，中央値と最頻値は変わらない。", true),
+      text_choice.call("エ", "中央値と最頻値は変わらない。最大値だけの変更なので，平均値と中央値の差も置き換える前と同じ1である。"),
+    ],
+    explanation_blocks: [
+      {
+        type: "code",
+        title: "置換前後の代表値",
+        code: "置換前の合計：2＋4＋4＋6＋8＋10＋12＋18＝64\n置換後の合計：64－18＋34＝80\n平均値：置換前64÷8＝8，置換後80÷8＝10\n中央値：どちらも小さい方から4番目の6と5番目の8の平均なので，（6＋8）÷2＝7\n最頻値：どちらも2回現れる4",
+      },
+      text_block.call("ア：誤り。16はデータの合計の増加量である。データは8個なので，平均値の増加量は16÷8＝2となる。中央値が7のままである点は正しい。"),
+      text_block.call("イ：誤り。中央値は並べたときの中央の位置にある値から求める。今回変わるのは8番目の値なので，4番目と5番目の値は変わらず，中央値は7のままである。平均値が8から10に増加する点は正しい。"),
+      text_block.call("ウ：正しい。平均値は全ての値を使って求めるため2増加する一方，中央の位置の値と最も多く現れる値は今回の置換では変わらない。したがって，中央値は7，最頻値は4のままである。"),
+      text_block.call("エ：誤り。置換後の平均値と中央値の差は10－7＝3である。差が1なのは置換前の8－7である。中央値と最頻値が変わらない点は正しい。"),
+    ],
+    source_text: "総務省統計局『なるほど統計学園』中心的な傾向を捉える（平均値・中央値・最頻値） | https://www.stat.go.jp/naruhodo/5_tokucho/chushin.html",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験19は承認済みの問1〜15を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
+  raise "模擬試験19は承認済みの問1〜15・問20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -603,8 +629,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
+  when 20 then "information_specialized"
   end
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  expected_major_category = number == 20 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験19 問#{number}の分類が不正です"
   end
 

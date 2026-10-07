@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験17（承認済みの問1〜15。全20問がそろうまでは非公開）
+# 模擬試験17（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -613,10 +613,31 @@ questions = [
     ],
     source_text: "中央教育審議会『令和の日本型学校教育』答申・第Ⅰ部 総論4「構築に向けた今後の方向性」冒頭第1～第3段落・本文23頁 | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=28",
   },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("データの尺度水準と数値の解釈に関する記述として適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "競技の所要時間は比例尺度であり，40秒と20秒との差20秒も，比2も意味を持つ。単位を秒から分に変えても，二つの時間の比は変わらない。", true),
+      text_choice.call("イ", "競技の着順は順序尺度であり，1位と2位，2位と3位の順位差がいずれも1なので，それぞれの競技記録の時間差も等しいと判断できる。"),
+      text_choice.call("ウ", "摂氏で記録した気温は間隔尺度であり，20℃と10℃の数値の比が2なので，20℃は10℃の2倍の温度を表すと解釈できる。"),
+      text_choice.call("エ", "所属チームに割り当てた番号は名義尺度であり，番号を数値として記録しているので，番号の平均値を求めて所属の傾向を比較できる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。所要時間は，0が所要時間なしを表す比例尺度であり，差と比に意味がある。40秒÷20秒＝2であり，分へ換算しても（40÷60）÷（20÷60）＝2となる。"),
+      text_block.call("イ：誤り。着順から分かるのは先後の順序であり，順位差が等しいことは競技記録の時間差が等しいことを意味しない。1位と2位の差が1秒，2位と3位の差が10秒でも，順位差はいずれも1である。"),
+      text_block.call("ウ：誤り。摂氏温度の0は温度という量が存在しない状態を表す絶対的な原点ではないため，数値の差は意味を持つが，比をそのまま温度の比と解釈することはできない。20℃と10℃の差は10℃である。"),
+      text_block.call("エ：誤り。チーム番号は識別のための記号であり，番号の大小や差に所属の量的な意味はない。平均値は番号の割当て方で変わるため，所属の傾向を示す値にはならない。チームごとの人数や割合を集計する。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章 学習22（1）「量的データと質的データ」（184頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=32\n東京大学『はいぱーワークブック』23.5.1「数値データの尺度」 | https://hwb.ecc.u-tokyo.ac.jp/wp/applications-2/spreadsheet/basics_on_graph/scales_of_measurament/",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験17は承認済みの問1〜15を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
+  raise "模擬試験17は承認済みの問1〜15・問20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -633,8 +654,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
+  when 20 then "information_specialized"
   end
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  expected_major_category = number == 20 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験17 問#{number}の分類が不正です"
   end
 

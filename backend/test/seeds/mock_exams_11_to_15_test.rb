@@ -404,7 +404,7 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     check_choices(counted) { |cells| cells.map(&:to_i) == [best, updates] }
   end
 
-  test "問20の度数表と四分位数と相関係数を保存済みデータから検算する" do
+  test "問20の度数表と四分位数及び予測の変数の対応を検査する" do
     quartiles = completed_questions.find_by!(exam_number: 11, question_number: 20)
     table = quartiles.content_blocks.find { |block| block["type"] == "table" }
     data = table.fetch("headers").drop(1).zip(table.fetch("rows").first.drop(1)).flat_map { |value, frequency| [value.to_i] * frequency.to_i }
@@ -415,59 +415,54 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     assert_equal [1.5, 1, 2.5, 1], statistics
     check_choices(quartiles) { |cells| cells.map(&:to_f) == statistics }
 
-    correlation = completed_questions.find_by!(exam_number: 13, question_number: 20)
-    table = correlation.content_blocks.find { |block| block["type"] == "table" }
-    x = table.fetch("headers").drop(1).map(&:to_f)
-    y = table.fetch("rows").first.drop(1).map(&:to_f)
-    mean_x, mean_y = x.sum / x.size, y.sum / y.size
-    squares_x = x.sum { |value| (value - mean_x)**2 }
-    squares_y = y.sum { |value| (value - mean_y)**2 }
-    products = x.zip(y).sum { |a, b| (a - mean_x) * (b - mean_y) }
-    assert_equal [5, 5, -4], [squares_x, squares_y, products]
-    r = products / Math.sqrt(squares_x * squares_y)
-    assert_in_delta(-0.8, r)
-    correlation.question_choices.each do |choice|
-      value = choice.content_blocks.first.fetch("text")[/相関係数は([−\d.]+)/, 1].tr("−", "-").to_f
-      assert_equal choice.is_correct?, (value - r).abs < 1e-9
+    prediction = completed_questions.find_by!(exam_number: 13, question_number: 20)
+    assert_includes prediction.content_blocks.first.fetch("text"), "利用者数から，その月の電力使用量を予測"
+    prediction.question_choices.each do |choice|
+      text = choice.content_blocks.first.fetch("text")
+      roles_correct = text.start_with?("利用者数を説明変数，電力使用量を目的変数")
+      avoids_causal_confusion = text.include?("観測された相関とは別に検討が必要")
+      assert_equal choice.is_correct?, roles_correct && avoids_causal_confusion
     end
   end
 
-  test "問20の分散変換と独立性と期待度数及び有意水準を検算する" do
+  test "問20の具体的な分散変換とクロス表の割合及び有意水準を検算する" do
     transformation = completed_questions.find_by!(exam_number: 12, question_number: 20)
-    assert_includes transformation.content_blocks.map { |block| block["text"] }.join, "分散は偏差の2乗の和をデータ数nで割った値"
-    data = [-2, 0, 1, 5]
-    mean = data.sum.fdiv(data.size)
-    variance = data.sum { |value| (value - mean)**2 }.fdiv(data.size)
-    results = [[1, 10], [2, 10], [-1, 0], [0.5, 0]].map do |a, b|
-      values = data.map { |value| a * value + b }
-      new_mean = values.sum.fdiv(values.size)
-      new_variance = values.sum { |value| (value - new_mean)**2 }.fdiv(values.size)
-      assert_in_delta a * mean + b, new_mean
-      assert_in_delta a * a * variance, new_variance
-      [new_mean, new_variance]
+    assert_includes transformation.content_blocks.map { |block| block["text"] }.join, "データの個数で割った値"
+    rows = transformation.content_blocks.find { |block| block["type"] == "table" }.fetch("rows")
+    data = rows.map { |row| row.last.split("，").map(&:to_f) }
+    assert_equal data.first.map { |value| value + 10 }, data.last
+    statistics = data.map do |values|
+      mean = values.sum.fdiv(values.size)
+      variance = values.sum { |value| (value - mean)**2 }.fdiv(values.size)
+      [mean, variance, Math.sqrt(variance)]
     end
-    assert_equal [[11, 6.5], [12, 26], [-1, 6.5], [0.5, 1.625]], results
+    assert_equal [4, 14], statistics.map(&:first)
+    assert_equal statistics.first.drop(1), statistics.last.drop(1)
+    assert_in_delta 8.0 / 3, statistics.first[1]
     assert_equal "イ", transformation.question_choices.find_by!(is_correct: true).choice_label
 
-    independence = completed_questions.find_by!(exam_number: 14, question_number: 20)
-    table = independence.content_blocks.find { |block| block["type"] == "table" }.fetch("rows")
-    total, a, b, joint = table.last.last.to_f, table.first.last.to_f, table.last[1].to_f, table.first[1].to_f
-    independent = joint / total == (a / total) * (b / total)
-    expected = a * b / total
-    assert_equal false, independent
-    assert_equal 12, expected
-    check_choices(independence) { |cells| cells == [independent ? "独立である" : "独立でない", "#{expected.to_i}人"] }
-    expected_table = independence.explanation_blocks.find { |block| block["type"] == "table" }.fetch("rows")
-    assert_equal [["週1回以上", "12", "28", "40"], ["週1回未満", "18", "42", "60"], ["合計", "30", "70", "100"]], expected_table
-    assert_includes independence.explanation_blocks.last.fetch("text"), "母集団の有意差を検定した結果ではない"
+    cross_tabulation = completed_questions.find_by!(exam_number: 14, question_number: 20)
+    table = cross_tabulation.content_blocks.find { |block| block["type"] == "table" }.fetch("rows")
+    total, frequent, daily, joint = table.last.last.to_f, table.first.last.to_f, table.last[1].to_f, table.first[1].to_f
+    first_rate = joint / frequent * 100
+    second_rate = table[1][1].to_f / table[1].last.to_f * 100
+    daily_rate = daily / total * 100
+    reverse_rate = joint / daily * 100
+    assert_equal [60, 10, 30, 80], [first_rate, second_rate, daily_rate, reverse_rate]
+    correct_rates = { "ア" => [daily_rate, first_rate], "イ" => [first_rate, second_rate],
+      "ウ" => [first_rate, second_rate], "エ" => [reverse_rate, frequent / total * 100] }
+    cross_tabulation.question_choices.each do |choice|
+      values = choice.content_blocks.first.fetch("text").scan(/(\d+)%/).flatten.map(&:to_f)
+      assert_equal choice.is_correct?, values == correct_rates.fetch(choice.choice_label)
+    end
 
     hypothesis = completed_questions.find_by!(exam_number: 15, question_number: 20)
     p_value = hypothesis.content_blocks.first.fetch("text")[/p値）として(\d+\.\d+)/, 1].to_f
     assert_equal 0.04, p_value
-    assert_equal [true, false], [0.05, 0.01].map { |level| p_value < level }
+    assert_equal [true, false], [0.05, 0.01].map { |level| p_value <= level }
     answer = hypothesis.question_choices.find_by!(is_correct: true)
     assert_equal "エ", answer.choice_label
-    assert_includes answer.content_blocks.first.fetch("text"), "帰無仮説と検定の前提の下で"
+    assert_includes answer.content_blocks.first.fetch("text"), "母平均が等しいと証明したことを意味しない"
   end
 
   test "再実行で問題や選択肢を増やさず変更のない回答履歴を保持する" do

@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験16（承認済みの問1〜15。全20問がそろうまでは非公開）
+# 模擬試験16（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -596,10 +596,31 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』第Ⅰ部3(1)「子供の学び」・本文17～18ページ（PDF22～23ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=22",
   },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("ある店舗の購入履歴データを用いて，記録された全ての購入について売上総額を集計する。データの1行は1回の購入を表し，顧客番号，購入日時，商品名，購入数量及び金額が記録されている。同じ顧客が異なる日時に複数回購入することがある。このデータのクレンジングに関する記述として適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "商品名に全角・半角や正式名称・略称の違いがあるときは，同じ商品を指すことを確認してから，表記を統一する。"),
+      text_choice.call("イ", "購入数量の欄に数値の意味に関係しない空白文字が付いているときは，その空白を取り除き，数値として処理できる形に整える。"),
+      text_choice.call("ウ", "金額欄に「1,200」と「1200」が混在するときは，カンマが桁区切りであることを確認し，同じ数値として処理できるようにする。"),
+      text_choice.call("エ", "顧客番号をキーとして重複する行を取り除き，購入日時の新しい行を残すことで，同一顧客の購入履歴を整理する。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。同じ対象の表記ゆれを確認して統一する処理であり，同じ商品が異なる商品として集計されるのを防ぐ。"),
+      text_block.call("イ：適切。数値の意味に関係しない空白を除去し，数値として読み取れるようにする処理である。"),
+      text_block.call("ウ：適切。両者が同じ金額を表すことを確認し，数値として扱える形式へそろえる処理である。"),
+      text_block.call("エ：不適切。顧客番号が同じでも，購入日時が異なる行は別の購入を表し，重複データとは限らない。最新の行だけを残すと過去の購入が失われ，売上総額が過少になる。重複の判定には，1行が何を表すかを踏まえ，購入を特定できる項目や取得元の記録を確認する必要がある。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅱ」教員研修用教材（本編）』第3章 学習12「大量のデータの収集と整理・整形」2・3（119〜120頁） | https://www.mext.go.jp/content/20200702-mxt_jogai01-000007843_004.pdf#page=15\n文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章 学習22（1）「量的データと質的データ」構造化データ（184頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=32",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験16は承認済みの問1〜15を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
+  raise "模擬試験16は承認済みの問1〜15・問20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -616,8 +637,10 @@ questions.each do |question|
   when 12 then "special_support_education"
   when 13, 14 then "educational_psychology"
   when 15 then "education_system"
+  when 20 then "information_specialized"
   end
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  expected_major_category = number == 20 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験16 問#{number}の分類が不正です"
   end
 

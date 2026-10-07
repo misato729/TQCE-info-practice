@@ -15,7 +15,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   }
 end
 
-# 模擬試験20（承認済みの問1〜15。全20問がそろうまでは非公開）
+# 模擬試験20（承認済みの問1〜15・問20。全20問がそろうまでは非公開）
 questions = [
   {
     question_number: 1,
@@ -617,10 +617,36 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論5（1）「学校教育の質の向上に向けたICTの活用」・本文31ページ（PDF36ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=36",
   },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次の二つのデータA，Bの平均値，分散及び標準偏差に関する記述として適切なものを，下のア～エの中から一つ選んで記号で答えなさい。なお，分散は，各値と平均値との差の2乗を合計し，それぞれのデータの個数で割った値とする。\n\nデータA：4，4，6，6\nデータB：2，4，5，6，8"),
+    ],
+    choices: [
+      text_choice.call("ア", "AとBの平均値及び中央値は一致しているため，平均値からのばらつきも同程度である。"),
+      text_choice.call("イ", "AとBの平均値は等しいが，Bの分散はAの4倍，標準偏差はAの2倍である。", true),
+      text_choice.call("ウ", "Bの最大値と最小値の差はAの3倍であるため，Bの分散はAの3倍となる。"),
+      text_choice.call("エ", "A，Bともに平均値からの偏差の合計が0であるため，いずれの分散も0となる。"),
+    ],
+    explanation_blocks: [
+      {
+        type: "code",
+        title: "平均値・分散・標準偏差の計算",
+        code: "平均値：Aは（4＋4＋6＋6）÷4＝5，Bは（2＋4＋5＋6＋8）÷5＝5\nAの分散：｛（－1）²＋（－1）²＋1²＋1²｝÷4＝1\nBの分散：｛（－3）²＋（－1）²＋0²＋1²＋3²｝÷5＝4\n標準偏差：Aは√1＝1，Bは√4＝2",
+      },
+      text_block.call("ア：誤り。平均値と中央値はいずれも5だが，分散はAが1，Bが4である。中心の位置が一致していても，ばらつきは同じとは限らない。"),
+      text_block.call("イ：正しい。分散はAが1，Bが4なので4倍となる。標準偏差は分散の平方根であり，Aが1，Bが2なので2倍となる。"),
+      text_block.call("ウ：誤り。最大値と最小値の差はAが6－4＝2，Bが8－2＝6なので3倍だが，その比が分散の比と一致するわけではない。実際の分散の比は4÷1＝4倍である。"),
+      text_block.call("エ：誤り。分散は偏差そのものの合計ではなく，偏差の2乗の平均である。偏差の合計はどちらも0だが，2乗の合計はAが4，Bが20であり，分散は0ではない。"),
+    ],
+    source_text: "総務省統計局『Data StaRt』ゼミナール編（2）3-3-1 記述統計量（平均値・分散・標準偏差） | https://www.stat.go.jp/dstart/point/seminar/02/3-3-1.html",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験20は承認済みの問1〜15を順番に登録してください"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a + [20]
+  raise "模擬試験20は承認済みの問1〜15・問20を順番に登録してください"
 end
 
 questions.each do |question|
@@ -636,8 +662,10 @@ questions.each do |question|
                       when 12 then "special_support_education"
                       when 13, 14 then "educational_psychology"
                       when 15 then "education_system"
+                      when 20 then "information_specialized"
                       end
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  expected_major_category = number == 20 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major_category && question.fetch(:category_code) == expected_category
     raise "模擬試験20 問#{number}の分類が不正です"
   end
 

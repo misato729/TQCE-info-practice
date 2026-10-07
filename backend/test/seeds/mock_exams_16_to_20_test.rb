@@ -2,14 +2,14 @@ require "test_helper"
 
 class MockExams16To20Test < ActionDispatch::IntegrationTest
   EXAM_NUMBERS = (16..20).to_a.freeze
-  QUESTION_NUMBERS = (1..15).to_a.freeze
+  QUESTION_NUMBERS = ((1..15).to_a + [20]).freeze
   LABELS = %w[ア イ ウ エ].freeze
   EXPECTED_ANSWERS = {
-    16 => %w[ウ ア イ エ ウ エ イ ア ウ エ イ ア ウ イ イ],
-    17 => %w[イ エ ア ウ イ ウ ア エ イ ウ エ イ ア ウ エ],
-    18 => %w[エ イ ウ ア エ イ ウ エ ア ア ウ エ イ ア ア],
-    19 => %w[ア ウ エ イ ア エ イ ウ ア エ ア ウ エ イ ウ],
-    20 => %w[ウ イ ア エ イ ア エ イ ウ ア エ ウ ア エ エ],
+    16 => %w[ウ ア イ エ ウ エ イ ア ウ エ イ ア ウ イ イ エ],
+    17 => %w[イ エ ア ウ イ ウ ア エ イ ウ エ イ ア ウ エ ア],
+    18 => %w[エ イ ウ ア エ イ ウ エ ア ア ウ エ イ ア ア イ],
+    19 => %w[ア ウ エ イ ア エ イ ウ ア エ ア ウ エ イ ウ ウ],
+    20 => %w[ウ イ ア エ イ ア エ イ ウ ア エ ウ ア エ エ イ],
   }.freeze
   QUESTION_7_CATEGORIES = {
     16 => "special_support_education", 17 => "career_education",
@@ -33,18 +33,18 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     load_partial_seeds
   end
 
-  test "承認済み問1から問15だけを五セット各十五問の下書きとして保存する" do
-    assert_equal 75, partial_questions.count
-    assert_equal 75, partial_questions.where(publication_status: "draft").count
+  test "承認済み問1から問15及び問20だけを五セット各十六問の下書きとして保存する" do
+    assert_equal 80, partial_questions.count
+    assert_equal 80, partial_questions.where(publication_status: "draft").count
     assert_equal 0, partial_questions.published.count
-    assert_equal 75, QuestionSeedState.where(exam_number: EXAM_NUMBERS).count
+    assert_equal 80, QuestionSeedState.where(exam_number: EXAM_NUMBERS).count
 
     EXAM_NUMBERS.each do |exam|
       questions = partial_questions.where(exam_number: exam).order(:question_number)
       assert_equal QUESTION_NUMBERS, questions.pluck(:question_number)
       assert_equal EXPECTED_ANSWERS.fetch(exam), questions.map { |question| question.question_choices.find_by!(is_correct: true).choice_label }
       questions.each do |question|
-        assert_equal "teacher_education", question.major_category_code
+        assert_equal(question.question_number == 20 ? "information" : "teacher_education", question.major_category_code)
         expected_category = case question.question_number
         when 1, 2 then "education_foundations"
         when 3..5 then "education_system"
@@ -57,6 +57,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
         when 12 then "special_support_education"
         when 13, 14 then "educational_psychology"
         when 15 then "education_system"
+        when 20 then "information_specialized"
         end
         assert_equal expected_category, question.category_code
         assert_equal "draft", question.publication_status
@@ -69,12 +70,12 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "全七十五問の表示ブロックと出典は公開時の内容検査も通過する" do
+  test "全八十問の表示ブロックと出典は公開時の内容検査も通過する" do
     partial_questions.each do |question|
       choices = QuestionPayload.from_record(question).fetch("choices").map(&:symbolize_keys)
       QuestionWriter.validate_publication!(question, choices)
       assert_equal "draft", question.reload.publication_status
-      explanation = question.explanation_blocks.map { |block| block.fetch("text") }.join("\n")
+      explanation = question.explanation_blocks.filter_map { |block| block["text"] }.join("\n")
       if [20, 3] == [question.exam_number, question.question_number]
         %w[① ② ③ ④].each { |label| assert_includes explanation, label }
         assert_includes explanation, "イ・ウ・エ"
@@ -431,13 +432,13 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "管理APIでは下書き七十五問の本文と四択及び正答と解説と出典を確認できる" do
+  test "管理APIでは下書き八十問の本文と四択及び正答と解説と出典を確認できる" do
     admin = User.create!(name: "seed管理検証", email: "draft-seed-admin@example.com", role: "admin", password: "password123", password_confirmation: "password123")
     headers = { "Authorization" => "Bearer #{AuthToken.issue(admin)}" }
     EXAM_NUMBERS.each do |exam|
       get "/api/v1/admin/questions", params: { exam_number: exam, publication_status: "draft" }, headers: headers
       assert_response :success
-      assert_equal 15, response.parsed_body.dig("meta", "total_count")
+      assert_equal 16, response.parsed_body.dig("meta", "total_count")
       assert_equal QUESTION_NUMBERS, response.parsed_body.fetch("data").map { |question| question.fetch("question_number") }
     end
     partial_questions.each do |question|
@@ -486,13 +487,13 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     assert AnswerHistory.exists?(added_history.id)
   end
 
-  test "メインseedは完成済み三百問と下書き七十五問を読み込み再実行できる" do
+  test "メインseedは完成済み三百問と下書き八十問を読み込み再実行できる" do
     load Rails.root.join("db/seeds.rb")
-    assert_equal 375, Question.count
-    assert_equal 1500, QuestionChoice.count
-    assert_equal 375, QuestionChoice.where(is_correct: true).count
+    assert_equal 380, Question.count
+    assert_equal 1520, QuestionChoice.count
+    assert_equal 380, QuestionChoice.where(is_correct: true).count
     assert_equal 300, Question.published.count
-    assert_equal 75, partial_questions.where(publication_status: "draft").count
+    assert_equal 80, partial_questions.where(publication_status: "draft").count
     assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
       load Rails.root.join("db/seeds.rb")
     end
