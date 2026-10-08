@@ -26,6 +26,7 @@ type Question = {
   major_category_code: string
   category_code: string
   choices: Choice[]
+  is_favorite?: boolean
 }
 
 type AnswerResult = {
@@ -58,7 +59,7 @@ type SourceReference = {
 const route = useRoute()
 const config = useRuntimeConfig()
 const { isLoggedIn, authHeaders, logout } = useAuth()
-const { isFavorite, toggleFavorite } = useDemoFavorites()
+const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
 
 const examNumber = computed(() => Number(route.params.examNumber))
 const questionNumber = computed(() => Number(route.params.questionNumber))
@@ -83,6 +84,7 @@ const {
 } = await useFetch<ApiResponse<Question>>('/api/v1/questions/next', {
   baseURL: config.public.apiBase,
   query: requestQuery,
+  headers: authHeaders,
   server: false,
 })
 
@@ -128,8 +130,20 @@ const sourceReferences = computed<SourceReference[]>(() => (
     })
 ))
 
+const questionErrorStatus = computed(() => {
+  const error = questionError.value as any
+  return error?.statusCode ?? error?.status
+})
+const questionErrorCode = computed(() => (questionError.value as any)?.data?.error?.code)
+const paywallRequired = computed(() => (
+  examNumber.value > 5
+  && (questionErrorStatus.value === 401 || questionErrorCode.value === 'paid_membership_required')
+))
+const paywallNeedsLogin = computed(() => questionErrorStatus.value === 401)
+
 const loadErrorMessage = computed(() => {
   if (!validPosition.value) return '試験ナンバーまたは問番号が正しくありません。'
+  if (paywallRequired.value) return ''
   if (questionError.value || (questionResponse.value && !question.value)) return '指定された公開問題が見つかりませんでした。'
   return ''
 })
@@ -144,6 +158,14 @@ watch(
     restoredHistoryId.value = null
   },
 )
+
+watch(question, (loaded) => {
+  if (loaded && typeof loaded.is_favorite === 'boolean') setFavorite(loaded.id, loaded.is_favorite)
+}, { immediate: true })
+
+watch(questionErrorStatus, (errorStatus) => {
+  if (errorStatus === 401 && isLoggedIn.value) logout()
+})
 
 const choiceState = (choice: Choice) => {
   if (!answerResult.value) return { selected: selectedChoiceId.value === choice.id }
@@ -177,6 +199,10 @@ const submitAnswer = async () => {
     if (error?.statusCode === 401 || error?.status === 401) {
       logout()
       answerError.value = 'ログインの有効期限が切れました。もう一度ログインしてください。'
+      return
+    }
+    if (error?.data?.error?.code === 'paid_membership_required') {
+      answerError.value = '有料会員資格を確認できません。有料会員ページをご確認ください。'
       return
     }
     answerError.value = '回答を送信できませんでした。通信状況を確認して、もう一度お試しください。'
@@ -246,6 +272,7 @@ const goToNextQuestion = async () => {
         exam_number: question.value.exam_number,
         after_question_number: question.value.question_number,
       },
+      headers: authHeaders.value,
     })
     await navigateTo(`/practice/${response.data.exam_number}/${response.data.question_number}`)
   }
@@ -272,7 +299,13 @@ const handleFavoriteClick = async () => {
     return
   }
 
-  toggleFavorite(question.value.id)
+  try {
+    await toggleFavorite(question.value.id)
+  }
+  catch (error: any) {
+    if ((error?.statusCode ?? error?.status) === 401) logout()
+    answerError.value = error?.data?.error?.message ?? 'お気に入りを更新できませんでした。'
+  }
 }
 
 const handleFavoriteModalKeydown = (event: KeyboardEvent) => {
@@ -288,6 +321,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
     <div v-if="status === 'idle' || status === 'pending'" class="state-panel" aria-live="polite">
       <UIcon class="spin" name="i-lucide-loader-circle" />
       <p>問題を読み込んでいます</p>
+    </div>
+
+    <div v-else-if="paywallRequired" class="state-panel paywall-panel">
+      <UIcon name="i-lucide-lock-keyhole" />
+      <h1>模擬試験{{ examNumber }}は有料会員向けです</h1>
+      <p v-if="paywallNeedsLogin">模擬試験6以降を利用するには、ログインして有料会員資格を確認してください。</p>
+      <p v-else>500円の買い切りで、公開中および今後追加される模擬試験6以降を利用できます。</p>
+      <div class="state-actions">
+        <NuxtLink v-if="paywallNeedsLogin" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }">ログイン</NuxtLink>
+        <NuxtLink class="primary-link" to="/premium">有料会員について確認する</NuxtLink>
+      </div>
     </div>
 
     <div v-else-if="loadErrorMessage || !question" class="state-panel error-panel">
@@ -522,6 +566,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .state-panel p { margin: 0; color: var(--muted); }
 .error-panel h1 { margin: 4px 0 0; font-size: 26px; }
 .error-panel :deep(svg) { color: var(--coral); }
+.paywall-panel h1 { margin: 4px 0 0; font-size: 26px; }
+.paywall-panel :deep(svg) { color: #64787e; }
 .state-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
 .spin { animation: spin 1s linear infinite; }
 .favorite-modal-backdrop {

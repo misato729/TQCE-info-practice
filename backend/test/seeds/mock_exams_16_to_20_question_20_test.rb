@@ -33,14 +33,14 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
     admin = User.create!(name: "問20下書き検証", email: "draft-q20-check@example.com", role: "admin", password: "password123", password_confirmation: "password123")
     headers = { "Authorization" => "Bearer #{AuthToken.issue(admin)}" }
     questions.each do |question|
-      get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }
+      get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }, headers: headers
       assert_response :success
       assert_equal question.content_blocks, response.parsed_body.dig("data", "content_blocks")
-      get api_v1_question_path(question)
+      get api_v1_question_path(question), headers: headers
       assert_response :success
       assert_not response.parsed_body.fetch("data").key?("explanation_blocks")
-      assert_no_difference "AnswerHistory.count" do
-        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.find_by!(is_correct: true).id }, as: :json
+      assert_difference "AnswerHistory.count", 1 do
+        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.find_by!(is_correct: true).id }, headers: headers, as: :json
       end
       assert_response :success
       assert response.parsed_body.dig("data", "is_correct")
@@ -56,14 +56,16 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
   end
 
   test "管理画面で下書きに変更した問20は一般APIから利用できない" do
+    admin = User.create!(name: "問20非公開検証", email: "private-q20-check@example.com", role: "admin", password: "password123", password_confirmation: "password123")
+    headers = { "Authorization" => "Bearer #{AuthToken.issue(admin)}" }
     question = questions.first
     question.update!(publication_status: "draft")
-    get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }
+    get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }, headers: headers
     assert_response :not_found
-    get api_v1_question_path(question)
+    get api_v1_question_path(question), headers: headers
     assert_response :not_found
     assert_no_difference "AnswerHistory.count" do
-      post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.first.id }, as: :json
+      post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.first.id }, headers: headers, as: :json
     end
     assert_response :not_found
     synchronize_question_20

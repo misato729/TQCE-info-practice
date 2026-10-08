@@ -136,9 +136,11 @@ Accept: application/json
 | `401 Unauthorized` | `unauthorized` | 未ログイン、トークン不正・期限切れ |
 | `403 Forbidden` | `forbidden`, `paid_membership_required` | 管理者権限不足、他ユーザーのデータへのアクセス、有料会員資格不足 |
 | `404 Not Found` | `not_found` | 対象が存在しない、非公開問題への一般アクセス |
-| `409 Conflict` | `membership_already_active`, `checkout_session_in_progress` | 有料会員の重複購入、未完了の決済が存在する |
+| `409 Conflict` | `membership_already_active`, `checkout_session_in_progress` | 有料会員の重複購入、未完了又は完了確認中の決済が存在する |
 | `422 Unprocessable Entity` | `validation_error` | バリデーションエラー、選択肢の指定不正 |
 | `500 Internal Server Error` | `internal_server_error` | サーバー内部エラー |
+| `502 Bad Gateway` | `payment_provider_error` | Stripe APIへの接続失敗 |
+| `503 Service Unavailable` | `payment_unavailable`, `webhook_unavailable` | 決済又はWebhookの必須設定不足 |
 
 ## API一覧
 
@@ -170,6 +172,7 @@ Accept: application/json
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
+| GET | `/api/v1/payments/config` | 不要 | 販売可否、金額、通貨及び無料範囲を取得する |
 | POST | `/api/v1/payments/checkout_sessions` | 必要 | 500円の買い切り用Stripe Checkout Sessionを作成する |
 | POST | `/api/v1/webhooks/stripe` | Stripe署名 | Stripeの決済・返金・異議申立てイベントを処理する |
 
@@ -293,7 +296,9 @@ Accept: application/json
 }
 ```
 
-現在のパスワードが一致した場合、ユーザー、回答履歴、お気に入り及び有料会員資格を物理削除し、`204 No Content` を返す。決済記録は、ユーザーとの関連を `NULL` にして、会計、返金及びStripeとの照合に必要な最小限の情報だけを保持する。削除による自動返金と、再登録時の有料会員資格の復元は行わない。
+現在のパスワードが一致した場合、未完了のStripe Checkout Sessionを失効させた上で、ユーザー、回答履歴、お気に入り及び有料会員資格を物理削除し、`204 No Content` を返す。Sessionが完了済みでWebhookの確認中である場合は、`409 Conflict` と `checkout_session_in_progress` を返して削除しない。Stripeへ接続できず未完了Sessionの安全な失効を確認できない場合も削除しない。
+
+決済記録は、ユーザーとの関連を `NULL` にして、会計、返金及びStripeとの照合に必要な最小限の情報だけを保持する。削除による自動返金と、再登録時の有料会員資格の復元は行わない。
 
 ## 問題演習API
 
@@ -450,6 +455,33 @@ Accept: application/json
 
 ## 有料会員・決済API
 
+### 販売設定取得
+
+`GET /api/v1/payments/config`
+
+公開して差し支えない販売状態と、特定商取引法に基づく表記へ掲載する販売者情報だけを返す。Stripeのキー、Webhook署名シークレット及びPrice IDは返さない。販売者情報はこのAPIを正本として公開画面へ表示し、バックエンドの販売開始判定と表示内容の不一致を防ぐ。
+
+```json
+{
+  "data": {
+    "enabled": false,
+    "amount": 500,
+    "currency": "jpy",
+    "purchase_type": "one_time",
+    "free_exam_max": 5,
+    "seller": {
+      "name": "販売事業者名",
+      "representative": "運営責任者名",
+      "address": "所在地",
+      "phone": "電話番号",
+      "email": "問い合わせ先"
+    }
+  }
+}
+```
+
+`enabled` は販売開始フラグが有効で、Stripe、戻り先URL及び販売事業者情報の必須環境変数がすべて設定されている場合だけ `true` とする。
+
 ### Checkout Session作成
 
 `POST /api/v1/payments/checkout_sessions`
@@ -474,10 +506,11 @@ Accept: application/json
 ```
 
 * Stripe Checkout Sessionは `mode = payment`、数量1、初期対応の決済手段はカードとして作成する
+* Checkoutは日本語表示とし、Stripe Dashboardへ登録した利用規約への同意を必須にする。支払確定ボタン付近にも、500円の買い切り、自動更新なし及び提供開始後の利用者都合による返金条件を表示する
 * 金額は500円、通貨は `jpy` とし、Stripe上のPrice設定とサーバーの期待値が一致しない場合はSessionを作成しない
 * ログインユーザーIDをStripeの `client_reference_id` または `metadata` に設定し、ローカルの決済記録と照合する
 * Session作成後、Checkout Session IDを持つ `pending` の決済記録を保存してからURLを返す
-* Stripe APIへの作成要求には冪等性キーを使用し、同一ユーザーからの再送でSessionを重複作成しない
+* Stripe APIへの作成要求には要求ごとの冪等性キーを使用する。ユーザー単位のDBロックと未完了決済の再利用を併用し、同一ユーザーの再送で利用可能なSessionを重複作成しない
 * 有料会員または管理者からの要求は `409 Conflict` と `membership_already_active` を返す
 * 有効な未完了Sessionが存在する場合は、そのSessionの再利用または `409 Conflict` と `checkout_session_in_progress` のいずれかに統一し、二重決済を防ぐ
 * `success_url` は `/premium/complete`、`cancel_url` は `/premium` を基準とし、許可済みフロントエンドURLからサーバー側で組み立てる
@@ -495,13 +528,15 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | `checkout.session.completed` | `payment_status = paid`、商品、金額、通貨、ユーザー及びCheckout Session IDを照合し、決済を `paid`、有料会員資格を `active` にする |
 | `checkout.session.expired` | 未完了の決済を `expired` にする |
 | `refund.created`, `refund.updated` | Refundの状態を確認し、成立済みの返金額を反映する。全額返金が成立した場合は決済を `refunded`、資格を `revoked` にする |
-| `refund.failed` | 返金失敗を記録し、運営者が確認できるようにする |
+| `refund.failed` | 対応する決済へ最新の返金失敗理由と通知日時を記録し、運営者が確認できるようにする |
 | `charge.dispute.created` | 決済を `disputed`、資格を `revoked` にして利用を停止する |
-| `charge.dispute.closed` | 結果を記録する。資金回復後の資格再開は自動化せず、運営者がStripeの状態を確認して行う |
+| `charge.dispute.closed` | 対応する決済へStripe上の終了結果と通知日時を記録する。資金回復後の資格再開は自動化せず、運営者がStripeの状態を確認して行う |
 
 * Stripe Event IDを一意に保存し、処理済みイベントの再送には状態を変更せず `200 OK` を返す
 * Event IDの保存、決済状態の更新及び資格の更新は同一DBトランザクションで確定する
 * 処理に失敗した場合はDBをロールバックし、Stripeが再送できるように `5xx` を返す
+* 返金又は異議申立てが対応する `checkout.session.completed` より先に届いた場合は、PaymentIntentのメタデータで本サービスの決済であることを確認し、イベントを処理済みにせず `5xx` を返して再送を待つ
+* 異議申立てイベントのPaymentIntent IDが空の場合は、ChargeをStripeから取得してPaymentIntent IDを確認し、対応する決済を照合する
 * 部分返金は購入者向け機能として提供しない。発生した場合は返金額を記録して運営確認とし、全額返金になるまで資格を自動失効させない
 * ブラウザの戻り先、URLクエリ、Checkout Sessionの `status = complete` だけでは資格を付与せず、`payment_status = paid` の署名検証済みイベントを必要とする
 
@@ -742,9 +777,17 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | `STRIPE_WEBHOOK_SECRET` | Stripe Webhookの署名検証 | バックエンドのみ |
 | `STRIPE_PRICE_ID` | 500円の買い切り商品に対応するPrice ID | バックエンドのみ |
 | `FRONTEND_URL` | Checkoutの成功・中止時の戻り先を組み立てる許可済みURL | バックエンドのみ |
+| `PAID_MEMBERSHIP_ENABLED` | 販売開始フラグ。初期値は `false` | バックエンドのみ |
+| `STRIPE_LIVEMODE` | Stripeイベントと実行環境のテスト／本番モード照合 | バックエンドのみ |
+| `NUXT_PUBLIC_SELLER_NAME` | 特定商取引法に基づく表記の販売事業者名 | 公開 |
+| `NUXT_PUBLIC_SELLER_REPRESENTATIVE` | 運営責任者 | 公開 |
+| `NUXT_PUBLIC_SELLER_ADDRESS` | 所在地 | 公開 |
+| `NUXT_PUBLIC_SELLER_PHONE` | 電話番号 | 公開 |
+| `NUXT_PUBLIC_SELLER_EMAIL` | 問い合わせ先 | 公開 |
 
 * テスト環境と本番環境のキー、Webhook署名シークレット及びPrice IDを混在させない
 * 上記の値はリポジトリへ保存せず、ローカルの `.env` とデプロイ先のSecretで管理する
+* `PAID_MEMBERSHIP_ENABLED` は、テスト決済、Webhook、利用規約、プライバシーポリシー及び特定商取引法に基づく表記を確認した後にだけ `true` へ変更する
 
 ## Stripe公式資料
 

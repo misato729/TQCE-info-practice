@@ -40,6 +40,24 @@ class ApplicationController < ActionController::API
     render_error(:forbidden, "管理者権限が必要です", :forbidden)
   end
 
+  def authorize_exam_access!(exam_number)
+    return true if exam_number <= PaidMembership::FREE_EXAM_MAX
+    return true if current_user&.paid_content_access?
+
+    if current_user
+      render_error(:paid_membership_required, "この模擬試験の利用には有料会員資格が必要です", :forbidden)
+    else
+      render_error(:unauthorized, "この模擬試験を利用するにはログインが必要です", :unauthorized)
+    end
+    false
+  end
+
+  def accessible_question_scope(scope)
+    return scope if current_user&.paid_content_access?
+
+    scope.where(exam_number: ..PaidMembership::FREE_EXAM_MAX)
+  end
+
   def authenticate_backend_screen
     return if request.path.start_with?("/api/")
     return unless backend_basic_auth_enabled?

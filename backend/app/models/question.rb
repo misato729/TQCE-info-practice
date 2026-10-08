@@ -1,5 +1,6 @@
 class Question < ApplicationRecord
   has_many :answer_histories, dependent: :destroy
+  has_many :favorites, dependent: :destroy
   has_many :question_choices, -> { order(:display_order) }, dependent: :destroy, inverse_of: :question
 
   scope :published, -> { where(publication_status: "published") }

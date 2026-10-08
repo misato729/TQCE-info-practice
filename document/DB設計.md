@@ -328,6 +328,7 @@ Stripe Checkout Sessionごとの決済状態を管理する。カード番号、
 | `stripe_checkout_session_id` | VARCHAR(255) | NO | - | Stripe Checkout Session ID |
 | `stripe_payment_intent_id` | VARCHAR(255) | YES | `NULL` | Stripe PaymentIntent ID |
 | `stripe_charge_id` | VARCHAR(255) | YES | `NULL` | 返金・異議申立て照合用のStripe Charge ID |
+| `stripe_dispute_id` | VARCHAR(255) | YES | `NULL` | 最新のStripe Dispute ID |
 | `stripe_price_id` | VARCHAR(255) | NO | - | 使用したStripe Price ID |
 | `amount` | INTEGER | NO | `500` | 支払総額。日本円のため円単位 |
 | `refunded_amount` | INTEGER | NO | `0` | Stripeで成立した返金額。円単位 |
@@ -335,6 +336,10 @@ Stripe Checkout Sessionごとの決済状態を管理する。カード番号、
 | `status` | VARCHAR(30) | NO | `pending` | 決済状態 |
 | `paid_at` | DATETIME | YES | `NULL` | 支払完了日時 |
 | `refunded_at` | DATETIME | YES | `NULL` | 全額返金完了日時 |
+| `dispute_status` | VARCHAR(30) | YES | `NULL` | Stripe上の異議申立て状態 |
+| `dispute_closed_at` | DATETIME | YES | `NULL` | 異議申立て終了通知を処理した日時 |
+| `last_refund_failure_reason` | VARCHAR(100) | YES | `NULL` | 最新の返金失敗理由 |
+| `last_refund_failed_at` | DATETIME | YES | `NULL` | 最新の返金失敗通知を処理した日時 |
 | `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
 | `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
 
@@ -347,6 +352,7 @@ Stripe Checkout Sessionごとの決済状態を管理する。カード番号、
 | UNIQUE INDEX | `stripe_checkout_session_id` | 同じCheckout Sessionの重複保存を禁止 |
 | UNIQUE INDEX | `stripe_payment_intent_id` | `NULL` 以外のPaymentIntent IDの重複を禁止 |
 | UNIQUE INDEX | `stripe_charge_id` | `NULL` 以外のCharge IDの重複を禁止 |
+| UNIQUE INDEX | `stripe_dispute_id` | `NULL` 以外のDispute IDの重複を禁止 |
 | PARTIAL UNIQUE INDEX | `user_id WHERE status = 'pending'` | 同じユーザーの有効な未完了決済を1件に制限 |
 | INDEX | `user_id, created_at` | ユーザー別の決済照合 |
 | INDEX | `status, updated_at` | 未完了・要確認決済の抽出 |
@@ -362,6 +368,7 @@ Stripe Checkout Sessionごとの決済状態を管理する。カード番号、
 - 支払完了は署名検証済みWebhookの `payment_status = paid` を確認した場合だけ記録する。
 - 返金はStripe Refundの状態を確認し、成立済みの金額だけを `refunded_amount` に反映する。
 - 全額返金、部分返金及び異議申立ての状態を決済記録に残す。部分返金は初期サービスでは提供せず、発生時は運営確認対象とする。
+- 返金失敗時は失敗理由と通知日時、異議申立て終了時はStripe上の結果と通知日時を記録する。異議申立て終了後の資格再開は自動化しない。
 - アカウント削除後も、会計、返金及びStripeとの照合に必要な最小限の情報を保持し、ユーザーとの関連は外す。
 
 ### 3.7 memberships

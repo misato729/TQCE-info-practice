@@ -32,6 +32,7 @@ onMounted(async () => {
               <nav class="footer-links" aria-label="サイトポリシー">
                 <NuxtLink to="/privacy-policy">プライバシーポリシー</NuxtLink>
                 <NuxtLink to="/terms">利用規約</NuxtLink>
+                <NuxtLink to="/commercial-disclosure">特定商取引法に基づく表記</NuxtLink>
               </nav>
             </div>
             <div class="api-status" :class="apiStatus">

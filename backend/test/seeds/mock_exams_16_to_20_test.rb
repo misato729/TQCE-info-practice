@@ -461,30 +461,38 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   test "完成した五セットは一般向け一覧と問題取得及び回答APIで利用できる" do
-    get api_v1_exams_path
+    headers = paid_user_headers("exams-16-20@example.com")
+    get api_v1_exams_path, headers: headers
     assert_response :success
     assert_equal EXAM_NUMBERS, response.parsed_body.fetch("data").select { |exam| EXAM_NUMBERS.include?(exam.fetch("exam_number")) }.map { |exam| exam.fetch("exam_number") }
 
     EXAM_NUMBERS.each do |exam|
-      get next_api_v1_questions_path, params: { exam_number: exam }
+      get next_api_v1_questions_path, params: { exam_number: exam }, headers: headers
       assert_response :success
       assert_equal [exam, 1], response.parsed_body.fetch("data").values_at("exam_number", "question_number")
     end
     partial_questions.each do |question|
-      get api_v1_question_path(question)
+      get api_v1_question_path(question), headers: headers
       assert_response :success
       body = response.parsed_body.fetch("data")
       assert_equal question.content_blocks, body.fetch("content_blocks")
       %w[correct_choice explanation_blocks source_text].each { |key| assert_not body.key?(key) }
       body.fetch("choices").each { |choice| assert_not choice.key?("is_correct") }
-      assert_no_difference "AnswerHistory.count" do
-        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.find_by!(is_correct: true).id }, as: :json
+      assert_difference "AnswerHistory.count", 1 do
+        post answer_api_v1_question_path(question), params: { selected_choice_id: question.question_choices.find_by!(is_correct: true).id }, headers: headers, as: :json
       end
       assert_response :success
       assert response.parsed_body.dig("data", "is_correct")
       assert_equal question.explanation_blocks, response.parsed_body.dig("data", "explanation_blocks")
       assert_equal question.source_text, response.parsed_body.dig("data", "source_text")
     end
+  end
+
+  def paid_user_headers(email)
+    user = User.create!(name: "有料会員", email: email, password: "password123", password_confirmation: "password123")
+    payment = Payment.create!(user: user, stripe_checkout_session_id: "cs_#{user.id}", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
+    Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
+    { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
   end
 
   test "管理APIでは公開百問の本文と四択及び正答と解説と出典を確認できる" do

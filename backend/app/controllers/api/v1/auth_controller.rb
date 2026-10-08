@@ -42,12 +42,7 @@ module Api
       end
 
       def serialize_user(user)
-        {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        }
+        UserPayload.call(user)
       end
     end
   end

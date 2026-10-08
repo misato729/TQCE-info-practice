@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const updates = [
+  { date: '2026.10.08', text: '買い切りの有料会員機能とStripe Checkoutに対応しました。' },
   { date: '2026.08.20', text: '問題演習サイトの画面構成を更新しました。' },
   { date: '2026.08.10', text: '試験概要に出題範囲の解説を追加しました。' },
 ]
@@ -45,8 +46,14 @@ const updates = [
       <div class="policy-grid">
         <article>
           <UIcon name="i-lucide-user-check" />
-          <h3>ログインなしで演習</h3>
-          <p>問題演習はすぐに利用できます。解答履歴とお気に入りの保存にはログインが必要です。</p>
+          <h3>模擬試験1〜5は無料</h3>
+          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴とお気に入りの保存にはログインが必要です。</p>
+        </article>
+        <article>
+          <UIcon name="i-lucide-badge-check" />
+          <h3>500円の買い切り</h3>
+          <p>有料会員は模擬試験6以降も利用できます。月額料金や自動更新はありません。</p>
+          <NuxtLink class="text-link" to="/premium">有料会員について</NuxtLink>
         </article>
         <article>
           <UIcon name="i-lucide-shield-alert" />
@@ -82,12 +89,14 @@ h1 { margin: 0; font-size: 30px; line-height: 1.3; }
 .update-list time { color: var(--teal-dark); font-weight: 800; }
 .update-list p { margin: 0; color: #4f6169; }
 .policy-section { background: #fff; }
-.policy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.policy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .policy-grid article { padding: 24px 0; border-top: 3px solid var(--yellow); }
 .policy-grid article:nth-child(2) { border-color: var(--coral); }
+.policy-grid article:nth-child(3) { border-color: var(--teal); }
 .policy-grid :deep(svg) { width: 28px; height: 28px; color: var(--teal); }
 .policy-grid h3 { margin: 14px 0 8px; }
 .policy-grid p { margin: 0; color: var(--muted); line-height: 1.8; }
+.text-link { display: inline-block; margin-top: 12px; color: var(--teal-dark); font-weight: 800; }
 
 @media (max-width: 640px) {
   .overview-section { min-height: auto; padding: 36px 20px; }

@@ -3,6 +3,12 @@ export type AuthUser = {
   name: string
   email: string
   role: 'user' | 'admin'
+  paid_content_access: boolean
+  membership: {
+    status: 'free' | 'active' | 'revoked'
+    purchased_at: string | null
+    expires_at: null
+  }
   created_at?: string
 }
 
@@ -61,10 +67,11 @@ export const useAuth = () => {
   const logout = () => {
     accessToken.value = null
     user.value = null
+    useState<number[]>('favorite-question-ids').value = []
   }
 
-  const ensureCurrentUser = async () => {
-    if (!accessToken.value || user.value) return user.value
+  const ensureCurrentUser = async (force = false) => {
+    if (!accessToken.value || (user.value && !force)) return user.value
 
     try {
       const response = await $fetch<ApiResponse<AuthUser>>('/api/v1/me', {
@@ -74,8 +81,9 @@ export const useAuth = () => {
       user.value = response.data
       return user.value
     }
-    catch {
-      logout()
+    catch (error: any) {
+      const status = error?.statusCode ?? error?.status
+      if (status === 401) logout()
       return null
     }
   }

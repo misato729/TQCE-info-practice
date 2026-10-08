@@ -27,6 +27,8 @@ module Api
       end
 
       def show
+        return unless authorize_exam_access!(@answer_history.question.exam_number)
+
         correct_choice = @answer_history.question.question_choices.find_by!(is_correct: true)
 
         render json: {
@@ -57,8 +59,22 @@ module Api
       end
 
       def serialize_history(history)
+        unless authorize_history_access?(history)
+          return {
+            id: history.id,
+            locked: true,
+            question: {
+              id: history.question.id,
+              exam_number: history.question.exam_number,
+              question_number: history.question.question_number,
+            },
+            answered_at: history.created_at.iso8601,
+          }
+        end
+
         {
           id: history.id,
+          locked: false,
           question: {
             id: history.question.id,
             exam_number: history.question.exam_number,
@@ -94,6 +110,10 @@ module Api
         choice_block = blocks.find { |item| (item["type"] || item[:type]) == "fill_in_choice" }
         cells = choice_block && (choice_block["cells"] || choice_block[:cells])
         Array(cells).join(" / ").truncate(120)
+      end
+
+      def authorize_history_access?(history)
+        history.question.exam_number <= PaidMembership::FREE_EXAM_MAX || current_user.paid_content_access?
       end
     end
   end

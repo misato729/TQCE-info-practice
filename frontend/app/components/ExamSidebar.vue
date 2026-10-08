@@ -2,6 +2,8 @@
 type Exam = {
   exam_number: number
   question_numbers: number[]
+  published_question_count: number
+  access: 'available' | 'paid_membership_required'
 }
 
 type ApiResponse<T> = { data: T }
@@ -9,13 +11,16 @@ type ApiResponse<T> = { data: T }
 const route = useRoute()
 const config = useRuntimeConfig()
 const openExam = ref<number | null>(null)
+const { authHeaders, user, accessToken } = useAuth()
 
-const { data: examsResponse } = await useFetch<ApiResponse<Exam[]>>('/api/v1/exams', {
+const { data: examsResponse, status: examsStatus, refresh: refreshExams } = await useFetch<ApiResponse<Exam[]>>('/api/v1/exams', {
   baseURL: config.public.apiBase,
+  headers: authHeaders,
   server: false,
 })
 
 const exams = computed(() => examsResponse.value?.data ?? [])
+const isLoading = computed(() => examsStatus.value === 'idle' || examsStatus.value === 'pending')
 
 const toggleExam = (exam: number) => {
   openExam.value = openExam.value === exam ? null : exam
@@ -24,6 +29,14 @@ const toggleExam = (exam: number) => {
 const isCurrentQuestion = (exam: number, question: number) => {
   return route.path === `/practice/${exam}/${question}`
 }
+
+const examTarget = (exam: Exam, question?: number) => (
+  exam.access === 'available'
+    ? `/practice/${exam.exam_number}/${question ?? exam.question_numbers[0]}`
+    : '/premium'
+)
+
+watch([accessToken, () => user.value?.paid_content_access], () => { void refreshExams() })
 </script>
 
 <template>
@@ -33,48 +46,56 @@ const isCurrentQuestion = (exam: number, question: number) => {
       <span>試験セット</span>
     </div>
 
-    <section v-for="exam in exams" :key="exam.exam_number" class="exam-group">
-      <div
-        class="exam-row"
-        :class="{ current: route.path.startsWith(`/practice/${exam.exam_number}/`) }"
-      >
-        <NuxtLink class="exam-link" :to="`/practice/${exam.exam_number}/${exam.question_numbers[0]}`">
-          模擬試験 {{ exam.exam_number }}
-        </NuxtLink>
-        <button
-          type="button"
-          :aria-expanded="openExam === exam.exam_number"
-          :aria-controls="`exam-${exam.exam_number}-questions`"
-          :title="openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く`"
-          @click="toggleExam(exam.exam_number)"
-        >
-          <UIcon
-            :name="openExam === exam.exam_number ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-          />
-          <span class="sr-only">
-            {{ openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く` }}
-          </span>
-        </button>
-      </div>
+    <div v-if="isLoading" class="sidebar-loading" role="status" aria-live="polite">
+      <UIcon class="loading-spinner" name="i-lucide-loader-circle" />
+      <span>試験セットを読み込んでいます</span>
+    </div>
 
-      <Transition name="questions">
-        <nav
-          v-if="openExam === exam.exam_number"
-          :id="`exam-${exam.exam_number}-questions`"
-          class="question-list"
-          :aria-label="`模擬試験${exam.exam_number}の問題一覧`"
+    <template v-else>
+      <section v-for="exam in exams" :key="exam.exam_number" class="exam-group">
+        <div
+          class="exam-row"
+          :class="{ current: route.path.startsWith(`/practice/${exam.exam_number}/`) }"
         >
-          <NuxtLink
-            v-for="question in exam.question_numbers"
-            :key="question"
-            :to="`/practice/${exam.exam_number}/${question}`"
-            :class="{ active: isCurrentQuestion(exam.exam_number, question) }"
-          >
-            問{{ question }}
+          <NuxtLink class="exam-link" :to="examTarget(exam)">
+            模擬試験 {{ exam.exam_number }}
+            <UIcon v-if="exam.access !== 'available'" class="lock-icon" name="i-lucide-lock-keyhole" />
           </NuxtLink>
-        </nav>
-      </Transition>
-    </section>
+          <button
+            type="button"
+            :aria-expanded="openExam === exam.exam_number"
+            :aria-controls="`exam-${exam.exam_number}-questions`"
+            :title="openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く`"
+            @click="toggleExam(exam.exam_number)"
+          >
+            <UIcon
+              :name="openExam === exam.exam_number ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+            />
+            <span class="sr-only">
+              {{ openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く` }}
+            </span>
+          </button>
+        </div>
+
+        <Transition name="questions">
+          <nav
+            v-if="openExam === exam.exam_number"
+            :id="`exam-${exam.exam_number}-questions`"
+            class="question-list"
+            :aria-label="`模擬試験${exam.exam_number}の問題一覧`"
+          >
+            <NuxtLink
+              v-for="question in exam.question_numbers"
+              :key="question"
+              :to="examTarget(exam, question)"
+              :class="{ active: isCurrentQuestion(exam.exam_number, question) }"
+            >
+              問{{ question }}
+            </NuxtLink>
+          </nav>
+        </Transition>
+      </section>
+    </template>
   </aside>
 </template>
 
@@ -96,6 +117,29 @@ const isCurrentQuestion = (exam: number, question: number) => {
   color: #53676e;
   font-size: 13px;
   font-weight: 800;
+}
+
+.sidebar-loading {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: #53676e;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  color: var(--teal-dark);
+  animation: sidebar-spin 1s linear infinite;
+}
+
+@keyframes sidebar-spin {
+  to { transform: rotate(360deg); }
 }
 
 .exam-group + .exam-group {
@@ -128,6 +172,8 @@ const isCurrentQuestion = (exam: number, question: number) => {
 .exam-link:hover {
   color: var(--teal-dark);
 }
+
+.lock-icon { width: 17px; height: 17px; margin-left: auto; color: #7a8c91; }
 
 .exam-row.current {
   border-color: var(--teal);
@@ -219,6 +265,10 @@ const isCurrentQuestion = (exam: number, question: number) => {
 
   .sidebar-heading {
     min-height: 32px;
+  }
+
+  .sidebar-loading {
+    min-height: 76px;
   }
 
   .exam-row {

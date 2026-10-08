@@ -12,11 +12,36 @@ class Api::V1::ExamsTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal(
       [
-        { "exam_number" => 1, "question_numbers" => [1, 3] },
-        { "exam_number" => 3, "question_numbers" => [2] },
+        {
+          "exam_number" => 1,
+          "question_numbers" => [1, 3],
+          "published_question_count" => 2,
+          "access" => "available",
+        },
+        {
+          "exam_number" => 3,
+          "question_numbers" => [2],
+          "published_question_count" => 1,
+          "access" => "available",
+        },
       ],
       response.parsed_body.fetch("data"),
     )
+  end
+
+  test "無料会員には模擬試験6以降をロック表示する" do
+    create_question(exam_number: 6, question_number: 1, publication_status: "published")
+    user = User.create!(
+      name: "無料会員",
+      email: "free@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+    )
+
+    get api_v1_exams_path, headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
+
+    assert_response :success
+    assert_equal "paid_membership_required", response.parsed_body.dig("data", 0, "access")
   end
 
   test "公開中の模擬試験がなければ空配列を返す" do

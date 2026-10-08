@@ -41,14 +41,15 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "十五問を匿名で取得し回答後だけに正答解説出典を返す" do
+  test "有料会員が十五問を取得し回答後だけに正答解説出典を返す" do
+    headers = paid_user_headers("question20-paid@example.com")
     questions.each do |question|
-      get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }
+      get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }, headers: headers
       assert_response :success
       position = response.parsed_body.fetch("data")
       assert_equal [question.exam_number, 20], position.values_at("exam_number", "question_number")
       assert_equal question.content_blocks, position.fetch("content_blocks")
-      get api_v1_question_path(question)
+      get api_v1_question_path(question), headers: headers
       assert_response :success
       body = response.parsed_body.fetch("data")
       assert_equal question.content_blocks, body.fetch("content_blocks")
@@ -57,8 +58,8 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
       body.fetch("choices").each { |choice| assert_not choice.key?("is_correct") }
 
       correct = question.question_choices.find_by!(is_correct: true)
-      assert_no_difference "AnswerHistory.count" do
-        post answer_api_v1_question_path(question), params: { selected_choice_id: correct.id }, as: :json
+      assert_difference "AnswerHistory.count", 1 do
+        post answer_api_v1_question_path(question), params: { selected_choice_id: correct.id }, headers: headers, as: :json
       end
       assert_response :success
       answer = response.parsed_body.fetch("data")
@@ -66,6 +67,13 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
       assert_equal question.explanation_blocks, answer.fetch("explanation_blocks")
       assert_equal question.source_text, answer.fetch("source_text")
     end
+  end
+
+  def paid_user_headers(email)
+    user = User.create!(name: "有料会員", email: email, password: "password123", password_confirmation: "password123")
+    payment = Payment.create!(user: user, stripe_checkout_session_id: "cs_#{user.id}", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
+    Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
+    { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
   end
 
   test "変更のない再実行は十五問のIDと選択肢IDと回答履歴を保持する" do

@@ -2,6 +2,9 @@ class User < ApplicationRecord
   has_secure_password
 
   has_many :answer_histories, dependent: :destroy
+  has_many :favorites, dependent: :destroy
+  has_many :payments, dependent: :nullify
+  has_one :membership, dependent: :destroy
 
   before_validation :normalize_email
 
@@ -13,6 +16,10 @@ class User < ApplicationRecord
     uniqueness: { case_sensitive: false }
   validates :password, length: { minimum: 8 }, if: -> { password.present? }
   validates :role, inclusion: { in: MasterData.values(MasterData::USER_ROLES) }
+
+  def paid_content_access?
+    role == "admin" || membership&.status == "active"
+  end
 
   private
 

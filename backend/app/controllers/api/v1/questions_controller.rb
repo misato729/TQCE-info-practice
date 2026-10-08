@@ -1,8 +1,9 @@
 module Api
   module V1
     class QuestionsController < ApplicationController
+      before_action :authenticate_optional_user!
       before_action :set_question, only: %i[show answer]
-      before_action :authenticate_optional_user!, only: :answer
+      before_action :authorize_question_access!, only: %i[show answer]
 
       def show
         render json: { data: serialize_question(@question) }
@@ -63,6 +64,7 @@ module Api
         if params[:exam_number].present?
           exam_number = positive_integer_param(:exam_number)
           return unless exam_number
+          return unless authorize_exam_access!(exam_number)
 
           scope = scope.where(exam_number: exam_number)
 
@@ -81,7 +83,7 @@ module Api
           return
         end
 
-        ordered_scope = scope.order(:exam_number, :question_number)
+        ordered_scope = accessible_question_scope(scope).order(:exam_number, :question_number)
         return ordered_scope.first if params[:exclude_question_id].blank?
 
         excluded = positive_integer_param(:exclude_question_id)
@@ -107,7 +109,7 @@ module Api
       end
 
       def serialize_question(question)
-        {
+        payload = {
           id: question.id,
           exam_number: question.exam_number,
           question_number: question.question_number,
@@ -116,6 +118,8 @@ module Api
           category_code: question.category_code,
           choices: question.question_choices.map { |choice| serialize_choice(choice) },
         }
+        payload[:is_favorite] = current_user.favorites.exists?(question_id: question.id) if current_user
+        payload
       end
 
       def serialize_choice(choice)
@@ -125,6 +129,10 @@ module Api
           content_blocks: choice.content_blocks,
           display_order: choice.display_order,
         }
+      end
+
+      def authorize_question_access!
+        authorize_exam_access!(@question.exam_number)
       end
     end
   end

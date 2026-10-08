@@ -127,4 +127,96 @@ class Api::V1::QuestionsTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "模擬試験6以降は未ログインでは取得できない" do
+    premium_question = create_question(exam_number: 6)
+
+    get api_v1_question_path(premium_question)
+
+    assert_response :unauthorized
+  end
+
+  test "模擬試験6以降は無料会員では取得も回答もできない" do
+    premium_question = create_question(exam_number: 6)
+    user = create_user("free@example.com")
+    headers = { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
+
+    get api_v1_question_path(premium_question), headers: headers
+    assert_response :forbidden
+    assert_equal "paid_membership_required", response.parsed_body.dig("error", "code")
+
+    post answer_api_v1_question_path(premium_question),
+      params: { selected_choice_id: premium_question.question_choices.first.id },
+      headers: headers,
+      as: :json
+    assert_response :forbidden
+  end
+
+  test "有料会員は模擬試験6以降を取得できる" do
+    premium_question = create_question(exam_number: 6)
+    user = create_user("paid@example.com")
+    payment = create_paid_payment(user)
+    Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
+
+    get api_v1_question_path(premium_question),
+      headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
+
+    assert_response :success
+    assert_equal premium_question.id, response.parsed_body.dig("data", "id")
+  end
+
+  test "試験指定なしの次問題取得は無料権限の範囲だけを候補にする" do
+    premium_question = create_question(exam_number: 6)
+    @question.destroy!
+
+    get next_api_v1_questions_path
+
+    assert_response :not_found
+    assert premium_question.persisted?
+  end
+
+  private
+
+  def create_user(email)
+    User.create!(
+      name: "学習ユーザー",
+      email: email,
+      password: "password123",
+      password_confirmation: "password123",
+    )
+  end
+
+  def create_question(exam_number:)
+    question = Question.create!(
+      exam_number: exam_number,
+      question_number: 1,
+      major_category_code: "teacher_education",
+      category_code: "education_system",
+      publication_status: "published",
+      content_blocks: [{ type: "text", text: "有料問題" }],
+      explanation_blocks: [{ type: "text", text: "解説" }],
+    )
+    %w[ア イ ウ エ].each_with_index do |label, index|
+      question.question_choices.create!(
+        choice_label: label,
+        content_blocks: [{ type: "text", text: label }],
+        is_correct: index.zero?,
+        display_order: index + 1,
+      )
+    end
+    question
+  end
+
+  def create_paid_payment(user)
+    Payment.create!(
+      user: user,
+      stripe_checkout_session_id: "cs_#{user.id}",
+      stripe_payment_intent_id: "pi_#{user.id}",
+      stripe_price_id: "price_test",
+      amount: 500,
+      currency: "jpy",
+      status: "paid",
+      paid_at: Time.current,
+    )
+  end
 end

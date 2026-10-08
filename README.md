@@ -39,6 +39,27 @@ docker compose up --build
 
 Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTERNAL=http://backend:3000` を使用します。ブラウザは従来どおり `NUXT_PUBLIC_API_BASE` を使用します。内部URLは非公開のruntime configで扱い、本番で未設定の場合は公開APIのURLへ接続します。Composeの設定変更後は `docker compose up -d frontend` でコンテナを再作成してください。Railsの開発用Host許可には `backend` のみ追加しています。
 
+## Stripe有料会員の設定
+
+有料会員は500円（税込）の買い切りです。模擬試験1〜5は無料、模擬試験6以降は有効な有料会員または管理者だけが利用できます。販売開始フラグの初期値は `false` です。
+
+1. Stripeで「模擬試験6以降の利用資格（買い切り）」など提供内容が分かる名称のProductと、日本円500円の一回払い用Priceを作成します。Stripe Dashboardの公開情報に、本番サイトの利用規約URLとプライバシーポリシーURLも登録します。Checkoutでは利用規約への同意を必須にするため、URL未設定時はSessionを作成できません。
+2. StripeのWebhook送信先を `https://<backend-host>/api/v1/webhooks/stripe` とし、次のイベントを登録します。
+   - `checkout.session.completed`
+   - `checkout.session.expired`
+   - `refund.created`
+   - `refund.updated`
+   - `refund.failed`
+   - `charge.dispute.created`
+   - `charge.dispute.closed`
+3. `.env.example` に記載したStripe設定、フロントエンドURL、販売事業者情報を設定します。シークレット値はリポジトリへ保存しません。
+4. Stripeのテストモードで、購入、Webhook再送、全額返金、異議申立て、重複購入防止を確認します。
+5. 利用規約、プライバシーポリシー、特定商取引法に基づく表記の実情報を確認した後、`PAID_MEMBERSHIP_ENABLED=true` にします。
+
+販売事業者情報には、実際の氏名または登記上の名称、現に活動する正確な住所、確実に連絡できる電話番号及び問い合わせ先を設定してください。サイト名や未登記の屋号だけを販売事業者名として使用しないでください。
+
+ローカルでは `STRIPE_LIVEMODE=false` を使用します。本番では本番用のキー、Price、Webhook署名シークレットにそろえて `STRIPE_LIVEMODE=true` とし、テスト環境の値と混在させないでください。カード番号等はStripe Checkoutが取り扱い、本アプリのDBには保存しません。
+
 ### Basic認証の入力欄が消える場合
 
 フロントエンドのBasic認証は `frontend/server/middleware/basic-auth.ts` で処理します。未認証時は `401` と `WWW-Authenticate: Basic ...`、認証成功時は `200` を返すことを確認し、サイト側の認証処理とブラウザ側の入力画面を切り分けてください。認証情報・Authorizationヘッダー・`.env` の値はログや資料へ出力しないでください。
@@ -79,6 +100,19 @@ fly secrets set SECRET_KEY_BASE=<secret>
 fly secrets set DATABASE_URL=<neon-production-database-url>
 fly secrets set CORS_ORIGINS=https://tqce-info-practice.vercel.app
 ```
+
+有料会員を販売する場合は、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。実値はコマンド履歴や共有ログへ残さない方法で設定してください。
+
+```sh
+fly secrets set PAID_MEMBERSHIP_ENABLED=true
+fly secrets set STRIPE_LIVEMODE=true
+fly secrets set STRIPE_SECRET_KEY=<stripe-secret-key>
+fly secrets set STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
+fly secrets set STRIPE_PRICE_ID=<stripe-price-id>
+fly secrets set FRONTEND_URL=https://tqce-info-practice.vercel.app
+```
+
+`NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_ADDRESS`、`NUXT_PUBLIC_SELLER_PHONE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定します。これらは秘密情報ではなく、公開販売設定APIを通じて特定商取引法に基づく表記へ表示されます。
 
 バックエンドのルート画面に Basic 認証をかける場合は、以下も設定します。
 

@@ -1,20 +1,21 @@
 <script setup lang="ts">
 type HistoryItem = {
   id: number
+  locked: boolean
   question: {
     id: number
     exam_number: number
     question_number: number
-    body_excerpt: string
-    major_category_code: string
-    category_code: string
+    body_excerpt?: string
+    major_category_code?: string
+    category_code?: string
   }
-  selected_choice: {
+  selected_choice?: {
     id: number
     choice_label: string
     body_excerpt: string
   }
-  is_correct: boolean
+  is_correct?: boolean
   answered_at: string
 }
 
@@ -75,7 +76,8 @@ const formatAnsweredAt = (value: string) => new Intl.DateTimeFormat('ja-JP', {
   timeStyle: 'short',
 }).format(new Date(value))
 
-const majorCategoryLabel = (code: string) => (
+const majorCategoryLabel = (code?: string) => (
+  !code ? '' :
   MAJOR_CATEGORIES.find(item => item.value === code)?.label ?? code
 )
 
@@ -125,7 +127,7 @@ const historyLink = (history: HistoryItem) => ({
 
       <div class="history-list">
         <article v-for="history in histories" :key="history.id" class="history-card">
-          <NuxtLink :to="historyLink(history)">
+          <NuxtLink v-if="!history.locked" :to="historyLink(history)">
             <div class="history-card-head">
               <span class="result-badge" :class="{ correct: history.is_correct }">
                 <UIcon :name="history.is_correct ? 'i-lucide-circle-check' : 'i-lucide-circle-x'" />
@@ -145,11 +147,22 @@ const historyLink = (history: HistoryItem) => ({
 
             <div class="selected-answer">
               <span>選択した解答</span>
-              <p><b>{{ history.selected_choice.choice_label }}</b>{{ history.selected_choice.body_excerpt }}</p>
+              <p><b>{{ history.selected_choice?.choice_label }}</b>{{ history.selected_choice?.body_excerpt }}</p>
             </div>
 
             <span class="review-link">問題と解説を確認する <UIcon name="i-lucide-arrow-right" /></span>
           </NuxtLink>
+          <div v-else class="locked-history">
+            <div class="history-card-head">
+              <span class="result-badge locked-badge"><UIcon name="i-lucide-lock-keyhole" />閲覧制限</span>
+              <time :datetime="history.answered_at">{{ formatAnsweredAt(history.answered_at) }}</time>
+            </div>
+            <div class="history-question">
+              <span>模擬試験 {{ history.question.exam_number }}・問{{ history.question.question_number }}</span>
+              <strong>この履歴の本文・正誤・解説は有料会員向けです。</strong>
+            </div>
+            <NuxtLink class="primary-link" to="/premium">有料会員について確認する</NuxtLink>
+          </div>
         </article>
       </div>
 
@@ -175,6 +188,7 @@ const historyLink = (history: HistoryItem) => ({
 .history-card-head time { color: var(--muted); font-size: 13px; }
 .result-badge { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; border-radius: 999px; background: #fff0ec; color: #b44734; font-size: 13px; font-weight: 800; }
 .result-badge.correct { background: #e8f6f4; color: var(--teal-dark); }
+.locked-badge { background: #eef2f3; color: #53676e; }
 .result-badge :deep(svg) { width: 17px; height: 17px; }
 .history-question { min-width: 0; display: grid; gap: 7px; }
 .history-question > span { color: var(--teal-dark); font-size: 14px; font-weight: 800; }
@@ -185,6 +199,8 @@ const historyLink = (history: HistoryItem) => ({
 .selected-answer p { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; margin: 0; color: #40535a; line-height: 1.6; }
 .selected-answer b { color: var(--teal-dark); }
 .review-link { display: inline-flex; align-items: center; justify-self: end; gap: 6px; color: var(--teal-dark); font-size: 14px; font-weight: 800; }
+.locked-history { display: grid; gap: 18px; padding: 22px 24px; }
+.locked-history .primary-link { justify-self: end; }
 .pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; }
 .pagination span { color: var(--muted); font-weight: 700; }
 .pagination button:disabled { opacity: .45; cursor: not-allowed; }

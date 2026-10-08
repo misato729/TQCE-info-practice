@@ -486,7 +486,8 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
   end
 
   test "全五セットを一般向け一覧と問番号順の問題取得へ公開し回答前に正答を開示しない" do
-    get api_v1_exams_path
+    headers = paid_user_headers("exams-11-15-view@example.com")
+    get api_v1_exams_path, headers: headers
     assert_response :success
     exams = response.parsed_body.fetch("data").select { |exam| (11..15).cover?(exam.fetch("exam_number")) }
     assert_equal (11..15).to_a, exams.map { |exam| exam.fetch("exam_number") }
@@ -496,18 +497,18 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
       (1..20).each do |number|
         params = { exam_number: exam }
         params[:after_question_number] = number - 1 if number > 1
-        get next_api_v1_questions_path, params: params
+        get next_api_v1_questions_path, params: params, headers: headers
         assert_response :success
         body = response.parsed_body.fetch("data")
         assert_equal [exam, number], body.values_at("exam_number", "question_number")
         assert_answer_hidden(body)
       end
-      get next_api_v1_questions_path, params: { exam_number: exam, after_question_number: 20 }
+      get next_api_v1_questions_path, params: { exam_number: exam, after_question_number: 20 }, headers: headers
       assert_response :not_found
     end
 
     completed_questions.each do |question|
-      get api_v1_question_path(question)
+      get api_v1_question_path(question), headers: headers
       assert_response :success
       body = response.parsed_body.fetch("data")
       assert_equal question.content_blocks, body.fetch("content_blocks")
@@ -516,11 +517,12 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "公開した全百問を匿名で採点でき回答後に解説と出典を返す" do
+  test "公開した全百問を有料会員が採点でき回答後に解説と出典を返す" do
+    headers = paid_user_headers("exams-11-15-answer@example.com")
     completed_questions.each do |question|
       answer = question.question_choices.find_by!(is_correct: true)
-      assert_no_difference "AnswerHistory.count" do
-        post answer_api_v1_question_path(question), params: { selected_choice_id: answer.id }, as: :json
+      assert_difference "AnswerHistory.count", 1 do
+        post answer_api_v1_question_path(question), params: { selected_choice_id: answer.id }, headers: headers, as: :json
       end
       assert_response :success
       body = response.parsed_body.fetch("data")
@@ -528,8 +530,15 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
       assert_equal answer.id, body.dig("correct_choice", "id")
       assert_equal question.explanation_blocks, body.fetch("explanation_blocks")
       assert_equal question.source_text, body.fetch("source_text")
-      assert_nil body.fetch("answer_history_id")
+      assert body.fetch("answer_history_id").present?
     end
+  end
+
+  def paid_user_headers(email)
+    user = User.create!(name: "有料会員", email: email, password: "password123", password_confirmation: "password123")
+    payment = Payment.create!(user: user, stripe_checkout_session_id: "cs_#{user.id}", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
+    Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
+    { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
   end
 
   test "旧seedと同じ下書き状態からの公開切替は回答履歴を消さない" do

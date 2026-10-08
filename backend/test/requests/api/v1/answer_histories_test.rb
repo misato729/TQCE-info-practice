@@ -67,6 +67,30 @@ class Api::V1::AnswerHistoriesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "資格を持たない会員の有料試験履歴は本文と正誤を伏せる" do
+    premium_question = create_premium_question
+    history = create_history_for_question(@user, premium_question)
+
+    get api_v1_answer_histories_path, headers: authorization_header(@user)
+
+    assert_response :success
+    item = response.parsed_body.fetch("data").find { |entry| entry.fetch("id") == history.id }
+    assert item.fetch("locked")
+    assert_not item.key?("selected_choice")
+    assert_not item.key?("is_correct")
+    assert_not item.fetch("question").key?("body_excerpt")
+  end
+
+  test "資格を持たない会員は有料試験の履歴詳細を取得できない" do
+    premium_question = create_premium_question
+    history = create_history_for_question(@user, premium_question)
+
+    get api_v1_answer_history_path(history), headers: authorization_header(@user)
+
+    assert_response :forbidden
+    assert_equal "paid_membership_required", response.parsed_body.dig("error", "code")
+  end
+
   private
 
   def create_user(email)
@@ -91,5 +115,36 @@ class Api::V1::AnswerHistoriesTest < ActionDispatch::IntegrationTest
 
   def authorization_header(user)
     { "Authorization" => "Bearer #{AuthToken.issue(user)}" }
+  end
+
+  def create_premium_question
+    question = Question.create!(
+      exam_number: 6,
+      question_number: 1,
+      major_category_code: "teacher_education",
+      category_code: "education_system",
+      publication_status: "published",
+      content_blocks: [{ type: "text", text: "有料問題本文" }],
+      explanation_blocks: [{ type: "text", text: "有料解説" }],
+    )
+    %w[ア イ ウ エ].each_with_index do |label, index|
+      question.question_choices.create!(
+        choice_label: label,
+        content_blocks: [{ type: "text", text: "選択肢#{label}" }],
+        is_correct: index.zero?,
+        display_order: index + 1,
+      )
+    end
+    question
+  end
+
+  def create_history_for_question(user, question)
+    choice = question.question_choices.first
+    AnswerHistory.create!(
+      user: user,
+      question: question,
+      selected_choice: choice,
+      is_correct: choice.is_correct,
+    )
   end
 end
