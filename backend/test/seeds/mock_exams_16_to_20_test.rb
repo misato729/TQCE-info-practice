@@ -161,7 +161,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "問6から問10の全二十五問は正答だけが連続した公式原文に一致する" do
+  test "問6から問10は原文と参照を除いた記述を区別し正答だけが独立原典と対応する" do
     clozes = partial_questions.where(question_number: 6..10).order(:exam_number, :question_number).to_a
     assert_equal 25, clozes.size
     assert_equal CURRICULUM_EXCERPTS.keys.sort, clozes.map { |question| "#{question.exam_number}-#{question.question_number}" }.sort
@@ -170,14 +170,24 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
       key = "#{question.exam_number}-#{question.question_number}"
       prompt = question.content_blocks.first
       assert_equal "fill_in_text", prompt.fetch("type")
-      assert_match(/\A次の文章は，.+の「.+」からの抜粋である。文章中の空欄 \{\{①\}\} ～ \{\{[③④]\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/, prompt.fetch("text"))
+      if key == "16-6"
+        assert_match(/\A次の文は，.+の「.+」に示された内容に基づく記述である。文中の空欄 \{\{①\}\} ～ \{\{③\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/, prompt.fetch("text"))
+      else
+        assert_match(/\A次の文章は，.+の「.+」からの抜粋である。文章中の空欄 \{\{①\}\} ～ \{\{[③④]\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/, prompt.fetch("text"))
+      end
       quotes = question.content_blocks.select { |block| block["type"] == "fill_in_quote" }
       assert_equal 1, quotes.size
       quote = quotes.first.fetch("text")
       labels = quote.scan(/\{\{([①②③④])\}\}/).flatten.uniq
       expected_size = [[16, 6], [18, 7]].include?([question.exam_number, question.question_number]) ? 3 : 4
       assert_equal %w[① ② ③ ④].first(expected_size), labels
-      original = normalized(CURRICULUM_EXCERPTS.fetch(key))
+      # 原典fixture自体は変更せず、照合対象の境界・項番除去を明示する。
+      original_text = CURRICULUM_EXCERPTS.fetch(key)
+      if %w[16-6 17-6].include?(key)
+        original_text = original_text.delete_prefix("第２款の２の（1）に示す")
+      end
+      original_text = original_text.sub("（6）に示すとおり", "") if key == "16-6"
+      original = normalized(original_text)
 
       question.question_choices.each do |choice|
         assert_equal 1, choice.content_blocks.size
@@ -207,7 +217,8 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
       assert_includes question_7.source_text, "第1章第5款"
       (6..8).each do |number|
         prompt = partial_questions.find_by!(exam_number: exam, question_number: number).content_blocks.first.fetch("text")
-        heading = prompt[/の「(.+)」からの抜粋である。/, 1]
+        heading = prompt[/の「(.+)」(?:からの抜粋|に示された内容に基づく記述)である。/, 1]
+        assert_not_nil heading
         assert_no_match(/\s(?:\([0-9]+\)|[ア-ン])\z/, heading)
       end
       question_9_prompt = partial_questions.find_by!(exam_number: exam, question_number: 9).content_blocks.first.fetch("text")
@@ -228,8 +239,10 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "問6から問10の補足を引用枠の外に置き再登場する正答も伏せる" do
     question_16_6 = partial_questions.find_by!(exam_number: 16, question_number: 6)
-    reference = question_16_6.content_blocks.find { |block| block["type"] == "text" && block["text"].start_with?("参考：") }
-    assert_includes reference.fetch("text"), "学校図書館や地域の図書館等の活用"
+    assert_includes question_16_6.content_blocks.first.fetch("text"), "示された内容に基づく記述"
+    assert_equal %w[fill_in_text fill_in_quote], question_16_6.content_blocks.map { |block| block.fetch("type") }
+    quote = question_16_6.content_blocks.last.fetch("text")
+    assert_no_match(/第２款|（6）に示す/, quote)
     question_18_9 = partial_questions.find_by!(exam_number: 18, question_number: 9)
     reference = question_18_9.content_blocks.find { |block| block["type"] == "text" && block["text"].start_with?("参考：") }
     assert_includes reference.fetch("text"), "基盤となる道徳性"

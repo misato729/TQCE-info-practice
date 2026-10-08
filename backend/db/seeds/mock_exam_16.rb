@@ -141,9 +141,8 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "curriculum_organization",
     content_blocks: [
-      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
-      { type: "fill_in_quote", text: "第２款の２の（1）に示す言語能力の育成を図るため，各学校において必要な言語環境を整えるとともに，{{①}}を要としつつ{{②}}に応じて，生徒の言語活動を充実すること。あわせて，（6）に示すとおり{{③}}を充実すること。" },
-      text_block.call("参考：抜粋中の（6）は，学校図書館や地域の図書館等の活用に関する規定を指す。"),
+      { type: "fill_in_text", text: "次の文は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」に示された内容に基づく記述である。文中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "言語能力の育成を図るため，各学校において必要な言語環境を整えるとともに，{{①}}を要としつつ{{②}}に応じて，生徒の言語活動を充実すること。あわせて，{{③}}を充実すること。" },
     ],
     choices: [
       fill_in_choice.call("ア", ["国語科", "生徒の言語能力の発達の段階", "読書活動"]),
@@ -776,7 +775,10 @@ questions.each do |question|
       10 => ["解説 特別活動編", "第2章第1節"],
     }
     prompt_section, source_section = expected_sections.fetch(number)
-    unless prompt.start_with?("次の文章は，") && prompt.include?("からの抜粋である。") &&
+    # 問6は未提示の項番を除いた記述として明示する。他の4問は原文抜粋のまま。
+    expected_opening = number == 6 ? "次の文は，" : "次の文章は，"
+    expected_kind = number == 6 ? "に示された内容に基づく記述である。" : "からの抜粋である。"
+    unless prompt.start_with?(expected_opening) && prompt.include?(expected_kind) &&
         prompt.include?("空欄 {{①}} ～ {{#{blank_labels.last}}}") &&
         prompt.include?(prompt_section) && source.include?(source_section) &&
         source.match?(/https:\/\/www\.mext\.go\.jp\/content\/\S+\.pdf#page=\d+\z/) &&

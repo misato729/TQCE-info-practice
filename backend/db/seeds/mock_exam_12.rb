@@ -166,8 +166,8 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "special_support_education",
     content_blocks: [
-      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援 2 特別な配慮を必要とする生徒への指導」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
-      { type: "fill_in_quote", text: "障害のある生徒に対して，学校教育法施行規則第140条の規定に基づき，{{①}}を編成し，障害に応じた特別の指導（以下「{{②}}」という。）を行う場合には，学校教育法施行規則第129条の規定により定める現行の特別支援学校高等部学習指導要領第６章に示す{{③}}の内容を参考とし，具体的な目標や内容を定め，指導を行うものとする。その際，通級による指導が効果的に行われるよう，各教科・科目等と通級による指導との関連を図るなど，{{④}}に努めるものとする。" },
+      { type: "fill_in_text", text: "次の文は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援 2 特別な配慮を必要とする生徒への指導」に示された内容に基づく記述である。文中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "障害のある生徒に対して，{{①}}を編成し，障害に応じた特別の指導（以下「{{②}}」という。）を行う場合には，特別支援学校高等部の学習指導要領に定められ，生徒が自立を目指し，障害による学習上又は生活上の困難を主体的に改善・克服するために必要な知識，技能，態度及び習慣を養う{{③}}の内容を参考とし，具体的な目標や内容を定め，指導を行う。その際，{{②}}が効果的に行われるよう，各教科・科目等と{{②}}との関連を図るなど，{{④}}に努める。" },
     ],
     choices: [
       { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["特別の教育課程", "特別支援学級による指導", "各教科", "教師間の連携"] }], correct: false },
@@ -178,7 +178,7 @@ questions = [
     explanation_blocks: [
       { type: "text", text: "通級による指導は，特別の教育課程を編成して行う指導です。自立活動の内容を参考に目標・内容を定め，各教科・科目等との関連を図るため教師間の連携に努めます。アは②・③，イは①・④，エは全ての空欄が異なります。「個別の指導計画」と「特別の教育課程」は別の用語です。" },
     ],
-    source_text: "『高等学校学習指導要領（平成30年告示）』第1章第5款2（1）イ第1段落 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32",
+    source_text: "『高等学校学習指導要領（平成30年告示）』第1章第5款2（1）イ第1段落 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32\n文部科学省『特別支援学校高等部学習指導要領（平成31年告示）』第6章「自立活動」第1款「目標」 | https://www.mext.go.jp/component/a_menu/education/micro_detail/__icsFiles/afieldfile/2019/10/03/1399950_11.pdf#page=274",
   },
   {
     question_number: 8,
@@ -537,8 +537,9 @@ end
 (6..10).each do |number|
   question = questions.fetch(number - 1)
   prompt = question.fetch(:content_blocks).first
-  unless prompt.fetch(:type) == "fill_in_text" && prompt.fetch(:text).include?("からの抜粋である。")
-    raise "模擬試験12 問#{number}は原文穴埋め問題にしてください"
+  expected_kind = number == 7 ? "に示された内容に基づく記述である。" : "からの抜粋である。"
+  unless prompt.fetch(:type) == "fill_in_text" && prompt.fetch(:text).include?(expected_kind)
+    raise "模擬試験12 問#{number}の穴埋め問題の原文・参照先展開の表記が不正です"
   end
 end
 question_6 = questions.fetch(5)

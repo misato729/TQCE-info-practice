@@ -162,7 +162,7 @@ reiwa_answer_title = "「『令和の日本型学校教育』の構築を目指�
 
   (6..8).each do |question_number|
     prompt = exam_questions[question_number - 1].content_blocks.find { |block| block["type"] == "fill_in_text" }.to_h["text"].to_s
-    section_name = prompt[/の「(.+)」からの抜粋である。/, 1].to_s
+    section_name = prompt[/の「(.+)」(?:からの抜粋|に示された内容に基づく記述)である。/, 1].to_s
     if section_name.match?(/\s(?:\(\d+\)|[ア-ン])\z/)
       raise "模擬試験#{exam_number}の問#{question_number}は抜粋分野名の末尾に個別項目番号を表示しないでください"
     end

@@ -110,13 +110,15 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "問6から問10は指定範囲の原文穴埋めで本体と解説の配分を保つ" do
+  test "問6から問10は指定範囲の穴埋めで参照先展開を明示し本体と解説の配分を保つ" do
     prompt_pattern = /\A次の文章は，.+の「.+」からの抜粋である。文章中の空欄 \{\{①\}\} ～ \{\{[②③④⑤]\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/
+    based_on_pattern = /\A次の文は，.+の「.+」に示された内容に基づく記述である。文中の空欄 \{\{①\}\} ～ \{\{④\}\} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。\z/
 
     completed_questions.where(question_number: 6..10).each do |question|
       prompt = question.content_blocks.first
       assert_equal "fill_in_text", prompt.fetch("type")
-      assert_match prompt_pattern, prompt.fetch("text")
+      adapted = [question.exam_number, question.question_number] == [12, 7]
+      assert_match adapted ? based_on_pattern : prompt_pattern, prompt.fetch("text")
       quotes = question.content_blocks.select { |block| block["type"] == "fill_in_quote" }
       assert_equal 1, quotes.size
       labels = quotes.first.fetch("text").scan(/\{\{([①②③④⑤])\}\}/).flatten.uniq
@@ -127,7 +129,7 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
         assert_equal labels.size, choice.content_blocks.first.fetch("cells").size
       end
 
-      section = prompt.fetch("text")[/の「(.+)」からの抜粋である。/, 1]
+      section = prompt.fetch("text")[/の「(.+)」(?:からの抜粋|に示された内容に基づく記述)である。/, 1]
       if (6..8).cover?(question.question_number)
         refute_match(/\s(?:\(\d+\)|[ア-ン])\z/, section)
       end
