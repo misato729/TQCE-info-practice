@@ -76,13 +76,15 @@ Accept: application/json
 | `text` | 通常の文章 | `text` |
 | `quote` | 枠付きの引用文 | `text`, 任意の `source` |
 | `fill_in_text` | 過去問形式の穴埋め問題文 | `text` |
-| `fill_in_quote` | 空欄ラベルを含む抜粋文 | `text`。空欄は `{{①}}` などで表す |
+| `fill_in_quote` | 試験形式の抜粋文 | `text`。空欄がある場合は `{{①}}` などで表す |
 | `fill_in_choice` | 空欄ごとの語句を並べた選択肢 | `cells` |
 | `table` | 表 | `headers`, `rows` |
 | `code` | 単独のプログラム表記 | 任意の `title`, `code` |
 | `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
 
 問題本文では `text`, `quote`, `fill_in_text`, `fill_in_quote`, `table`, `code`, `code_group` を使用できる。選択肢では `text`, `table`, `fill_in_choice`、解答解説では `text`, `quote`, `table`, `code` を使用できる。
+
+試験問題の抜粋枠は、本文に空欄がない条文選択問題や、別の表に空欄がある問題でも `fill_in_quote` を使用し、通常の試験抜粋と同じ白背景・四辺枠で表示する。`quote` は一般の枠付き引用に使用する。穴埋め問題かどうかはブロック種別だけで判定せず、実際の空欄ラベルと選択肢の `cells` の対応で検査する。
 
 ### ページネーション
 

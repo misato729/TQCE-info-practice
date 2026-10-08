@@ -140,12 +140,12 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   test "全十二問の穴埋めは正答だけを復元すると連続した公式原文に一致する" do
-    clozes = partial_questions.where(question_number: 1..5).to_a.select { |question| question.content_blocks.any? { |block| block["type"] == "fill_in_quote" } }
+    clozes = partial_questions.where(question_number: 1..5).to_a.select { |question| question.content_blocks.any? { |block| cloze_quote?(block) } }
     assert_equal 12, clozes.size
     assert_equal LAW_EXCERPTS.keys.sort, clozes.map { |question| "#{question.exam_number}-#{question.question_number}" }.sort
 
     clozes.each do |question|
-      quote = question.content_blocks.select { |block| block["type"] == "fill_in_quote" }.map { |block| block.fetch("text") }.join("\n")
+      quote = question.content_blocks.select { |block| cloze_quote?(block) }.map { |block| block.fetch("text") }.join("\n")
       body = quote.lines.reject { |line| line.strip.match?(/\A第\d+条(?:の\d+)?(?:第\d+項)?\z/) }
         .map { |line| line.sub(/\A[0-9一二三四五六七八九十]+[　 ]/, "") }.join
       original = normalized(LAW_EXCERPTS.fetch("#{question.exam_number}-#{question.question_number}"))
@@ -261,7 +261,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "問11は連続した原文の三空欄四問と原図の役割対応一問に配分する" do
     questions = partial_questions.where(question_number: 11).order(:exam_number).to_a
-    assert_equal [16, 17, 18, 19], questions.select { |question| question.content_blocks.any? { |block| block["type"] == "fill_in_quote" } }.map(&:exam_number)
+    assert_equal [16, 17, 18, 19], questions.select { |question| question.content_blocks.any? { |block| cloze_quote?(block) } }.map(&:exam_number)
     assert_equal [20], questions.select { |question| question.content_blocks.any? { |block| block["type"] == "table" } }.map(&:exam_number)
     questions.each do |question|
       prompt = question.content_blocks.first
@@ -289,11 +289,11 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   test "問11及び問15の穴埋めは正答だけが独立した公式PDFの連続抜粋に一致する" do
-    clozes = partial_questions.where(question_number: [11, 15]).select { |question| question.content_blocks.any? { |block| block["type"] == "fill_in_quote" } }
+    clozes = partial_questions.where(question_number: [11, 15]).select { |question| question.content_blocks.any? { |block| cloze_quote?(block) } }
     assert_equal %w[16-11 17-11 17-15 18-11 19-11], clozes.map { |question| "#{question.exam_number}-#{question.question_number}" }.sort
     clozes.each do |question|
       key = "#{question.exam_number}-#{question.question_number}"
-      quote = question.content_blocks.find { |block| block["type"] == "fill_in_quote" }.fetch("text")
+      quote = question.content_blocks.find { |block| cloze_quote?(block) }.fetch("text")
       original = normalized(GUIDANCE_POLICY_EXCERPTS.fetch(key))
       question.question_choices.each do |choice|
         cells = choice.content_blocks.first.fetch("cells")
@@ -311,7 +311,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "模試20問11の表は図13の役割に一致し空欄番号を文字として表示する" do
     question = partial_questions.find_by!(exam_number: 20, question_number: 11)
-    quote = question.content_blocks.find { |block| block["type"] == "quote" }.fetch("text")
+    quote = question.content_blocks.find { |block| block["type"] == "fill_in_quote" }.fetch("text")
     assert_equal normalized(GUIDANCE_POLICY_EXCERPTS.fetch("20-11")), normalized(quote)
     table = question.content_blocks.find { |block| block["type"] == "table" }
     assert_equal ["職名", "通常時", "通告時，通告後"], table.fetch("headers")
@@ -324,6 +324,44 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
       assert_equal choice.is_correct?, restored == original_rows, "図13 #{choice.choice_label}の対応"
     end
     assert_includes question.explanation_blocks.last.fetch("text"), "排他的に限定されるという意味ではありません"
+  end
+
+  test "模試20問3と問11は空欄のない本文も通常の試験抜粋枠で表示する" do
+    [3, 11].each do |number|
+      question = partial_questions.find_by!(exam_number: 20, question_number: number)
+      quote = question.content_blocks.second
+      assert_equal "fill_in_quote", quote.fetch("type")
+      assert_no_match(/\{\{/, quote.fetch("text"))
+      assert_not cloze_quote?(quote)
+      assert_not question.content_blocks.any? { |block| block["type"] == "quote" }
+    end
+    count_question = partial_questions.find_by!(exam_number: 20, question_number: 3)
+    assert_equal "text", count_question.content_blocks.first.fetch("type")
+    assert_equal %w[二つ 一つ 三つ なし], count_question.question_choices.order(:display_order).map { |choice| choice.content_blocks.first.fetch("text") }
+  end
+
+  test "模試20の必須穴埋めは空欄なしの試験抜粋枠と混同せず空欄ゼロを拒否する" do
+    seed_path = Rails.root.join("db/seeds/mock_exam_20.rb")
+    source = File.read(seed_path)
+    marker = "questions.each do |question|\n"
+    assert_includes source, marker
+
+    [4, 5, *(6..10)].each do |number|
+      # メモリ上だけで空欄を取り除き、DBへ保存する前のseed検査を確認する。
+      mutation = <<~RUBY
+        questions.find { |question| question.fetch(:question_number) == #{number} }.fetch(:content_blocks).each do |block|
+          block[:text] = block.fetch(:text).gsub(/[{][{][①②③④][}][}]/, "語句") if block[:type] == "fill_in_quote"
+        end
+        #{marker}
+      RUBY
+      modified_source = source.sub(marker, mutation)
+      assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
+        error = assert_raises(RuntimeError) do
+          QuestionSeedSync.collect { eval(modified_source, binding, seed_path.to_s) }
+        end
+        assert_equal "模擬試験20 問#{number}の原文穴埋めには空欄が必要です", error.message
+      end
+    end
   end
 
   test "問12の発達障害三問とその他二問及び問13の青年期四問とその他一問を維持する" do
@@ -517,6 +555,10 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   private
+
+  def cloze_quote?(block)
+    block["type"] == "fill_in_quote" && block.fetch("text").match?(/\{\{[①②③④⑤⑥]\}\}/)
+  end
 
   def normalized(text)
     text.gsub(/[\s　]/, "")

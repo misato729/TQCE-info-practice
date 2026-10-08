@@ -39,6 +39,14 @@ docker compose up --build
 
 Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTERNAL=http://backend:3000` を使用します。ブラウザは従来どおり `NUXT_PUBLIC_API_BASE` を使用します。内部URLは非公開のruntime configで扱い、本番で未設定の場合は公開APIのURLへ接続します。Composeの設定変更後は `docker compose up -d frontend` でコンテナを再作成してください。Railsの開発用Host許可には `backend` のみ追加しています。
 
+### Basic認証の入力欄が消える場合
+
+フロントエンドのBasic認証は `frontend/server/middleware/basic-auth.ts` で処理します。未認証時は `401` と `WWW-Authenticate: Basic ...`、認証成功時は `200` を返すことを確認し、サイト側の認証処理とブラウザ側の入力画面を切り分けてください。認証情報・Authorizationヘッダー・`.env` の値はログや資料へ出力しないでください。
+
+アプリ内ブラウザで入力欄がすぐ閉じる場合は、認証入力中の自動移動・再読み込みを止め、ユーザーの入力完了を待ちます。それでも入力できなければ、通常のChromeやSafariで同じローカルURLを開いて確認してください。通常のブラウザとアプリ内ブラウザの認証状態が共有されるとは限りません。認証を無効化したり、認証情報をURLへ埋め込んだりする方法は使いません。
+
+HTTP取得が成功しても、表示や回答操作を確認したことにはなりません。HTTP確認、ユーザーの目視確認、エージェントの実操作確認を区別して記録します。模試20の表示不統一と認証確認時の切り分け記録は [原因と再発防止策](document/模試20_表示不統一の原因と再発防止_2026-10-08.md) を参照してください。
+
 ## 停止
 
 ```sh

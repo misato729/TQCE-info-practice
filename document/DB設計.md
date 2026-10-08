@@ -480,11 +480,13 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 | `text` | 通常の文章 | `text` |
 | `quote` | 枠付きの引用文 | `text`, 任意の `source` |
 | `fill_in_text` | 過去問形式の穴埋め問題文 | `text` |
-| `fill_in_quote` | 空欄ラベルを含む抜粋文 | `text`。空欄は `{{①}}` などで表す |
+| `fill_in_quote` | 試験形式の抜粋文 | `text`。空欄がある場合は `{{①}}` などで表す |
 | `fill_in_choice` | 空欄ごとの語句を並べた選択肢 | `cells` |
 | `table` | 表 | `headers`, `rows` |
 | `code` | 単独のプログラム表記 | 任意の `title`, `code` |
 | `code_group` | 複数プログラムの比較 | `items`。各要素に `title`, `code` |
+
+試験問題の抜粋枠は、本文に空欄がない条文選択問題や、別の表に空欄がある問題でも `fill_in_quote` を使用する。穴埋めの有無はブロック種別だけでなく、実際の空欄ラベルと選択肢の `cells` の対応から検査する。
 
 問題本文の例:
 
