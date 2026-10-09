@@ -565,10 +565,11 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "メインseedは完成済み四百問を公開し再実行できる" do
     load Rails.root.join("db/seeds.rb")
-    assert_equal 400, Question.count
-    assert_equal 1600, QuestionChoice.count
-    assert_equal 400, QuestionChoice.where(is_correct: true).count
+    assert_equal 450, Question.count
+    assert_equal 1800, QuestionChoice.count
+    assert_equal 450, QuestionChoice.where(is_correct: true).count
     assert_equal 400, Question.published.count
+    assert_equal 50, Question.where(exam_number: 21..25, publication_status: "draft").count
     assert_equal 0, partial_questions.where(publication_status: "draft").count
     assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
       load Rails.root.join("db/seeds.rb")
