@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験23（承認済みの問1〜10。全20問が揃うまで下書き）
+# 模擬試験23（承認済みの問1〜15。全20問が揃うまで下書き）
 questions = [
   {
     question_number: 1,
@@ -227,10 +227,116 @@ questions = [
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 特別活動編』・第3章第2節 2(3)（印刷75頁） | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=83",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "的確な児童生徒理解を行うためには、{{①}}がお互いに理解を深めることが大切です。児童生徒や保護者が、教職員に対して、信頼感を抱かず、心を閉ざした状態では、広く深い児童生徒理解はできません。児童生徒や保護者に対して、教職員が積極的に、{{②}}などについて伝え、発信して、教職員や学校側の考えについての理解を図る必要があります。例えば、授業や行事等で教職員が{{③}}をする、あるいは、定期的な学級・ホームルーム通信を発行することなどを通して、児童生徒や保護者に教職員や学校に対する理解を促進することが大切です。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["児童生徒、保護者と教職員", "生徒指導の方針や意味", "自己開示"], true),
+      fill_in_choice.call("イ", ["児童生徒、保護者と教職員", "指導の結果や評価", "自己評価"]),
+      fill_in_choice.call("ウ", ["学校内の教職員", "生徒指導の方針や意味", "自己評価"]),
+      fill_in_choice.call("エ", ["学校内の教職員", "指導の結果や評価", "自己開示"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：正しい。児童生徒・保護者を含む相互理解が信頼関係の基盤となる。教職員は生徒指導の方針や意味を発信し、授業・行事等での自己開示や通信によって理解を促進する。"),
+      text_block.call("イ：①は正しいが、②・③が誤り。ここで伝える内容は生徒指導の方針や意味、実践例は自己開示である。指導結果の報告や教職員の自己評価を挙げた箇所ではない。"),
+      text_block.call("ウ：②は正しいが、①・③が誤り。相互理解の当事者は校内の教職員だけではなく、児童生徒・保護者を含む。また、自分の考え等を相手に伝える自己開示と、自分の実践を評価する自己評価は異なる。"),
+      text_block.call("エ：③は正しいが、①・②が誤り。相互理解の当事者を校内教職員に限定しており、発信する内容も原文の方針や意味から指導の結果や評価へ置き換えている。"),
+    ],
+    source_text: "『生徒指導提要』第1章 1.3.1 生徒指導と児童生徒理解（3）児童生徒、保護者と教職員の相互理解の重要性（24頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=27",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "聴覚障害のある生徒の聞こえ方と，授業で情報を受け取る際の支援に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "伝音難聴と感音難聴は，いずれも聞こえの低下を表す。両者は聞こえの程度に基づく区分であり，音が小さく聞こえる状態を伝音難聴，音がほとんど聞こえない状態を感音難聴と呼ぶ。"),
+      text_choice.call("イ", "感音難聴では，言葉の音がひずんで聞こえることがある。音を大きくすることは，聞こえる音の大きさを補うとともに，ひずみを取り除いて言葉の音を明瞭にする働きをもつため，音量を情報理解の基準とする。"),
+      text_choice.call("ウ", "難聴のある生徒には，補聴器等を使う方法と，文字等の視覚情報を使う方法がある。これらを組み合わせて情報を得る生徒の聞こえの状態は，補助手段の組合せに基づいて混合性難聴に区分される。"),
+      text_choice.call("エ", "一般に伝音難聴では音が小さく聞こえ，感音難聴では音のひずみにより言葉の音の明瞭さが低下することがある。聞こえる音の大きさと言葉の聞き取りを区別して把握し，文字などによる情報の提示も含めて支援を検討する。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：分類の基準が誤り。伝音難聴・感音難聴は障害のある部位による分類であり，軽度・中等度・高度・最重度などの程度による分類とは異なる。"),
+      text_block.call("イ：音量を補うことで，音のひずみも取り除かれるとする点が誤り。音の大きさと語音の明瞭さ・理解は区別し，補聴器等を使用していても聞き取りの状態を把握する。"),
+      text_block.call("ウ：混合性難聴は伝音難聴と感音難聴が併存する状態であり，複数の支援手段を使うことの名称ではない。"),
+      text_block.call("エ：適切。音量と明瞭さの違いを把握し，保有する聴覚・視覚を活用して情報を受け取れるように支援する。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅱ「聴覚障害」1(2)②ア(エ)・(オ)・(キ)，3(1)②ア・イ（99・107〜108頁） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_06.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "青年期を，身体的成熟と社会的成熟との関係から捉えた記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "青年期の開始を考える際には，第二次性徴などの身体的変化が指標となる。一方，青年期の終わりを考える際には，経済的自立や社会的役割の取得なども問題となり，身体的成熟と社会的成熟の時期を区別する必要がある。", true),
+      text_choice.call("イ", "青年期には，身体的な成熟とともに，成人としての役割を担うための準備が進む。青年期の終わりを社会的成熟から捉える場合には，第二次性徴の出現を成人としての役割を取得したことの指標にする。"),
+      text_choice.call("ウ", "青年期には，身体的成熟の過程と，教育を受けながら社会的役割を準備する過程が含まれる。身体的成熟とは職業や経済生活を担う能力の獲得を指し，社会的成熟とは身体の成人化を指す。"),
+      text_choice.call("エ", "青年期の長さには，その社会の教育制度や，成人として求められる役割が関係する。就学期間が長くなって成人の役割を担う時期が遅れることは，第二次性徴の開始が遅くなるという意味での青年期の延長に当たる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。青年期の始まりを示す身体的変化と，成人の社会的役割を担うことは異なる側面の指標であり，身体的成熟から直ちに社会的成熟の完了とは判断できない。"),
+      text_block.call("イ：第二次性徴を社会的役割の取得の指標にしている点が誤り。第二次性徴は身体的変化の指標である。"),
+      text_block.call("ウ：身体的成熟と社会的成熟の対応が逆。身体の成人化は身体的成熟，経済生活や社会的役割を担うことは社会的成熟に関わる。"),
+      text_block.call("エ：就学期間などによる青年期の延長は，成人の社会的役割を担うまでの期間の長期化であり，第二次性徴の開始時期が遅くなることとは異なる。"),
+    ],
+    source_text: "二関隆美「青年文化の問題―青年社会学のための序説―」『大阪大学人間科学部紀要』第1巻〈青年期の開始・終了と生理的成熟／社会・文化的成熟〉（214〜215頁） | https://ir.library.osaka-u.ac.jp/repo/ouka/all/12275/hs01-187.pdf\n波戸香織「青年期の自我同一性の達成に関する研究動向」第一章第一節〈青年期の移行と高学歴化〉 | https://www2.u-gakugei.ac.jp/~nmatsuo/hato-kadai.htm",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "学習目標と遂行目標に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "学習目標は，新しい知識や技能を習得し，自分の能力を高めることを目指す。その達成は，他者より優れた成績を示して，自分の能力の高さが認められたかどうかを基準として捉えられる。"),
+      text_choice.call("イ", "学習目標は，知識や技能の習得や能力の向上を目指し，遂行目標は，自分の能力について肯定的な評価を得たり，否定的な評価を避けたりすることを目指す。一人の学習者が両方の目標をもつこともある。", true),
+      text_choice.call("ウ", "遂行目標は，自分の能力について肯定的な評価を得たり，否定的な評価を避けたりすることを目指す。それは，課題に必要な行動を自分が実行できるという見込みの程度を表す概念である。"),
+      text_choice.call("エ", "学習目標と遂行目標は，学習者が何を目指して課題に取り組むかに関わる概念である。両者を区別する基準は，成功や失敗の原因を能力に求めるか，努力に求めるかという原因帰属の違いである。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：学習目標の前半は適切だが，他者との比較による能力評価は遂行目標に関わる。学習目標では知識・技能の習得や理解の深まりを重視する。"),
+      text_block.call("イ：適切。何を目指すかによって両者を区別し，一人の学習者が複数の目標を併せもつこともある。"),
+      text_block.call("ウ：前半は適切だが，後半は自己効力感の説明。遂行目標という目標の内容と，必要な行動を自分が遂行できるという見込みを混同している。"),
+      text_block.call("エ：前半は適切だが，後半は原因帰属の論点。目標の内容と，成功・失敗の原因についての解釈を混同している。"),
+    ],
+    source_text: "横山真衣・三輪和久「複数目標視点による学習観と学習行動の検討」『認知科学』28(4)，1.1「目標志向性」・1.2「複数目標視点」（530〜531頁） | https://doi.org/10.11225/cs.2021.045\n三重大学教育心理学研究室「自己効力感について」（誤答ウの補助出典） | https://educational-psychology.edu.mie-u.ac.jp/thesis/2023/ogawa/forth.html\n小林和久「因果帰属の方向性と学習遂行との関連について」〈原因帰属〉・表1「ワイナーの帰属理論」（52〜53頁・誤答エの補助出典） | https://shobi-u.repo.nii.ac.jp/record/105/files/KJ00005552459.pdf",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "text", text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅱ部 各論 8 人口動態等を踏まえた学校運営や学校施設の在り方について」に示された記述である。適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "公立小中学校の学校規模適正化は，児童生徒の教育環境をより良くする目的で検討する。学校を残す場合には，少人数を生かしたきめ細かな指導やICTを活用した遠隔合同授業などにより，小規模校の利点を生かした教育の充実を図る。"),
+      text_choice.call("イ", "中山間地域や離島などに立地する小規模な学校では，自校の教育資源に限りがあることを踏まえ，「自前主義」からの脱却を図る。義務教育段階では，遠隔授業も活用して多様な意見に触れ，協働して学ぶ機会を充実する。"),
+      text_choice.call("ウ", "高等学校段階では，複数の高等学校を含めたネットワークを構築し，遠隔授業などのICTも活用して，各校が強みを持つ科目を選択的に履修できるようにする。学校間の連携・協働によって，単独の小規模校では難しい教育活動を実現する。"),
+      text_choice.call("エ", "公立小中学校の学校規模適正化では，学校統合を行うか，小規模校の良さを生かして学校を残すかを検討する。その判断は，国が地域の実情を分析して行い，学校設置者はその判断を教育振興基本計画や個別施設計画に反映する。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。学校規模適正化の目的は教育環境の向上であり，学校存続を選択した地域では，小規模校のメリットを最大化し，デメリットを最小化することを述べている。"),
+      text_block.call("イ：適切。教育資源の制約を踏まえた「自前主義」からの脱却と，遠隔授業による交流・協働の充実が示されている。"),
+      text_block.call("ウ：適切。各高校の強みを共有して科目を選択的に履修できるようにし，教育資源を活用するための連携・協働体制を整備することを述べている。"),
+      text_block.call("エ：統合か存続かは，地域の実情に応じた分析に基づく「各設置者の主体的判断」であり，国が地域ごとに決定するという記述が誤り。計画への反映についての部分は適切。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部8(2)①・③，本文83〜84頁（PDF88〜89頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=88",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験23の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験23の承認済み問番号は1〜15です"
 end
 
 questions.each do |question|
@@ -242,12 +348,23 @@ questions.each do |question|
   if number <= 5 && question.fetch(:category_code) != (number <= 2 ? "education_foundations" : "education_system")
     raise "模擬試験23 問#{number}の分類が不正です"
   end
+  expected_category = { 11 => "student_guidance_career", 12 => "special_support_education",
+    13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system" }[number]
+  if expected_category && question.fetch(:category_code) != expected_category
+    raise "模擬試験23 問#{number}の分類が不正です"
+  end
   blocks = question.fetch(:content_blocks)
   prompt = blocks.first
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  required_cloze = number >= 4 || (number == 3 && [22, 24].include?(23))
+  required_cloze = (4..10).cover?(number) || number == 11
   if required_cloze
-    expected_labels = %w[① ② ③ ④]
+    expected_labels = if number == 11
+      %w[① ② ③]
+    elsif number == 15
+      %w[① ② ③]
+    else
+      %w[① ② ③ ④]
+    end
     quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
     introduction_labels_match = if number >= 6
@@ -279,8 +396,8 @@ questions.each do |question|
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 3 }
-  raise "模擬試験23の問1〜10の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
+  raise "模擬試験23の問1〜15の正答位置が偏っています"
 end
 
 QuestionSeedSync.import(exam_number: 23, questions: questions, publication_status: "draft")

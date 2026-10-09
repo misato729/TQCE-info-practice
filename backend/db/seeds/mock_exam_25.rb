@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験25（承認済みの問1〜10。全20問が揃うまで下書き）
+# 模擬試験25（承認済みの問1〜15。全20問が揃うまで下書き）
 questions = [
   {
     question_number: 1,
@@ -231,10 +231,117 @@ questions = [
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 特別活動編』・第4章第5節（印刷127頁） | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=135",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "生徒指導では、未経験の課題性の高い対応を迫られることがあります。自分の不安や困り感を同僚に開示できない、素直に助けてほしいといえない、努力しているが解決の糸口がみつからない、自己の実践に肯定的評価がなされない等により、強い不安感、焦燥感、閉塞感、孤立感を抱き、心理的ストレスの高い状態が継続することがあります。この状態が、常態化するとバーンアウト（燃え尽き症候群）のリスクが高まります。\n\nそれに対して、受容的・支持的・相互扶助的な{{①}}がある職場であれば、バーンアウトの軽減効果が期待されます。また、自分の心理状態を振り返る、{{②}}も重要です。不安や苦しみを自覚したときに、一人で抱え込まず、SCも含めて身近な教職員に相談できる職場の雰囲気や体制の整備が求められます。" },
+      { type: "text", text: "注：SCはスクールカウンセラーを表す。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["専門性", "セルフ・モニタリング"]),
+      fill_in_choice.call("イ", ["同僚性", "セルフ・コントロール"]),
+      fill_in_choice.call("ウ", ["専門性", "セルフ・コントロール"]),
+      fill_in_choice.call("エ", ["同僚性", "セルフ・モニタリング"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("エ：正しい。受容的・支持的・相互扶助的な同僚性は、教職員が互いに支え合える職場の関係を指す。また、自分の心理状態を振り返って把握することをセルフ・モニタリングと表現している。"),
+      text_block.call("ア：②は正しいが、①が誤り。原文が述べているのは、各教職員の専門性そのものではなく、支え合いを可能にする同僚性である。"),
+      text_block.call("イ：①は正しいが、②が誤り。セルフ・コントロールは自分の行動等を制御することに関わる語であり、この箇所でいう心理状態の振り返り・把握を表すセルフ・モニタリングとは異なる。"),
+      text_block.call("ウ：①・②が誤り。職場の相互扶助的な関係は同僚性、自分の心理状態を振り返ることはセルフ・モニタリングである。専門性の向上や自制だけに置き換えないことが重要である。"),
+    ],
+    source_text: "『生徒指導提要』第1章 1.4.1 教職員集団の同僚性（2）教職員のメンタルヘルスの維持とセルフ・モニタリング（29〜30頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=32\n徳島大学総合科学部「心と身体の『見える化』が、未来を拓く」（セルフ・モニタリングとセルフ・コントロールの説明、誤答解説の補助資料） | https://www.ias.tokushima-u.ac.jp/make-your-move-05/",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "肢体不自由，特に脳性まひのある生徒の状態の把握と教育的対応に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "話すための筋の調節が難しく，発音が不明瞭な場合には，言葉の意味を理解する能力も同じ程度に損なわれていると捉える。文字盤等を用いる場合にも，発音の明瞭さを言語理解の水準の目安として，表現する内容を設定する。"),
+      text_choice.call("イ", "脳性まひは脳の非進行性の病変に由来するため，それに伴う運動や姿勢の状態も，成長によって変わらないと捉える。学習用具や座位の調整は，初めに把握した運動や姿勢の状態を基準として検討する。"),
+      text_choice.call("ウ", "脳性まひには，動作の困難に加えて，形や位置関係を捉える視知覚の困難が伴う場合がある。線分の長さや角度，図形の見比べ，文字の読み書きなどの状態を把握し，運動や姿勢の状態と区別して教育的ニーズを整理する。", true),
+      text_choice.call("エ", "視知覚の障害とは，見た情報に合わせて手指を正確に動かす力の障害をいう。図形や文字の形を捉えることが難しい場合には，その状態を，筆記や用具操作における手指の動きの正確さの評価として位置付ける。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：発音の明瞭さと言語理解を同じ水準とする点が誤り。構音の困難があっても言葉の理解は損なわれていない場合があり，文字盤等によって理解や意思を表せるようにする。"),
+      text_block.call("イ：非進行性の病変と，運動・姿勢の状態が変化しないことを混同している。状態は発育・発達に伴って変化し得るため，継続して把握する。"),
+      text_block.call("ウ：適切。視知覚の困難では長さや角度の比較，図形の見比べなどが難しくなる場合があり，手指の操作や姿勢の困難と区別して把握する。"),
+      text_block.call("エ：視知覚と，手指の運動・目と手の協応を混同している。形や関係を捉える力と，手指を正確に動かす力は同じではない。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅳ「肢体不自由」3(3)①，②ア(イ)・(ウ)（164・166〜167頁） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_08.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "ピアジェの道徳判断の発達に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。なお，責任判断の例では，Aは手伝い中の不注意でコップを5個割り，Bは腹を立ててコップを壊そうとし，1個割ったものとする。" },
+    ],
+    choices: [
+      text_choice.call("ア", "他律的な道徳では，規則を大人などの権威によって定められたものとして捉える。また，行為の結果よりも意図を重視するため，この例では，故意に割ったBの責任をAより重く判断する。"),
+      text_choice.call("イ", "自律的な道徳では，規則を当事者の合意によって変更できるものとして捉える。また，行為の意図や動機を考慮するため，この例では，故意に割ったBの責任をAより重く判断する。", true),
+      text_choice.call("ウ", "他律的な道徳では，行為が生んだ結果の大きさを重視するため，この例では，多く割ったAの責任をBより重く判断する。また，規則を当事者の合意によって変更できるものとして捉える。"),
+      text_choice.call("エ", "自律的な道徳では，行為の意図や動機を考慮するため，この例では，故意に割ったBの責任をAより重く判断する。また，大人などの権威によって定められた規則を変更できないものとして捉える。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：規則観は他律的な道徳に対応するが，意図を重視する責任判断は自律的な道徳に対応する。他律的な判断では結果の大きいAを重く判断する。"),
+      text_block.call("イ：適切。自律的な道徳では合意による規則の変更と，意図・動機を考慮する主観的責任判断が特徴となる。"),
+      text_block.call("ウ：結果の大きさを重視する責任判断は他律的な道徳に対応するが，合意による規則の変更は自律的な道徳に対応する。"),
+      text_block.call("エ：意図を考慮する責任判断は適切だが，権威の規則を変更できないものとする規則観は他律的な道徳に対応する。"),
+    ],
+    source_text: "杉本任士「児童期における社会性の発達と規範意識の形成」『日本大学大学院総合社会情報研究科紀要』第16号，表6「ピアジェの道徳的判断の研究」（173〜174頁） | https://gssc.dld.nihon-u.ac.jp/wp-content/uploads/journal/pdf16/16-167-176-Sugimoto.pdf",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "診断的評価，形成的評価及び総括的評価に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "診断的評価は，指導に先立ち，学習に必要な知識や能力などの準備状態を把握するために行われる。総括的評価は，学習途中のつまずきを明らかにし，その後の指導や学習の改善に生かすことを基本的な役割とする。"),
+      text_choice.call("イ", "形成的評価は，学習の途中で目標の達成状況を確かめるために行われる。ブルームの完全習得学習では，形成的テストを，一定期間の学習成果を総合的に判定して記録することを主要な目的とする評価として位置付ける。"),
+      text_choice.call("ウ", "総括的評価は，一定期間の学習成果を総合的に把握するために行われる。形成的評価との区別は，テストの項目数の多少や，記述式か選択式かという出題形式の違いに基づく。"),
+      text_choice.call("エ", "診断的評価は，指導に先立ち学習者の準備状態を把握して計画に生かす。形成的評価は，学習途中の到達状況を確かめて指導や学習の改善に生かし，総括的評価は，一定期間の学習成果を総合的に把握するために行われる。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：診断的評価は適切だが，後半は形成的評価の役割。総括的評価は一定期間の学習成果を総合的に把握するために行う。"),
+      text_block.call("イ：形成的評価の時期は適切だが，完全習得学習の形成的テストの目的が誤り。未達成の目標を明らかにし，結果に応じた補充学習や指導につなげるために用いる。"),
+      text_block.call("ウ：総括的評価は適切だが，区別の基準が誤り。形成的・総括的は評価の役割についての区別であり，問題数や出題形式の違いではない。"),
+      text_block.call("エ：適切。準備状態の把握，学習過程の改善，期間終了後の成果の総括という三つの機能を正しく対応させている。"),
+    ],
+    source_text: "日本英語検定協会『英語情報Web』池田周「『自分の学びを評価できる』力の育成」〈教育における「評価」〉 | https://eigojoho.eiken.or.jp/education/1411/\n熊本大学公開科目「基盤的教育論」〈完全習得学習と形成的テスト〉 | https://www.gsis.kumamoto-u.ac.jp/opencourses/pf/2Block/03/1_text.html",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "text", text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅱ部 各論 3 新時代に対応した高等学校教育等の在り方について」に示された定時制・通信制課程に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "通信教育の質保証に向けて，通信教育実施計画の作成と教育活動等の状況に関する情報公開の義務化，面接指導等実施施設の教育環境の基準の明確化を挙げている。また，面接指導は少人数を基幹とすることを明確にする。", true),
+      text_choice.call("イ", "多様な生徒の学習ニーズに対応するため，ICTを活用した指導・評価方法を検討し，専門スタッフを充実させる。また，担当教科・科目の教師によらない学習支援も，当該教科・科目の面接指導の時間数に算入する。"),
+      text_choice.call("ウ", "生徒の実態や学習ニーズに応じ，家庭・地域や企業，ハローワーク等との連携を促進する。また，特別活動は，学校の年間指導計画に代えて生徒自身の個別の活動計画に位置付け，多様な進路希望に対応する。"),
+      text_choice.call("エ", "生徒の学習ニーズを踏まえ，各学校の特色に応じた学校教育活動のPDCAサイクルを確立する。また，通信教育では，年間の面接指導及び試験を終えた後に，年間の添削指導を完了させるよう計画する。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。通信教育実施計画，施設の環境基準，少人数を基幹とする面接指導，情報公開の四つを，質保証の対応方策として挙げている。2021年の答申に示された方策を問うもので，現行法令の施行状況を問うものではない。"),
+      text_block.call("イ：ICTの活用と専門スタッフの充実は適切。しかし，担当教科・科目の教師によらない指導・学習支援の時間を，当該教科・科目の面接指導に算入することは，脚注67で不適切な事例として挙げられている。"),
+      text_block.call("ウ：家庭・地域や企業等との連携は適切。しかし，特別活動を学校の年間指導計画に位置付けていない事例は，脚注67で問題として挙げられている。生徒の個別計画で学校の年間指導計画を代替することはできない。"),
+      text_block.call("エ：学校教育活動のPDCAサイクルの確立は適切。しかし，年間の添削指導を終えていない段階で，年間の面接指導及び試験を全て実施する取扱いは，脚注67で不適切な事例として挙げられている。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部3(3)①・②，本文55〜56頁・脚注67（PDF60〜61頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=60",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験25の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験25の承認済み問番号は1〜15です"
 end
 
 questions.each do |question|
@@ -246,12 +353,23 @@ questions.each do |question|
   if number <= 5 && question.fetch(:category_code) != (number <= 2 ? "education_foundations" : "education_system")
     raise "模擬試験25 問#{number}の分類が不正です"
   end
+  expected_category = { 11 => "student_guidance_career", 12 => "special_support_education",
+    13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system" }[number]
+  if expected_category && question.fetch(:category_code) != expected_category
+    raise "模擬試験25 問#{number}の分類が不正です"
+  end
   blocks = question.fetch(:content_blocks)
   prompt = blocks.first
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  required_cloze = number >= 4 || (number == 3 && [22, 24].include?(25))
+  required_cloze = (4..10).cover?(number) || number == 11
   if required_cloze
-    expected_labels = %w[① ② ③ ④]
+    expected_labels = if number == 11
+      %w[① ②]
+    elsif number == 15
+      %w[① ② ③]
+    else
+      %w[① ② ③ ④]
+    end
     quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
     introduction_labels_match = if number >= 6
@@ -283,8 +401,8 @@ questions.each do |question|
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 3 }
-  raise "模擬試験25の問1〜10の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
+  raise "模擬試験25の問1〜15の正答位置が偏っています"
 end
 
 QuestionSeedSync.import(exam_number: 25, questions: questions, publication_status: "draft")

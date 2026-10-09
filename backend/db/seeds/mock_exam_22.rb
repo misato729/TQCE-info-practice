@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験22（承認済みの問1〜10。全20問が揃うまで下書き）
+# 模擬試験22（承認済みの問1〜15。全20問が揃うまで下書き）
 questions = [
   {
     question_number: 1,
@@ -228,10 +228,116 @@ questions = [
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第5章第2〔学校行事〕2(3)～(5) | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=482",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "児童生徒一人一人が、{{①}}として尊重され、学級・ホームルームで安全かつ安心して教育を受けられるように配慮する必要があります。他者の人格や人権をおとしめる言動、いじめ、暴力行為などは、決して許されるものではありません。お互いの{{②}}を認め合い、安心して授業や学校生活が送れるような風土を、教職員の支援の下で、{{③}}がつくり上げるようにすることが大切です。そのためには、教職員による児童生徒への配慮に欠けた言動、暴言や体罰等が許されないことは言うまでもありません。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["個性的な存在", "生活習慣や規律", "教職員自ら"]),
+      fill_in_choice.call("イ", ["自律的な存在", "個性や多様性", "教職員自ら"]),
+      fill_in_choice.call("ウ", ["自律的な存在", "生活習慣や規律", "児童生徒自ら"]),
+      fill_in_choice.call("エ", ["個性的な存在", "個性や多様性", "児童生徒自ら"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("エ：正しい。一人一人を個性的な存在として尊重し、個性や多様性を認め合うことを基盤に、教職員の支援の下で児童生徒自らが安全・安心な風土をつくり上げるとされている。"),
+      text_block.call("ア：①は正しいが、②・③が誤り。ここで認め合う対象は個性や多様性であり、風土をつくり上げる主体は児童生徒である。"),
+      text_block.call("イ：②は正しいが、①・③が誤り。①は自律性の有無を条件にせず、一人一人を個性的な存在として尊重する表現である。③は児童生徒自らである。"),
+      text_block.call("ウ：③は正しいが、①・②が誤り。原文は個性的な存在としての尊重と、個性や多様性の相互承認を述べている。生活習慣や規律を認め合うという説明ではない。"),
+    ],
+    source_text: "『生徒指導提要』第1章 1.1.2 生徒指導の実践上の視点（4）安全・安心な風土の醸成（15頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=18",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "学習障害（LD）のある生徒の言語の理解や表現と，教育的対応に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "言葉を知っていても，その意味を理解したり，適切に使って考えを伝えたりすることに困難がある場合がある。実体験や写真などと言葉の意味を結び付け，伝えたい内容をメモするなど，本人に合った方法を理解し活用できるようにする。", true),
+      text_choice.call("イ", "教師の指示を聞いて理解することが難しい場合には，視覚情報も併用して必要な情報を捉えやすくする。このときLDの「聞く」能力は音の大きさや高低を聞き分けることを指し，話の意味を理解する力は「推論する」能力に区分される。"),
+      text_choice.call("ウ", "読み書きの内容を図や記号で整理する方法は，文章の理解や表現に時間がかかる場合に用いられる。この方法は，内容の関係を捉えるためというより，個々の文字の形の細かな違いを見分けるための補助として位置付けられる。"),
+      text_choice.call("エ", "通級による指導では，各教科の内容を取り扱いながら，自分に合った学び方や代替手段の使い方を学ぶ。この指導は，各教科の学習の遅れを取り戻すための補充指導を目的とし，障害による困難への対応をその手段として位置付ける。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。語を知っていることと，意味を理解して使うことを区別し，言語概念の形成と，内容を整理して伝えるための手段の活用を支える。"),
+      text_block.call("イ：視覚情報の併用は適切だが，能力の区分が誤り。「聞く」は他人の話を聞き取って理解すること。「推論する」は事実から結果を予測したり，結果から原因を推し量ったりすることを指す。"),
+      text_block.call("ウ：図や記号による整理の目的が誤り。内容の関係や項目を整理して考えやすくするための方法であり，字形の細かな違いを見分けるための拡大表示などとは異なる。"),
+      text_block.call("エ：指導目的が逆。教科内容を扱う場合も，障害による学習上・生活上の困難の改善又は克服が目的であり，単に教科学習の遅れを補うための指導ではない。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅸ「学習障害」1(2)②ウ・エ，2(2)②，3(1)②（292・299・301頁） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_13.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "青年心理学の研究史におけるホールとミードの青年観に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "ホールは，青年期を不安や葛藤，感情の揺れが顕著になる時期として捉え，その主な説明を文化的条件の違いに求めた。ミードは，サモアの青年の研究を通して，青年期の心理と社会・文化的条件との関係に注目した。"),
+      text_choice.call("イ", "ミードは，サモアの青年を調べ，アメリカの青年との比較から社会・文化的条件の重要性を論じた。ホールは，青年期の生物学的・生理学的変化を重視し，青年期を情緒的に平穏な時期として特徴付けた。"),
+      text_choice.call("ウ", "ホールは，青年期の不安や葛藤の説明に，生物学的・生理学的要因を重視した。ミードは，サモアの青年の研究を通して，ホールが述べた青年期の葛藤を文化に共通する現象として裏付ける立場を示した。"),
+      text_choice.call("エ", "ホールは，青年期の不安や葛藤，感情の揺れを捉え，その説明に生物学的・生理学的要因を重視した。ミードは，サモアの青年の研究を通して，青年期の心理を社会・文化的条件との関係で捉える立場を示した。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：ホールの青年期の特徴と，ミードの立場は適切だが，ホールの説明要因が誤り。ホールは生物学的・生理学的要因を重視した。"),
+      text_block.call("イ：ミードの説明は適切だが，ホールの青年観が誤り。ホールは「疾風怒濤」と表される不安・葛藤・情緒の揺れを特徴とした。"),
+      text_block.call("ウ：ホールの説明は適切だが，ミードの研究の位置付けが誤り。ミードは社会・文化的条件を重視し，生物学的要因を中心とする説明と対比される立場を示した。"),
+      text_block.call("エ：適切。両者の説明上の重点を正しく対応させている。研究史上の比較であり，ミードの民族誌的結論を現代の青年全般に当てはまる確定した法則として扱うものではない。"),
+    ],
+    source_text: "久世敏雄「青年心理学（研究）の課題と展望」日本青年心理学会シンポジウム〈青年心理学の可能性と将来〉（5頁） | https://www.jstage.jst.go.jp/article/jsyapp/7/0/7_5/_pdf/-char/ja",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "ワーキングメモリに関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "ワーキングメモリと短期記憶は，情報の一時的な保持に関わる概念である。機能面では，短期記憶が保持と認知課題の処理を扱い，ワーキングメモリが情報の保持を中心に扱うものとして区別される。"),
+      text_choice.call("イ", "バドリーの代表的なモデルでは，中央実行系が注意の配分や下位システムの制御に関わる。音韻ループは視覚的・空間的な情報を，視空間的スケッチパッドは言語的な情報を一時的に保持する。"),
+      text_choice.call("ウ", "ワーキングメモリは，認知課題の遂行中に必要な情報を一時的に保持しながら，その情報を利用して処理を進める機能に関わる。情報の保持に加え，注意の配分や不要な情報の抑制などの制御も関わる。", true),
+      text_choice.call("エ", "バドリーの代表的なモデルでは，音韻ループが言語的な情報の一時的な保持に関わる。中央実行系は，その情報を頭の中で繰り返して保持する維持リハーサルを担当する下位システムとして位置付けられる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：一時的保持に関わる点は適切だが，機能の区別が逆。ワーキングメモリでは，保持と認知活動の処理を支える働きを重視する。両者を独立した記憶装置とする意味ではない。"),
+      text_block.call("イ：中央実行系は適切だが，下位システムの対応が逆。音韻ループは言語的・音韻的情報，視空間的スケッチパッドは視覚的・空間的情報を扱う。"),
+      text_block.call("ウ：適切。必要な情報を保持し，認知課題の処理に利用する働きと，そのための制御に関わる。"),
+      text_block.call("エ：音韻ループは適切だが，維持リハーサルは音韻ループの働きに関わる。中央実行系は注意や情報処理を制御する機構である。"),
+    ],
+    source_text: "三宅晶・齊藤智「作動記憶研究の現状と展開」『心理学研究』72(4)〈作動記憶と短期記憶〉〈Baddeleyのモデルの現状〉（336〜339頁） | https://doi.org/10.4992/jjpsy.72.336",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "text", text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅱ部 各論 6 遠隔・オンライン教育を含むICTを活用した学びの在り方について」に示された教育データや教材の活用に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "学習履歴（スタディ・ログ）は，個人ごとの学習等に関する記録やデータの総称である。学習記録がこれに当たり，成果物の記録や成績・評価情報は，学習履歴とは別の校務情報として整理されている。"),
+      text_choice.call("イ", "教育データの蓄積・分析・利活用は，児童生徒自身の振り返りにつながる学習成果の可視化や，教師への学習状況の情報集約に役立つ。進学・転学時の学校間でのデータの引継ぎも，きめ細かな指導や学習評価の充実につなげる。", true),
+      text_choice.call("ウ", "教育データの利活用のため，学校間で相互にデータを交換・蓄積・分析できるようにする必要がある。ここでいうデータ標準化とは，各学校で用いる評定の基準と学習評価の方法を同一にそろえる取組をいう。"),
+      text_choice.call("エ", "学習者用デジタル教科書は，紙の教科書の内容を基礎として，動画やアニメーション等を加えて内容を再構成した教材と定義されている。1人1台端末環境の整備に伴い，その普及促進を図ることが重要である。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：成果物の記録や成績・評価情報も，学習履歴の例として挙げられている。学習記録に限って，これらを学習履歴と別のものとして整理する記述が誤り。"),
+      text_block.call("イ：適切。子供自身の振り返りと教師の指導・評価の双方に役立て，進学・転学時にもデータを円滑に引き継ぐことを述べている。"),
+      text_block.call("ウ：データ標準化でそろえるのは，収集する「データの内容の規格」と「技術的な規格」である。学校ごとの評定基準や評価方法を同一にするという定義ではない。"),
+      text_block.call("エ：答申の定義は，紙の教科書の内容の全部をそのまま電磁的記録にした教材（電磁的記録に伴い変更が必要となる内容を除く）である。動画等を追加して内容を再構成するという定義が誤り。普及促進を図ることは適切。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部6(2)②・⑥，本文77〜78頁・脚注104・105・108（PDF82〜83頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=82",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験22の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験22の承認済み問番号は1〜15です"
 end
 
 questions.each do |question|
@@ -243,12 +349,23 @@ questions.each do |question|
   if number <= 5 && question.fetch(:category_code) != (number <= 2 ? "education_foundations" : "education_system")
     raise "模擬試験22 問#{number}の分類が不正です"
   end
+  expected_category = { 11 => "student_guidance_career", 12 => "special_support_education",
+    13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system" }[number]
+  if expected_category && question.fetch(:category_code) != expected_category
+    raise "模擬試験22 問#{number}の分類が不正です"
+  end
   blocks = question.fetch(:content_blocks)
   prompt = blocks.first
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  required_cloze = number >= 4 || (number == 3 && [22, 24].include?(22))
+  required_cloze = (4..10).cover?(number) || number == 3 || number == 11
   if required_cloze
-    expected_labels = number == 7 ? %w[① ② ③] : %w[① ② ③ ④]
+    expected_labels = if number == 11
+      %w[① ② ③]
+    elsif number == 15 || number == 7
+      %w[① ② ③]
+    else
+      %w[① ② ③ ④]
+    end
     quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
     introduction_labels_match = if number >= 6
@@ -280,8 +397,8 @@ questions.each do |question|
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 3 }
-  raise "模擬試験22の問1〜10の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
+  raise "模擬試験22の問1〜15の正答位置が偏っています"
 end
 
 QuestionSeedSync.import(exam_number: 22, questions: questions, publication_status: "draft")

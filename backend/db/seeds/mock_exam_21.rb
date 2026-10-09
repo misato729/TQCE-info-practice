@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験21（承認済みの問1〜10。全20問が揃うまで下書き）
+# 模擬試験21（承認済みの問1〜15。全20問が揃うまで下書き）
 questions = [
   {
     question_number: 1,
@@ -227,10 +227,116 @@ questions = [
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 特別活動編』・第3章第1節 1（印刷39頁） | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=47",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "児童生徒の教育活動の大半は、集団一斉型か小集団型で展開されます。そのため、{{①}}してしまう危険性があります。そうならないようにするには、学校生活のあらゆる場面で、「自分も一人の人間として大切にされている」という自己存在感を、児童生徒が実感することが大切です。また、ありのままの自分を肯定的に捉える{{②}}や、他者のために役立った、認められたという自己有用感を育むことも極めて重要です。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["集団に個が埋没", "自己効力感"]),
+      fill_in_choice.call("イ", ["集団が個に従属", "自己効力感"]),
+      fill_in_choice.call("ウ", ["集団に個が埋没", "自己肯定感"], true),
+      fill_in_choice.call("エ", ["集団が個に従属", "自己肯定感"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ウ：正しい。集団で教育活動を行う際にも一人一人が大切にされていると実感できることを重視する。ありのままの自分を肯定的に捉える感情は「自己肯定感」である。"),
+      text_block.call("ア：①は正しいが、②が誤り。「自己効力感」は、ある行動や課題を自分が遂行できるという見込みに関わる概念であり、ここでの自己肯定感とは区別する。"),
+      text_block.call("イ：①・②が誤り。原文は、集団が個人に従属する危険性ではなく、集団に個が埋没する危険性を指摘している。②は自己肯定感である。"),
+      text_block.call("エ：②は正しいが、①が誤り。集団の中で個人の存在が埋没することへの配慮を述べた箇所である。"),
+    ],
+    source_text: "『生徒指導提要』第1章 1.1.2 生徒指導の実践上の視点（1）自己存在感の感受（14頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=17\n三重大学教育心理学研究室「自己効力感について」（誤答解説の補助資料） | https://educational-psychology.edu.mie-u.ac.jp/thesis/2023/ogawa/forth.html",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "文部科学省『障害のある子供の教育支援の手引』に示される，知的障害のある生徒の特性と指導に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "生活場面で知識や技能を使えるようにする指導には，日常生活の指導や生活単元学習などがある。これらは，自立活動を独立した領域として行う指導の形態であり，各教科や特別活動の内容を合わせて指導する形態とは区別される。"),
+      text_choice.call("イ", "ボタンの着脱やはさみの操作に困難がある場合には，使いやすい道具や素材を用い，扱う経験を積めるようにする。この手引では，こうした困難の要因となる手指の巧緻性と目と手の協応は，ともに認知面の課題として整理されている。"),
+      text_choice.call("ウ", "学んだ知識や技能が断片的になり，生活場面で使いにくいことがある。具体的な生活場面に即して，考え，判断し，表現する活動を継続的，段階的に行い，知識や技能を実際に生かせるようにする。", true),
+      text_choice.call("エ", "失敗経験によって自信を失い，活動への参加をためらう場合には，その状態を知的機能の発達の遅れの程度を示すものと捉える。成功経験の後の意欲の向上は，知的機能の発達の遅れが軽減したことを示す指標となる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：指導形態が誤り。日常生活の指導，生活単元学習などは，各教科等を合わせた指導の実践として示されている。自立活動を独立して行う指導の別名称ではない。"),
+      text_block.call("イ：支援方法は適切だが，要因の整理が誤り。手引は手指の巧緻性を運動面の困難，目と手の協応動作を認知面の課題として挙げ，持続性や経験不足なども含めて検討している。"),
+      text_block.call("ウ：適切。知識や技能の習得だけでなく，実際の生活場面で活用できるようにする継続的，段階的な指導が重要である。"),
+      text_block.call("エ：自信や意欲の変化を，知的機能の発達の遅れの程度に直接対応させる点が誤り。成功経験による自己肯定感の回復と，知的機能の評価は区別する。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅲ「知的障害」1(2)②イ・オ，2(1)②ウ・オ（129・136頁） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_07.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "エリクソンが述べた青年期の同一性形成に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "幼児童期には，親や身近な大人との同一化を通して多様な自己像が形づくられる。青年期の同一性は，そこで得られた自己像を再検討せずに並存させることによって成立する。"),
+      text_choice.call("イ", "青年期には，幼児童期に得られた同一化や自己像を，将来の職業や社会的役割との関係で捉え直す。それらを選択し，再統合していく過程が，同一性の形成に重要な意味をもつ。", true),
+      text_choice.call("ウ", "青年期には，自分が何者であるかを問い，職業や価値観について考える過程で同一性の危機が生じる。この危機は，その過程で精神医学的な病気として判断される状態を指す。"),
+      text_choice.call("エ", "青年期には，身体的な変化や社会からの期待を受けて，新しい役割や目標を検討する。同一性の形成は，幼児童期の同一化を捨てて，それとは切り離された新しい自己像に置き換える過程である。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：幼児童期の同一化の説明は適切だが，同一性は過去の自己像を未整理のまま並存させることではない。青年期には社会的役割との関係で再検討し，新しいまとまりへ統合する。"),
+      text_block.call("イ：適切。過去の経験や同一化を基礎として，青年期にそれらを選択的に捉え直し，社会との関係で再統合する。"),
+      text_block.call("ウ：「危機」を精神医学的な病気と同義にしている点が誤り。発達上の転換や分岐を意味し，概念自体が病気を指すわけではない。"),
+      text_block.call("エ：同一性形成を過去との断絶にしている点が誤り。幼児童期の同一化を素材として選択・再統合するのであり，過去の経験を捨てる過程ではない。"),
+    ],
+    source_text: "仁科弥生「エリクソンと幼児教育（13）」〈同一性形成と青年期〉（34〜36頁） | https://teapot.lib.ocha.ac.jp/record/14535/files/19830101_012.pdf",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "強化スケジュールに関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "固定比率スケジュールでは，一定回数の反応ごとに強化が与えられる。固定時隔スケジュールでは，一定時間が経過するたびに，反応の有無にかかわらず強化が与えられる。"),
+      text_choice.call("イ", "変動比率スケジュールでは，強化までに必要な反応回数が変化する。変動時隔スケジュールでは，一定時間内に生じた反応の総数を基準として，強化までに必要な反応回数を変化させる。"),
+      text_choice.call("ウ", "比率スケジュールは反応回数を，時隔スケジュールは経過時間を基準とする。固定と変動の区別は，提示する強化子の量が一定か，その都度変化するかによる。"),
+      text_choice.call("エ", "固定比率スケジュールでは，強化までに必要な反応回数を一定にする。変動時隔スケジュールでは，強化が可能になるまでの時間を変化させ，その時間が経過した後の最初の反応に強化を与える。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：固定比率は適切。固定時隔でも，設定された時間が経過した後の反応が必要である。時間の経過だけで強化子を提示する手続とは区別する。"),
+      text_block.call("イ：変動比率は適切。変動時隔で変化するのは強化が可能になるまでの時間であり，必要な反応回数ではない。"),
+      text_block.call("ウ：比率と時隔の区別は適切。固定・変動は，必要な反応回数又は時隔の値についての区別であり，強化子の量についての区別ではない。"),
+      text_block.call("エ：適切。反応回数・経過時間という基準と，値を固定・変動させるという区別を正しく対応させている。"),
+    ],
+    source_text: "慶應義塾大学大学院社会学研究科紀要68号・丹野貴行「変動比率スケジュールと変動時隔スケジュールの比較検討」論文審査要旨（262頁） | https://koara.lib.keio.ac.jp/xoonips/modules/xoonips/download.php/AN0006957X-00000068-0260.pdf?file_id=40193",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "text", text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅰ部 総論 2 日本型学校教育の成り立ちと成果，直面する課題と新たな動きについて」に示された学校教育の課題に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "家庭をめぐる環境の変化や地域の社会関係資本の喪失によって，家庭や地域の教育力が低下する中，本来は家庭や地域でなすべきことまで学校に委ねられるようになり，学校及び教師が担う業務の範囲と負担が拡大してきた。", true),
+      text_choice.call("イ", "相対的貧困とは，世帯の所得がその国の等価可処分所得の平均値の半分に満たない状態をいう。経済的困窮を背景として，子供が教育や体験の機会に乏しくなり，地域や社会から孤立するなどの不利な状況に置かれる傾向がある。"),
+      text_choice.call("ウ", "日本語指導が必要な児童生徒の増加を，子供たちの多様化に関する課題として挙げている。答申に示された日本語指導が必要な児童生徒数は，外国籍を持つ児童生徒を対象として集計された人数である。"),
+      text_choice.call("エ", "いじめの認知件数と重大事態の発生件数はいずれも増加傾向にある。答申は，両者の増加を，初期段階からいじめを積極的に認知し，解消に向けた取組が進んでいることを示すものとして，同じように評価している。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。家庭・地域の変化によって学校へ委ねられる業務が増え，学校及び教師の負担が増大したと説明されている。"),
+      text_block.call("イ：基準は「平均値」ではなく「中央値」の半分である。教育や体験の機会の乏しさ，孤立等についての後半は適切。"),
+      text_block.call("ウ：答申の人数には，日本語指導が必要な外国籍の児童生徒と日本国籍の児童生徒の双方が含まれる。"),
+      text_block.call("エ：認知件数の増加は積極的な認知の表れとも評価できる一方，重大事態の発生件数の増加は「憂慮すべき状況」としている。二つの増加を同じように評価しているわけではない。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部2(3)，本文8〜10頁・脚注20（PDF13〜15頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=13",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験21の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験21の承認済み問番号は1〜15です"
 end
 
 questions.each do |question|
@@ -242,12 +348,23 @@ questions.each do |question|
   if number <= 5 && question.fetch(:category_code) != (number <= 2 ? "education_foundations" : "education_system")
     raise "模擬試験21 問#{number}の分類が不正です"
   end
+  expected_category = { 11 => "student_guidance_career", 12 => "special_support_education",
+    13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system" }[number]
+  if expected_category && question.fetch(:category_code) != expected_category
+    raise "模擬試験21 問#{number}の分類が不正です"
+  end
   blocks = question.fetch(:content_blocks)
   prompt = blocks.first
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  required_cloze = number >= 4 || (number == 3 && [22, 24].include?(21))
+  required_cloze = (4..10).cover?(number) || number == 11
   if required_cloze
-    expected_labels = %w[① ② ③ ④]
+    expected_labels = if number == 11
+      %w[① ②]
+    elsif number == 15
+      %w[① ② ③]
+    else
+      %w[① ② ③ ④]
+    end
     quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
     introduction_labels_match = if number >= 6
@@ -279,8 +396,8 @@ questions.each do |question|
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 3 }
-  raise "模擬試験21の問1〜10の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
+  raise "模擬試験21の問1〜15の正答位置が偏っています"
 end
 
 QuestionSeedSync.import(exam_number: 21, questions: questions, publication_status: "draft")

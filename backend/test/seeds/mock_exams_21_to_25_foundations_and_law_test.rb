@@ -21,14 +21,14 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
   end
 
   test "承認済みの草案と全二十五問の本文選択肢正答解説出典を照合する" do
-    assert_equal 50, @entries.size
+    assert_equal 75, @entries.size
     assert_equal 25, @added_entries.size
     EXAMS.each do |exam|
       entries = @entries.select { |entry| entry[:exam_number] == exam }
-      assert_equal (1..10).to_a, entries.map { |entry| entry[:attributes][:question_number] }
+      assert_equal (1..15).to_a, entries.map { |entry| entry[:attributes][:question_number] }
       assert_equal ANSWERS.fetch(exam), entries.first(5).map { |entry| entry[:attributes][:choices].find { |choice| choice[:correct] }[:label] }
       counts = entries.map { |entry| entry[:attributes][:choices].find { |choice| choice[:correct] }[:label] }.tally
-      assert LABELS.all? { |label| (2..3).cover?(counts.fetch(label)) }
+      assert LABELS.all? { |label| (2..5).cover?(counts.fetch(label)) }
     end
 
     @added_entries.each do |entry|
@@ -149,9 +149,9 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "問一から問十の五十問は管理APIで取得でき一般APIには公開されない" do
+  test "作成済み七十五問は管理APIで取得でき一般APIには公開されない" do
     save_entries
-    assert_equal 50, Question.where(exam_number: EXAMS, publication_status: "draft").count
+    assert_equal 75, Question.where(exam_number: EXAMS, publication_status: "draft").count
     headers = admin_headers
     get api_v1_exams_path, headers: headers
     assert_response :success

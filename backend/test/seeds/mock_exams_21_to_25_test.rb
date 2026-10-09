@@ -3,7 +3,7 @@ require "test_helper"
 class MockExams21To25Test < ActionDispatch::IntegrationTest
   EXAM_NUMBERS = (21..25).to_a.freeze
   QUESTION_NUMBERS = (6..10).to_a.freeze
-  ALL_QUESTION_NUMBERS = (1..10).to_a.freeze
+  ALL_QUESTION_NUMBERS = (1..15).to_a.freeze
   LABELS = %w[ア イ ウ エ].freeze
   BLANK_LABELS = %w[① ② ③ ④].freeze
   EXPECTED_ANSWERS = {
@@ -46,7 +46,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
     assert_equal 25, partial_questions.count
     assert_equal 25, partial_questions.where(publication_status: "draft").count
     assert_equal 0, partial_questions.published.count
-    assert_equal 50, QuestionSeedState.where(exam_number: EXAM_NUMBERS).count
+    assert_equal 75, QuestionSeedState.where(exam_number: EXAM_NUMBERS).count
 
     EXAM_NUMBERS.each do |exam|
       questions = partial_questions.where(exam_number: exam).order(:question_number)
@@ -269,7 +269,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
     EXAM_NUMBERS.each do |exam|
       get "/api/v1/admin/questions", params: { exam_number: exam, publication_status: "draft" }, headers: headers
       assert_response :success
-      assert_equal 10, response.parsed_body.dig("meta", "total_count")
+      assert_equal 15, response.parsed_body.dig("meta", "total_count")
       assert_equal ALL_QUESTION_NUMBERS, response.parsed_body.fetch("data").map { |question| question.fetch("question_number") }
     end
     partial_questions.each do |question|
@@ -362,7 +362,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
     entries = QuestionSeedSync.collect do
       EXAM_NUMBERS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
     end
-    assert_equal 50, entries.size
+    assert_equal 75, entries.size
     assert entries.all? { |entry| entry.fetch(:publication_status) == "draft" }
     QuestionWriter.transaction { entries.each { |entry| QuestionSeedSync.call(**entry) } }
   end

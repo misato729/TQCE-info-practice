@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験24（承認済みの問1〜10。全20問が揃うまで下書き）
+# 模擬試験24（承認済みの問1〜15。全20問が揃うまで下書き）
 questions = [
   {
     question_number: 1,
@@ -234,10 +234,121 @@ questions = [
     ],
     source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第5章第3の1(6)・2(1) | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=483",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。下の表は，同資料に示された課題早期発見対応の方法とその説明の一部を整理したものである。表中の空欄 {{①}} ・ {{②}} ・ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "(2) 課題予防的教育相談：課題未然防止教育\n\n「課題予防的教育相談」は大きく二つに分類できます。第一は、全ての児童生徒を対象とした、ある特定の問題や課題の未然防止を目的に行われる教育相談です。第二は、ある問題や課題の兆候が見られる特定の児童生徒を対象として行われる教育相談です。両者とも「課題予防的教育相談」として分類されます。前者の例としては、全ての児童生徒を対象に、いじめ防止や暴力防止のためのプログラムを、SCの協力を得ながら生徒指導主事と教育相談コーディネーターが協働して企画し、担任や教科担任等を中心に実践する取組などが挙げられます。\n\n(3) 課題予防的教育相談：課題早期発見対応\n\n一方、後者の例としては、発達課題の積み残しや何らかの脆弱性を抱えた児童生徒、あるいは環境的に厳しい状態にある児童生徒を早期に見つけ出し、即応的に支援を行う場合などを挙げることができます。" },
+      { type: "text", text: "注：SCはスクールカウンセラーを表す。" },
+      { type: "text", text: "以下の表は原典の説明を整理したものであり，原典に掲載された表そのものではない。" },
+      { type: "table", headers: ["区分", "方法", "説明"], rows: [["早期発見", "【①】", "観察や面接などで見落とした児童生徒のSOSを把握する。観察等と組み合わせ，より深い児童生徒理解につなげる。"], ["早期発見", "【②】", "日記，作文，絵などから心理状態，自尊感情の有り様，発達の課題などを把握する。気になるものは，記録に残したり，他の教職員やSCと一緒に検討したりする。"], ["早期対応", "【③】", "ケース会議の対象となる援助ニーズの高い児童生徒について，アセスメントに基づくプランニングを行い，具体的な支援策を明示するために作成する。"]] },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["定期相談", "作品の活用", "リスト化と定期的な情報更新"]),
+      fill_in_choice.call("イ", ["質問紙調査", "作品の活用", "個別の支援計画"], true),
+      fill_in_choice.call("ウ", ["質問紙調査", "グループ面談", "リスト化と定期的な情報更新"]),
+      fill_in_choice.call("エ", ["定期相談", "グループ面談", "個別の支援計画"]),
+    ],
+    explanation_blocks: [
+      text_block.call("イ：正しい。観察等と組み合わせてSOSを把握する質問紙調査、日記・作文・絵を手掛かりとする作品の活用、アセスメントに基づいて具体的支援策を明示する個別の支援計画という対応である。"),
+      text_block.call("ア：②は正しいが、①・③が誤り。定期相談は継続的な面接を通して相談できる安心感や信頼関係を形成する方法。リスト化と定期的な情報更新は、気になる児童生徒をリスト化し、スクリーニング会議等で情報を更新する取組であり、表③の計画作成とは異なる。"),
+      text_block.call("ウ：①は正しいが、②・③が誤り。グループ面談は共通する悩みなどを小グループで話し合う方法で、日記・作文・絵を用いる作品の活用とは異なる。③は個別の支援計画である。"),
+      text_block.call("エ：③は正しいが、①・②が誤り。①は質問紙調査、②は作品の活用である。定期相談とグループ面談はいずれも原典に挙げられている方法だが、この二つの説明との対応が異なる。"),
+      text_block.call("ここでの「個別の支援計画」は援助ニーズの高い児童生徒への支援を対象とするもので，特別支援教育の「個別の教育支援計画」「個別の指導計画」とは区別されている。"),
+    ],
+    source_text: "『生徒指導提要』第3章 3.3.2 教育相談活動の全校的展開（2）課題予防的教育相談：課題未然防止教育、（3）課題予防的教育相談：課題早期発見対応（82〜85頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=85",
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "注意欠如・多動性障害（ADHD）のある生徒の自己理解と情緒の安定を支える指導に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "自分の行動を注意されたとき，衝動的に反発して興奮を静めにくい場合には，落ち着ける場所へ移動することや深呼吸をすることなど，本人が使える方法を理解し，実際に行えるようにする。"),
+      text_choice.call("イ", "失敗や叱責の経験が重なり，自尊感情の低下や反抗，不安などが現れる場合には，それらを不注意，多動性，衝動性と並ぶADHDの中心的な特徴として位置付ける。これらの状態の強さを，ADHDそのものの程度を示す指標として把握する。", true),
+      text_choice.call("ウ", "自分の長所や苦手さを捉えにくく，他者との違いから自分を否定的に受け止める場合には，個別指導や小集団指導を工夫する。対人関係に必要な技能を学ぶ中で，自分の特性に気付き，必要な支援を求められるようにする。"),
+      text_choice.call("エ", "学習や対人関係がうまくいかない経験は，自尊感情の低下や生活面でのストレスに結び付く場合がある。教師間で情報を共有し，通常の学級で必要な支援と環境調整を行うことを，二次的な問題の予防にもつなげる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。興奮を静める方法を知ることに加え，本人が実際に使えるようにする支援が必要である。"),
+      text_block.call("イ：不適切。中心的な特徴は発達に不釣合いな不注意，衝動性，多動性。反抗や不安などは，失敗・叱責の経験やストレスに伴う二次的な問題として生じる場合があり，その強さをADHDの程度と同一視できない。"),
+      text_block.call("ウ：適切。自己理解と自己受容に加え，必要な支援を求める力を育てる指導である。"),
+      text_block.call("エ：適切。二次的な問題を予防するためにも，教師間の連携と通常の学級での支援・環境調整が重要である。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅹ「注意欠陥多動性障害」1(2)②ケ・コ，2(2)②，3(1)①・②（313・319〜320頁） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_14.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "フロイトとエリクソンの発達理論に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "フロイトの心理性的発達理論では，幼児期にも性的な欲動が存在すると考え，口唇期や肛門期などを区別する。潜伏期を経た思春期以降は，性的成熟と関連する性器期として捉えられる。"),
+      text_choice.call("イ", "エリクソンの心理社会的発達理論では，生涯の各段階に特有の心理社会的危機を想定する。青年期には同一性の形成が課題となり，成人期前期には親密性と孤立との関係が問題となる。"),
+      text_choice.call("ウ", "フロイトの心理性的発達理論では，思春期以降の性的成熟と結び付いた段階を性器期と呼ぶ。性器期は，幼児期の性的欲動が潜伏し，そのエネルギーが学習や社会的な活動への関心に向けられる段階である。", true),
+      text_choice.call("エ", "フロイトは，リビドーの向かう先や快を感じる身体部位の変化から発達を説明した。これに対し，エリクソンは，社会との関係で生じる心理社会的危機を，青年期より後の発達にも位置付けた。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。フロイトは幼児期の心理性的発達も論じ，潜伏期と，思春期以降の性器期を区別した。"),
+      text_block.call("イ：適切。エリクソンは生涯発達を扱い，青年期の同一性形成と，成人期前期の親密性対孤立を区別した。"),
+      text_block.call("ウ：不適切。後半は性器期ではなく，その前の潜伏期の説明である。性器期は思春期以降の性的成熟に結び付く段階である。"),
+      text_block.call("エ：適切。心理性的発達と心理社会的発達の説明上の重点を正しく区別している。"),
+    ],
+    source_text: "人間環境大学「発達心理学」コマシラバス，第2回〈基本的な発達理論〉細目①・②，第10回〈まとめⅠ〉細目① | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PS30101&jn=2022",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "学習方法と記憶保持に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "分散学習と集中学習は，反復学習の時間的な配置によって区別される。テスト効果は，学習後に資料を再読することで，記憶から思い出す練習よりも長期の保持がよくなる現象である。", true),
+      text_choice.call("イ", "分散学習は，学習の間に時間を置く方法であり，想起練習は，学習済みの情報を記憶から取り出す活動である。両者は区別でき，時間を空けて想起練習を行うことで組み合わせることもできる。"),
+      text_choice.call("ウ", "想起練習は，どれだけ覚えているかを調べるとともに，その後の記憶保持を促す働きをもつ。既に学習した内容を思い出す行為そのものが，学習の一部となる。"),
+      text_choice.call("エ", "学習直後の成績と，時間が経過してからの記憶成績は区別する必要がある。再読による直後の成績が高い場合でも，後の保持では想起練習が優れることがある。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：分散・集中の区別は適切だが，テスト効果の説明が逆。繰り返し再学習する場合と比べ，思い出す練習によって後の保持がよくなる現象を指す。"),
+      text_block.call("イ：適切。分散は学習の時間配置，想起は行う活動についての区別であり，二つを組み合わせられる。"),
+      text_block.call("ウ：適切。テストには記憶を測定するだけでなく，学習した情報の保持を促進する働きがある。"),
+      text_block.call("エ：適切。再読が優れる直後の成績と，想起練習が優れる遅延後の成績が報告されている。直後の好成績と長期の保持は区別する。"),
+    ],
+    source_text: "長大介「再認テスト時の学習項目と妨害項目の類似性がテスト効果の生起に与える影響」『認知心理学研究』16(1)，導入（1〜2頁） | https://doi.org/10.5265/jcogpsy.16.1\n広島修道大学学習支援センター「LSC NEWS LETTER」No.37，谷岡亮「効果的な単語学習」〈集中学習・分散学習とテスト効果〉（8頁） | https://www.shudo-u.ac.jp/lifesupport/studysupport/htpcot0000002k4j-att/tnafl20000000cj7.pdf",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅰ部 総論 3 2020年代を通じて実現すべき『令和の日本型学校教育』の姿 （3）子供の学びや教職員を支える環境」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "全ての子供たちの可能性を引き出す，個別最適な学びと協働的な学びの実現に向けて，また，{{①}}はもとより，災害や感染症の発生等による学校の臨時休業等の緊急時においても，不安なく学習を継続できる安全・安心な教育環境の確保に向けて，ICTの活用環境と{{②}}によるきめ細かな指導体制の整備，老朽化対策や{{③}}，トイレの乾式化・洋式化，空調設備の設置等の学校施設の整備等により，新しい時代の学びを支える学校教育の環境が整備されている。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["平常時", "教科担任", "集約化"]),
+      fill_in_choice.call("イ", ["授業時", "少人数", "集約化"]),
+      fill_in_choice.call("ウ", ["平常時", "少人数", "バリアフリー化"], true),
+      fill_in_choice.call("エ", ["授業時", "教科担任", "バリアフリー化"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①は一致するが，②は「少人数」，③は「バリアフリー化」が原文の語句である。"),
+      text_block.call("イ：②は一致するが，①は「平常時」，③は「バリアフリー化」が原文の語句である。"),
+      text_block.call("ウ：全て原文に一致する。平常時と緊急時を通じた学習継続，少人数による指導体制，バリアフリー化等の施設整備を一体として述べている。"),
+      text_block.call("エ：③は一致するが，①は「平常時」，②は「少人数」が原文の語句である。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部3(3)第2段落，本文22頁（PDF27頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=27",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験24の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
+  raise "模擬試験24の承認済み問番号は1〜15です"
 end
 
 questions.each do |question|
@@ -249,15 +360,36 @@ questions.each do |question|
   if number <= 5 && question.fetch(:category_code) != (number <= 2 ? "education_foundations" : "education_system")
     raise "模擬試験24 問#{number}の分類が不正です"
   end
+  expected_category = { 11 => "student_guidance_career", 12 => "special_support_education",
+    13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system" }[number]
+  if expected_category && question.fetch(:category_code) != expected_category
+    raise "模擬試験24 問#{number}の分類が不正です"
+  end
   blocks = question.fetch(:content_blocks)
   prompt = blocks.first
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  required_cloze = number >= 4 || (number == 3 && [22, 24].include?(24))
+  required_cloze = (4..10).cover?(number) || number == 3 || number == 11 || number == 15
   if required_cloze
-    expected_labels = %w[① ② ③ ④]
+    expected_labels = if number == 11
+      %w[① ② ③]
+    elsif number == 15
+      %w[① ② ③]
+    else
+      %w[① ② ③ ④]
+    end
     quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
+    if number == 11
+      tables = blocks.select { |block| block[:type] == "table" }
+      unless quotes.size == 1 && quote_labels.empty? && tables.size == 1 &&
+          tables.first.fetch(:rows).flatten.none? { |cell| cell.include?("{{") }
+        raise "模擬試験24 問11の抜粋本文と編集表を区別してください"
+      end
+      quote_labels = tables.first.fetch(:rows).flatten.flat_map { |cell| cell.scan(/【([①②③])】/).flatten }.uniq
+    end
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
-    introduction_labels_match = if number >= 6
+    introduction_labels_match = if number == 11
+      prompt_labels == expected_labels
+    elsif number >= 6
       prompt_labels == [expected_labels.first, expected_labels.last]
     else
       prompt.fetch(:text).match?(/空欄 ① ～ ④/)
@@ -286,8 +418,8 @@ questions.each do |question|
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 3 }
-  raise "模擬試験24の問1〜10の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
+  raise "模擬試験24の問1〜15の正答位置が偏っています"
 end
 
 QuestionSeedSync.import(exam_number: 24, questions: questions, publication_status: "draft")
