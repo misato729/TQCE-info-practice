@@ -86,6 +86,8 @@ const {
   query: requestQuery,
   headers: authHeaders,
   server: false,
+  // 画面遷移をAPIの応答待ちで止めず、起動待ち中も読み込み表示を出す。
+  lazy: true,
 })
 
 const question = computed(() => {
@@ -318,8 +320,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 
 <template>
   <div class="page-wrap practice-wrap">
-    <div v-if="status === 'idle' || status === 'pending'" class="state-panel" aria-live="polite">
-      <UIcon class="spin" name="i-lucide-loader-circle" />
+    <div v-if="status === 'idle' || status === 'pending'" class="state-panel" role="status" aria-live="polite" aria-busy="true">
+      <UIcon class="spin" name="i-lucide-loader-circle" aria-hidden="true" />
       <p>問題を読み込んでいます</p>
     </div>
 
