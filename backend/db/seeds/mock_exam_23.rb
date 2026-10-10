@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験23（承認済みの問1〜15。全20問が揃うまで下書き）
+# 模擬試験23（承認済みの全20問）
 questions = [
   {
     question_number: 1,
@@ -335,8 +335,222 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験23の承認済み問番号は1〜15です"
+# 承認済み問16〜20。Markdown草案と同じ内容を既存の表示形式へ変換する。
+questions.concat(
+  [{:question_number=>16,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第2 情報Ⅱ 2 内容 情報システムとプログラミング」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "イ 次のような思考力，判断力，表現力等を身に付けること。\n" +
+        "\n" +
+        "（ｱ） 情報システム及びそれによって提供される{{①}}について，その在り方や社会に果たす役割と及ぼす影響について考察すること。\n" +
+        "\n" +
+        "（ｲ） 情報システムをいくつかの{{②}}に分割して制作し統合するなど，開発の効率や{{③}}の利便性などに配慮して設計すること。\n" +
+        "\n" +
+        "（ｳ） 情報システムを構成するプログラムを制作し，その過程を評価し改善すること。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["メディア", "機能単位", "評価"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["サービス", "開発工程", "評価"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["サービス", "機能単位", "運用"]}],
+       :correct=>true},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["メディア", "開発工程", "運用"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "情報システムが提供する「サービス」の社会的影響を考察し，システムを「機能単位」に分割して制作・統合することで，開発の効率と「運用」の利便性に配慮する。アは①・③，イは②・③，エは①・②が異なる。開発工程は作業の段階を表すが，ここで分割する対象はシステムの機能である。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）』・第2章第10節 情報Ⅱ 2(4)イ(ｱ)〜(ｳ)（194頁／PDF196頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=196"},
+   {:question_number=>17,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}}・{{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "ア（ア） 多様なコミュニケーションの形態とメディアの特性との関係について理解することでは，適切にコミュニケーションを行うために，コミュニケーションには送り手と受け手の組合せによって1対1，1対多数，特定少数対不特定多数などの多様な形態があること，情報を表現するメディアには文字，音声，静止画，動画などによる特性の違いがあること，情報を伝えるメディアには電話，テレビ・ラジオなどのような{{①}}のものと，手紙，電子メール，新聞のような{{②}}のものがあることを理解するようにする。その際，コミュニケーションの形態とメディアの特性の組合せが重要であることも理解するようにする。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["同期型", "同期型"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["同期型", "非同期型"]}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["非同期型", "非同期型"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["非同期型", "同期型"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "原文では電話・テレビ・ラジオが「同期型」，手紙・電子メール・新聞が「非同期型」の例である。アは②，ウは①，エは①・②が異なる。テレビやラジオは1対多数でも同期型として扱われる。送り手・受け手の人数と，情報を伝える際の同期・非同期は別の観点である。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 情報Ⅱ（2）コミュニケーションとコンテンツ ア（ア）（46〜47頁／PDF54〜55頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=54"},
+   {:question_number=>18,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第2部 主として専門学科において開設される教科『情報』 第2章 専門教科情報科の各科目 第7節 ネットワークシステム 第2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}}・{{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "ア ネットワークシステムの運用管理\n" +
+        "\n" +
+        "ここでは，ネットワークシステムの運用管理を取り上げ，ハードウェアやソフトウェアを的確に把握するための{{①}}，操作の簡易化や自動化などの管理，インシデント管理，情報の収集と配布の際の暗号化やパスワード管理及びウィルス対策などの{{②}}などについて扱う。その際，管理の具体的な方法を示すとともに，ネットワークに関する運用管理の必要性や重要性を扱うことが大切である。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["障害管理", "セキュリティ管理"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["構成管理", "サービスレベル管理"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["構成管理", "セキュリティ管理"]}],
+       :correct=>true},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["障害管理", "サービスレベル管理"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "ハードウェアやソフトウェアの把握は「構成管理」，暗号化・パスワード・ウィルス対策は「セキュリティ管理」である。アは①，イは②，エは①・②が異なる。構成要素の把握と障害発生時の対応，情報の保護とサービス水準の管理を区別する。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第2部 ネットワークシステム（4）ア ネットワークシステムの運用管理（134頁／PDF141頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=141"},
+   {:question_number=>19,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次のプログラムは，文字列 text の中に文字の並び「ABA」が現れる回数を数えるものである。文字の位置が重なっている場合も別々に数える。空欄 {{①}}・{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"text",
+       :text=>
+        "文字の位置は0から始まり，text[i] は i 番目の文字，len(text) は文字数を表す。= は代入，== は等しいかの比較，and はつないだ条件が全て成り立つことを表す。行頭の字下げは処理の範囲を表し，while は条件が成り立つ間，処理を繰り返す。"},
+      {:type=>"code",
+       :code=>
+        "01 text = \"ABABABA\"\n" +
+        "02 n = len(text)\n" +
+        "03 i = 0\n" +
+        "04 count = 0\n" +
+        "05 while i <= n - 3:\n" +
+        "06     if text[i] == \"A\" and text[i + 1] == \"B\" and text[i + 2] == \"A\":\n" +
+        "07         count = count + 1\n" +
+        "08         i = 【①】\n" +
+        "09     else:\n" +
+        "10         i = 【②】\n" +
+        "11 print(count)"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["i + 3", "i + 1"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["i + 1", "i + 3"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["i + 1", "i + 1"]}],
+       :correct=>true},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["i + 3", "i + 3"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "「ABA」の長さは3文字だが，見つけた後も開始位置を1だけ進める必要がある。一致しなかった場合も1だけ進め，全ての開始位置を調べる。"},
+      {:type=>"table",
+       :headers=>["開始位置 i", "調べる3文字", "加算後の count"],
+       :rows=>
+        [["0", "ABA", "1"],
+         ["1", "BAB", "1"],
+         ["2", "ABA", "2"],
+         ["3", "BAB", "2"],
+         ["4", "ABA", "3"]]},
+      {:type=>"text",
+       :text=>"ア：開始位置0で一致した後，3へ進むため，位置2の一致を見落とす。位置0と4だけが数えられ，表示は2となる。"},
+      {:type=>"text",
+       :text=>"イ：位置1で一致しなかった後，4へ進むため，位置2を調べない。位置0と4だけが数えられ，表示は2となる。"},
+      {:type=>"text", :text=>"ウ：正しい。位置0，2，4の3か所を数えられる。"},
+      {:type=>"text", :text=>"エ：位置0の後は3，6と進む。位置6では05行の条件が成り立たず終了するため，表示は1となる。"}],
+    :source_text=>
+     "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13「基本的プログラム」（114～121頁／PDF20～27頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20"},
+   {:question_number=>20,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"text",
+       :text=>
+        "6人の生徒を対象に，前日の家庭学習時間を調査したところ，次のデータを得た。0分は「家庭学習を行わなかった」という有効な回答であり，未回答とは区別して記録されている。"},
+      {:type=>"table",
+       :headers=>["生徒", "A", "B", "C", "D", "E", "F"],
+       :rows=>[["学習時間（分）", "0", "20", "未回答", "40", "0", "60"]]},
+      {:type=>"text",
+       :text=>
+        "未回答者を計算から除き，値の補完を行わずに，有効回答者の平均学習時間を求める。データの処理と結果の示し方に関する記述として適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"text",
+          :text=>"未回答は欠測値として識別し，学習を行わなかったことを示す0分の回答とは異なる情報として扱う。"}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"text",
+          :text=>"0分の回答は学習時間の合計に影響しないため，有効回答者の平均値は，20分，40分，60分の平均である40分と一致する。"}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"text",
+          :text=>"未回答を含む6人全員の実際の平均学習時間を求めるには，未回答者の学習時間についても情報が必要となる。"}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"text",
+          :text=>"平均学習時間を集計結果として示す際には，有効回答者の人数と，未回答に対して行った処理を併記する。"}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>"欠測である「未回答」と，観測された値である0は区別する。平均を求める対象は，0分の2人を含む有効回答者5人である。"},
+      {:type=>"code",
+       :code=>"合計：0＋20＋40＋0＋60＝120（分）\n" + "人数：5人\n" + "平均：120÷5＝24（分）"},
+      {:type=>"text",
+       :text=>"ア：適切。未回答は学習時間が分からないこと，0分は学習時間が分かっていることを示すため，区別する。"},
+      {:type=>"text",
+       :text=>
+        "イ：不適切。0分の回答は合計への加算値が0でも，人数には含める。40分は学習時間が0より大きい3人の平均であって，有効回答者5人の平均ではない。"},
+      {:type=>"text",
+       :text=>
+        "ウ：適切。平均24分は有効回答者5人の平均である。残る1人の実際の値が不明なので，対象者6人全員の実際の平均と同一であるとは判断できない。"},
+      {:type=>"text", :text=>"エ：適切。欠測値をどのように扱ったかを示すことで，平均の算出対象と分母を確認できる。"}],
+    :source_text=>
+     "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）量的データと質的データ・欠測値の処理（本文185頁／PDF33頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=33\n" +
+     "総務省統計局「なるほど統計学園」中心的な傾向を捉える・平均値（算術平均） | https://www.stat.go.jp/naruhodo/5_tokucho/chushin.html"}]
+)
+
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験23の承認済み問番号は1〜20です"
 end
 
 questions.each do |question|
@@ -380,7 +594,19 @@ questions.each do |question|
     if [4, 5].include?(number) && !quotes.all? { |block| block.fetch(:text).match?(/\A第\d+条(?:の\d+)?/) }
       raise "模擬試験23 問#{number}の抜粋枠には条番号を表示してください"
     end
-  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "text" }
+  elsif number >= 16 && choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } }
+    labels = blocks.drop(1).flat_map do |block|
+      block[:type] == "code" ? block.fetch(:code).scan(/【([①②③])】/).flatten : block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten
+    end.uniq
+    prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten.uniq
+    quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten }.uniq
+    valid_body = number == 19 ? blocks.count { |block| block[:type] == "code" } == 1 : quotes.size == 1 && quote_labels == labels
+    unless [%w[① ②], %w[① ② ③]].include?(labels) && prompt[:type] == "fill_in_text" &&
+        prompt_labels == [labels.first, labels.last] && valid_body &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == labels.size }
+      raise "追加問題の空欄と選択肢の対応が不正です"
+    end
+  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && (number == 20 ? %w[text table] : %w[text]).include?(choice.fetch(:content_blocks).first[:type]) }
     raise "模擬試験23 問#{number}の選択肢形式が不正です"
   end
   if [6, 7].include?(number)
@@ -389,15 +615,38 @@ questions.each do |question|
       raise "模擬試験23 問#{number}の導入文と出典範囲が一致しません"
     end
   end
-  entry = { exam_number: 23, attributes: question, publication_status: "draft" }
+  entry = { exam_number: 23, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(23, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
-  raise "模擬試験23の問1〜15の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験23の全20問の正答位置は各記号5件にしてください"
 end
 
-QuestionSeedSync.import(exam_number: 23, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless source.include?(section) && prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      question.fetch(:major_category_code) == "information" && %w[information_education information_specialized].include?(question.fetch(:category_code))
+    raise "情報科の導入文・出典範囲・分類が不正です"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+unless questions.last(2).all? { |question| question.fetch(:major_category_code) == "information" && question.fetch(:category_code) == "information_specialized" }
+  raise "問19・20の分類が不正です"
+end
+
+QuestionSeedSync.import(exam_number: 23, questions: questions, publication_status: "published")

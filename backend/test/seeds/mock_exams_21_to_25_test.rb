@@ -362,6 +362,10 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
     entries = QuestionSeedSync.collect do
       EXAM_NUMBERS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
     end
+    # Retain coverage of the historical partial/draft stage. Completed-set
+    # publication is covered by MockExams21To25InformationTest.
+    entries = entries.select { |entry| entry[:attributes][:question_number] <= 15 }
+      .map { |entry| entry.merge(publication_status: "draft") }
     assert_equal 75, entries.size
     assert entries.all? { |entry| entry.fetch(:publication_status) == "draft" }
     QuestionWriter.transaction { entries.each { |entry| QuestionSeedSync.call(**entry) } }

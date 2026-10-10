@@ -320,7 +320,7 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "問19のコードと選択肢から連続圧縮と二次元交換と巡回合計を検算する" do
+  test "問19のコードと選択肢から連続圧縮と二次元交換と直近合計を検算する" do
     compressed = completed_questions.find_by!(exam_number: 11, question_number: 19)
     data = code_array(compressed, "Data")
     assert_includes question_code(compressed), "06     もし Data[i] == Data[i-1] ならば:"
@@ -355,19 +355,19 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
       values == matrix.transpose
     end
 
-    circular = completed_questions.find_by!(exam_number: 14, question_number: 19)
-    data = code_array(circular, "Data")
-    assert_includes question_code(circular), "08     Buf[p] = Data[i]\n09     s = s + Buf[p]"
-    check_choices(circular) do |cells|
-      buffer, p, sum, out = [0, 0, 0], 0, 0, []
-      data.each_with_index do |value, i|
-        sum -= cells[0].include?("Buf[p]") ? buffer[p] : value
-        buffer[p] = value
-        sum += buffer[p]
-        p = (p + 1) % cells[1].last.to_i
-        out << sum if i >= 2
+    rolling = completed_questions.find_by!(exam_number: 14, question_number: 19)
+    data = code_array(rolling, "Data")
+    assert_includes question_code(rolling), "05     s = s - Data[【①】]\n06     s = s + Data[【②】]"
+    check_choices(rolling) do |cells|
+      sum = data.first(3).sum
+      out = [sum]
+      (3...data.size).each do |i|
+        remove = cells[0] == "i - 3" ? i - 3 : i - 2
+        add = cells[1] == "i" ? i : i - 1
+        sum = sum - data[remove] + data[add]
+        out << sum
       end
-      out == [8, 10, 12, 14, 16]
+      out == data.each_cons(3).map(&:sum)
     end
   end
 
@@ -599,7 +599,8 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
 
   def check_choices(question)
     question.question_choices.each do |choice|
-      cells = choice.content_blocks.first.fetch("rows").first
+      block = choice.content_blocks.first
+      cells = block["type"] == "fill_in_choice" ? block.fetch("cells") : block.fetch("rows").first
       assert_equal choice.is_correct?, yield(cells), "模試#{question.exam_number} 問#{question.question_number} #{choice.choice_label}"
     end
   end

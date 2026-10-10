@@ -16,6 +16,10 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
     @entries = QuestionSeedSync.collect do
       EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
     end
+    # Project the completed seeds onto the previously approved partial stage;
+    # keep its draft/admin/reseed tests without changing the question content.
+    @entries = @entries.select { |entry| entry[:attributes][:question_number] <= 15 }
+      .map { |entry| entry.merge(publication_status: "draft") }
     @added = @entries.select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
   end
 

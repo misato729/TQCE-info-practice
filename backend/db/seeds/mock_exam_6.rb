@@ -398,7 +398,8 @@ questions = [
     major_category_code: "information",
     category_code: "information_specialized",
     content_blocks: [
-      text_block.call("次のプログラムは，昇順に並んだ配列aから，target以上の値が最初に現れる添字を二分探索によって求めるものである。配列の添字は0から始まり，「//」は小数点以下を切り捨てる整数除算を表す。このプログラムの実行後のpositionとcount，及び同じプログラムを要素数1,024と2,048の昇順配列に適用した場合のwhile文本体の最大実行回数の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("次のプログラムは，昇順に並んだ配列 a から，target 以上の値が最初に現れる添字を求めるものである。実行後の position と count の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。count は繰返しの本体を実行した回数を数える。"),
+      text_block.call("配列の添字は0から始まる。= は代入，// は小数点以下を切り捨てる整数除算を表す。行頭の字下げは処理の範囲を表す。left は探索範囲の先頭を，right は探索範囲の末尾の直後の位置を表し，right の位置自体は探索範囲に含めない。"),
       {
         type: "code",
         title: "二分探索のプログラム",
@@ -406,20 +407,24 @@ questions = [
       },
     ],
     choices: [
-      text_choice.call("ア", "position：1 ／ count：3 ／ 1,024要素での最大実行回数：10 ／ 2,048要素での最大実行回数：11"),
-      text_choice.call("イ", "position：1 ／ count：4 ／ 1,024要素での最大実行回数：11 ／ 2,048要素での最大実行回数：12", true),
-      text_choice.call("ウ", "position：2 ／ count：4 ／ 1,024要素での最大実行回数：11 ／ 2,048要素での最大実行回数：12"),
-      text_choice.call("エ", "position：1 ／ count：4 ／ 1,024要素での最大実行回数：10 ／ 2,048要素での最大実行回数：20"),
+      text_choice.call("ア", "position：1 ／ count：3"),
+      text_choice.call("イ", "position：1 ／ count：4", true),
+      text_choice.call("ウ", "position：2 ／ count：4"),
+      text_choice.call("エ", "position：2 ／ count：3"),
     ],
     explanation_blocks: [
-      text_block.call("イが正しい組合せです。探索範囲の上端rightは範囲に含まれません。midとa[mid]を順に追うと，4と4，2と2，1と2，0と1を調べた後にleftとrightがともに1となるため，positionは1，countは4です。この処理はtarget以上の値が最初に現れる位置を求めるので，値2が複数存在しても添字1を返します。探索範囲はおおむね半分ずつになり，while文本体の最大実行回数は1,024要素で11回，2,048要素で12回です。アは固定された配列でのcountと両方の最大実行回数が誤りです。ウは，値2が最初に現れる添字を2としている点が誤りです。エは，要素数を2倍にしたときの最大実行回数を10回から20回としている点が誤りです。"),
+      text_block.call("イが正しい組合せです。mid は4，2，1，0と推移します。最後に a[0] が target より小さいため left を1へ更新し，left と right がともに1となって終了します。したがって position は1，count は4です。値2を途中で見つけても，最初の該当位置を確定するまで繰り返します。"),
       {
         type: "code",
         title: "探索範囲の変化",
         code: "1回目: left=0, right=9, mid=4, a[mid]=4  → right=4\n2回目: left=0, right=4, mid=2, a[mid]=2  → right=2\n3回目: left=0, right=2, mid=1, a[mid]=2  → right=1\n4回目: left=0, right=1, mid=0, a[mid]=1  → left=1",
       },
+      text_block.call("ア：3回目の終了時点では left=0，right=1であり，条件 left < right が成立しているため，さらに1回実行します。"),
+      text_block.call("イ：最初に target 以上となる添字1を求め，繰返しを4回実行するため正しい。"),
+      text_block.call("ウ：添字2にも値2はありますが，最初の該当位置ではありません。position に入れるのは終了時の left です。"),
+      text_block.call("エ：該当位置を2とする点と，4回目の反復を数えない点の両方が誤りです。"),
     ],
-    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習15「アルゴリズムの比較」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n文部科学省『高等学校学習指導要領（平成30年告示）』第2章第10節第2款第1「情報Ⅰ」2（3） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf",
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習15（1）探索アルゴリズム，本文129頁 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=35",
   },
   {
     question_number: 20,

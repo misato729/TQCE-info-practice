@@ -244,6 +244,15 @@ reiwa_answer_title = "「『令和の日本型学校教育』の構築を目指�
 
     question.content_blocks.select { |block| block["type"] == "fill_in_text" }.each do |block|
       prompt = block["text"].to_s
+      if question.question_number == 19
+        prompt_labels = prompt.scan(/\{\{([①②③④⑤])\}\}/).flatten.uniq
+        code_labels = question.content_blocks.select { |item| item["type"] == "code" }
+          .flat_map { |item| item["code"].to_s.scan(/【([①②③④⑤])】/).flatten }.uniq
+        unless prompt_labels.any? && prompt_labels == code_labels
+          raise "模擬試験#{exam_number} 問19の導入文とコードの空欄番号が一致しません"
+        end
+        next
+      end
       unless prompt.match?(standard_fill_in_prompt_pattern) ||
           prompt.match?(based_on_fill_in_prompt_pattern) ||
           prompt.match?(student_guidance_prompt_pattern) ||
@@ -253,8 +262,15 @@ reiwa_answer_title = "「『令和の日本型学校教育』の構築を目指�
     end
 
     blank_labels = question.content_blocks
-      .select { |block| block["type"] == "fill_in_quote" }
-      .flat_map { |block| block["text"].to_s.scan(/\{\{([①②③④⑤])\}\}/).flatten }
+      .flat_map do |block|
+        if block["type"] == "fill_in_quote"
+          block["text"].to_s.scan(/\{\{([①②③④⑤])\}\}/).flatten
+        elsif question.question_number == 19 && block["type"] == "code"
+          block["code"].to_s.scan(/【([①②③④⑤])】/).flatten
+        else
+          []
+        end
+      end
       .uniq
 
     if blank_labels.any?

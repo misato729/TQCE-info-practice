@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験25（承認済みの問1〜15。全20問が揃うまで下書き）
+# 模擬試験25（承認済みの全20問）
 questions = [
   {
     question_number: 1,
@@ -340,8 +340,223 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験25の承認済み問番号は1〜15です"
+# 承認済み問16〜20。Markdown草案と同じ内容を既存の表示形式へ変換する。
+questions.concat(
+  [{:question_number=>16,
+    :major_category_code=>"information",
+    :category_code=>"information_education",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第2 情報Ⅱ 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "「情報と情報技術を活用した問題発見・解決の探究」については，この科目の{{①}}として位置付け，生徒の興味・関心や学校の実態に応じて，コンピュータや情報システムの基本的な仕組みと活用，コミュニケーションのための情報技術の活用，データを活用するための情報技術の活用，情報社会と情報技術の中から{{②}}の項目に関わる課題を設定して問題の発見・解決に取り組ませるものとする。なお，学習上の必要があり，かつ効果的と認められる場合は，指導の時期を{{③}}することもできるものとする。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["導入", "一つ又は複数", "集約"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["まとめ", "一つ又は複数", "分割"]}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["まとめ", "全て", "集約"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["導入", "全て", "分割"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "この探究は科目の「まとめ」として位置付け，列挙された領域の「一つ又は複数」に関わる課題を設定する。学習上必要で効果的な場合には指導時期を「分割」できる。アは①・③，ウは②・③，エは①・②が異なる。全ての領域を一つの課題に盛り込む規定ではなく，学校・生徒の実態に応じて領域を選べる。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）』・第2章第10節 情報Ⅱ 3(5)，参照先2(5)（194頁／PDF196頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=196"},
+   {:question_number=>17,
+    :major_category_code=>"information",
+    :category_code=>"information_education",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第11 メディアとサービス 3 内容の取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "（1） 内容を取り扱う際には，次の事項に配慮するものとする。\n" +
+        "\n" +
+        "ア 実習を効果的に取り入れ，メディアを利用してコンテンツを提供する{{①}}について考察するよう留意して指導すること。\n" +
+        "\n" +
+        "イ 生徒や地域の実態，学科の特色等に応じて，適切な{{②}}及びコンテンツ管理のための適切な{{③}}を選択すること。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice",
+          :cells=>["サービスの全体像", "コンテンツ開発環境", "システムや運用サービス"]}],
+       :correct=>true},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice",
+          :cells=>["情報システムの要求仕様", "コンテンツ開発環境", "ファイル形式や圧縮方式"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice",
+          :cells=>["サービスの全体像", "プログラミング言語", "ファイル形式や圧縮方式"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice",
+          :cells=>["情報システムの要求仕様", "プログラミング言語", "システムや運用サービス"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "コンテンツ提供を「サービスの全体像」として捉え，制作のための「コンテンツ開発環境」と管理のための「システムや運用サービス」を実態に応じて選ぶ。イは①・③，ウは②・③，エは①・②が異なる。要求仕様やファイル形式の選定に置き換えると，サービス全体・開発環境・管理運用という対応からずれる。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章第7節 メディアとサービス 3(1)ア・イ（419頁／PDF421頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=421"},
+   {:question_number=>18,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"text",
+       :text=>
+        "次のA〜Cは，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い」の「情報とデータサイエンス」に示された内容に関する記述である。正しいものの個数を，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"text",
+       :text=>
+        "A 目的に応じて適切なデータを収集し，整理し，整形する学習では，測定しようとするもの自体の状態や性質を交絡因子として扱い，データの入手元の違いによる信頼性なども含めて，収集したデータの特性について判断する力を養う。"},
+      {:type=>"text",
+       :text=>
+        "B データを収集する際に生じる偏りのうち，対象となるデータを選択する際に生じる偏りを選択バイアス，データを測定する際に生じる偏りを情報バイアスとして扱う。"},
+      {:type=>"text",
+       :text=>
+        "C バイアスを考慮する際には，データの収集が適切かに加え，実際の値より低い値になる過少申告や，実際の値より高い値になる過剰反応などを誘導するものではないかを考慮し，データの内容についての信頼性や信憑性を検討する。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>[{:type=>"text", :text=>"3個"}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>[{:type=>"text", :text=>"2個"}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"text", :text=>"1個"}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"text", :text=>"0個"}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "A：誤り。交絡因子を測定対象そのものの状態や性質としている点が異なる。原典は「測定しようとするもの以外で結果に影響を与える」ものと説明している。入手元による信頼性なども含めて判断するという後半は適切である。"},
+      {:type=>"text", :text=>"B：正しい。対象を選択する際の偏りが選択バイアス，測定する際の偏りが情報バイアスである。"},
+      {:type=>"text",
+       :text=>"C：正しい。原典は収集の適切さ，過少申告・過剰反応などを誘導する可能性を，信頼性や信憑性の検討に必要な要素としている。"},
+      {:type=>"text",
+       :text=>"アはAも正しいと数える点，ウはB・Cのどちらかを誤りと数える点，エはB・Cまで誤りと数える点が異なる。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 情報Ⅱ（3）情報とデータサイエンス イ（ア）及び続くバイアスの説明（50頁／PDF58頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=58"},
+   {:question_number=>19,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"text",
+       :text=>"次のプログラムを実行したとき，09行で表示される値として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"text",
+       :text=>
+        "def f(x) は関数 f の定義であり，f(y) を実行すると，その時点の y の値を引数 x として02行から処理を行う。関数内の x と s は呼び出しごとに独立して扱い，return s は s の値を呼び出した側へ返す。range(0, 3) は0，1，2，range(0, 2) は0，1を順に取り出す。= は代入を表し，行頭の字下げは処理の範囲を表す。"},
+      {:type=>"code",
+       :code=>
+        "01 def f(x):\n" +
+        "02     s = 1\n" +
+        "03     for i in range(0, 3):\n" +
+        "04         s = s + x\n" +
+        "05     return s\n" +
+        "06 y = 2\n" +
+        "07 for k in range(0, 2):\n" +
+        "08     y = f(y)\n" +
+        "09 print(y)"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>[{:type=>"text", :text=>"7"}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>[{:type=>"text", :text=>"18"}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"text", :text=>"28"}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"text", :text=>"22"}],
+       :correct=>true}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "関数 f は呼び出すたびに s を1へ初期化し，引数 x を3回加えるため，戻り値は 3 * x + 1 となる。1回目の戻り値7が y に代入され，2回目は7を引数として処理する。"},
+      {:type=>"table",
+       :headers=>["呼び出し", "引数 x", "s の変化", "戻り値・代入後の y"],
+       :rows=>
+        [["1回目", "2", "1 → 3 → 5 → 7", "7"],
+         ["2回目", "7", "1 → 8 → 15 → 22", "22"]]},
+      {:type=>"text", :text=>"ア：7は1回目の呼び出し後の値である。外側の繰返しは2回実行される。"},
+      {:type=>"text",
+       :text=>
+        "イ：18は，仮に02行を s = 0 とした場合の結果である。この変更では y が2 → 6 → 18と変わるが，実際には毎回1から加算する。"},
+      {:type=>"text",
+       :text=>
+        "ウ：28は，仮に s を最初に一度だけ1へ初期化し，関数の呼び出しをまたいで値を持ち越した場合の結果である。その変更では2回目を7から始めて7を3回加えることになるが，実際には02行が再び実行される。"},
+      {:type=>"text", :text=>"エ：正しい。2回目の戻り値22が最終的な y である。"}],
+    :source_text=>
+     "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習14（3）関数（123～124頁／PDF29～30頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=29"},
+   {:question_number=>20,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"text",
+       :text=>"ある商品の1日の広告掲載回数 x（回）から，その日の販売個数 y（個）を予測するため，次の回帰式を得た。"},
+      {:type=>"code", :code=>"販売個数の予測値 ＝ 8 ＋ 3x"},
+      {:type=>"text", :text=>"二つの日A・Bの広告掲載回数と販売個数の実測値は，次のとおりであった。"},
+      {:type=>"table",
+       :headers=>["日", "広告掲載回数 x（回）", "販売個数の実測値 y（個）"],
+       :rows=>[["A", "2", "16"], ["B", "4", "18"]]},
+      {:type=>"text",
+       :text=>
+        "ここでは，残差を「実測値−予測値」とする。残差と予測の大小関係に関する記述として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"text", :text=>"Aの残差は＋2，Bの残差は−2であり，Aでは実測値より大きく予測している。"}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"text", :text=>"Aの残差は−2，Bの残差は＋2であり，Aでは実測値より大きく予測している。"}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"text", :text=>"Aの残差は＋2，Bの残差は−2であり，Aでは実測値より小さく予測している。"}],
+       :correct=>true},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"text", :text=>"Aの残差は−2，Bの残差は＋2であり，Aでは実測値より小さく予測している。"}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "残差は予測からのずれを，符号も含めて表す。指定された定義では，正の残差は実測値が予測値より大きく，負の残差は実測値が予測値より小さいことを意味する。"},
+      {:type=>"table",
+       :headers=>["日", "予測値", "残差", "予測と実測の関係"],
+       :rows=>
+        [["A", "8＋3×2＝14", "16−14＝＋2", "実測値より2個小さく予測"],
+         ["B", "8＋3×4＝20", "18−20＝−2", "実測値より2個大きく予測"]]},
+      {:type=>"text", :text=>"ア：残差の値は正しいが，Aの予測値14は実測値16より小さいため，予測の大小関係が逆である。"},
+      {:type=>"text", :text=>"イ：「予測値−実測値」と逆向きに計算した符号である。また，Aの予測値は実測値より小さい。"},
+      {:type=>"text", :text=>"ウ：正しい。Aは正の残差で過小予測，Bは負の残差で過大予測となる。"},
+      {:type=>"text", :text=>"エ：Aで実測値より小さく予測している点は正しいが，残差の符号がA・Bとも逆になっている。"}],
+    :source_text=>
+     "総務省統計局「なるほど統計学園」複数の変数の関係性を見る・回帰分析の考え方 | https://www.stat.go.jp/naruhodo/10_tokucho/hukusu.html\n" +
+     "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（3）単回帰分析を用いた値の推測・回帰直線と残差（本文186頁／PDF34頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=34"}]
+)
+
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験25の承認済み問番号は1〜20です"
 end
 
 questions.each do |question|
@@ -385,7 +600,19 @@ questions.each do |question|
     if [4, 5].include?(number) && !quotes.all? { |block| block.fetch(:text).match?(/\A第\d+条(?:の\d+)?/) }
       raise "模擬試験25 問#{number}の抜粋枠には条番号を表示してください"
     end
-  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "text" }
+  elsif number >= 16 && choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } }
+    labels = blocks.drop(1).flat_map do |block|
+      block[:type] == "code" ? block.fetch(:code).scan(/【([①②③])】/).flatten : block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten
+    end.uniq
+    prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten.uniq
+    quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten }.uniq
+    valid_body = number == 19 ? blocks.count { |block| block[:type] == "code" } == 1 : quotes.size == 1 && quote_labels == labels
+    unless [%w[① ②], %w[① ② ③]].include?(labels) && prompt[:type] == "fill_in_text" &&
+        prompt_labels == [labels.first, labels.last] && valid_body &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == labels.size }
+      raise "追加問題の空欄と選択肢の対応が不正です"
+    end
+  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && (number == 20 ? %w[text table] : %w[text]).include?(choice.fetch(:content_blocks).first[:type]) }
     raise "模擬試験25 問#{number}の選択肢形式が不正です"
   end
   if [6, 7].include?(number)
@@ -394,15 +621,38 @@ questions.each do |question|
       raise "模擬試験25 問#{number}の導入文と出典範囲が一致しません"
     end
   end
-  entry = { exam_number: 25, attributes: question, publication_status: "draft" }
+  entry = { exam_number: 25, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(25, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
-  raise "模擬試験25の問1〜15の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験25の全20問の正答位置は各記号5件にしてください"
 end
 
-QuestionSeedSync.import(exam_number: 25, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless source.include?(section) && prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      question.fetch(:major_category_code) == "information" && %w[information_education information_specialized].include?(question.fetch(:category_code))
+    raise "情報科の導入文・出典範囲・分類が不正です"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+unless questions.last(2).all? { |question| question.fetch(:major_category_code) == "information" && question.fetch(:category_code) == "information_specialized" }
+  raise "問19・20の分類が不正です"
+end
+
+QuestionSeedSync.import(exam_number: 25, questions: questions, publication_status: "published")

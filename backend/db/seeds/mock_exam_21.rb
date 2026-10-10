@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験21（承認済みの問1〜15。全20問が揃うまで下書き）
+# 模擬試験21（承認済みの全20問）
 questions = [
   {
     question_number: 1,
@@ -335,8 +335,219 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..15).to_a
-  raise "模擬試験21の承認済み問番号は1〜15です"
+# 承認済み問16〜20。Markdown草案と同じ内容を既存の表示形式へ変換する。
+questions.concat(
+  [{:question_number=>16,
+    :major_category_code=>"information",
+    :category_code=>"information_education",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第2 情報Ⅱ 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}}・{{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "「コミュニケーションとコンテンツ」における，コミュニケーションの形態とメディアの特性との関係の理解や，目的や状況に応じた形態・素材の選択と組合せの検討では，コンテンツに対する{{①}}を整理する活動も取り入れるものとする。コンテンツの発信方法の理解や，発信の効果・影響を踏まえた評価・改善では，{{②}}双方の視点からコンテンツを評価する活動を取り入れるものとする。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["要求", "開発者，管理者"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["要求", "発信者，受信者"]}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["処理手順", "発信者，受信者"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>[{:type=>"fill_in_choice", :cells=>["処理手順", "開発者，管理者"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "原典では「コンテンツに対する要求」を整理し，「発信者，受信者双方」の視点から評価する活動を示している。アは②，ウは①，エは①・②が異なる。制作側の開発・管理だけでなく，受け取る側からも評価する点を押さえる。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）』・第2章第10節 情報Ⅱ 3(2)，参照先2(2)ア(ｱ)・イ(ｱ)，ア(ｳ)・イ(ｳ)（193〜194頁／PDF195〜196頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=195"},
+   {:question_number=>17,
+    :major_category_code=>"information",
+    :category_code=>"information_education",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第8 データベース 1 目標」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "情報に関する科学的な見方・考え方を働かせ，実践的・体験的な学習活動を行うことなどを通して，情報社会を支えるデータベースの{{①}}に必要な資質・能力を次のとおり育成することを目指す。\n" +
+        "\n" +
+        "（1） データベースについて体系的・系統的に理解するとともに，関連する技術を身に付けるようにする。\n" +
+        "\n" +
+        "（2） データベースに関する課題を発見し，情報産業に携わる者として{{②}}に解決する力を養う。\n" +
+        "\n" +
+        "（3） データの{{③}}な{{①}}を目指して自ら学び，データベースの利用，構築，運用及び保守などに主体的かつ協働的に取り組む態度を養う。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["開発", "合理的かつ創造的", "迅速かつ安定的"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["活用", "実験的・実証的", "迅速かつ安定的"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["活用", "合理的かつ創造的", "安全かつ効率的"]}],
+       :correct=>true},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["開発", "実験的・実証的", "安全かつ効率的"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "目標はデータベースの「活用」に必要な資質・能力であり，課題を「合理的かつ創造的」に解決する力，データの「安全かつ効率的」な活用を目指す態度を育てる。アは①・③，イは②・③，エは①・②が原文と異なる。①は冒頭と（3）の両方に同じ語句が入る。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章第7節 第8 データベース 1 目標（415頁／PDF417頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=417"},
+   {:question_number=>18,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"fill_in_quote",
+       :text=>
+        "ア（ア） 情報通信ネットワークの仕組みや構成要素，{{①}}の役割及び情報セキュリティを確保するための方法や技術について理解することでは，コンピュータ等を使ってデータをやり取りするためにコンピュータ同士を接続する仕組みや情報通信ネットワークを構成するクライアントやサーバ，ハブ，ルータなどの構成要素の役割について理解するようにする。また，安全かつ効率的な通信を行うためにデータを{{②}}と呼ばれる小さな単位に分けて伝送すること，{{①}}には経路制御や伝送制御など様々な役割があり，これらは複数の{{③}}からなる構造を持つこと，個人認証や情報の暗号化，通信されるデータを暗号化する{{①}}，デジタル署名やデジタル証明書などの情報セキュリティを確保するために開発された技術の仕組みと必要性などについて理解するようにする。"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["インタフェース", "パケット", "段階"]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["プロトコル", "メッセージ", "段階"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["インタフェース", "メッセージ", "階層"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["プロトコル", "パケット", "階層"]}],
+       :correct=>true}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>
+        "通信の手順や規則は「プロトコル」，小さな伝送単位は「パケット」，役割を分けた構造は「階層」である。アは①・③，イは②・③，ウは①・②が異なる。接続や操作の接点を表すインタフェース，通信内容としてのメッセージ，時間的な段階と，原文で示す概念を区別する。①は3か所に同じ語句が入る。"}],
+    :source_text=>
+     "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 情報Ⅰ（4）情報通信ネットワークとデータの活用 ア（ア）（36頁／PDF44頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=44"},
+   {:question_number=>19,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"fill_in_text",
+       :text=>
+        "次のプログラムは，配列 a の各要素を一つ右の位置へ移し，元の末尾の要素を先頭へ移すものである。空欄 {{①}}・{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"text",
+       :text=>
+        "配列の添字は0から始まる。= は代入を表し，行頭の字下げは処理の範囲を表す。range(a, b) は a から b−1 までを1ずつ増やして取り出す。range(a, b, -1) は a から b より大きい整数を1ずつ減らして取り出す。print(a) は配列の要素を先頭から順に表示する。"},
+      {:type=>"code",
+       :code=>
+        "01 a = [3, 8, 2, 7, 5]\n" +
+        "02 last = a[4]\n" +
+        "03 for i in 【①】:\n" +
+        "04     a[i] = a[i - 1]\n" +
+        "05 a[0] = 【②】\n" +
+        "06 print(a)"}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["range(4, 0, -1)", "last"]}],
+       :correct=>true},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["range(4, 0, -1)", "a[4]"]}],
+       :correct=>false},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["range(1, 5)", "last"]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"fill_in_choice", :cells=>["range(1, 5)", "a[4]"]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text",
+       :text=>"末尾の値5を last に退避し，後ろから順に要素を移す。前から移すと，まだ読み取る必要のある値を上書きしてしまう。"},
+      {:type=>"table",
+       :headers=>["処理", "配列 a"],
+       :rows=>
+        [["i = 4", "[3, 8, 2, 7, 7]"],
+         ["i = 3", "[3, 8, 2, 2, 7]"],
+         ["i = 2", "[3, 8, 8, 2, 7]"],
+         ["i = 1", "[3, 3, 8, 2, 7]"],
+         ["a[0] = last", "[5, 3, 8, 2, 7]"]]},
+      {:type=>"text", :text=>"ア：正しい。元の全要素を保持しながら，一つ右へ移せる。"},
+      {:type=>"text",
+       :text=>
+        "イ：05行の時点で a[4] は7に変わっているため，結果は [7, 3, 8, 2, 7] となる。退避した last を使う必要がある。"},
+      {:type=>"text",
+       :text=>"ウ：前から移すため，元の先頭の値3で後続の要素が順に上書きされ，結果は [5, 3, 3, 3, 3] となる。"},
+      {:type=>"text",
+       :text=>"エ：前からの上書きと，変更後の a[4] の参照が重なり，結果は [3, 3, 3, 3, 3] となる。"}],
+    :source_text=>
+     "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習14（1）リスト（122頁／PDF28頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28"},
+   {:question_number=>20,
+    :major_category_code=>"information",
+    :category_code=>"information_specialized",
+    :content_blocks=>
+     [{:type=>"text",
+       :text=>
+        "次の表は，二つの学級A・Bにおける，同じ小テストの得点の最小値，第1四分位数，中央値，第3四分位数及び最大値を示したものである。範囲と四分位範囲を用いて得点の散らばりを比較した記述の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"},
+      {:type=>"table",
+       :headers=>["学級", "最小値", "第1四分位数", "中央値", "第3四分位数", "最大値"],
+       :rows=>
+        [["A", "30", "45", "60", "80", "95"],
+         ["B", "20", "50", "60", "70", "100"]]}],
+    :choices=>
+     [{:label=>"ア",
+       :content_blocks=>
+        [{:type=>"table",
+          :headers=>["範囲による比較", "四分位範囲による比較"],
+          :rows=>[["Aの方が大きい", "Aの方が大きい"]]}],
+       :correct=>false},
+      {:label=>"イ",
+       :content_blocks=>
+        [{:type=>"table",
+          :headers=>["範囲による比較", "四分位範囲による比較"],
+          :rows=>[["Bの方が大きい", "Aの方が大きい"]]}],
+       :correct=>true},
+      {:label=>"ウ",
+       :content_blocks=>
+        [{:type=>"table",
+          :headers=>["範囲による比較", "四分位範囲による比較"],
+          :rows=>[["Aの方が大きい", "Bの方が大きい"]]}],
+       :correct=>false},
+      {:label=>"エ",
+       :content_blocks=>
+        [{:type=>"table",
+          :headers=>["範囲による比較", "四分位範囲による比較"],
+          :rows=>[["Bの方が大きい", "Bの方が大きい"]]}],
+       :correct=>false}],
+    :explanation_blocks=>
+     [{:type=>"text", :text=>"範囲は「最大値−最小値」，四分位範囲は「第3四分位数−第1四分位数」で求める。"},
+      {:type=>"table",
+       :headers=>["学級", "範囲", "四分位範囲"],
+       :rows=>[["A", "95−30＝65", "80−45＝35"], ["B", "100−20＝80", "70−50＝20"]]},
+      {:type=>"text", :text=>"ア：四分位範囲の比較は正しいが，範囲はAよりBの方が大きい。"},
+      {:type=>"text",
+       :text=>
+        "イ：正しい。最小値から最大値までの広がりはBの方が大きい一方，第1四分位数から第3四分位数までの広がりはAの方が大きい。用いる指標によって比較結果が異なる。"},
+      {:type=>"text", :text=>"ウ：範囲と四分位範囲の比較が，どちらも逆になっている。"},
+      {:type=>"text", :text=>"エ：範囲の比較は正しいが，四分位範囲はBよりAの方が大きい。"}],
+    :source_text=>
+     "総務省統計局「なるほど統計学園」データの散らばりを捉える・範囲／四分位数・四分位範囲 | https://www.stat.go.jp/naruhodo/5_tokucho/chirabari.html"}]
+)
+
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験21の承認済み問番号は1〜20です"
 end
 
 questions.each do |question|
@@ -380,7 +591,19 @@ questions.each do |question|
     if [4, 5].include?(number) && !quotes.all? { |block| block.fetch(:text).match?(/\A第\d+条(?:の\d+)?/) }
       raise "模擬試験21 問#{number}の抜粋枠には条番号を表示してください"
     end
-  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "text" }
+  elsif number >= 16 && choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } }
+    labels = blocks.drop(1).flat_map do |block|
+      block[:type] == "code" ? block.fetch(:code).scan(/【([①②③])】/).flatten : block.fetch(:text, "").scan(/\{\{([①②③])\}\}/).flatten
+    end.uniq
+    prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten.uniq
+    quote_labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten }.uniq
+    valid_body = number == 19 ? blocks.count { |block| block[:type] == "code" } == 1 : quotes.size == 1 && quote_labels == labels
+    unless [%w[① ②], %w[① ② ③]].include?(labels) && prompt[:type] == "fill_in_text" &&
+        prompt_labels == [labels.first, labels.last] && valid_body &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == labels.size }
+      raise "追加問題の空欄と選択肢の対応が不正です"
+    end
+  elsif !choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && (number == 20 ? %w[text table] : %w[text]).include?(choice.fetch(:content_blocks).first[:type]) }
     raise "模擬試験21 問#{number}の選択肢形式が不正です"
   end
   if [6, 7].include?(number)
@@ -389,15 +612,38 @@ questions.each do |question|
       raise "模擬試験21 問#{number}の導入文と出典範囲が一致しません"
     end
   end
-  entry = { exam_number: 21, attributes: question, publication_status: "draft" }
+  entry = { exam_number: 21, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(21, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } <= 5 }
-  raise "模擬試験21の問1〜15の正答位置が偏っています"
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験21の全20問の正答位置は各記号5件にしてください"
 end
 
-QuestionSeedSync.import(exam_number: 21, questions: questions, publication_status: "draft")
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, section = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, "第1部"] : [3, "第2部"]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, "第2章第10節"]
+  else
+    [1, "第3章第7節"]
+  end
+  unless source.include?(section) && prompt.include?("解説 情報編") == source.include?("解説 情報編") &&
+      question.fetch(:major_category_code) == "information" && %w[information_education information_specialized].include?(question.fetch(:category_code))
+    raise "情報科の導入文・出典範囲・分類が不正です"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+unless questions.last(2).all? { |question| question.fetch(:major_category_code) == "information" && question.fetch(:category_code) == "information_specialized" }
+  raise "問19・20の分類が不正です"
+end
+
+QuestionSeedSync.import(exam_number: 21, questions: questions, publication_status: "published")

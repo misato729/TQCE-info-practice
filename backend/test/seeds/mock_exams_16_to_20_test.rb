@@ -563,13 +563,13 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     assert AnswerHistory.exists?(added_history.id)
   end
 
-  test "メインseedは完成済み四百問を公開し再実行できる" do
+  test "メインseedは完成済み二十五セット五百問を公開し再実行できる" do
     load Rails.root.join("db/seeds.rb")
-    assert_equal 475, Question.count
-    assert_equal 1900, QuestionChoice.count
-    assert_equal 475, QuestionChoice.where(is_correct: true).count
-    assert_equal 400, Question.published.count
-    assert_equal 75, Question.where(exam_number: 21..25, publication_status: "draft").count
+    assert_equal 500, Question.count
+    assert_equal 2000, QuestionChoice.count
+    assert_equal 500, QuestionChoice.where(is_correct: true).count
+    assert_equal 500, Question.published.count
+    assert_equal 100, Question.where(exam_number: 21..25, publication_status: "published").count
     assert_equal 0, partial_questions.where(publication_status: "draft").count
     assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
       load Rails.root.join("db/seeds.rb")

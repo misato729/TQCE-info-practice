@@ -17,6 +17,10 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
     @entries = QuestionSeedSync.collect do
       EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
     end
+    # Preserve the approved partial-stage behavior independently of the new
+    # completed-set publication tests.
+    @entries = @entries.select { |entry| entry[:attributes][:question_number] <= 15 }
+      .map { |entry| entry.merge(publication_status: "draft") }
     @added_entries = @entries.select { |entry| entry.fetch(:attributes).fetch(:question_number) <= 5 }
   end
 
