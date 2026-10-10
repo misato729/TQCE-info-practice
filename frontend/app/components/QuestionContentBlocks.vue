@@ -107,7 +107,7 @@ const blankLabels = ['①', '②', '③', '④', '⑤']
 .content-blocks { display: grid; gap: 20px; min-width: 0; }
 .content-text { margin: 0; white-space: pre-wrap; }
 .content-quote { margin: 0; padding: 18px 20px; border: 1px solid var(--line); border-left: 4px solid var(--teal); background: #f7faf9; }
-.content-quote p { margin: 0; white-space: pre-wrap; }
+.content-quote p { margin: 0; font-size: 18px; font-weight: 500; white-space: pre-wrap; }
 .content-quote cite { display: block; margin-top: 10px; color: var(--muted); font-size: 13px; font-style: normal; }
 .fill-in-text { line-height: 2.15; }
 .fill-in-blank {
@@ -132,6 +132,7 @@ const blankLabels = ['①', '②', '③', '④', '⑤']
   border: 1px solid #66777c;
   background: #fff;
   color: #263a41;
+  font-size: 18px;
   font-weight: 500;
   line-height: 2.3;
 }
@@ -141,10 +142,10 @@ const blankLabels = ['①', '②', '③', '④', '⑤']
 .fill-in-choice-cell small { color: #52666d; font-size: 14px; font-weight: 700; }
 .fill-in-choice-cell > span { font-weight: 700; }
 .content-table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); }
-.content-table { width: 100%; min-width: 620px; border-collapse: collapse; background: #fff; }
+.content-table { width: 100%; min-width: 620px; border-collapse: collapse; background: #fff; font-size: 16px; font-weight: 500; line-height: 1.7; }
 .content-table th,
 .content-table td { padding: 12px 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; white-space: pre-wrap; }
-.content-table th { background: #f1f6f5; color: #30464d; font-size: 14px; }
+.content-table th { background: #f1f6f5; color: #30464d; font-size: 14px; font-weight: 700; }
 .content-table tr:last-child td { border-bottom: 0; }
 .content-table th:last-child,
 .content-table td:last-child { border-right: 0; }

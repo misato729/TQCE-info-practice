@@ -526,7 +526,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .favorite-button:hover { color: #c78b00; transform: scale(1.08); }
 .favorite-button.active { color: #f0b323; }
 .question-panel { padding: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-.question-text { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.8; }
+.question-text { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.8; }
 .choices { display: grid; gap: 10px; margin-top: 28px; }
 .choices label { position: relative; min-width: 0; min-height: 62px; display: grid; grid-template-columns: 20px 34px minmax(0, 1fr) 24px; align-items: start; gap: 10px; padding: 16px; border: 1px solid #c8d4d7; border-radius: 6px; cursor: pointer; transition: border-color .15s, background .15s; }
 .choices label:hover:not(:has(input:disabled)) { border-color: var(--teal); }
