@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const title = '情報教認ラボ｜高等学校（情報）教員資格認定試験'
+const description = '高等学校（情報）教員資格認定試験の予想問題を、解説と根拠資料付きで演習できる学習サイトです。'
+
+useSeoMeta({
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+})
+
 const updates = [
   { date: '2026.10.08', text: '買い切りの有料会員機能とStripe Checkoutに対応しました。' },
   { date: '2026.08.20', text: '問題演習サイトの画面構成を更新しました。' },

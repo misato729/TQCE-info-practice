@@ -71,7 +71,7 @@ const submit = async (input: AdminQuestionInput) => {
     <p v-if="successMessage" class="success-message" role="status"><UIcon name="i-lucide-circle-check" />{{ successMessage }}</p>
 
     <div v-if="status === 'pending'" class="admin-panel admin-loading"><div><UIcon name="i-lucide-loader-circle" /><span>問題を読み込んでいます</span></div></div>
-    <div v-else-if="error || !questionInput" class="admin-panel admin-empty"><div><UIcon name="i-lucide-circle-alert" /><h2>問題を表示できません</h2><p>問題が削除されたか、通信に失敗した可能性があります。</p><button class="admin-secondary-button" type="button" @click="refresh">再読み込み</button></div></div>
+    <div v-else-if="error || !questionInput" class="admin-panel admin-empty"><div><UIcon name="i-lucide-circle-alert" /><h2>問題を表示できません</h2><p>問題が削除されたか、通信に失敗した可能性があります。</p><button class="admin-secondary-button" type="button" @click="() => refresh()">再読み込み</button></div></div>
     <AdminQuestionForm v-else :initial-value="questionInput" submit-label="編集内容を保存" :submitting="submitting" :error-message="errorMessage" @submit="submit" />
   </div>
 </template>

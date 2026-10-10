@@ -27,8 +27,12 @@ const closeOnEscape = (event: KeyboardEvent) => {
 }
 
 onMounted(() => window.addEventListener('keydown', closeOnEscape))
-onMounted(() => { void ensureCurrentUser() })
 onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
+
+const openMenu = () => {
+  menuOpen.value = true
+  if (isLoggedIn.value && !user.value) void ensureCurrentUser()
+}
 </script>
 
 <template>
@@ -54,7 +58,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
           :aria-expanded="menuOpen"
           aria-controls="global-menu"
           title="メニューを開く"
-          @click="menuOpen = true"
+          @click="openMenu"
         >
           <UIcon name="i-lucide-menu" />
           <span class="sr-only">メニューを開く</span>

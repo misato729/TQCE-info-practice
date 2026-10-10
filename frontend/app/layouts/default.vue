@@ -1,25 +1,12 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
-const apiBase = computed(() => String(config.public.apiBase).replace(/\/$/, ''))
-const apiStatus = ref<'checking' | 'connected' | 'failed'>('checking')
-
-onMounted(async () => {
-  try {
-    const response = await $fetch<{ status: string }>('/api/v1/health', {
-      baseURL: apiBase.value,
-    })
-    apiStatus.value = response.status === 'ok' ? 'connected' : 'failed'
-  } catch {
-    apiStatus.value = 'failed'
-  }
-})
+const apiStatus = ref<'idle' | 'checking' | 'connected' | 'failed'>('idle')
 </script>
 
 <template>
   <div class="app-shell">
     <SiteHeader />
     <div class="app-content">
-      <ExamSidebar />
+      <ExamSidebar @api-status="apiStatus = $event" />
       <div class="main-column">
         <main><slot /></main>
         <footer class="site-footer">
@@ -37,7 +24,8 @@ onMounted(async () => {
             </div>
             <div class="api-status" :class="apiStatus">
               <span class="status-dot" aria-hidden="true" />
-              <span v-if="apiStatus === 'checking'">API接続を確認中</span>
+              <span v-if="apiStatus === 'idle'">API接続は利用時に確認</span>
+              <span v-else-if="apiStatus === 'checking'">API接続を確認中</span>
               <span v-else-if="apiStatus === 'failed'">APIに接続できません</span>
               <span v-else>API接続：正常</span>
             </div>

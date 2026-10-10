@@ -141,7 +141,7 @@ const historyLink = (history: HistoryItem) => ({
               <strong>{{ history.question.body_excerpt }}</strong>
               <small>
                 {{ majorCategoryLabel(history.question.major_category_code) }} /
-                {{ getCategoryLabel(history.question.category_code) }}
+                {{ getCategoryLabel(history.question.category_code ?? '') }}
               </small>
             </div>
 

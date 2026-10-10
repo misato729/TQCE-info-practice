@@ -31,9 +31,11 @@ export const useAuth = () => {
   })
   const user = useState<AuthUser | null>('auth-user', () => null)
   const isLoggedIn = computed(() => Boolean(accessToken.value))
-  const authHeaders = computed<Record<string, string>>(() => (
-    accessToken.value ? { Authorization: `Bearer ${accessToken.value}` } : {}
-  ))
+  const authHeaders = computed<Record<string, string>>(() => {
+    const headers: Record<string, string> = {}
+    if (accessToken.value) headers.Authorization = `Bearer ${accessToken.value}`
+    return headers
+  })
 
   const setSession = (session: AuthSession) => {
     accessToken.value = session.access_token

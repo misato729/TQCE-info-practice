@@ -199,12 +199,12 @@ const deleteQuestion = async () => {
     <section class="admin-panel question-list-panel">
       <div class="admin-panel-head result-head">
         <div><h2>検索結果</h2><p v-if="meta">全 {{ meta.total_count }} 件</p></div>
-        <button class="admin-icon-button" type="button" title="再読み込み" aria-label="再読み込み" @click="refresh"><UIcon name="i-lucide-refresh-cw" /></button>
+        <button class="admin-icon-button" type="button" title="再読み込み" aria-label="再読み込み" @click="() => refresh()"><UIcon name="i-lucide-refresh-cw" /></button>
       </div>
 
       <div v-if="status === 'pending'" class="admin-loading"><div><UIcon name="i-lucide-loader-circle" /><span>問題を読み込んでいます</span></div></div>
       <div v-else-if="error" class="admin-empty">
-        <div><UIcon name="i-lucide-circle-alert" /><h2>問題を読み込めませんでした</h2><p>APIとの接続を確認し、もう一度お試しください。</p><button class="admin-secondary-button" type="button" @click="refresh">再読み込み</button></div>
+        <div><UIcon name="i-lucide-circle-alert" /><h2>問題を読み込めませんでした</h2><p>APIとの接続を確認し、もう一度お試しください。</p><button class="admin-secondary-button" type="button" @click="() => refresh()">再読み込み</button></div>
       </div>
       <div v-else-if="questions.length === 0" class="admin-empty">
         <div><UIcon name="i-lucide-file-search" /><h2>該当する問題がありません</h2><p>絞り込み条件を変更するか、新しい問題を作成してください。</p></div>

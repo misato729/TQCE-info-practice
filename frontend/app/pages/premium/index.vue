@@ -29,7 +29,9 @@ const agreed = ref(false)
 const submitting = ref(false)
 const errorMessage = ref('')
 
-if (isLoggedIn.value) await ensureCurrentUser()
+onMounted(() => {
+  if (isLoggedIn.value) void ensureCurrentUser()
+})
 
 const { data: paymentConfigResponse, status: configStatus } = await useFetch<ApiResponse<PaymentConfig>>(
   '/api/v1/payments/config',

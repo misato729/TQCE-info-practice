@@ -339,7 +339,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
       <h1>問題を表示できません</h1>
       <p>{{ loadErrorMessage || '指定された公開問題が見つかりませんでした。' }}</p>
       <div class="state-actions">
-        <button class="secondary-link" type="button" @click="refresh">再読み込み</button>
+        <button class="secondary-link" type="button" @click="() => refresh()">再読み込み</button>
         <NuxtLink class="primary-link" to="/practice/1/1">問1から始める</NuxtLink>
       </div>
     </div>
