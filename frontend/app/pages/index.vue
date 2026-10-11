@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import { EXAM_CATALOG, FREE_EXAM_MAX } from '~/utils/examCatalog'
+import {
+  createPracticeSeed,
+  createPracticeSequence,
+  shufflePracticeSequence,
+  type PracticeOrder,
+} from '~/utils/practiceSequence'
+
+type LauncherMode = 'exam' | 'conditions'
+
 const title = '情報教認ラボ｜高等学校（情報）教員資格認定試験'
 const description = '高等学校（情報）教員資格認定試験の予想問題を、解説と根拠資料付きで演習できる学習サイトです。'
 
@@ -14,31 +24,290 @@ const updates = [
   { date: '2026.08.20', text: '問題演習サイトの画面構成を更新しました。' },
   { date: '2026.08.10', text: '試験概要に出題範囲の解説を追加しました。' },
 ]
+
+const questionNumbers = Object.freeze(Array.from({ length: 20 }, (_, index) => index + 1))
+
+const { user } = useAuth()
+const launcherMode = ref<LauncherMode>('exam')
+
+const hasFullAccess = computed(() => (
+  user.value?.role === 'admin' || user.value?.paid_content_access === true
+))
+const freeExams = computed(() => EXAM_CATALOG.filter(exam => exam.exam_number <= FREE_EXAM_MAX))
+const availableExams = computed(() => (
+  hasFullAccess.value ? EXAM_CATALOG : freeExams.value
+))
+const availableExamNumbers = computed(() => availableExams.value.map(exam => exam.exam_number))
+const selectedExamNumbers = ref<number[]>([...availableExamNumbers.value])
+const selectedQuestionNumbers = ref<number[]>([...questionNumbers])
+
+const allExamsSelected = computed({
+  get: () => (
+    availableExamNumbers.value.length > 0
+    && selectedExamNumbers.value.length === availableExamNumbers.value.length
+    && availableExamNumbers.value.every(examNumber => selectedExamNumbers.value.includes(examNumber))
+  ),
+  set: (selected: boolean) => {
+    selectedExamNumbers.value = selected ? [...availableExamNumbers.value] : []
+  },
+})
+const someExamsSelected = computed(() => (
+  selectedExamNumbers.value.length > 0 && !allExamsSelected.value
+))
+const allQuestionsSelected = computed({
+  get: () => (
+    selectedQuestionNumbers.value.length === questionNumbers.length
+    && questionNumbers.every(questionNumber => selectedQuestionNumbers.value.includes(questionNumber))
+  ),
+  set: (selected: boolean) => {
+    selectedQuestionNumbers.value = selected ? [...questionNumbers] : []
+  },
+})
+const someQuestionsSelected = computed(() => (
+  selectedQuestionNumbers.value.length > 0 && !allQuestionsSelected.value
+))
+const sortedSelectedExamNumbers = computed(() => (
+  [...selectedExamNumbers.value].sort((left, right) => left - right)
+))
+const sortedSelectedQuestionNumbers = computed(() => (
+  [...selectedQuestionNumbers.value].sort((left, right) => left - right)
+))
+const selectedQuestionCount = computed(() => (
+  sortedSelectedExamNumbers.value.length * sortedSelectedQuestionNumbers.value.length
+))
+const conditionSequence = computed(() => createPracticeSequence(
+  sortedSelectedExamNumbers.value,
+  sortedSelectedQuestionNumbers.value,
+))
+const hasConditionSelection = computed(() => conditionSequence.value.length > 0)
+
+const examIsLocked = (examNumber: number) => examNumber > FREE_EXAM_MAX && !hasFullAccess.value
+const examTarget = (examNumber: number) => (
+  examIsLocked(examNumber) ? '/premium' : `/practice/${examNumber}/1`
+)
+const startConditionalPractice = (order: PracticeOrder) => {
+  if (!hasConditionSelection.value) return
+
+  const query: Record<string, string> = {
+    exams: sortedSelectedExamNumbers.value.join(','),
+    questions: sortedSelectedQuestionNumbers.value.join(','),
+  }
+  let sequence = conditionSequence.value
+
+  if (order === 'random') {
+    const seed = createPracticeSeed()
+    sequence = shufflePracticeSequence(sequence, seed)
+    query.order = order
+    query.seed = String(seed)
+  }
+
+  const firstPosition = sequence[0]
+  if (!firstPosition) return
+
+  navigateTo({
+    path: `/practice/${firstPosition.examNumber}/${firstPosition.questionNumber}`,
+    query,
+  })
+}
+
+watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
+  const previouslySelectedAll = (
+    previousExamNumbers.length > 0
+    && previousExamNumbers.every(examNumber => selectedExamNumbers.value.includes(examNumber))
+  )
+  selectedExamNumbers.value = previouslySelectedAll
+    ? [...examNumbers]
+    : selectedExamNumbers.value.filter(examNumber => examNumbers.includes(examNumber))
+})
+
 </script>
 
 <template>
   <div class="home-main">
     <section class="overview-section">
       <div class="overview-copy">
-        <p class="kicker">ABOUT</p>
-        <h1>本サイトについて</h1>
+        <h1 class="section-heading">
+          <span>本サイトについて</span>
+        </h1>
         <p>
           高等学校（情報）教員資格認定試験の問題演習ができるサービスです。
         </p>
         <div class="overview-actions">
-          <NuxtLink class="primary-link" to="/practice/1/1">
-            <UIcon name="i-lucide-play" />
-            問題演習を始める
-          </NuxtLink>
           <NuxtLink class="secondary-link" to="/exam-overview">試験概要を見る</NuxtLink>
         </div>
       </div>
     </section>
 
+    <section id="practice-launcher" class="practice-launcher" aria-labelledby="practice-launcher-title">
+      <div class="launcher-heading">
+        <div>
+          <h2 id="practice-launcher-title" class="section-heading">
+            <span>問題演習を始める</span>
+          </h2>
+        </div>
+        <p>模試を1回分解くか、取り組みたい模試と問題番号を自由に組み合わせて始められます。</p>
+      </div>
+
+      <div class="launcher-tabs" role="tablist" aria-label="問題演習の開始方法">
+        <button
+          id="exam-mode-tab"
+          type="button"
+          role="tab"
+          :aria-selected="launcherMode === 'exam'"
+          aria-controls="exam-mode-panel"
+          :class="{ active: launcherMode === 'exam' }"
+          @click="launcherMode = 'exam'"
+        >
+          <UIcon name="i-lucide-files" />
+          模試を選ぶ
+        </button>
+        <button
+          id="conditions-mode-tab"
+          type="button"
+          role="tab"
+          :aria-selected="launcherMode === 'conditions'"
+          aria-controls="conditions-mode-panel"
+          :class="{ active: launcherMode === 'conditions' }"
+          @click="launcherMode = 'conditions'"
+        >
+          <UIcon name="i-lucide-list-filter" />
+          条件を指定
+        </button>
+      </div>
+
+      <div
+        v-if="launcherMode === 'exam'"
+        id="exam-mode-panel"
+        class="launcher-panel"
+        role="tabpanel"
+        aria-labelledby="exam-mode-tab"
+      >
+        <div class="exam-grid-heading">
+          <p><strong>全{{ EXAM_CATALOG.length }}回</strong><span>各20問</span></p>
+          <NuxtLink v-if="!hasFullAccess" class="premium-info-link" to="/premium">
+            <UIcon name="i-lucide-lock-keyhole" />
+            模擬試験6以降は有料会員向けです
+          </NuxtLink>
+        </div>
+        <div class="exam-grid">
+          <NuxtLink
+            v-for="exam in EXAM_CATALOG"
+            :key="exam.exam_number"
+            class="exam-card"
+            :to="examTarget(exam.exam_number)"
+            :aria-label="examIsLocked(exam.exam_number) ? `模擬試験${exam.exam_number}は有料会員向けです` : `模擬試験${exam.exam_number}を始める`"
+          >
+            <strong>{{ exam.exam_number }}</strong>
+            <UIcon v-if="examIsLocked(exam.exam_number)" name="i-lucide-lock-keyhole" aria-hidden="true" />
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div
+        v-else
+        id="conditions-mode-panel"
+        class="launcher-panel"
+        role="tabpanel"
+        aria-labelledby="conditions-mode-tab"
+      >
+        <form class="condition-form" @submit.prevent="startConditionalPractice('sequential')">
+          <div class="condition-fields">
+            <fieldset class="condition-fieldset">
+              <legend>対象模試</legend>
+              <div class="condition-field-heading">
+                <p>複数選択できます</p>
+                <label class="all-selector">
+                  <input
+                    v-model="allExamsSelected"
+                    type="checkbox"
+                    :indeterminate="someExamsSelected"
+                  >
+                  <span>全選択</span>
+                </label>
+              </div>
+              <div class="number-checkbox-grid exam-number-grid">
+                <label
+                  v-for="exam in availableExams"
+                  :key="exam.exam_number"
+                  :class="{ selected: selectedExamNumbers.includes(exam.exam_number) }"
+                >
+                  <input
+                    v-model="selectedExamNumbers"
+                    type="checkbox"
+                    name="exam-numbers"
+                    :value="exam.exam_number"
+                  >
+                  <span>{{ exam.exam_number }}</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="condition-fieldset">
+              <legend>出題範囲</legend>
+              <div class="condition-field-heading">
+                <p>問題番号を選択してください</p>
+                <label class="all-selector">
+                  <input
+                    v-model="allQuestionsSelected"
+                    type="checkbox"
+                    :indeterminate="someQuestionsSelected"
+                  >
+                  <span>全選択</span>
+                </label>
+              </div>
+              <div class="number-checkbox-grid question-number-grid">
+                <label
+                  v-for="questionNumber in questionNumbers"
+                  :key="questionNumber"
+                  :class="{ selected: selectedQuestionNumbers.includes(questionNumber) }"
+                >
+                  <input
+                    v-model="selectedQuestionNumbers"
+                    type="checkbox"
+                    name="question-numbers"
+                    :value="questionNumber"
+                  >
+                  <span>問{{ questionNumber }}</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="condition-submit">
+            <p v-if="hasConditionSelection">
+              <span>選択中</span>
+              {{ sortedSelectedExamNumbers.length }}模試・各{{ sortedSelectedQuestionNumbers.length }}問
+              <strong>全{{ selectedQuestionCount }}問</strong>
+            </p>
+            <p v-else class="selection-required">
+              <span>選択内容を確認してください</span>
+              対象模試と問題番号を1つ以上選択してください
+            </p>
+            <div class="condition-actions">
+              <button class="primary-link" type="submit" :disabled="!hasConditionSelection">
+                <UIcon name="i-lucide-list-ordered" />
+                問題番号順に始める
+              </button>
+              <button
+                class="secondary-link"
+                type="button"
+                :disabled="!hasConditionSelection"
+                @click="startConditionalPractice('random')"
+              >
+                <UIcon name="i-lucide-shuffle" />
+                ランダムに始める
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <section class="home-section updates-section">
       <div class="section-title">
-        <span>NEWS</span>
-        <h2>更新情報</h2>
+        <h2 class="section-heading">
+          <span>更新情報</span>
+        </h2>
       </div>
       <div class="update-list">
         <article v-for="update in updates" :key="update.date + update.text">
@@ -50,8 +319,9 @@ const updates = [
 
     <section class="home-section policy-section">
       <div class="section-title">
-        <span>POLICY</span>
-        <h2>利用にあたって</h2>
+        <h2 class="section-heading">
+          <span>利用にあたって</span>
+        </h2>
       </div>
       <div class="policy-grid">
         <article>
@@ -77,6 +347,137 @@ const updates = [
 
 <style scoped>
 .home-main { min-width: 0; background: #f8faf9; }
+.practice-launcher {
+  scroll-margin-top: calc(var(--header-height) + 20px);
+  padding: 52px clamp(28px, 6vw, 86px) 58px;
+  border-top: 1px solid #d4dfde;
+  background: #eef4f3;
+}
+.launcher-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; }
+.launcher-heading h2 { margin: 0; font-size: 30px; line-height: 1.3; }
+.launcher-heading > p { max-width: 480px; margin: 0; color: var(--muted); line-height: 1.8; }
+.section-heading { display: flex; align-items: center; gap: 10px; }
+.section-heading::before { content: ''; flex: 0 0 4px; width: 4px; height: 26px; background: var(--teal-dark); }
+.section-heading > span { min-width: 0; }
+.launcher-tabs {
+  width: min(400px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 30px;
+  border-bottom: 1px solid #bfcfd0;
+}
+.launcher-tabs button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #52656c;
+  font-weight: 800;
+  cursor: pointer;
+}
+.launcher-tabs button.active { border-color: var(--teal); color: var(--teal-dark); }
+.launcher-tabs :deep(svg) { width: 19px; height: 19px; }
+.launcher-panel { padding-top: 28px; }
+.exam-grid-heading {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.exam-grid-heading p { display: flex; align-items: baseline; gap: 10px; margin: 0; }
+.exam-grid-heading strong { font-size: 16px; }
+.exam-grid-heading span { color: var(--muted); font-size: 13px; font-weight: 700; }
+.exam-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+.exam-card {
+  position: relative;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 1px solid #bdccce;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color .15s, background .15s, transform .15s;
+}
+.exam-card:hover { border-color: var(--teal); background: #f9ffff; transform: translateY(-1px); }
+.exam-card strong { color: var(--teal-dark); font-size: 20px; line-height: 1; transform: translateY(-1px); }
+.exam-card :deep(.iconify) { position: absolute; top: 7px; right: 7px; width: 13px; height: 13px; color: #677b81; }
+.premium-info-link { display: inline-flex; align-items: center; gap: 5px; color: var(--teal-dark); font-size: 13px; font-weight: 800; }
+.condition-form { border: 1px solid #c7d4d5; border-radius: 8px; background: #fff; }
+.condition-fields { display: grid; gap: 28px; padding: 28px; }
+.condition-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.condition-fieldset + .condition-fieldset { padding-top: 26px; border-top: 1px solid #dce4e4; }
+.condition-fieldset legend { padding: 0; color: #253d45; font-size: 17px; font-weight: 900; }
+.condition-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 7px 0 13px;
+}
+.condition-field-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+.all-selector {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #bdcbcd;
+  border-radius: 5px;
+  background: #f8faf9;
+  color: #344951;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.all-selector input { width: 17px; height: 17px; margin: 0; accent-color: var(--teal); }
+.number-checkbox-grid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 8px; }
+.number-checkbox-grid label {
+  min-width: 0;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 6px;
+  border: 1px solid #c5d1d3;
+  border-radius: 5px;
+  background: #fff;
+  color: #3a5057;
+  font-weight: 900;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.number-checkbox-grid label:hover { border-color: var(--teal); }
+.number-checkbox-grid label.selected { border-color: var(--teal); background: #eaf6f5; color: var(--teal-dark); }
+.number-checkbox-grid input { width: 16px; height: 16px; flex: 0 0 16px; margin: 0; accent-color: var(--teal); }
+.question-number-grid label { gap: 4px; padding-inline: 4px; }
+.question-number-grid label span { white-space: nowrap; }
+.condition-submit {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 26px;
+  border-top: 1px solid #d8e1e2;
+  background: #f4f7f6;
+}
+.condition-submit p { margin: 0; color: #40545b; font-weight: 800; }
+.condition-submit p span { display: block; margin-bottom: 3px; color: var(--muted); font-size: 11px; }
+.condition-submit p strong { margin-left: 8px; color: var(--teal-dark); }
+.condition-submit .selection-required { color: #a23b2a; }
+.condition-actions { display: flex; flex: 0 0 auto; gap: 10px; }
+.condition-actions button { white-space: nowrap; }
+.condition-actions button:disabled { opacity: .45; cursor: not-allowed; }
 .overview-section {
   min-height: 280px;
   padding: 52px clamp(28px, 6vw, 86px);
@@ -85,13 +486,11 @@ const updates = [
   background: #fff;
 }
 .overview-copy { max-width: 680px; }
-.kicker, .section-title span { margin: 0 0 10px; color: var(--coral); font-size: 12px; font-weight: 900; letter-spacing: 0; }
-h1 { margin: 0; font-size: 30px; line-height: 1.3; }
-.overview-copy > p:not(.kicker) { margin: 22px 0 0; color: var(--muted); font-size: 16px; line-height: 1.9; }
+.overview-copy h1 { margin: 0; font-size: 30px; line-height: 1.3; }
+.overview-copy > p { margin: 22px 0 0; color: var(--muted); font-size: 16px; line-height: 1.9; }
 .overview-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
 .home-section { padding: 62px clamp(28px, 6vw, 86px); }
 .section-title { display: flex; align-items: baseline; gap: 14px; margin-bottom: 26px; }
-.section-title span { margin: 0; }
 .section-title h2 { margin: 0; font-size: 30px; }
 .updates-section { background: #f1f5f4; }
 .update-list { border-top: 1px solid #cbd7d9; }
@@ -108,7 +507,35 @@ h1 { margin: 0; font-size: 30px; line-height: 1.3; }
 .policy-grid p { margin: 0; color: var(--muted); line-height: 1.8; }
 .text-link { display: inline-block; margin-top: 12px; color: var(--teal-dark); font-weight: 800; }
 
+@media (max-width: 1100px) {
+  .exam-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1200px) {
+  .question-number-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+@media (max-width: 960px) {
+  .number-checkbox-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
 @media (max-width: 640px) {
+  .practice-launcher { padding: 32px 20px 38px; }
+  .launcher-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .launcher-heading h2 { font-size: 27px; }
+  .launcher-heading > p { font-size: 14px; }
+  .launcher-tabs { width: 100%; margin-top: 24px; }
+  .exam-grid-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .exam-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+  .exam-card { height: 68px; }
+  .condition-fields { padding: 20px; }
+  .condition-field-heading { align-items: flex-end; }
+  .number-checkbox-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+  .number-checkbox-grid label { min-height: 46px; flex-direction: column; gap: 3px; padding: 5px 2px; }
+  .number-checkbox-grid input { width: 15px; height: 15px; flex-basis: 15px; }
+  .condition-submit { align-items: stretch; flex-direction: column; padding: 18px 20px 20px; }
+  .condition-actions { width: 100%; flex-direction: column; }
+  .condition-actions button { width: 100%; }
   .overview-section { min-height: auto; padding: 36px 20px; }
   .overview-actions { align-items: stretch; flex-direction: column; }
   .home-section { padding: 44px 20px; }

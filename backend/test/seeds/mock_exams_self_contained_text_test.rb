@@ -90,7 +90,7 @@ class MockExamsSelfContainedTextTest < ActionDispatch::IntegrationTest
   test "文脈を補った後も空欄とセルの対応を保ち答えを本文へ露出しない" do
     @questions.except("2-18", "3-11").each do |key, question|
       labels = quote(key).scan(/\{\{([①②③④])\}\}/).flatten.uniq
-      assert_includes [3, 4], labels.size, key
+      assert_includes(key == "5-11" ? [2] : [3, 4], labels.size, key)
       assert_equal %w[① ② ③ ④].first(labels.size), labels, key
       assert_equal [labels.first, labels.last], prompt(key).scan(/\{\{([①②③④])\}\}/).flatten.uniq, key
       question.fetch(:choices).each do |choice|

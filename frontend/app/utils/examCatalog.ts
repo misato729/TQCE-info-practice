@@ -4,22 +4,17 @@ export type ExamCatalogEntry = {
 }
 
 export const FREE_EXAM_MAX = 5
+export const EXAM_SET_COUNT = 50
+export const QUESTIONS_PER_EXAM = 20
 
-// サイドバー表示のためにRailsを起動しないよう、公開済み問題数をリリース時に固定する。
-// 問題を公開・非公開にする変更では、この一覧も同じ変更内で更新すること。
-const publishedQuestionCounts = [
-  20, 20, 20, 20, 20,
-  20, 20, 20, 20, 20,
-  20, 20, 20, 20, 20,
-  20, 20, 20, 20, 20,
-  20, 20, 20, 20, 20,
-] as const
+// 問題データの登録前でも各模試へ遷移できるよう、1〜50の導線を固定で用意する。
+// 実際に問題を表示できるかは、APIの公開状態と利用権限の判定に従う。
 
 export const EXAM_CATALOG: readonly ExamCatalogEntry[] = Object.freeze(
-  publishedQuestionCounts.map((questionCount, index) => Object.freeze({
+  Array.from({ length: EXAM_SET_COUNT }, (_, index) => Object.freeze({
     exam_number: index + 1,
     question_numbers: Object.freeze(
-      Array.from({ length: questionCount }, (_, questionIndex) => questionIndex + 1),
+      Array.from({ length: QUESTIONS_PER_EXAM }, (_, questionIndex) => questionIndex + 1),
     ),
   })),
 )

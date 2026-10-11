@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { EXAM_CATALOG } from '~/utils/examCatalog'
+import {
+  createPracticeSequence,
+  shufflePracticeSequence,
+  type PracticeOrder,
+  type PracticePosition,
+} from '~/utils/practiceSequence'
+
 type ContentBlock = {
   type: 'text' | 'quote' | 'fill_in_text' | 'fill_in_quote' | 'fill_in_choice' | 'table' | 'code' | 'code_group'
   text?: string
@@ -51,6 +59,8 @@ type AnswerHistoryDetail = {
 
 type ApiResponse<T> = { data: T }
 
+type PracticeScope = 'all' | 'teacher_education' | 'information'
+
 type SourceReference = {
   label: string
   url: string | null
@@ -61,14 +71,91 @@ const config = useRuntimeConfig()
 const { isLoggedIn, authHeaders, logout } = useAuth()
 const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
 
+const allExamNumbers = EXAM_CATALOG.map(exam => exam.exam_number)
+const allQuestionNumbers = Object.freeze(Array.from({ length: 20 }, (_, index) => index + 1))
+
+const parseNumberSelection = (value: unknown, allowedNumbers: readonly number[]) => {
+  const serialized = Array.isArray(value) ? value.join(',') : typeof value === 'string' ? value : ''
+  return [...new Set(
+    serialized
+      .split(',')
+      .map(part => Number(part))
+      .filter(number => Number.isInteger(number) && allowedNumbers.includes(number)),
+  )].sort((left, right) => left - right)
+}
+
 const examNumber = computed(() => Number(route.params.examNumber))
 const questionNumber = computed(() => Number(route.params.questionNumber))
+const practiceScope = computed<PracticeScope>(() => {
+  const value = route.query.scope
+  return value === 'teacher_education' || value === 'information' ? value : 'all'
+})
+const hasConditionSelection = computed(() => (
+  route.query.exams !== undefined || route.query.questions !== undefined
+))
+const practiceOrder = computed<PracticeOrder>(() => (
+  route.query.order === 'random' ? 'random' : 'sequential'
+))
+const practiceSeed = computed(() => {
+  const value = Array.isArray(route.query.seed) ? route.query.seed[0] : route.query.seed
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) return null
+
+  const seed = Number(value)
+  return Number.isSafeInteger(seed) && seed >= 0 && seed <= 0xFFFFFFFF ? seed : null
+})
+const selectedPracticeExamNumbers = computed(() => {
+  const selected = parseNumberSelection(route.query.exams, allExamNumbers)
+  return selected.length > 0 ? selected : [examNumber.value]
+})
+const selectedPracticeQuestionNumbers = computed(() => {
+  const selected = parseNumberSelection(route.query.questions, allQuestionNumbers)
+  if (selected.length > 0) return selected
+  if (practiceScope.value === 'teacher_education') return allQuestionNumbers.slice(0, 15)
+  if (practiceScope.value === 'information') return allQuestionNumbers.slice(15)
+  return [...allQuestionNumbers]
+})
+const basePracticeSequence = computed<PracticePosition[]>(() => createPracticeSequence(
+  selectedPracticeExamNumbers.value,
+  selectedPracticeQuestionNumbers.value,
+))
+const isRandomPractice = computed(() => (
+  hasConditionSelection.value
+  && practiceOrder.value === 'random'
+  && practiceSeed.value !== null
+))
+const practiceSequence = computed<PracticePosition[]>(() => (
+  isRandomPractice.value
+    ? shufflePracticeSequence(basePracticeSequence.value, practiceSeed.value!)
+    : basePracticeSequence.value
+))
+const currentPracticeIndex = computed(() => practiceSequence.value.findIndex(position => (
+  position.examNumber === examNumber.value && position.questionNumber === questionNumber.value
+)))
+const nextPracticePosition = computed(() => (
+  currentPracticeIndex.value >= 0
+    ? practiceSequence.value[currentPracticeIndex.value + 1] ?? null
+    : null
+))
+const practiceNavigationQuery = computed(() => {
+  if (hasConditionSelection.value) {
+    const query: Record<string, string> = {
+      exams: selectedPracticeExamNumbers.value.join(','),
+      questions: selectedPracticeQuestionNumbers.value.join(','),
+    }
+    if (isRandomPractice.value) {
+      query.order = 'random'
+      query.seed = String(practiceSeed.value)
+    }
+    return query
+  }
+  return practiceScope.value === 'all' ? {} : { scope: practiceScope.value }
+})
 const validPosition = computed(() => (
   Number.isInteger(examNumber.value)
-  && examNumber.value >= 1
+  && allExamNumbers.includes(examNumber.value)
   && Number.isInteger(questionNumber.value)
-  && questionNumber.value >= 1
-  && questionNumber.value <= 20
+  && allQuestionNumbers.includes(questionNumber.value)
+  && currentPracticeIndex.value >= 0
 ))
 
 const requestQuery = computed(() => ({
@@ -149,9 +236,39 @@ const loadErrorMessage = computed(() => {
   if (questionError.value || (questionResponse.value && !question.value)) return '指定された公開問題が見つかりませんでした。'
   return ''
 })
+const practiceProgress = computed(() => (
+  hasConditionSelection.value && currentPracticeIndex.value >= 0
+    ? `${isRandomPractice.value ? 'ランダム ' : ''}${currentPracticeIndex.value + 1} / ${practiceSequence.value.length}`
+    : ''
+))
+const completionHeading = computed(() => (
+  hasConditionSelection.value
+    ? '選択した問題をすべて解き終えました'
+    : practiceScope.value === 'all' ? '公開中の問題はここまでです' : '指定した出題範囲はここまでです'
+))
+const completionMessage = computed(() => {
+  if (hasConditionSelection.value) {
+    return `${selectedPracticeExamNumbers.value.length}模試、全${practiceSequence.value.length}問の演習が完了しました。`
+  }
+  if (practiceScope.value === 'teacher_education') {
+    return `模擬試験 ${examNumber.value} の教職教養を解き終えました。`
+  }
+  if (practiceScope.value === 'information') {
+    return `模擬試験 ${examNumber.value} の情報科特有を解き終えました。`
+  }
+  return `模擬試験 ${examNumber.value} の公開問題をすべて解き終えました。`
+})
 
 watch(
-  () => [examNumber.value, questionNumber.value],
+  () => [
+    examNumber.value,
+    questionNumber.value,
+    route.query.exams,
+    route.query.questions,
+    route.query.order,
+    route.query.seed,
+    practiceScope.value,
+  ],
   () => {
     selectedChoiceId.value = null
     answerResult.value = null
@@ -264,23 +381,22 @@ watch(
 const goToNextQuestion = async () => {
   if (!question.value || loadingNext.value) return
 
+  if (!nextPracticePosition.value) {
+    completed.value = true
+    return
+  }
+
   loadingNext.value = true
   answerError.value = ''
 
   try {
-    const response = await $fetch<ApiResponse<Question>>('/api/v1/questions/next', {
-      baseURL: config.public.apiBase,
-      query: {
-        exam_number: question.value.exam_number,
-        after_question_number: question.value.question_number,
-      },
-      headers: authHeaders.value,
+    await navigateTo({
+      path: `/practice/${nextPracticePosition.value.examNumber}/${nextPracticePosition.value.questionNumber}`,
+      query: practiceNavigationQuery.value,
     })
-    await navigateTo(`/practice/${response.data.exam_number}/${response.data.question_number}`)
   }
   catch (error: any) {
-    if (error?.statusCode === 404 || error?.status === 404) completed.value = true
-    else answerError.value = '次の問題を取得できませんでした。もう一度お試しください。'
+    answerError.value = '次の問題へ移動できませんでした。もう一度お試しください。'
   }
   finally {
     loadingNext.value = false
@@ -349,7 +465,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
     <template v-else>
       <header class="practice-head">
         <div>
-          <span class="exam-label">模擬試験 {{ question.exam_number }}</span>
+          <div class="practice-context">
+            <span class="exam-label">模擬試験 {{ question.exam_number }}</span>
+            <span v-if="practiceProgress" class="practice-progress">{{ practiceProgress }}</span>
+          </div>
           <h1>問{{ question.question_number }}</h1>
         </div>
         <div class="practice-meta">
@@ -455,8 +574,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
           </p>
 
           <div v-if="completed" class="completed-message">
-            <strong>公開中の問題はここまでです</strong>
-            <p>模擬試験 {{ question.exam_number }} の公開問題をすべて解き終えました。</p>
+            <strong>{{ completionHeading }}</strong>
+            <p>{{ completionMessage }}</p>
             <NuxtLink class="secondary-link" to="/">トップへ戻る</NuxtLink>
           </div>
           <button v-else class="primary-link next-button" type="button" :disabled="loadingNext" @click="goToNextQuestion">
@@ -508,7 +627,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 <style scoped>
 .practice-wrap { max-width: 900px; }
 .practice-head { padding: 46px 0 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
+.practice-context { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
 .practice-head .exam-label { color: var(--teal); font-size: 14px; font-weight: 800; }
+.practice-progress { padding-left: 12px; border-left: 1px solid #bdcbcd; color: var(--muted); font-size: 13px; font-weight: 800; }
 .practice-head h1 { margin: 5px 0 0; font-size: 36px; }
 .practice-head p { margin: 0; color: var(--muted); }
 .practice-meta { display: flex; align-items: center; gap: 10px; }

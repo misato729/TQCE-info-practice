@@ -6,7 +6,7 @@ const { isLoggedIn, user, ensureCurrentUser } = useAuth()
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },
   { label: '試験概要', to: '/exam-overview', icon: 'i-lucide-book-open' },
-  { label: '問題演習', to: '/practice/1/1', icon: 'i-lucide-pencil-line' },
+  { label: '問題演習', to: '/#practice-launcher', icon: 'i-lucide-pencil-line' },
   { label: '有料会員', to: '/premium', icon: 'i-lucide-badge-check' },
   ...(isLoggedIn.value
     ? [
@@ -91,7 +91,8 @@ const openMenu = () => {
           v-for="item in menuItems"
           :key="item.to"
           :to="item.to"
-          :class="{ active: route.path === item.to }"
+          :class="{ active: route.path + route.hash === item.to }"
+          @click="menuOpen = false"
         >
           <UIcon :name="item.icon" />
           <span>{{ item.label }}</span>

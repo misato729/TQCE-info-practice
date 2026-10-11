@@ -8,10 +8,19 @@ const officialLinks = {
   guide: 'https://www.nits.go.jp/shiken/2026/files/juken_johoAnnai_20260123_002.pdf',
   answers: 'https://www.nits.go.jp/shiken/2026/files/index_johoSeito_001.pdf',
   criteria: 'https://www.nits.go.jp/shiken/2026/kijyun.html',
+  pastExams: 'https://www.nits.go.jp/shiken/kako.html',
+  questions2024: 'https://www.nits.go.jp/shiken/2024/files/mondai_joho1_003.pdf',
+  questions2025: 'https://www.nits.go.jp/shiken/2025/files/mondai_joho1_001.pdf',
+  answers2024: 'https://www.nits.go.jp/shiken/2024/files/index_johoSeito_001.pdf',
+  answers2025: 'https://www.nits.go.jp/shiken/2025/files/index_johoSeito_002.pdf',
+  correction2025: 'https://www.nits.go.jp/shiken/notice/20250512_001.html',
   licenseRegulation: 'https://laws.e-gov.go.jp/law/329M50000080026?occasion_date=20260401#Mp-Ch_1-At_5-Pr_1',
   schoolEducationAct: 'https://laws.e-gov.go.jp/law/322AC0000000026?occasion_date=20260714',
   wasedaCourses: 'https://www.waseda.jp/fedu/tec/assets/uploads/2023/03/8933f55190b55806e327a3195b083192.pdf',
   curriculumGuideline: 'https://www.mext.go.jp/a_menu/shotou/new-cs/1384661.htm',
+  curriculumText: 'https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf',
+  inquiryGuidance: 'https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf',
+  activitiesGuidance: 'https://www.mext.go.jp/content/1407196_22_1_1_2.pdf',
   curriculumGeneral: 'https://www.mext.go.jp/content/20211102-mxt_kyoiku02-100002620_1.pdf',
   studentGuidance: 'https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf',
   reiwaEducation: 'https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf',
@@ -25,101 +34,87 @@ const foundationSubjects = [
     scope: '教育の理念並びに教育に関する歴史及び思想',
     course: '教育基礎総論1（中・高）',
     displayName: '教育基礎総論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905L012026150000905L15&pLng=jp',
   },
   {
     code: '1.2',
     scope: '教職の意義及び教員の役割・職務内容（チーム学校運営への対応を含む。）',
     course: '教職概論（中・高）',
     displayName: '教職概論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=1500009052012026150000905215&pLng=jp',
   },
   {
     code: '1.3',
     scope: '教育に関する社会的、制度的又は経営的事項（学校と地域との連携及び学校安全への対応を含む。）',
     course: '教育制度総論（中・高）',
     displayName: '教育制度総論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905M012026150000905M15&pLng=jp',
   },
   {
     code: '1.4',
     scope: '幼児、児童及び生徒の心身の発達及び学習の過程',
     course: '教育心理学（中・高）',
     displayName: '教育心理学',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905N012026150000905N15&pLng=jp',
   },
   {
     code: '1.5',
     scope: '特別の支援を必要とする幼児、児童及び生徒に対する理解',
     course: '特別支援教育（中・高）',
     displayName: '特別支援教育',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905P012026150000905P15&pLng=jp',
   },
   {
     code: '1.6',
     scope: '教育課程の意義及び編成の方法（カリキュラム・マネジメントを含む。）',
     course: '教育課程編成論（中・高）',
     displayName: '教育課程編成論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905E012026150000905E15&pLng=jp',
   },
 ]
 
 const guidanceSubjects = [
   {
     code: '2.0',
-    scope: '道徳の理論及び指導法',
+    scope: '道徳の理論及び指導法（参考：中学校の表）',
     course: '道徳教育論（中・高）',
     displayName: '道徳教育論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905K012026150000905K15&pLng=jp',
   },
   {
     code: '2.1',
-    scope: '総合的な学習の時間の指導法（高等学校では総合的な探究の時間の指導法）',
+    scope: '総合的な探究の時間の指導法',
     course: '総合的な学習・探究論（中・高）',
     displayName: '総合的な学習・探究論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905I012026150000905I15&pLng=jp',
   },
   {
     code: '2.2',
     scope: '特別活動の指導法',
     course: '特別活動論（中・高）',
     displayName: '特別活動論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=1500009058012026150000905815&pLng=jp',
   },
   {
     code: '2.3',
     scope: '教育の方法及び技術',
     course: '教育方法・技術論（中・高）',
     displayName: '教育方法・技術論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905H012026150000905H15&pLng=jp',
   },
   {
     code: '2.4',
     scope: '情報通信技術を活用した教育の理論及び方法',
     course: '教育におけるICT活用（中・高）',
     displayName: '教育におけるICT活用',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905Q012026150000905Q15&pLng=jp',
   },
   {
     code: '2.5',
     scope: '生徒指導の理論及び方法',
     course: '生徒指導・進路指導論（中・高）',
     displayName: '生徒指導・進路指導論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905B012026150000905B15&pLng=jp',
   },
   {
     code: '2.6',
     scope: '教育相談（カウンセリングに関する基礎的な知識を含む。）の理論及び方法',
     course: '生徒理解と教育相談（中・高）',
     displayName: '生徒理解と教育相談',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905J012026150000905J15&pLng=jp',
   },
   {
     code: '2.7',
     scope: '進路指導及びキャリア教育の理論及び方法',
     course: '生徒指導・進路指導論（中・高）',
     displayName: '生徒指導・進路指導論',
-    syllabus: 'https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=150000905B012026150000905B15&pLng=jp',
   },
 ]
 
@@ -142,57 +137,38 @@ const informationCategories = [
 ]
 
 const questionGroups = [
-  { questions: '問1〜2', category: '1.1 教育基礎総論', details: '近代中心の日本教育史（古代〜現代）、西洋教育史、教育の理念・思想' },
+  { questions: '問1〜2', category: '1.1 教育基礎総論', details: '日本教育史、西洋教育史・教育思想。人物・制度・理念・実践など' },
   { questions: '問3〜5', category: '1.3 教育制度総論', details: '問3：教育基本法、問4：学校教育法、問5：教育公務員特例法・地方公務員法' },
-  { questions: '問6', category: '1.6 教育課程編成論', details: '教育課程の実施、学習評価、カリキュラム・マネジメント' },
-  { questions: '問7', category: '内容に応じて分類', details: '1.5、1.6、2.5、2.7などから問題内容に合わせて分類' },
+  { questions: '問6', category: '1.6 教育課程編成論', details: '総則第3款「教育課程の実施と学習評価」：授業改善、学習評価' },
+  { questions: '問7', category: '内容に応じて分類', details: '総則第5款「生徒の発達の支援」：キャリア教育、通級による指導、不登校生徒への配慮など' },
   { questions: '問8', category: '2.1 総合的な学習・探究論', details: '総合的な探究の時間、学習指導要領解説' },
-  { questions: '問9', category: '2.0 道徳教育論', details: '高等学校における道徳教育、全体計画、指導体制' },
+  { questions: '問9', category: '2.0 道徳教育論', details: '道徳教育の目標、人間尊重・生命への畏敬、道徳的諸価値を深める際の配慮' },
   { questions: '問10', category: '2.2 特別活動論', details: '特別活動、学習指導要領解説' },
   { questions: '問11', category: '2.5 生徒指導・進路指導論', details: '生徒指導提要、生徒指導の基本的な考え方' },
-  { questions: '問12', category: '1.5 特別支援教育', details: '発達障害と、それ以外の特別支援教育上の障害を同程度に扱う' },
-  { questions: '問13', category: '1.4 教育心理学', details: '青年期の発達課題・心理、発達理論' },
+  { questions: '問12', category: '1.5 特別支援教育', details: '令和6年度：LD、令和7年度：ASD、令和8年度：ADHD' },
+  { questions: '問13', category: '1.4 教育心理学', details: '青年期の発達課題・心理、アイデンティティ、友人関係' },
   { questions: '問14', category: '1.4 教育心理学', details: '学習理論、学習方法、教授・学習過程' },
   { questions: '問15', category: '1.3 教育制度総論', details: '「令和の日本型学校教育」答申' },
-  { questions: '問16〜18', category: '内容に応じて分類', details: '学習指導要領2範囲と解説情報編2部の計4範囲から3範囲を選び、資料・項目順に出題。内容に応じて3.1又は3.2' },
+  { questions: '問16〜18', category: '内容に応じて分類', details: '学習指導要領第2章第10節・第3章第7節「情報」、解説情報編第1部。内容に応じて3.1又は3.2' },
   { questions: '問19', category: '3.1 情報科専門科目', details: 'アルゴリズム、プログラムの読解・実行' },
-  { questions: '問20', category: '3.1 情報科専門科目', details: 'データサイエンス、統計、データの分析' },
-]
-
-const relatedSchoolEducationArticles = [
-  { article: '第70条', detail: '中等教育学校及びその後期課程に対する関係規定の準用' },
-  { article: '第71条', detail: '同じ設置者が設置する中学校と高等学校における一貫教育' },
-  { article: '第72条', detail: '特別支援学校における高等学校に準ずる教育' },
-  { article: '第74条', detail: '特別支援学校による高等学校等への助言又は援助' },
-  { article: '第77条', detail: '特別支援学校高等部の学科及び教育課程' },
-  { article: '第81条', detail: '高等学校等における特別支援教育及び特別支援学級' },
-  { article: '第82条', detail: '特別支援学校に対する高等学校関係規定などの準用' },
-  { article: '第137条', detail: '学校施設の社会教育その他公共のための利用' },
-]
-
-const specialSupportAreas = [
-  '視覚障害',
-  '聴覚障害',
-  '知的障害',
-  '肢体不自由',
-  '病弱・身体虚弱',
-  '言語障害',
-  '情緒障害',
-  'LD、ADHD、ASDなどの発達障害',
-  '特別支援学級',
-  '通級による指導',
-  '合理的配慮',
-  '校内支援体制や関係機関との連携',
+  { questions: '問20', category: '3.1 情報科専門科目', details: '尺度水準、量的データの関係、データクレンジング' },
 ]
 
 const references = [
   { label: '令和8年度 高等学校（情報）教員資格認定試験 受験案内', href: officialLinks.guide },
+  { label: '過去の試験問題・正答・合格判定基準（NITS）', href: officialLinks.pastExams },
+  { label: '令和6年度 科目Ⅰの問題（令和7年1月10日訂正版）', href: officialLinks.questions2024 },
+  { label: '令和6年度 科目Ⅰの正答', href: officialLinks.answers2024 },
+  { label: '令和7年度 科目Ⅰの問題', href: officialLinks.questions2025 },
+  { label: '令和7年度 科目Ⅰの正答（令和7年5月12日訂正版）', href: officialLinks.answers2025 },
   { label: '令和8年度 高等学校（情報）教員資格認定試験 第1次試験択一式試験の正答', href: officialLinks.answers },
   { label: '令和8年度教員資格認定試験の合格判定基準', href: officialLinks.criteria },
   { label: '教育職員免許法施行規則', href: officialLinks.licenseRegulation },
   { label: '学校教育法', href: officialLinks.schoolEducationAct },
   { label: '早稲田大学 教職課程科目一覧', href: officialLinks.wasedaCourses },
   { label: '高等学校学習指導要領及び解説', href: officialLinks.curriculumGuideline },
+  { label: '生徒指導提要（令和4年12月）', href: officialLinks.studentGuidance },
+  { label: '「令和の日本型学校教育」答申（令和3年1月26日）', href: officialLinks.reiwaEducation },
   { label: '高等学校（情報）教員資格認定試験 科目Ⅰ 過去問分析', href: officialLinks.qiitaAnalysis },
 ]
 </script>
@@ -204,24 +180,24 @@ const references = [
       <h1>試験概要</h1>
       <p>
         高等学校（情報）教員資格認定試験の「教科及び教職に関する科目（Ⅰ）」について、
-        受験案内に記載された正式な出題範囲と、令和6年度から令和8年度までの過去問から見た出題傾向を整理します。
+        試験の形式、正式な出題範囲、令和6〜8年度の出題傾向をまとめています。
       </p>
+      <p class="updated-at">情報確認日：<time datetime="2026-10-11">2026年10月11日</time>／令和8年度の公表資料に基づく内容</p>
     </header>
+    <dl class="exam-facts" aria-label="科目Ⅰの基本情報">
+      <div><dt>試験時間</dt><dd><strong>70</strong>分</dd></div>
+      <div><dt>問題数・形式</dt><dd><strong>20</strong>問・4択</dd></div>
+      <div><dt>科目Ⅰの合格基準</dt><dd><strong>60</strong>点以上／100点</dd></div>
+    </dl>
     <p class="fact-note">
-      試験時間は70分、マークシート方式の択一式です。令和8年度は1問5点、合計100点で、20問中12問以上の正答が合格基準に相当します。
+      マークシート方式で、1問5点。20問中12問以上の正答が科目Ⅰの合格基準に相当します。
+      これは試験全体の最終合格を意味するものではなく、科目Ⅱや第2次試験にも合格する必要があります（免除が認められた科目を除く）。
     </p>
-
-    <section class="overview-section">
-      <h2>資料の使い分け</h2>
-      <p>
-        正式な出題範囲は教職員支援機構（NITS）の受験案内、範囲の細分化は教育職員免許法施行規則、
-        大学科目との対応は早稲田大学の教職課程科目一覧とシラバス、問番号ごとの傾向は過去問と正答及び過去問分析記事を参照しています。
-      </p>
-      <p>
-        早稲田大学の科目名は、法令上の事項を具体的な学習分野へ置き換えるための参考です。
-        また、過去問分析は今後の出題範囲を限定するものではありません。
-      </p>
-    </section>
+    <p class="fact-note">
+      参照：<a class="text-link" :href="officialLinks.guide" target="_blank" rel="noopener noreferrer">受験案内</a>、
+      <a class="text-link" :href="officialLinks.answers" target="_blank" rel="noopener noreferrer">正答・配点</a>、
+      <a class="text-link" :href="officialLinks.criteria" target="_blank" rel="noopener noreferrer">合格判定基準</a>
+    </p>
 
     <section class="overview-section">
       <h2>受験案内に記載された正式な出題範囲</h2>
@@ -240,11 +216,12 @@ const references = [
       </p>
     </section>
 
-    <section class="overview-section">
-      <h2>法令上の事項と大学科目との対応</h2>
+    <details class="overview-section supplementary-section">
+      <summary>出題範囲の詳細と大学科目名の例</summary>
       <p>
         <a class="text-link" :href="officialLinks.licenseRegulation" target="_blank" rel="noopener noreferrer">教育職員免許法施行規則第5条第1項表</a>に記載された事項を、
-        <a class="text-link" :href="officialLinks.wasedaCourses" target="_blank" rel="noopener noreferrer">早稲田大学の教職課程科目一覧</a>及びシラバスを参考に整理します。
+        <a class="text-link" :href="officialLinks.wasedaCourses" target="_blank" rel="noopener noreferrer">早稲田大学の教職課程科目一覧（2022年度以降入学者向け）</a>を参考に整理します。
+        科目名は学習分野を理解するための例であり、試験で指定された履修科目や教材ではありません。
       </p>
 
       <div class="subsection">
@@ -253,8 +230,7 @@ const references = [
           <li v-for="subject in foundationSubjects" :key="subject.code">
             <h4>{{ subject.scope }}</h4>
             <p>
-              対応する科目は、
-              <a :href="subject.syllabus" target="_blank" rel="noopener noreferrer">{{ subject.course }}</a>です。
+              大学科目名の例：{{ subject.course }}
             </p>
             <p class="site-category">本サイトでは「{{ subject.code }} {{ subject.displayName }}」と表示します。</p>
           </li>
@@ -272,8 +248,7 @@ const references = [
           <li v-for="subject in guidanceSubjects" :key="subject.code">
             <h4>{{ subject.scope }}</h4>
             <p>
-              対応する科目は、
-              <a :href="subject.syllabus" target="_blank" rel="noopener noreferrer">{{ subject.course }}</a>です。
+              大学科目名の例：{{ subject.course }}
             </p>
             <p class="site-category">本サイトでは「{{ subject.code }} {{ subject.displayName }}」と表示します。</p>
           </li>
@@ -303,16 +278,15 @@ const references = [
         <div class="information-detail">
           <h4>3.2 各教科の指導法（情報通信技術の活用を含む。）</h4>
           <p>
-            対応する科目は、
-            <a href="https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=1500009255012026150000925515&pLng=jp" target="_blank" rel="noopener noreferrer">情報科教育法</a>です。
+            大学科目名の例は「情報科教育法」です。
           </p>
           <p>本サイトでは「3.2 情報科教育法」と表示します。</p>
         </div>
       </div>
-    </section>
+    </details>
 
-    <section class="overview-section">
-      <h2>本サイトで使用する分類</h2>
+    <details class="overview-section supplementary-section">
+      <summary>本サイトの分野分類</summary>
       <p>
         大分類は「教職教養」と「情報科特有」の二つです。小分類には、法令上の区分を踏まえた大学の教職課程科目名を使用します。
       </p>
@@ -331,12 +305,12 @@ const references = [
       <p class="source-note">
         問7及び問16〜問18は、年度や問題内容によって該当する小分類が変わるため、問番号だけで分類を固定しません。
       </p>
-    </section>
+    </details>
 
     <section class="overview-section">
       <div class="section-heading">
         <h2>過去問から見た出題構成</h2>
-        <p>令和6年度から令和8年度までの過去問をもとに整理しています。</p>
+        <p>令和6〜8年度の3年度分を整理しています。</p>
       </div>
 
       <div class="question-balance" aria-label="問題構成">
@@ -350,13 +324,13 @@ const references = [
         </div>
       </div>
 
-      <div class="table-scroll">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="問番号ごとの出題分野">
         <table>
           <thead>
             <tr>
               <th scope="col">問題</th>
               <th scope="col">分野</th>
-              <th scope="col">主な内容・出典</th>
+              <th scope="col">過去問で確認した内容・出典</th>
             </tr>
           </thead>
           <tbody>
@@ -373,65 +347,41 @@ const references = [
         以下では、令和6年度から令和8年度までの過去問と正答及び
         <a class="text-link" :href="officialLinks.qiitaAnalysis" target="_blank" rel="noopener noreferrer">過去問分析記事</a>をもとに、問番号ごとの傾向を詳しく確認します。
         確認できる過去問は3年度分に限られるため、今後の出題範囲を限定するものではありません。
+        以下の「本サイトの予想問題」は、この傾向を踏まえた独自の学習範囲であり、公式な出題予定ではありません。
       </p>
 
       <div class="trend-list">
         <article class="trend-item">
-          <h3>問1〜問2：「1.1 教育基礎総論」</h3>
+          <h3>問1〜問2：日本教育史・西洋教育史</h3>
           <p>
             日本教育史から1問、西洋教育史・教育思想から1問という構成が続いています。
-            日本教育史は近代以降を中心としますが、大学別曹などの古代教育、寺子屋などの近世教育、幕末の教育を含め、古代から現代までを学習対象とします。
-            西洋教育史では、人物名や著作だけでなく、教育理論や教育実践の詳しい内容が問われることがあります。
+            人物名だけでなく、著作・制度・思想・実践の内容を組み合わせた問題や、出来事を年代順に並べる問題が出ています。
           </p>
-          <p>今後も同様の構成が考えられますが、問番号ごとの出題分野が公式に固定されているわけではありません。</p>
+          <p class="prediction-note"><strong>本サイトの予想問題：</strong>日本教育史は近代を中心に古代から現代まで、西洋教育史は主要な人物・著作・教育思想を扱います。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問3〜問5：「1.3 教育制度総論」</h3>
+          <h3>問3〜問5：教育に関する法令</h3>
           <p>
             令和6年度から令和8年度までに、教育基本法、学校教育法、地方公務員法及び教育公務員特例法から出題されています。
           </p>
           <div class="question-detail">
             <h4>問3：教育基本法</h4>
-            <p>過去3年度では原文穴埋めではなく、複数記述の正誤や正しい記述数を判定する問題が出題されています。予想問題では過去問型の正誤問題と、将来の出題可能性を考慮した穴埋め問題を、おおむね半数ずつ扱います。正誤問題は、令和6年度型の「適切でないもの」、令和7年度型の「正しいもの」、令和8年度型の「正しいものの個数」を組み合わせます。</p>
+            <p>令和6年度は適切でない条文、令和7年度は正しい条文、令和8年度は正しい記述の個数を選ぶ問題です。教育基本法の規定と、憲法や他の法律の似た表現を区別することが問われています。</p>
+            <p class="prediction-note"><strong>本サイトの予想問題：</strong>記述の正誤に加え、条文の穴埋めも扱います。</p>
           </div>
           <div class="question-detail">
             <h4>問4：学校教育法</h4>
-            <p>過去3年度はいずれも条文の穴埋め問題です。予想問題も、過去問と同じ導入文を用いた4空欄の原文穴埋めとし、抜粋枠の冒頭に条番号を表示します。</p>
+            <p>3年度とも条文の穴埋めです。高等学校の目的・目標だけでなく、令和7年度は懲戒と体罰、令和8年度は教科用図書・デジタル教科書に関する規定が出ています。</p>
           </div>
           <div class="question-detail">
             <h4>問5：教育公務員特例法・地方公務員法</h4>
-            <p>教育公務員特例法からの出題を中心とし、地方公務員法との組合せを含めて約8割を教育公務員特例法、約2割を地方公務員法として予想問題を構成します。穴埋めでは、抜粋枠の冒頭に条番号を表示します。</p>
+            <p>教育公務員特例法を中心に、条文の穴埋めや内容の正誤が問われています。令和6年度は地方公務員法と組み合わせて出題されました。研修、採用、服務などの具体的な規定を確認することが大切です。</p>
           </div>
-          <p>学校教育法については、まず次の範囲を確認する必要があります。</p>
-          <ul class="plain-list compact-list">
-            <li>第1章「総則」（第1条〜第15条）</li>
-            <li>第6章「高等学校」（第50条〜第62条）</li>
-          </ul>
           <p>
-            ただし、出題範囲はこの二つの章だけに限られません。
-            <a class="text-link" :href="officialLinks.schoolEducationAct" target="_blank" rel="noopener noreferrer">学校教育法第62条</a>により、次の規定が高等学校に準用されます。
-          </p>
-          <ul class="plain-list compact-list">
-            <li>第30条第2項</li>
-            <li>第31条</li>
-            <li>第34条</li>
-            <li>第37条第4項から第18項まで及び第20項</li>
-            <li>第42条から第44条まで</li>
-          </ul>
-          <p>
-            そのため、小学校の章に置かれている条文でも、第62条によって高等学校へ準用される場合は出題対象になり得ます。
-            実際に令和8年度試験では、教科用図書及びデジタル教科書に関係する第34条から出題されました。
-          </p>
-          <p>また、次の条文も高等学校又は高等学校段階の教育と直接関係しています。</p>
-          <ul class="article-list">
-            <li v-for="item in relatedSchoolEducationArticles" :key="item.article">
-              <strong>{{ item.article }}</strong><span>{{ item.detail }}</span>
-            </li>
-          </ul>
-          <p>
-            第137条は高等学校だけを対象にした条文ではありませんが、高等学校を含む学校一般に適用されます。
-            学校教育法は、第1章と第6章に加えて、第62条の準用先や高等学校段階の教育を扱う周辺条文も確認する必要があります。
+            <a class="text-link" :href="officialLinks.schoolEducationAct" target="_blank" rel="noopener noreferrer">学校教育法</a>は、第1章「総則」と第6章「高等学校」だけに限定されません。
+            第34条は小学校の章にありますが、第62条によって高等学校にも準用されます。
+            条文の置かれた章だけで対象を判断せず、高等学校に適用される規定も確認しましょう。
           </p>
         </article>
 
@@ -444,117 +394,121 @@ const references = [
           </p>
 
           <div class="question-detail">
-            <h4>問6：「1.6 教育課程編成論」</h4>
+            <h4>問6：教育課程の実施と学習評価</h4>
             <p>
               令和6年度から令和8年度まで3年連続で、第1章「総則」第3款「教育課程の実施と学習評価」から出題されています。
-              教育課程の実施、主体的・対話的で深い学び、学習評価、カリキュラム・マネジメントなどが関係します。
+              授業改善や学習評価について、内容と原文の表現を確認しておきたい範囲です。
             </p>
           </div>
 
           <div class="question-detail">
-            <h4>問7：問題内容に応じて分類</h4>
+            <h4>問7：生徒の発達の支援</h4>
             <p>
               主な出題箇所は、第1章「総則」第5款「生徒の発達の支援」です。
-              生徒指導、進路指導、キャリア教育、特別支援教育、教育課程上の配慮など、複数分野にまたがる内容が含まれます。
-            </p>
-            <p>
-              「1.5 特別支援教育」「1.6 教育課程編成論」「2.5 生徒指導・進路指導論」「2.7 生徒指導・進路指導論」などから、実際に問う知識に合わせて分類します。
+              令和6年度はキャリア教育・進路指導、令和7年度は障害のある生徒への通級による指導、令和8年度は不登校生徒への配慮が出ています。
             </p>
           </div>
 
           <div class="question-detail">
-            <h4>問8：「2.1 総合的な学習・探究論」</h4>
+            <h4>問8：総合的な探究の時間</h4>
             <p>
               主な出題元は、第4章「総合的な探究の時間」及び『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』です。
+              探究の過程、探究課題の設定、自己の在り方生き方との関係などを確認しましょう。
             </p>
+            <p>参照：<a class="text-link" :href="officialLinks.inquiryGuidance" target="_blank" rel="noopener noreferrer">総合的な探究の時間編</a></p>
           </div>
 
           <div class="question-detail">
-            <h4>問9：「2.0 道徳教育論」</h4>
-            <p>出題箇所は、次の二つです。</p>
+            <h4>問9：道徳教育</h4>
+            <p>過去3年度で確認した出題箇所は、次のとおりです。</p>
             <ul class="plain-list compact-list">
-              <li>第1章「総則」第1款「高等学校教育の基本と教育課程の役割」2（2）の第2段落</li>
-              <li>第1章「総則」第7款「道徳教育に関する配慮事項」1の前段</li>
+              <li>令和6年度：第1章「総則」第1款「高等学校教育の基本と教育課程の役割」2（2）の第2段落</li>
+              <li>令和7年度：第1章「総則」第1款「高等学校教育の基本と教育課程の役割」2（2）の第2・第3段落</li>
+              <li>令和8年度：第1章「総則」第7款「道徳教育に関する配慮事項」2</li>
             </ul>
             <p>
-              第1款2（2）では、高等学校における道徳教育を学校の教育活動全体で行い、「人間としての在り方生き方に関する教育」を通して充実させることが示されています。
+              道徳教育の目標に加え、人間尊重や生命への畏敬、体験や思索を通して道徳的諸価値を深める際の配慮まで問われています。
             </p>
-            <p>
-              第7款1では、道徳教育の全体計画を作成し、校長の方針の下、道徳教育推進教師を中心として全教師が協力する指導体制が示されています。
-              いずれの箇所からも出題実績があるため、道徳教育の位置付けだけでなく、全体計画や校内の指導体制まで確認する必要があります。
+            <p class="prediction-note">
+              <strong>本サイトの予想問題：</strong>上記に加え、道徳教育の位置付けを示す第1款2（2）の第1段落も扱います。
+              また、全体計画・指導体制を定める第7款1も関連する範囲として扱います。これらは過去問で直接確認した箇所とは区別しています。
             </p>
             <p>
               参照：
-              <a class="text-link" :href="officialLinks.curriculumGeneral" target="_blank" rel="noopener noreferrer">高等学校学習指導要領解説 総則編</a>
+              <a class="text-link" :href="officialLinks.curriculumText" target="_blank" rel="noopener noreferrer">高等学校学習指導要領</a>、
+              <a class="text-link" :href="officialLinks.curriculumGeneral" target="_blank" rel="noopener noreferrer">解説 総則編</a>
             </p>
           </div>
 
           <div class="question-detail">
-            <h4>問10：「2.2 特別活動論」</h4>
+            <h4>問10：特別活動</h4>
             <p>
               主な出題元は、第5章「特別活動」及び『高等学校学習指導要領（平成30年告示）解説 特別活動編』です。
+              目標や指導上の視点、ホームルーム活動・生徒会活動・学校行事の内容を確認しておきたい範囲です。
             </p>
+            <p>参照：<a class="text-link" :href="officialLinks.activitiesGuidance" target="_blank" rel="noopener noreferrer">特別活動編</a></p>
           </div>
         </article>
 
         <article class="trend-item">
-          <h3>問11：「2.5 生徒指導・進路指導論」</h3>
+          <h3>問11：生徒指導提要</h3>
           <p>
             <a class="text-link" :href="officialLinks.studentGuidance" target="_blank" rel="noopener noreferrer">『生徒指導提要』</a>から出題されています。
-            予想問題では約8割を原文穴埋めとし、残りも原典の表、分類、2軸3類4層構造などを直接読ませる形式を中心とします。原文の論理や位置付けを判断できる長さの抜粋を付け、空欄は2個又は3個とします。生徒指導の定義、目的、重層的支援構造、発達支持的生徒指導などの主要概念と原文の表現を確認する必要があります。
+            生徒指導の定義、重層的支援構造、実践上の視点などが問われています。原文の穴埋めに加え、令和7年度には4層の構造を表で確認する問題も出ています。
           </p>
+          <p>用語の名前だけでなく、誰を対象に、何を目的として、どのように支援するのかを関連付けて押さえましょう。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問12：「1.5 特別支援教育」</h3>
+          <h3>問12：特別支援教育</h3>
           <p>令和6年度から令和8年度までは、LD、ASD、ADHDに関する問題が出題されています。</p>
-          <p>ただし、正式な出題範囲は発達障害だけに限定されていません。本サイトでは、次の内容を含む特別支援教育全般を学習対象とします。</p>
-          <ul class="classification-list support-list">
-            <li v-for="area in specialSupportAreas" :key="area">{{ area }}</li>
-          </ul>
-          <p>過去3年度の出題が発達障害に集中していたことと、今後の出題範囲を発達障害に限定することは区別する必要があります。予想問題では発達障害とその他の障害を約5割ずつ扱い、発達障害は複数の状態像・支援の組合せや正誤判定で難度を調整します。</p>
+          <p>ただし、正式な出題範囲は発達障害だけに限定されていません。障害の特徴と教育的な支援を結び付けて理解することが大切です。</p>
+          <p class="prediction-note"><strong>本サイトの予想問題：</strong>発達障害に加え、視覚障害・聴覚障害・知的障害など、その他の障害や合理的配慮、通級による指導も扱います。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問13：「1.4 教育心理学」</h3>
+          <h3>問13：青年期の発達・心理</h3>
           <p>
-            これまで、青年期の発達課題や心理に関する問題が継続して出題されています。
-            青年期の特徴だけでなく、発達段階、発達課題、アイデンティティ、主要な発達理論及び具体的な生徒理解への適用も学習対象となります。
+            3年度とも青年期に関する問題です。発達課題、アイデンティティ、友人関係など、青年期の特徴と主要な発達理論を確認しましょう。
           </p>
+          <p class="prediction-note"><strong>本サイトの予想問題：</strong>青年期を中心に、他の発達段階や理論との比較も一部扱います。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問14：「1.4 教育心理学」</h3>
+          <h3>問14：学習理論・学習方法</h3>
           <p>
             これまで、学習理論や学習方法そのものに関する問題が出題されています。
-            予想問題も具体的な授業場面から理論を推測させるケース問題ではなく、理論の定義、構成概念、理論間の相違を問います。条件付け、認知、記憶、動機付け、メタ認知、教授・学習過程なども学習対象です。
+            発見学習、プログラム学習、有意味受容学習などについて、提唱者・目的・特徴や、理論どうしの違いを押さえておきたい範囲です。
           </p>
         </article>
 
         <article class="trend-item">
-          <h3>問15：「1.3 教育制度総論」</h3>
+          <h3>問15：「令和の日本型学校教育」答申</h3>
           <p>
             <a class="text-link" :href="officialLinks.reiwaEducation" target="_blank" rel="noopener noreferrer">「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）</a>から出題されています。
           </p>
-          <p>過去3年度では穴埋め問題は確認できないため、予想問題は過去問型の正誤問題を約8割、原文穴埋めを約2割とします。個別最適な学び、協働的な学び、ICTの活用、教師の役割など、答申の主要概念と原文の関係を確認する必要があります。</p>
+          <p>過去3年度は記述の正誤を判断する形式です。個別最適な学びと協働的な学び、教師の役割、連携と分担による学校マネジメントなど、答申が示す考え方を確認しましょう。</p>
+          <p class="prediction-note"><strong>本サイトの予想問題：</strong>記述の正誤に加え、原文の穴埋めも扱います。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問16〜問18：問題内容に応じて「3.1」又は「3.2」</h3>
-          <p>出題範囲は、次の資料・範囲です。</p>
+          <h3>問16〜問18：情報の学習指導要領及び解説</h3>
+          <p>過去3年度で確認した出題元は、次の3範囲です。</p>
           <ul class="plain-list compact-list">
             <li>『高等学校学習指導要領』第2章第10節「情報」</li>
             <li>『高等学校学習指導要領』第3章第7節「情報」</li>
             <li>『高等学校学習指導要領（平成30年告示）解説 情報編』第1部「各学科に共通する教科『情報』」</li>
-            <li>同解説第2部「主として専門学科において開設される教科『情報』」</li>
           </ul>
           <p>
-            原文の一部を空欄にした穴埋め問題も出題されています。令和6年度・令和7年度は解説情報編第1部から出題され、令和8年度には学習指導要領本体の第2章第10節と第3章第7節からの出題が加わりました。学習指導要領本体では共通教科と専門教科の双方が対象となったため、対応する解説情報編第2部も予想範囲に加えます。
-            予想問題では、上記4範囲から1セットにつき異なる3範囲を選びます。設問は、学習指導要領第2章第10節、同第3章第7節、解説情報編第1部、同第2部の順序を維持し、選ばなかった範囲だけを飛ばして問16から問18へ配置します。
-            教科「情報」の専門的な内容を問う場合は「3.1 情報科専門科目」、教科の指導、授業設計、評価などを問う場合は「3.2 情報科教育法」として、実際の問題内容に合わせて分類します。
+            令和6・7年度は解説情報編第1部から出題され、令和8年度には学習指導要領本体の共通教科・専門教科からの出題も加わりました。
+            穴埋めだけでなく、原典に示された内容を選ぶ問題や記述の正誤を判断する問題もあります。令和8年度問18は、正しい記述の個数を選ぶ形式です。
           </p>
           <p>
-            第3章第7節の各科目を扱う予想問題では、各科目の1「目標」又は3「内容の取扱い」を中心に出題し、2「内容」の指導項目名だけを問う形式は用いません。項番だけでは意味が伝わらない場合は参照先を問題内に含めるか、「示された内容に基づく記述」として具体的な内容名を示します。同じ原典の抜粋でも、空欄箇所を変えて異なる語句や論理関係を問う問題は扱います。
+            学習指導要領本体と解説の両方で、目標・内容・内容の取扱いの関係を確認しましょう。
+          </p>
+          <p class="prediction-note">
+            <strong>本サイトの予想問題：</strong>上記に加え、解説情報編第2部「主として専門学科において開設される教科『情報』」も扱います。
+            本体で専門教科からの出題があったことを踏まえた予想であり、第2部からの直接の出題実績を確認したという意味ではありません。
           </p>
           <p>
             参照：
@@ -563,21 +517,38 @@ const references = [
         </article>
 
         <article class="trend-item">
-          <h3>問19：「3.1 情報科専門科目」</h3>
+          <h3>問19：アルゴリズム・プログラムの読解</h3>
           <p>
-            アルゴリズムやプログラムの読解・実行に関する問題が出題されています。
-            変数、配列、スタックなどの状態変化、繰り返し、条件分岐、添字、演算順序、終了条件を正確に追跡できることが求められます。
+            アルゴリズムやプログラムの読解に関する問題です。年度ごとの主な論点は次のとおりです。
           </p>
+          <ul class="plain-list compact-list">
+            <li>令和6年度：二分探索の処理回数</li>
+            <li>令和7年度：二つの整列アルゴリズムの処理回数などの比較</li>
+            <li>令和8年度：代入による値の更新、繰り返し内の処理位置の修正</li>
+          </ul>
+          <p>変数の値、繰り返しの範囲、条件分岐、添字、インデントを順に追って読むことが大切です。</p>
+          <p class="source-note">令和7年度問19には正答の訂正があります。過去問を確認する際は、<a class="text-link" :href="officialLinks.correction2025" target="_blank" rel="noopener noreferrer">NITSの訂正案内</a>と訂正版の正答表をご確認ください。</p>
         </article>
 
         <article class="trend-item">
-          <h3>問20：「3.1 情報科専門科目」</h3>
+          <h3>問20：データの性質・分析</h3>
           <p>
-            データサイエンス、統計及びデータ分析に関する問題が出題されています。
-            四分位数、代表値、確率、統計量、データの読み取りなどについて、計算方法と結果を正確に確認できることが求められます。
+            データの性質や分析に関する基本概念を問う問題です。過去3年度で直接確認した論点は次のとおりです。
           </p>
+          <ul class="plain-list compact-list">
+            <li>令和6年度：データと尺度水準の組合せ</li>
+            <li>令和7年度：量的データの関係に関する記述の正誤</li>
+            <li>令和8年度：データクレンジングに関する記述の正誤</li>
+          </ul>
+          <p class="prediction-note"><strong>本サイトの予想問題：</strong>これらに加え、代表値・四分位数などの関連する基礎的な分析も扱います。用語の区別や結果の解釈を中心に、計算を含む場合も短い手順の問題としています。</p>
         </article>
       </div>
+    </section>
+
+    <section class="overview-section">
+      <h2>本サイトの予想問題について</h2>
+      <p>令和6〜8年度の過去問を参考に、令和8年度の問題の内容・形式・選択肢の情報量を目安として作成しています。過去問そのものの再掲載ではなく、本サイト独自の予想問題です。</p>
+      <p>本番の出題や合格を保証するものではありません。予想問題で確認した内容は、解説の出典から公式資料にも当たり、前後の文脈とあわせて理解を深めてください。</p>
     </section>
 
     <aside class="notice" aria-labelledby="notice-title">
@@ -585,13 +556,14 @@ const references = [
       <div>
         <h2 id="notice-title">出題傾向について</h2>
         <p>
-          この試験は令和6年度に始まり、確認できる過去問はまだ3年度分です。今後、問題構成、出題元、難易度及び出題分野が変わる可能性があります。
+          このページの分析対象は令和6〜8年度の3年度分です。今後、問題構成、出題元、難易度及び出題分野が変わる可能性があります。
           本サイトの分類は、正式な出題範囲を変更又は限定するものではありません。
         </p>
         <p>
           早稲田大学の科目名は学習分野を具体化するための参考であり、NITSが指定又は推奨している教材ではありません。
           Qiitaの記事は出題傾向の分析に使用し、法令や学習指導要領の最終的な根拠には公式原典を使用します。
         </p>
+        <p>受験資格、日程、免除、合格基準などは、受験する年度のNITSの案内を必ずご確認ください。</p>
       </div>
     </aside>
 
@@ -612,7 +584,7 @@ const references = [
         <h2>問題を解いて確認する</h2>
         <p>出題分野を確認したら、予想問題に取り組んでみましょう。</p>
       </div>
-      <NuxtLink class="primary-link" to="/practice/1/1">
+      <NuxtLink class="primary-link" to="/#practice-launcher">
         問題演習を始める
         <UIcon name="i-lucide-arrow-right" aria-hidden="true" />
       </NuxtLink>
@@ -636,10 +608,8 @@ const references = [
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .exam-facts div {
@@ -665,7 +635,7 @@ const references = [
 .exam-facts dd {
   margin: 0;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
 
@@ -686,6 +656,33 @@ const references = [
 .overview-section {
   padding: 42px 0;
   border-bottom: 1px solid var(--line);
+}
+
+.page-intro .updated-at {
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.supplementary-section {
+  padding: 22px 0;
+}
+
+.supplementary-section summary {
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.supplementary-section summary:focus-visible,
+.table-scroll:focus-visible {
+  outline: 2px solid var(--teal-dark);
+  outline-offset: 5px;
+}
+
+.prediction-note strong {
+  color: var(--ink);
 }
 
 .overview-section h2,
@@ -725,6 +722,16 @@ const references = [
   padding-left: 24px;
   color: #42555d;
   line-height: 1.8;
+}
+
+.scope-list,
+.subject-list {
+  list-style: decimal;
+}
+
+.plain-list,
+.classification-list {
+  list-style: disc;
 }
 
 .scope-list li::marker,
@@ -1094,6 +1101,10 @@ tbody td:last-child {
 
   .overview-section {
     padding: 34px 0;
+  }
+
+  .supplementary-section {
+    padding: 20px 0;
   }
 
   .classification-list {
