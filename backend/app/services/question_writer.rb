@@ -12,7 +12,7 @@ class QuestionWriter
     end
   end
 
-  def self.save!(question, attributes)
+  def self.save!(question, attributes, require_complete_exam: false)
     transaction do
       question.lock! if question.persisted?
       before = QuestionPayload.from_record(question) if question.persisted?
@@ -24,7 +24,10 @@ class QuestionWriter
       end
       question.assign_attributes(attributes.except(:choices))
       validate_choices!(question, choices)
-      validate_publication!(question, choices) if question.publication_status == "published"
+      if question.publication_status == "published"
+        validate_publication!(question, choices)
+        validate_complete_exam!(question) if require_complete_exam
+      end
       question.save!
       after = question.attributes.slice(*QuestionPayload::FIELDS).merge("choices" => choices.map do |choice|
         choice.slice(:choice_label, :content_blocks, :is_correct, :display_order).deep_stringify_keys
@@ -85,6 +88,14 @@ class QuestionWriter
         invalid!(question, "空欄ラベルと全選択肢のセル数を一致させてください")
       end
     end
+  end
+
+  def self.validate_complete_exam!(question)
+    numbers = Question.where(exam_number: question.exam_number).where.not(id: question.id).pluck(:question_number)
+    missing = (1..20).to_a - (numbers + [question.question_number])
+    return if missing.empty?
+
+    invalid!(question, "模擬試験#{question.exam_number}を公開するには問1〜20の登録が必要です。不足：#{missing.map { |number| "問#{number}" }.join('、')}")
   end
 
   def self.validate_blocks!(question, blocks, context)

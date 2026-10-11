@@ -9,10 +9,8 @@ const submitting = ref(false)
 const errorMessage = ref('')
 
 const redirectPath = computed(() => {
-  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-  return redirect.startsWith('/admin/') && !redirect.startsWith('//')
-    ? redirect
-    : '/admin/questions'
+  const redirect = safeRedirectPath(route.query.redirect, '/admin/questions')
+  return redirect.startsWith('/admin/') ? redirect : '/admin/questions'
 })
 
 const nonAdminSession = computed(() => user.value && user.value.role !== 'admin')
@@ -83,6 +81,7 @@ const submit = async () => {
         <p class="admin-login-help">一般画面で管理者としてログイン済みの場合、再ログインは不要です。</p>
       </section>
     </main>
+    <SiteFooter admin />
   </div>
 </template>
 

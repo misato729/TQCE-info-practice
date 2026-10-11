@@ -52,6 +52,7 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
     question_id = response.parsed_body.dig("data", "id")
     assert_equal 4, Question.find(question_id).question_choices.count
 
+    (3..20).each { |number| create_question(exam_number: 1, question_number: number) }
     payload = question_payload(exam_number: 1, question_number: 2)
     payload[:publication_status] = "published"
     payload[:choices][1][:is_correct] = false
@@ -69,6 +70,52 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
 
     assert_response :no_content
     assert_not Question.exists?(question_id)
+  end
+
+  test "20問がそろう前の公開は作成も更新も拒否する" do
+    payload = question_payload(exam_number: 2, question_number: 1).merge(publication_status: "published")
+    assert_no_difference "Question.count" do
+      post "/api/v1/admin/questions", params: { question: payload }, headers: @headers, as: :json
+      assert_response :unprocessable_content
+      assert_equal "validation_error", response.parsed_body.dig("error", "code")
+      assert_includes response.parsed_body.dig("error", "message"), "問20"
+    end
+
+    history = @user.answer_histories.create!(question: @question, selected_choice: @question.question_choices.find_by!(is_correct: true), is_correct: true)
+    before = QuestionPayload.from_record(@question)
+    payload = question_payload(exam_number: 1, question_number: 1).merge(publication_status: "published")
+    patch "/api/v1/admin/questions/#{@question.id}", params: { question: payload }, headers: @headers, as: :json
+    assert_response :unprocessable_content
+    assert_equal "draft", @question.reload.publication_status
+    assert_equal before, QuestionPayload.from_record(@question)
+    assert AnswerHistory.exists?(history.id)
+  end
+
+  test "20問目の新規作成は公開できる" do
+    (1..19).each { |number| create_question(exam_number: 2, question_number: number) }
+    payload = question_payload(exam_number: 2, question_number: 20).merge(publication_status: "published")
+    post "/api/v1/admin/questions", params: { question: payload }, headers: @headers, as: :json
+    assert_response :created
+    assert_equal "published", response.parsed_body.dig("data", "publication_status")
+    assert_equal 20, Question.where(exam_number: 2).count
+  end
+
+  test "公開状態を非公開や下書きに戻す場合は20問チェックを要求しない" do
+    @question.update!(publication_status: "published")
+    %w[private draft].each do |status|
+      payload = QuestionPayload.from_record(@question).merge("publication_status" => status)
+      patch "/api/v1/admin/questions/#{@question.id}", params: { question: payload }, headers: @headers, as: :json
+      assert_response :ok
+      assert_equal status, @question.reload.publication_status
+    end
+  end
+
+  test "公開問題を移す場合も移動先に20問必要となる" do
+    (2..20).each { |number| create_question(exam_number: 1, question_number: number) }
+    payload = QuestionPayload.from_record(@question).merge("exam_number" => 2, "publication_status" => "published")
+    patch "/api/v1/admin/questions/#{@question.id}", params: { question: payload }, headers: @headers, as: :json
+    assert_response :unprocessable_content
+    assert_equal 1, @question.reload.exam_number
   end
 
   test "non-admin is forbidden" do

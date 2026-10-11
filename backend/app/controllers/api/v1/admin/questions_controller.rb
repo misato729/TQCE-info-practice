@@ -83,7 +83,7 @@ module Api
         def save_question!(question, status:)
           attributes = sanitized_question_attributes
 
-          QuestionWriter.save!(question, attributes)
+          QuestionWriter.save!(question, attributes, require_complete_exam: true)
 
           render json: { data: serialize_question(question.reload) }, status: status
         rescue ActiveRecord::RecordInvalid => error

@@ -58,7 +58,15 @@ const signOut = async () => {
         </div>
       </aside>
 
-      <main class="admin-main"><slot /></main>
+      <div class="admin-main-column">
+        <main class="admin-main"><slot /></main>
+        <SiteFooter admin />
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.admin-main-column { min-width: 0; display: flex; flex-direction: column; }
+.admin-main { flex: 1; }
+</style>

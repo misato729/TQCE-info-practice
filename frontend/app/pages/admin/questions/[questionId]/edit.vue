@@ -4,7 +4,7 @@ import type { AdminQuestion, AdminQuestionInput, ApiResponse } from '~/types/adm
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
 const route = useRoute()
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { authHeaders, logout } = useAuth()
 const questionId = computed(() => Number(route.params.questionId))
 const submitting = ref(false)
@@ -17,7 +17,7 @@ const {
   error,
   refresh,
 } = await useFetch<ApiResponse<AdminQuestion>>(() => `/api/v1/admin/questions/${questionId.value}`, {
-  baseURL: config.public.apiBase,
+  $fetch: api,
   headers: authHeaders,
   server: false,
 })
@@ -36,8 +36,7 @@ const submit = async (input: AdminQuestionInput) => {
   successMessage.value = ''
 
   try {
-    await $fetch(`/api/v1/admin/questions/${questionId.value}`, {
-      baseURL: config.public.apiBase,
+    await api(`/api/v1/admin/questions/${questionId.value}`, {
       method: 'PATCH',
       headers: authHeaders.value,
       body: { question: input },

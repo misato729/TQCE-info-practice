@@ -5,20 +5,34 @@ module Api
       before_action :set_question, only: %i[create destroy]
 
       def index
-        favorites = current_user.favorites
+        page = positive_integer_param(:page, default: 1)
+        per_page = positive_integer_param(:per_page, default: 20, maximum: 100)
+        return if performed?
+
+        scope = current_user.favorites
           .joins(:question)
           .merge(Question.published)
           .includes(:question)
           .order(created_at: :desc, id: :desc)
+        total_count = scope.count
+        favorites = scope.offset((page - 1) * per_page).limit(per_page)
 
-        render json: { data: favorites.map { |favorite| serialize_favorite(favorite) } }
+        render json: {
+          data: favorites.map { |favorite| serialize_favorite(favorite) },
+          meta: {
+            current_page: page,
+            per_page: per_page,
+            total_count: total_count,
+            total_pages: (total_count.to_f / per_page).ceil,
+          },
+        }
       end
 
       def create
         return unless authorize_exam_access!(@question.exam_number)
 
         favorite = current_user.favorites.find_or_create_by!(question: @question)
-        render json: { data: serialize_favorite(favorite) }, status: :created
+        render json: { data: serialize_favorite(favorite) }, status: favorite.previously_new_record? ? :created : :ok
       end
 
       def destroy
@@ -27,6 +41,15 @@ module Api
       end
 
       private
+
+      def positive_integer_param(name, default:, maximum: nil)
+        raw_value = params[name].presence || default
+        value = Integer(raw_value, exception: false)
+        return value if value&.positive? && (maximum.nil? || value <= maximum)
+
+        render_error(:bad_request, "#{name}を正しく指定してください", :bad_request)
+        nil
+      end
 
       def set_question
         @question = Question.published.find(params[:question_id])

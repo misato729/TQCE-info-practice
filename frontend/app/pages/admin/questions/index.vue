@@ -3,7 +3,7 @@ import type { AdminQuestion, AdminQuestionSummary, ApiResponse, PaginatedApiResp
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { authHeaders, logout } = useAuth()
 
 const filters = reactive({
@@ -43,7 +43,7 @@ const {
   error,
   refresh,
 } = await useFetch<PaginatedApiResponse<AdminQuestionSummary>>('/api/v1/admin/questions', {
-  baseURL: config.public.apiBase,
+  $fetch: api,
   headers: authHeaders,
   query,
   server: false,
@@ -94,13 +94,11 @@ const changeStatus = async (question: AdminQuestionSummary, publicationStatus: s
   actionError.value = ''
 
   try {
-    const detailResponse = await $fetch<ApiResponse<AdminQuestion>>(`/api/v1/admin/questions/${question.id}`, {
-      baseURL: config.public.apiBase,
+    const detailResponse = await api<ApiResponse<AdminQuestion>>(`/api/v1/admin/questions/${question.id}`, {
       headers: authHeaders.value,
     })
     const { id: _id, created_at: _createdAt, updated_at: _updatedAt, ...input } = detailResponse.data
-    await $fetch(`/api/v1/admin/questions/${question.id}`, {
-      baseURL: config.public.apiBase,
+    await api(`/api/v1/admin/questions/${question.id}`, {
       method: 'PATCH',
       headers: authHeaders.value,
       body: { question: { ...input, publication_status: publicationStatus } },
@@ -123,8 +121,7 @@ const deleteQuestion = async () => {
   actionError.value = ''
 
   try {
-    await $fetch(`/api/v1/admin/questions/${question.id}`, {
-      baseURL: config.public.apiBase,
+    await api(`/api/v1/admin/questions/${question.id}`, {
       method: 'DELETE',
       headers: authHeaders.value,
     })

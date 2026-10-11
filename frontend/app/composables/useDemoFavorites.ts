@@ -5,7 +5,7 @@ type FavoriteResponse = {
 }
 
 export const useDemoFavorites = () => {
-  const config = useRuntimeConfig()
+  const { $api: api } = useNuxtApp()
   const { authHeaders } = useAuth()
   const favoriteIds = useState<number[]>('favorite-question-ids', () => [])
 
@@ -23,8 +23,7 @@ export const useDemoFavorites = () => {
 
   const toggleFavorite = async (questionId: number) => {
     if (isFavorite(questionId)) {
-      await $fetch(`/api/v1/questions/${questionId}/favorite`, {
-        baseURL: config.public.apiBase,
+      await api(`/api/v1/questions/${questionId}/favorite`, {
         method: 'DELETE',
         headers: authHeaders.value,
       })
@@ -32,8 +31,7 @@ export const useDemoFavorites = () => {
       return false
     }
 
-    const response = await $fetch<FavoriteResponse>(`/api/v1/questions/${questionId}/favorite`, {
-      baseURL: config.public.apiBase,
+    const response = await api<FavoriteResponse>(`/api/v1/questions/${questionId}/favorite`, {
       method: 'PUT',
       headers: authHeaders.value,
     })

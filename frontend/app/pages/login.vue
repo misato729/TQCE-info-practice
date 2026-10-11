@@ -6,10 +6,7 @@ const password = ref('')
 const submitting = ref(false)
 const errorMessage = ref('')
 
-const redirectPath = computed(() => {
-  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-  return redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/practice/1/1'
-})
+const redirectPath = computed(() => safeRedirectPath(route.query.redirect))
 
 const submit = async () => {
   if (submitting.value) return
@@ -37,7 +34,7 @@ const submit = async () => {
       <div class="field"><label for="password">パスワード</label><input id="password" v-model="password" autocomplete="current-password" type="password" minlength="8" required></div>
       <p v-if="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p>
       <button class="primary-link" type="submit" :disabled="submitting">{{ submitting ? 'ログイン中です' : 'ログイン' }}</button>
-      <p class="auth-note">アカウントをお持ちでない方は <NuxtLink to="/signup">会員登録</NuxtLink></p>
+      <p class="auth-note">アカウントをお持ちでない方は <NuxtLink :to="{ path: '/signup', query: { redirect: redirectPath } }">会員登録</NuxtLink></p>
     </form>
   </div>
 </template>

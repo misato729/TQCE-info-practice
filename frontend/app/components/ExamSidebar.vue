@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { EXAM_CATALOG, FREE_EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/examCatalog'
 
-type ApiStatus = 'idle' | 'checking' | 'connected' | 'failed'
-
-const emit = defineEmits<{
-  apiStatus: [status: ApiStatus]
-}>()
-
 const route = useRoute()
 const openExam = ref<number | null>(null)
 const { user, accessToken, ensureCurrentUser } = useAuth()
@@ -26,34 +20,28 @@ const resolveAccess = async () => {
 
   if (!accessToken.value) {
     accessStatus.value = 'ready'
-    emit('apiStatus', 'idle')
     return
   }
 
   if (user.value) {
     accessStatus.value = 'ready'
-    emit('apiStatus', 'connected')
     return
   }
 
   resolvingAccess = true
   accessStatus.value = 'pending'
-  emit('apiStatus', 'checking')
 
   const currentUser = await ensureCurrentUser()
   resolvingAccess = false
 
   if (currentUser) {
     accessStatus.value = 'ready'
-    emit('apiStatus', 'connected')
   }
   else if (accessToken.value) {
     accessStatus.value = 'error'
-    emit('apiStatus', 'failed')
   }
   else {
     accessStatus.value = 'ready'
-    emit('apiStatus', 'idle')
   }
 }
 
@@ -63,7 +51,6 @@ watch(accessToken, () => { void resolveAccess() })
 watch(user, (currentUser) => {
   if (!currentUser) return
   accessStatus.value = 'ready'
-  emit('apiStatus', 'connected')
 })
 
 const toggleExam = (exam: number) => {

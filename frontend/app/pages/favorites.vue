@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ middleware: 'auth' })
+
 type FavoriteItem = {
   id: number
   locked: boolean
@@ -13,12 +15,21 @@ type FavoriteItem = {
   created_at: string
 }
 
-type ApiResponse<T> = { data: T }
+type FavoriteMeta = {
+  current_page: number
+  per_page: number
+  total_count: number
+  total_pages: number
+}
 
-const config = useRuntimeConfig()
+type ApiResponse = { data: FavoriteItem[], meta: FavoriteMeta }
+
+const { $api: api } = useNuxtApp()
 const { isLoggedIn, authHeaders, logout } = useAuth()
-const { isFavorite, replaceFavorites, toggleFavorite } = useDemoFavorites()
+const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
 const favorites = ref<FavoriteItem[]>([])
+const meta = ref<FavoriteMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
+const page = ref(1)
 const loading = ref(false)
 const loadError = ref('')
 const removingId = ref<number | null>(null)
@@ -26,23 +37,31 @@ const removingId = ref<number | null>(null)
 const loadFavorites = async () => {
   if (!isLoggedIn.value) {
     favorites.value = []
-    replaceFavorites([])
     return
   }
 
   loading.value = true
   loadError.value = ''
   try {
-    const response = await $fetch<ApiResponse<FavoriteItem[]>>('/api/v1/favorites', {
-      baseURL: config.public.apiBase,
+    const response = await api<ApiResponse>('/api/v1/favorites', {
       headers: authHeaders.value,
+      query: { page: page.value, per_page: 20 },
     })
+    if (!isLoggedIn.value) return
+    if (response.data.length === 0 && page.value > 1) {
+      page.value -= 1
+      return
+    }
     favorites.value = response.data
-    replaceFavorites(response.data.map(item => item.question.id))
+    meta.value = response.meta
+    response.data.forEach(item => setFavorite(item.question.id, true))
   }
   catch (error: any) {
     if ((error?.statusCode ?? error?.status) === 401) logout()
-    else loadError.value = 'お気に入りを読み込めませんでした。もう一度お試しください。'
+    else {
+      favorites.value = []
+      loadError.value = 'お気に入りを読み込めませんでした。もう一度お試しください。'
+    }
   }
   finally {
     loading.value = false
@@ -53,7 +72,8 @@ const toggleFromList = async (item: FavoriteItem) => {
   if (removingId.value) return
   removingId.value = item.id
   try {
-    await toggleFavorite(item.question.id)
+    const added = await toggleFavorite(item.question.id)
+    meta.value.total_count += added ? 1 : -1
   }
   catch (error: any) {
     if ((error?.statusCode ?? error?.status) === 401) logout()
@@ -68,7 +88,7 @@ const majorCategoryLabel = (code?: string) => (
   code ? MAJOR_CATEGORIES.find(item => item.value === code)?.label ?? code : ''
 )
 
-watch(isLoggedIn, loadFavorites, { immediate: true })
+watch([isLoggedIn, page], loadFavorites, { immediate: true })
 </script>
 
 <template>
@@ -101,7 +121,7 @@ watch(isLoggedIn, loadFavorites, { immediate: true })
 
     <template v-else>
       <p v-if="loadError" class="form-error" role="alert">{{ loadError }}</p>
-      <div class="favorite-summary"><strong>{{ favorites.length }}件のお気に入り</strong><span>最近追加した順</span></div>
+      <div class="favorite-summary"><strong>{{ meta.total_count }}件のお気に入り</strong><span>最近追加した順</span></div>
       <div class="favorite-list">
         <article
           v-for="item in favorites"
@@ -143,6 +163,11 @@ watch(isLoggedIn, loadFavorites, { immediate: true })
           </NuxtLink>
         </article>
       </div>
+      <nav v-if="meta.total_pages > 1" class="pagination" aria-label="お気に入りのページ切り替え">
+        <button class="secondary-link" type="button" :disabled="page <= 1 || removingId !== null" @click="page--">前のページ</button>
+        <span>{{ meta.current_page }} / {{ meta.total_pages }}</span>
+        <button class="secondary-link" type="button" :disabled="page >= meta.total_pages || removingId !== null" @click="page++">次のページ</button>
+      </nav>
     </template>
   </div>
 </template>
@@ -172,10 +197,15 @@ watch(isLoggedIn, loadFavorites, { immediate: true })
 .locked-content strong { color: var(--ink); }
 .locked-content p { margin: 5px 0 0; line-height: 1.7; }
 .premium-link { justify-self: end; }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; }
+.pagination span { color: var(--muted); font-weight: 700; }
+.pagination button:disabled { opacity: .45; cursor: not-allowed; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) {
   .favorite-card { padding: 18px; }
   .favorite-question strong { font-size: 16px; }
+  .pagination { gap: 8px; }
+  .pagination button { padding: 0 12px; }
 }
 </style>

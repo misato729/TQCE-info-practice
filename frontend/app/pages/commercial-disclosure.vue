@@ -10,10 +10,10 @@ type Seller = {
 type PaymentConfig = { seller?: Seller }
 type ApiResponse<T> = { data: T }
 
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { data: paymentConfigResponse } = await useFetch<ApiResponse<PaymentConfig>>(
   '/api/v1/payments/config',
-  { baseURL: config.public.apiBase, server: false },
+  { $fetch: api, server: false },
 )
 const seller = computed(() => ({
   name: paymentConfigResponse.value?.data.seller?.name || '',

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ middleware: 'auth' })
+
 useSeoMeta({
   title: '決済確認｜高等学校（情報）教員資格認定試験',
   robots: 'noindex',
@@ -12,8 +14,9 @@ const checkMembership = async () => {
   if (!isLoggedIn.value) return
 
   state.value = 'checking'
-  for (let attempt = 0; attempt < 8 && !stopped; attempt += 1) {
+  for (let attempt = 0; attempt < 8 && !stopped && isLoggedIn.value; attempt += 1) {
     await ensureCurrentUser(true)
+    if (stopped || !isLoggedIn.value) return
     if (user.value?.paid_content_access) {
       state.value = 'complete'
       return

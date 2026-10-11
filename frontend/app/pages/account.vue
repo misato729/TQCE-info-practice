@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
+definePageMeta({ middleware: 'auth' })
+
+const { $api: api } = useNuxtApp()
 const { isLoggedIn, user, authHeaders, logout, ensureCurrentUser } = useAuth()
 if (isLoggedIn.value) await ensureCurrentUser()
 const deleteFormOpen = ref(false)
@@ -25,8 +27,7 @@ const deleteAccount = async () => {
   deleting.value = true
   deleteError.value = ''
   try {
-    await $fetch('/api/v1/me', {
-      baseURL: config.public.apiBase,
+    await api('/api/v1/me', {
       method: 'DELETE',
       headers: authHeaders.value,
       body: { current_password: currentPassword.value },

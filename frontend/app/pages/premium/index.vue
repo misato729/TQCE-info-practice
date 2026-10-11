@@ -23,7 +23,7 @@ useSeoMeta({
 })
 
 const route = useRoute()
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { isLoggedIn, user, authHeaders, ensureCurrentUser, logout } = useAuth()
 const agreed = ref(false)
 const submitting = ref(false)
@@ -35,7 +35,7 @@ onMounted(() => {
 
 const { data: paymentConfigResponse, status: configStatus } = await useFetch<ApiResponse<PaymentConfig>>(
   '/api/v1/payments/config',
-  { baseURL: config.public.apiBase, server: false },
+  { $fetch: api, server: false },
 )
 
 const paymentConfig = computed(() => paymentConfigResponse.value?.data)
@@ -50,10 +50,9 @@ const startCheckout = async () => {
   submitting.value = true
   errorMessage.value = ''
   try {
-    const response = await $fetch<ApiResponse<{ checkout_url: string }>>(
+    const response = await api<ApiResponse<{ checkout_url: string }>>(
       '/api/v1/payments/checkout_sessions',
       {
-        baseURL: config.public.apiBase,
         method: 'POST',
         headers: authHeaders.value,
         body: {},

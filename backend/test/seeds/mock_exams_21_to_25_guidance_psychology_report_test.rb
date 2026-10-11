@@ -53,7 +53,7 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
     end
   end
 
-  test "既存の問一から問十の五十問を一切変更しない" do
+  test "既存の問一から問十の五十問は承認済み改稿後の照合基準を維持する" do
     existing = @entries.reject { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     actual = existing.to_h do |entry|
       [key_for(entry), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))]

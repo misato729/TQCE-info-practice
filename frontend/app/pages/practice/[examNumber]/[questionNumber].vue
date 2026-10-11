@@ -67,7 +67,7 @@ type SourceReference = {
 }
 
 const route = useRoute()
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { isLoggedIn, authHeaders, logout } = useAuth()
 const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
 
@@ -169,7 +169,7 @@ const {
   error: questionError,
   refresh,
 } = await useFetch<ApiResponse<Question>>('/api/v1/questions/next', {
-  baseURL: config.public.apiBase,
+  $fetch: api,
   query: requestQuery,
   headers: authHeaders,
   server: false,
@@ -303,10 +303,9 @@ const submitAnswer = async () => {
   answerError.value = ''
 
   try {
-    const response = await $fetch<ApiResponse<AnswerResult>>(
+    const response = await api<ApiResponse<AnswerResult>>(
       `/api/v1/questions/${question.value.id}/answer`,
       {
-        baseURL: config.public.apiBase,
         method: 'POST',
         headers: authHeaders.value,
         body: { selected_choice_id: selectedChoiceId.value },
@@ -341,10 +340,9 @@ const restoreAnswerHistory = async () => {
   if (restoredHistoryId.value === answerHistoryId.value) return
 
   try {
-    const response = await $fetch<ApiResponse<AnswerHistoryDetail>>(
+    const response = await api<ApiResponse<AnswerHistoryDetail>>(
       `/api/v1/answer_histories/${answerHistoryId.value}`,
       {
-        baseURL: config.public.apiBase,
         headers: authHeaders.value,
       },
     )

@@ -5,8 +5,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const currentUser = await ensureCurrentUser()
   if (currentUser?.role !== 'admin') return
 
-  const redirect = typeof to.query.redirect === 'string' ? to.query.redirect : ''
-  const redirectPath = redirect.startsWith('/admin/') && !redirect.startsWith('//')
+  const redirect = safeRedirectPath(to.query.redirect, '/admin/questions')
+  const redirectPath = redirect.startsWith('/admin/')
     ? redirect
     : '/admin/questions'
 

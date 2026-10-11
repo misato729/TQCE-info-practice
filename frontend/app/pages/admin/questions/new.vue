@@ -4,7 +4,7 @@ import { createEmptyQuestion } from '~/types/adminQuestion'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { authHeaders, logout } = useAuth()
 const initialValue = createEmptyQuestion()
 const submitting = ref(false)
@@ -16,8 +16,7 @@ const submit = async (question: AdminQuestionInput) => {
   errorMessage.value = ''
 
   try {
-    const response = await $fetch<ApiResponse<AdminQuestion>>('/api/v1/admin/questions', {
-      baseURL: config.public.apiBase,
+    const response = await api<ApiResponse<AdminQuestion>>('/api/v1/admin/questions', {
       method: 'POST',
       headers: authHeaders.value,
       body: { question },

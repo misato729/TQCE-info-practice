@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ middleware: 'auth' })
+
 type HistoryItem = {
   id: number
   locked: boolean
@@ -31,7 +33,7 @@ type ApiResponse = {
   meta: HistoryMeta
 }
 
-const config = useRuntimeConfig()
+const { $api: api } = useNuxtApp()
 const { isLoggedIn, authHeaders, logout } = useAuth()
 const histories = ref<HistoryItem[]>([])
 const meta = ref<HistoryMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
@@ -49,8 +51,7 @@ const loadHistories = async () => {
   loading.value = true
   loadError.value = ''
   try {
-    const response = await $fetch<ApiResponse>('/api/v1/answer_histories', {
-      baseURL: config.public.apiBase,
+    const response = await api<ApiResponse>('/api/v1/answer_histories', {
       headers: authHeaders.value,
       query: { page: page.value, per_page: 20 },
     })

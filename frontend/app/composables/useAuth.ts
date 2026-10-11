@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 export type AuthUser = {
   id: number
   name: string
@@ -21,15 +23,20 @@ type AuthSession = {
 
 type ApiResponse<T> = { data: T }
 
+const currentUserRequests = new WeakMap<object, { token: string, promise: Promise<AuthUser | null> }>()
+const accessTokens = new WeakMap<object, Ref<string | null>>()
+
 export const useAuth = () => {
-  const config = useRuntimeConfig()
-  const accessToken = useCookie<string | null>('tqce-access-token', {
+  const nuxtApp = useNuxtApp()
+  const accessToken = accessTokens.get(nuxtApp) ?? useCookie<string | null>('tqce-access-token', {
     default: () => null,
     maxAge: 60 * 60 * 24,
     sameSite: 'lax',
-    secure: import.meta.env.PROD,
+    secure: import.meta.env?.PROD,
   })
+  accessTokens.set(nuxtApp, accessToken)
   const user = useState<AuthUser | null>('auth-user', () => null)
+  const favoriteIds = useState<number[]>('favorite-question-ids', () => [])
   const isLoggedIn = computed(() => Boolean(accessToken.value))
   const authHeaders = computed<Record<string, string>>(() => {
     const headers: Record<string, string> = {}
@@ -43,8 +50,7 @@ export const useAuth = () => {
   }
 
   const login = async (credentials: { email: string, password: string }) => {
-    const response = await $fetch<ApiResponse<AuthSession>>('/api/v1/auth/login', {
-      baseURL: config.public.apiBase,
+    const response = await nuxtApp.$api<ApiResponse<AuthSession>>('/api/v1/auth/login', {
       method: 'POST',
       body: credentials,
     })
@@ -58,8 +64,7 @@ export const useAuth = () => {
     password: string
     password_confirmation: string
   }) => {
-    const response = await $fetch<ApiResponse<AuthSession>>('/api/v1/auth/signup', {
-      baseURL: config.public.apiBase,
+    const response = await nuxtApp.$api<ApiResponse<AuthSession>>('/api/v1/auth/signup', {
       method: 'POST',
       body: attributes,
     })
@@ -69,25 +74,28 @@ export const useAuth = () => {
   const logout = () => {
     accessToken.value = null
     user.value = null
-    useState<number[]>('favorite-question-ids').value = []
+    favoriteIds.value = []
   }
 
   const ensureCurrentUser = async (force = false) => {
-    if (!accessToken.value || (user.value && !force)) return user.value
+    if (!accessToken.value) return null
+    if (user.value && !force) return user.value
 
-    try {
-      const response = await $fetch<ApiResponse<AuthUser>>('/api/v1/me', {
-        baseURL: import.meta.server && config.apiBaseInternal ? config.apiBaseInternal : config.public.apiBase,
-        headers: authHeaders.value,
-      })
+    const token = accessToken.value
+    const pending = currentUserRequests.get(nuxtApp)
+    if (pending?.token === token) return pending.promise
+
+    const promise: Promise<AuthUser | null> = nuxtApp.$api<ApiResponse<AuthUser>>('/api/v1/me', {
+      headers: authHeaders.value,
+    }).then((response) => {
+      if (accessToken.value !== token) return null
       user.value = response.data
       return user.value
-    }
-    catch (error: any) {
-      const status = error?.statusCode ?? error?.status
-      if (status === 401) logout()
-      return null
-    }
+    }).catch(() => null).finally(() => {
+      if (currentUserRequests.get(nuxtApp)?.promise === promise) currentUserRequests.delete(nuxtApp)
+    })
+    currentUserRequests.set(nuxtApp, { token, promise })
+    return promise
   }
 
   return {
