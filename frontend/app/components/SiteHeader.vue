@@ -45,13 +45,14 @@ const openMenu = () => {
         title="高等学校（情報）教員資格認定試験　予想問題演習サイト"
       >
         <SiteLogo />
+        <small class="brand-tagline"><span>高等学校（情報）教員資格認定試験</span> <span>科目(Ⅰ)の対策サイト</span></small>
       </NuxtLink>
 
       <div class="header-actions">
         <NuxtLink v-if="!isLoggedIn" class="login-link" to="/login">ログイン</NuxtLink>
         <NuxtLink v-else class="account-link" to="/account" title="アカウント設定">
           <UIcon name="i-lucide-circle-user-round" />
-          <span>マイページ</span>
+          <span class="account-label">マイページ</span>
         </NuxtLink>
         <button
           class="menu-button"
@@ -116,7 +117,9 @@ const openMenu = () => {
   gap: 24px;
 }
 .brand, .header-actions, .account-link { display: flex; align-items: center; }
-.brand { min-width: 0; color: #082e32; text-decoration: none; }
+.brand { min-width: 0; align-items: flex-end; gap: 12px; color: #082e32; text-decoration: none; }
+.brand-tagline { min-width: 0; margin-bottom: 4px; font-size: 12px; line-height: 1.4; font-weight: 700; }
+.brand-tagline span { display: inline-block; white-space: nowrap; }
 .header-actions { flex: 0 0 auto; gap: 18px; }
 .login-link, .account-link { color: #082e32; font-weight: 800; text-decoration: none; }
 .account-link { gap: 7px; }
@@ -158,8 +161,16 @@ nav a:hover, nav a.active { background: #dff2f2; color: var(--teal-dark); }
 
 @media (max-width: 760px) {
   .header-inner { padding: 0 12px; gap: 10px; }
-  .brand { --logo-symbol-size: 36px; --logo-wordmark-width: 148px; }
-  .account-link span, .login-link { display: none; }
+  .brand { --logo-symbol-size: 36px; --logo-wordmark-width: 148px; gap: 10px; }
+  .brand-tagline { font-size: 11px; }
+  .brand-tagline span { display: inline; white-space: normal; }
+  .account-label, .login-link { display: none; }
   .header-actions { gap: 10px; }
+}
+@media (max-width: 420px) {
+  .brand { --logo-symbol-size: 28px; --logo-wordmark-width: 88px; gap: 8px; }
+}
+@media (max-width: 360px) {
+  .brand { --logo-symbol-size: 24px; --logo-wordmark-width: 64px; }
 }
 </style>

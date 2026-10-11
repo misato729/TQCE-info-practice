@@ -130,7 +130,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           <span>本サイトについて</span>
         </h1>
         <p>
-          高等学校（情報）教員資格認定試験の問題演習ができるサービスです。
+          高等学校（情報）教員資格認定試験 <span class="subject-label">科目(Ⅰ)</span> の予想問題演習ができるサービスです。
         </p>
         <div class="overview-actions">
           <NuxtLink class="secondary-link" to="/exam-overview">試験概要を見る</NuxtLink>
@@ -478,6 +478,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 .condition-actions { display: flex; flex: 0 0 auto; gap: 10px; }
 .condition-actions button { white-space: nowrap; }
 .condition-actions button:disabled { opacity: .45; cursor: not-allowed; }
+.subject-label { white-space: nowrap; }
 .overview-section {
   min-height: 280px;
   padding: 52px clamp(28px, 6vw, 86px);
