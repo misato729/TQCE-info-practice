@@ -38,12 +38,13 @@ const openMenu = () => {
 <template>
   <header class="site-header">
     <div class="header-inner">
-      <NuxtLink class="brand" to="/" aria-label="ホームへ戻る">
-        <span class="brand-mark" aria-hidden="true"><UIcon name="i-lucide-graduation-cap" /></span>
-        <span class="brand-copy">
-          <strong>高等学校（情報）教員資格認定試験</strong>
-          <small>予想問題演習サイト</small>
-        </span>
+      <NuxtLink
+        class="brand"
+        to="/"
+        aria-label="情報教認ラボ：ホームへ戻る"
+        title="高等学校（情報）教員資格認定試験　予想問題演習サイト"
+      >
+        <SiteLogo />
       </NuxtLink>
 
       <div class="header-actions">
@@ -115,21 +116,7 @@ const openMenu = () => {
   gap: 24px;
 }
 .brand, .header-actions, .account-link { display: flex; align-items: center; }
-.brand { min-width: 0; gap: 12px; color: #082e32; text-decoration: none; }
-.brand-mark {
-  width: 46px;
-  height: 46px;
-  flex: 0 0 46px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: #fff;
-  color: var(--teal-dark);
-  font-size: 27px;
-}
-.brand-copy { min-width: 0; display: flex; align-items: baseline; gap: 12px; }
-.brand-copy strong { font-size: clamp(16px, 2.2vw, 24px); white-space: nowrap; }
-.brand-copy small { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.brand { min-width: 0; color: #082e32; text-decoration: none; }
 .header-actions { flex: 0 0 auto; gap: 18px; }
 .login-link, .account-link { color: #082e32; font-weight: 800; text-decoration: none; }
 .account-link { gap: 7px; }
@@ -170,15 +157,9 @@ nav a:hover, nav a.active { background: #dff2f2; color: var(--teal-dark); }
 .slide-enter-from, .slide-leave-to { transform: translateX(100%); }
 
 @media (max-width: 760px) {
-  .header-inner { padding: 0 12px; }
-  .brand-copy { display: block; }
-  .brand-copy strong, .brand-copy small { display: block; }
-  .brand-copy small { margin-top: 2px; font-size: 11px; }
+  .header-inner { padding: 0 12px; gap: 10px; }
+  .brand { --logo-symbol-size: 36px; --logo-wordmark-width: 148px; }
   .account-link span, .login-link { display: none; }
   .header-actions { gap: 10px; }
-}
-@media (max-width: 420px) {
-  .brand-mark { width: 40px; height: 40px; flex-basis: 40px; font-size: 23px; }
-  .brand-copy strong { max-width: 185px; overflow: hidden; text-overflow: ellipsis; }
 }
 </style>

@@ -3,6 +3,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      link: [{ rel: 'icon', type: 'image/png', href: '/images/logo-symbol.png' }],
+    },
+  },
   routeRules: {
     // User-specific application screens do not benefit from server rendering.
     // Public content remains SSR while Basic authentication is enforced by

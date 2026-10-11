@@ -12,6 +12,9 @@ const apiStatus = ref<'idle' | 'checking' | 'connected' | 'failed'>('idle')
         <footer class="site-footer">
           <div class="footer-inner">
             <div class="footer-main">
+              <NuxtLink class="footer-brand" to="/" aria-label="情報教認ラボ：ホームへ戻る">
+                <SiteLogo />
+              </NuxtLink>
               <div class="footer-copy">
                 <strong>高等学校（情報）教員資格認定試験　予想問題演習サイト</strong>
                 <span>生成AIで作成した問題には誤りが含まれる可能性があります。</span>
@@ -46,6 +49,7 @@ main { flex: 1; }
   width: min(1080px, calc(100% - 40px));
   min-height: 88px;
   margin: 0 auto;
+  padding: 18px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,6 +59,7 @@ main { flex: 1; }
 }
 .footer-main, .footer-copy { display: grid; gap: 6px; }
 .footer-main { gap: 10px; }
+.footer-brand { justify-self: start; display: inline-flex; text-decoration: none; }
 .footer-copy strong { color: #31454c; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 .footer-links a { color: #40545b; font-weight: 700; text-underline-offset: 3px; }
