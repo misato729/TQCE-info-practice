@@ -12,6 +12,10 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
   LAW_DATA = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_law_data.json", __dir__))).freeze
   DRAFT_FILES = %w[模試21〜25_問1〜2草案_2026-10-07.md 模試21〜25_問3〜5草案_2026-10-08.md].freeze
   APPROVED_DRAFTS = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_approved_drafts.json", __dir__))).fetch("files").freeze
+  # Preserve the historical approval snapshot. These two items were explicitly
+  # revised after the law-question audit; their new text/choices are checked
+  # against independent official originals in MockExamsLawClozeRevisionTest.
+  LAW_AUDIT_REVISIONS = %w[21-5 25-4].freeze
 
   setup do
     @entries = QuestionSeedSync.collect do
@@ -45,6 +49,8 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
       assert_equal 1, attributes.fetch(:choices).count { |choice| choice.fetch(:correct) }, key
       preview = QuestionSeedSync.preview(entry)
       QuestionWriter.validate_publication!(preview, QuestionPayload.from_seed(entry[:exam_number], attributes).fetch("choices").map(&:symbolize_keys))
+
+      next if LAW_AUDIT_REVISIONS.include?(key)
 
       approved = approved_sections.fetch(key)
       head, tail = approved.split(/^正答：[アイウエ].*$/, 2)
