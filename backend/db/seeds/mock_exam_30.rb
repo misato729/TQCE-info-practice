@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験30（承認済み問3〜5。20問完成までは下書き）
+# 模擬試験30（承認済み問3〜11。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -81,16 +81,157 @@ questions = [
     ],
     source_text: "教育公務員特例法・第22条の5第1項〜第2項、第22条の4第2項第1号・第26条第1項（補足）、第22条第3項（比較） | https://laws.e-gov.go.jp/law/324AC0000000001/20260401_507AC0000000068#Mp-Ch_4-At_22_5",
   },
+  {
+    question_number: 6,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "生徒の{{①}}などを積極的に評価し，学習したことの意義や価値を実感できるようにすること。また，{{②}}に向けた学習状況を把握する観点から，単元や題材など内容や時間のまとまりを見通しながら評価の場面や方法を工夫して，{{③}}を評価し，指導の改善や学習意欲の向上を図り，{{④}}に生かすようにすること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["よい点や進歩の状況", "各教科・科目等の内容の習得", "学習の過程や成果", "各教科・科目の単位の修得"]),
+      fill_in_choice.call("イ", ["課題の達成度や学習の到達水準", "各教科・科目等の内容の習得", "課題の正誤や達成度", "資質・能力の育成"]),
+      fill_in_choice.call("ウ", ["よい点や進歩の状況", "各教科・科目等の目標の実現", "学習の過程や成果", "資質・能力の育成"], true),
+      fill_in_choice.call("エ", ["課題の達成度や学習の到達水準", "各教科・科目等の目標の実現", "課題の正誤や達成度", "各教科・科目の単位の修得"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①③は正しいが，②④が異なる。評価の観点は各教科・科目等の目標の実現に向けた学習状況を把握することであり，評価を資質・能力の育成に生かすと記されている。単位の修得認定と同一の規定ではない。"),
+      text_block.call("イ：④は正しいが，①②③が異なる。肯定的に評価する対象はよい点・進歩の状況，状況把握の観点は目標の実現，評価する対象は学習の過程や成果である。課題の正誤や到達水準だけに語句を置き換えない。"),
+      text_block.call("ウ：全て原文と一致する。生徒のよい点や進歩を捉え，目標の実現に向けた学習の過程・成果を評価し，指導改善や意欲向上を通じて資質・能力の育成に生かす。"),
+      text_block.call("エ：②は正しいが，①③④が異なる。①はよい点や進歩，③は学習の過程や成果，④は資質・能力の育成である。評価の教育的な働きを，課題の達成度や単位認定に置き換えない。"),
+    ],
+    source_text: "高等学校学習指導要領 第1章 総則 第3款2 学習評価の充実（1）全文（印刷29頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=31",
+  },
+  {
+    question_number: 7,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（6）学習の遅れがちな生徒などについては，各教科・科目等の選択，その内容の取扱いなどについて必要な配慮を行い，{{①}}に応じ，例えば義務教育段階の学習内容の確実な定着を図るための指導を適宜取り入れるなど，{{②}}を工夫すること。\n\n２ 特別な配慮を必要とする生徒への指導\n\n（1）障害のある生徒などへの指導\n\nア 障害のある生徒などについては，特別支援学校等の{{③}}を活用しつつ，個々の生徒の障害の状態等に応じた{{②}}の工夫を{{④}}に行うものとする。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["生徒の実態", "指導内容や指導方法", "助言又は援助", "組織的かつ計画的"], true),
+      fill_in_choice.call("イ", ["生徒の実態", "指導内容や指導方法", "施設や設備", "専門的かつ継続的"]),
+      fill_in_choice.call("ウ", ["学校の指導計画", "評価規準や評価方法", "助言又は援助", "専門的かつ継続的"]),
+      fill_in_choice.call("エ", ["学校の指導計画", "評価規準や評価方法", "施設や設備", "組織的かつ計画的"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：正しい。学習の遅れがちな生徒への指導は生徒の実態に応じて指導内容や指導方法を工夫する。障害のある生徒への指導も状態等に応じた内容・方法を工夫し，特別支援学校等の助言又は援助を活用して組織的かつ計画的に行う。"),
+      text_block.call("イ：①②は正しいが，③④が原文と異なる。特別支援学校等から活用するものとして助言又は援助が示され，指導の工夫は組織的かつ計画的に行うものとされる。"),
+      text_block.call("ウ：③は正しいが，①②④が原文と異なる。学校の指導計画ではなく生徒の実態に応じて工夫し，評価規準や評価方法ではなく指導内容や指導方法が示される。取組の構造も専門的かつ継続的ではなく組織的かつ計画的である。"),
+      text_block.call("エ：④は正しいが，①②③が原文と異なる。個々の生徒に即した指導内容・方法の工夫と，特別支援学校等の助言又は援助の活用を，学校の計画・評価・施設設備へ置き換えている。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第1章第5款1（6）〜2（1）ア、印刷30頁 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32",
+  },
+  {
+    question_number: 8,
+    major_category_code: "teacher_education",
+    category_code: "integrated_inquiry",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』の「第9章 総合的な探究の時間の学習指導 第2節 総合的な探究の時間における『主体的・対話的で深い学び』」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「対話的な学び」とは，他者との協働や{{①}}を通じて，自らの考えを広げ深めるような学びである。以前より，他者とともに探究に取り組むことを大切にしてきたように，探究の過程を質的に高めていくためには，引き続き異なる多様な他者と力を合わせて課題の解決に向かうことが欠かせない。\nここで行われる異なる多様な他者と対話することには，次の三つの価値が考えられる。一つは，他者への説明による情報としての{{②}}の構造化である。生徒は身に付けた{{②}}を使って相手に説明して話すことで，つながりのある構造化された情報へと変容させていく。二つは，{{③}}である。多様な情報が他者から供給されることで，構造化は質的に高まるものと考えられる。三つは，他者とともに新たな知を創造する場の構築と{{④}}への期待などである。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["外界との相互作用", "考え方や方法", "他者からの多様な情報収集", "学習過程の振り返り"]),
+      fill_in_choice.call("イ", ["自己の知識の体系化", "知識や技能", "他者との共通理解の形成", "学習過程の振り返り"]),
+      fill_in_choice.call("ウ", ["自己の知識の体系化", "考え方や方法", "他者との共通理解の形成", "課題解決に向けた行動化"]),
+      fill_in_choice.call("エ", ["外界との相互作用", "知識や技能", "他者からの多様な情報収集", "課題解決に向けた行動化"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①③は原文と一致するが，②は「知識や技能」，④は「課題解決に向けた行動化」である。説明を通して身に付けた知識・技能を構造化し，他者との知の創造を行動につなげることが示されている。"),
+      text_block.call("イ：②は原文と一致するが，①③④が異なる。定義は外界との相互作用を挙げ，対話の価値として他者からの多様な情報収集と課題解決に向けた行動化を示している。共通理解や振り返りを原語に置き換えない。"),
+      text_block.call("ウ：④は原文と一致するが，①②③が異なる。外界との相互作用，知識や技能の構造化，他者からの多様な情報収集が原語である。「考え方や方法」は両方の代入箇所で文章になるが，原典が構造化するものとして挙げた語句とは異なる。"),
+      text_block.call("エ：全て原文と一致する。外界との相互作用を通して考えを広げ深め，説明による知識・技能の構造化，情報収集，新たな知の創造と行動化を対話の価値として示す。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編 第9章 総合的な探究の時間の学習指導 第2節 総合的な探究の時間における「主体的・対話的で深い学び」2「対話的な学び」の視点，冒頭から対話の三つの価値まで（印刷121頁） | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=129",
+  },
+  {
+    question_number: 9,
+    major_category_code: "teacher_education",
+    category_code: "moral_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第7款 道徳教育に関する配慮事項」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "参考：抜粋中の「第1款の2の（2）に示す道徳教育の目標」は，人間としての在り方生き方を考え，主体的な判断の下に行動し，自立した人間として他者と共によりよく生きるための基盤となる道徳性を養うことを指す。" },
+      { type: "fill_in_quote", text: "各学校においては，第１款の２の（2）に示す道徳教育の目標を踏まえ，道徳教育の全体計画を作成し，{{①}}の下に，道徳教育の推進を主に担当する教師（「道徳教育推進教師」という。）を中心に，{{②}}が協力して道徳教育を展開すること。なお，道徳教育の全体計画の作成に当たっては，生徒や学校の実態に応じ，指導の方針や重点を明らかにして，{{③}}を明らかにすること。その際，公民科の「公共」及び「倫理」並びに特別活動が，人間としての在り方生き方に関する{{④}}の場面であることに配慮すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["校長の方針", "各ホームルーム担任", "各教科・科目等との関係", "補完的な指導"]),
+      fill_in_choice.call("イ", ["校長の方針", "全教師", "各教科・科目等との関係", "中核的な指導"], true),
+      fill_in_choice.call("ウ", ["教育委員会の方針", "全教師", "教科等横断的な学習の評価基準", "補完的な指導"]),
+      fill_in_choice.call("エ", ["教育委員会の方針", "各ホームルーム担任", "教科等横断的な学習の評価基準", "中核的な指導"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：②④が異なる。道徳教育推進教師を中心に協力する範囲は「全教師」で，各ホームルーム担任に置き換えない。公民科の「公共」及び「倫理」並びに特別活動の位置付けは「中核的な指導」で，補完的な指導ではない。"),
+      text_block.call("イ：全て原文と一致する。校長の方針の下に全教師が協力し，全体計画では各教科・科目等との関係を明らかにする。公民科の「公共」及び「倫理」並びに特別活動を，人間としての在り方生き方に関する中核的な指導の場面として位置付ける。"),
+      text_block.call("ウ：①③④が異なる。①は「校長の方針」であり，教育委員会の方針への置換ではない。③は「各教科・科目等との関係」，④は「中核的な指導」である。評価基準を設定することの是非ではなく，全体計画で明らかにする対象と，指導場面の位置付けを区別する。"),
+      text_block.call("エ：①②③が異なる。①は「校長の方針」，②は「全教師」，③は「各教科・科目等との関係」である。道徳教育を担当する教師の範囲を各ホームルーム担任へ狭めるものではなく，全体計画で明らかにするものも教科等横断的な学習の評価基準への置換ではない。"),
+    ],
+    source_text: "第1章 総則 第7款1全文（抜粋：PDF34頁／印刷32頁，目標の補足：第1款2(2)第2段落，PDF21頁／印刷19頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=34\n参照先の道徳教育の目標 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=21",
+  },
+  {
+    question_number: 10,
+    major_category_code: "teacher_education",
+    category_code: "special_activities",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 特別活動編』（平成30年7月文部科学省）の「第4章 指導計画の作成と内容の取扱い 第1節 指導計画の作成に当たっての配慮事項」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "学校教育には，{{①}}には位置付けられていないが教育的意義が大きく，特別活動と関連が深い「ショートホームルーム」（朝の会や帰りの会など），日常に行われている清掃や日直などの当番の活動，さらに，放課後等に生徒の{{②}}な参加により行われる部活動などがあるが，これらとの関連などについても，特別活動の{{③}}に示しておくことも大切である。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["教育課程", "自主的，自発的", "各活動・学校行事の年間指導計画"]),
+      fill_in_choice.call("イ", ["年間指導計画", "積極的，継続的", "各活動・学校行事の年間指導計画"]),
+      fill_in_choice.call("ウ", ["年間指導計画", "積極的，継続的", "全体計画"]),
+      fill_in_choice.call("エ", ["教育課程", "自主的，自発的", "全体計画"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①②は正しいが，③が異なる。教育課程外の活動との関連を示す先は，特別活動の「全体計画」であり，各活動・学校行事の年間指導計画に置き換えない。"),
+      text_block.call("イ：全て原文と異なる。①は教育課程，②は自主的，自発的，③は全体計画である。活動の教育課程上の位置付け，参加の性格，全体計画の役割を区別する。"),
+      text_block.call("ウ：③は正しいが，①②が異なる。これらは教育課程には位置付けられていないが教育的意義が大きい活動であり，部活動への参加は自主的，自発的と記される。"),
+      text_block.call("エ：全て原文と一致する。教育課程に位置付けられていないが特別活動と関連の深い諸活動についても，全体計画に関連を示しておく。活動・行事別の年間指導計画と区別する。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 特別活動編・第4章第1節2、印刷106〜107頁 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=114",
+  },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。下の表は，同資料の「第10章 不登校 10.2.2 教育相談を支える教職員の連携・協働」に列挙された校内の職名・役割名と，不登校児童生徒への支援における役割の一部を整理したものである。表中の空欄 {{①}}・{{②}}・{{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "日本の学校では、学級・ホームルーム担任が学習指導のみならず、学級・ホームルームで、児童生徒に寄り添い、生活面全般についての指導・援助も担当しています。このことは、集団の中において個別指導を行う上で、有効なシステムと言えます。\n\n不登校をはじめ、児童生徒への生徒指導においては、最も身近で密接な関わりを持つ学級・ホームルーム担任が、「いつでも」、「どこでも」、「だれにでも」、個別指導をする機会を持つことができます。また、深刻な悩みや課題を抱え、特別な指導や援助を必要とする児童生徒に対して第一義的に関わるのも、学級・ホームルーム担任です。しかし、学級・ホームルーム担任一人だけでは解決を図ることが困難な場合も少なくなく、不登校児童生徒への支援もその例外ではありません。\n\n学校内には、不登校児童生徒に関わる際の要とも言える役割を有する者がいます。その人たちが、学級・ホームルーム担任を支え、協力して不登校児童生徒を支援することが重要です。" },
+      { type: "text", text: "以下の表は，原典に列挙された説明を整理したものであり，原典に掲載された表そのものではない。" },
+      { type: "table", headers: ["職名・役割名", "不登校児童生徒への支援における役割"], rows: [["【①】", "心身両面から児童生徒の健康に関わる。学級・ホームルーム担任や保護者と連絡し，不登校の早期発見や保健室登校の提案・対応に関わる。"], ["【②】", "教職員という立場でカウンセリングや相談業務に関わる。即時的なニーズへの対応や，他の教職員との連携の行いやすさという利点を持つ。"], ["【③】", "主に発達障害等の特別な支援を必要とする児童生徒を支援する。校内委員会や研修会の企画・運営，関係諸機関との連絡・調整，保護者からの相談窓口等を担う。"]] },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["保健主事", "教育相談コーディネーター", "生徒指導主事"]),
+      fill_in_choice.call("イ", ["養護教諭", "スクールカウンセラー", "特別支援教育コーディネーター"]),
+      fill_in_choice.call("ウ", ["養護教諭", "教育相談コーディネーター", "特別支援教育コーディネーター"], true),
+      fill_in_choice.call("エ", ["保健主事", "スクールカウンセラー", "生徒指導主事"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①③が異なる。原典の①の説明は養護教諭，③の説明は特別支援教育コーディネーターの役割として列挙されている。健康への直接的な関わりと，特別支援教育を推進する校内委員会・研修等の調整を，原典の対応に沿って区別する。"),
+      text_block.call("イ：①③は原典の対応と一致するが，②が異なる。教職員という立場を活かし，即時的なニーズへの対応や他の教職員との連携を行いやすいという説明は，原典では教育相談コーディネーターに対応する。学校配置のスクールカウンセラーも教職員であることとは区別する。"),
+      text_block.call("ウ：全て原典の対応と一致する。養護教諭による心身の健康への関わり，教育相談コーディネーターによる相談業務，特別支援教育コーディネーターによる特別な支援の推進を，学級・ホームルーム担任と協働する校内の役割として示している。"),
+      text_block.call("エ：全て原典の対応と異なる。①は養護教諭，②は教育相談コーディネーター，③は特別支援教育コーディネーターの説明である。保健主事や生徒指導主事が健康・支援に関わらないという意味ではなく，原典が列挙した役割との対応を問う。"),
+    ],
+    source_text: "第10章 不登校 10.2.2 教育相談を支える教職員の連携・協働、本文227〜228頁（抜粋・表の根拠は227頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=230",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [3, 4, 5]
-  raise "承認済みの問番号は3〜5です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..11).to_a
+  raise "承認済みの問番号は3〜11です"
 end
 
+categories = {
+  3 => "education_system", 4 => "education_system", 5 => "education_system",
+  6 => "curriculum_organization", 7 => "special_support_education",
+  8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
+  11 => "student_guidance_career",
+}
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == "education_system"
+  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
@@ -98,7 +239,7 @@ questions.each do |question|
   end
   blocks = question.fetch(:content_blocks)
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  if number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } }
+  if number <= 5 && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
     labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt = blocks.first
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
@@ -108,11 +249,33 @@ questions.each do |question|
         choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 }
       raise "問#{number}の条番号・空欄と選択肢の対応が不正です"
     end
+  elsif number >= 6
+    count = [10, 11].include?(number) ? 3 : 4
+    expected_labels = %w[① ② ③ ④].first(count)
+    table_question = number == 11
+    labels = if table_question
+      blocks.select { |block| block[:type] == "table" }.flat_map { |block| block.fetch(:rows).flatten.join.scan(/【([①②③④])】/).flatten }.uniq
+    else
+      quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
+    end
+    prompt = blocks.first
+    prompt_labels = table_question ? expected_labels : [expected_labels.first, expected_labels.last]
+    unless quotes.size == 1 && labels == expected_labels && prompt[:type] == "fill_in_text" &&
+        prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq == prompt_labels &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == count }
+      raise "問#{number}の抜粋・空欄と選択肢の対応が不正です"
+    end
+    if number == 6 && !(prompt.fetch(:text).include?("第1章 総則 第3款 教育課程の実施と学習評価") && question.fetch(:source_text).include?("第3款"))
+      raise "問6は総則第3款から出題してください"
+    end
+    if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
+      raise "問11の資料名・書き出しが不正です"
+    end
   end
   if blocks.any? { |block| block[:type] == "quote" }
     raise "問#{number}の試験抜粋枠にはfill_in_quoteを使ってください"
   end
-  # 部分seedはdraftで保存するが、追加した承認済み問題の内容は公開時と同じ品質で検査する。
+  # 部分seedはdraftで保存するが、承認済み問題の内容は公開時と同じ品質で検査する。
   entry = { exam_number: 30, attributes: question, publication_status: "draft" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(30, question)

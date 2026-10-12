@@ -17,11 +17,16 @@ class MockExamsCurriculumRevisionTest < ActionDispatch::IntegrationTest
   end
 
   test "承認された七問だけを改稿し対象外五百八問を維持する" do
-    assert_equal 515, @all_entries.size
+    # Later additions are outside this historical seven-question revision.
+    # Keep the original 508-question digest fixed, rather than rebasing it.
+    historical_entries = @all_entries.reject do |entry|
+      (26..30).cover?(entry.fetch(:exam_number)) && (6..11).cover?(entry.fetch(:attributes).fetch(:question_number))
+    end
+    assert_equal 515, historical_entries.size
     assert_equal ANSWERS.keys.sort, @questions.keys.sort
     assert_equal ANSWERS.keys.sort, ORIGINALS.fetch("previous_attribute_digests").keys.sort
     assert_equal ANSWERS.keys.sort, ORIGINALS.fetch("previous_payload_digests").keys.sort
-    unchanged = @all_entries.reject { |entry| ANSWERS.key?(key(entry)) }.map do |entry|
+    unchanged = historical_entries.reject { |entry| ANSWERS.key?(key(entry)) }.map do |entry|
       [key(entry), Digest::SHA256.hexdigest(JSON.generate(entry.fetch(:attributes)))]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal ORIGINALS.fetch("unchanged_508_attribute_digest"), Digest::SHA256.hexdigest(unchanged)
