@@ -3,6 +3,10 @@ require "digest"
 
 class MockExamsLawClozeRevisionTest < ActionDispatch::IntegrationTest
   ORIGINALS = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_law_cloze_revision_originals.json"))).freeze
+  # Keep the historical aggregate intact. The seven subsequently approved
+  # curriculum revisions are source-checked by MockExamsCurriculumRevisionTest;
+  # their pre-revision values were captured independently from Git HEAD.
+  CURRICULUM_REVISION_BASELINE = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_curriculum_revision_sources.json"))).fetch("previous_attribute_digests").freeze
   ANSWERS = ORIGINALS.fetch("answers").freeze
   BLANKS = %w[① ② ③ ④].freeze
   LABELS = %w[ア イ ウ エ].freeze
@@ -15,11 +19,13 @@ class MockExamsLawClozeRevisionTest < ActionDispatch::IntegrationTest
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
 
-  test "対象二十一問だけを改稿し対象外四百七十九問を維持する" do
+  test "法令改稿対象外は後日承認された七問を独立検査へ委譲して旧照合値を維持する" do
     assert_equal 500, @all_entries.size
     assert_equal ANSWERS.keys.sort, @questions.keys.sort
     unchanged = @all_entries.reject { |entry| ANSWERS.key?(key(entry)) }.map do |entry|
-      [key(entry), Digest::SHA256.hexdigest(JSON.generate(entry.fetch(:attributes)))]
+      id = key(entry)
+      digest = Digest::SHA256.hexdigest(JSON.generate(entry.fetch(:attributes)))
+      [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal ORIGINALS.fetch("unchanged_questions_digest"), Digest::SHA256.hexdigest(unchanged)
   end

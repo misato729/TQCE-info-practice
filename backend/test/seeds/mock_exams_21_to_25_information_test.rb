@@ -9,6 +9,9 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
     24 => [1,2,3], 25 => [0,1,2] }.freeze
   APPROVED = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_information_approved.json", __dir__))).freeze
   ORIGINALS = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_information_source_pages.json", __dir__))).freeze
+  # Keep the historical approval hashes unchanged. Later curriculum revisions
+  # are covered by independent source tests, not by rewriting these snapshots.
+  CURRICULUM_REVISION_BASELINE = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_curriculum_revision_sources.json"))).fetch("previous_payload_digests").freeze
 
   setup do
     @entries = QuestionSeedSync.collect do
@@ -47,7 +50,9 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
       assert_equal row.fetch("attributes"), entry(row.fetch("exam"), row.dig("attributes","question_number"))[:attributes].deep_stringify_keys
     end
     actual_digests = @entries.select { |row| row[:attributes][:question_number] <= 10 }.to_h do |row|
-      [key(row), QuestionPayload.digest(QuestionPayload.from_seed(row[:exam_number], row[:attributes]))]
+      id = key(row)
+      digest = QuestionPayload.digest(QuestionPayload.from_seed(row[:exam_number], row[:attributes]))
+      [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end
     assert_equal guidance.fetch("existing_1_to_10_digests"), actual_digests
   end

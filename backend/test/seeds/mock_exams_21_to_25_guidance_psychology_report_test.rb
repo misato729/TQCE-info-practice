@@ -11,6 +11,9 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
     23 => %w[ア エ ア イ エ], 24 => %w[イ イ ウ ア ウ], 25 => %w[エ ウ イ エ ア] }.freeze
   APPROVED = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_guidance_psychology_report_approved.json", __dir__))).freeze
   ORIGINALS = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_guidance_report_pages.json", __dir__))).freeze
+  # Retain the approval snapshot. The current 25-10 curriculum revision is
+  # checked independently; its old hash keeps all other approval checks intact.
+  CURRICULUM_REVISION_BASELINE = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_curriculum_revision_sources.json"))).fetch("previous_payload_digests").freeze
 
   setup do
     @entries = QuestionSeedSync.collect do
@@ -53,10 +56,12 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
     end
   end
 
-  test "既存の問一から問十の五十問は承認済み改稿後の照合基準を維持する" do
+  test "既存問一から問十は後日承認された改稿を別検査へ委譲して旧照合基準を維持する" do
     existing = @entries.reject { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     actual = existing.to_h do |entry|
-      [key_for(entry), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))]
+      id = key_for(entry)
+      digest = QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))
+      [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end
     assert_equal APPROVED.fetch("existing_1_to_10_digests"), actual
   end

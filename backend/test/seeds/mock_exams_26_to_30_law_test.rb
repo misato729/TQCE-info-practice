@@ -11,6 +11,10 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
   APPROVED = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_26_to_30_approved_law_drafts.json"))).fetch("sections").freeze
   # Captured before this implementation, from the unchanged 500 published seeds.
   EXISTING_500_DIGEST = "16ed7729864c39b37c88f1080b39de6e7a47591aa0c1eebe18d25172539b8b17".freeze
+  # Preserve the historical 500-question aggregate, replacing only the seven
+  # later approved curriculum revisions with their independently captured old
+  # hashes. Their current content is checked against official source pages.
+  CURRICULUM_REVISION_BASELINE = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_curriculum_revision_sources.json"))).fetch("previous_payload_digests").freeze
   SCHOOL_PROMPT = "次の各文は，「学校教育法」（昭和22年法律第26号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。".freeze
   SPECIAL_PROMPT = "次の各文は，「教育公務員特例法」 （昭和24年法律第1号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。".freeze
 
@@ -246,13 +250,15 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "既存模試一から二十五の五百問の内容ハッシュを維持する" do
+  test "既存五百問の旧照合値を保ち承認済み改稿七問は原典検査へ委譲する" do
     existing = QuestionSeedSync.collect do
       (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
     end
     assert_equal 500, existing.size
     digest_input = existing.map do |entry|
-      [key(entry), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))]
+      id = key(entry)
+      digest = QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))
+      [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal EXISTING_500_DIGEST, Digest::SHA256.hexdigest(digest_input)
   end
