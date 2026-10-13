@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験27（承認済み問3〜11。20問完成までは下書き）
+# 模擬試験27（承認済み問3〜15。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -210,10 +210,98 @@ questions = [
     ],
     source_text: "『生徒指導提要』（令和4年12月）第1章1.2.4『課題予防的生徒指導：課題早期発見対応』第1・第2段落、印刷21頁（PDF24頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=24",
   },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      text_block.call("次の①～④は，視覚障害のある生徒の情報の把握と概念の形成に関する記述である。適切なものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("① 対象物を表す言葉の意味を説明できる場合には，その対象物の形や構造を経験に結び付けて理解していると捉える。語の定義を説明する正確さを，対象物の全体像を把握する程度の指標とする。"),
+      text_block.call("② 触覚や保有する視覚を用い，対象物の形，大きさ，手触り，構造や機能を確かめられるようにする。そこで形成した概念を，日常の学習や生活で活用できるように指導する。"),
+      text_block.call("③ 音声による説明は，一度に全体像と各部分の関係を把握できるという特性がある。位置や方向を伝える際は，情報を詳しく一括して示すことで，記憶をたどって統合する負担を軽減する。"),
+      text_block.call("④ 音声情報では，一つ一つの情報をつなぎ合わせ，全体像を捉えることが必要になる。言葉で伝える内容の本質的な部分を選んで強調し，具体的な事物や動作と言葉の意味を結び付ける。"),
+    ],
+    choices: [
+      text_choice.call("ア", "①・②"),
+      text_choice.call("イ", "②・④", true),
+      text_choice.call("ウ", "①・③"),
+      text_choice.call("エ", "③・④"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①が誤り。言葉を説明できることと，対象物の形・構造等を具体的に理解していることは同じではない。経験と概念の結び付きを確かめる必要がある。②は適切。"),
+      text_block.call("イ：②・④とも適切。直接的な観察で概念の形成を支え，音声情報を順に統合する負担にも配慮する。"),
+      text_block.call("ウ：①・③が誤り。①は語の説明と具体的な概念の形成を同一視している。③は視覚映像で全体と部分を捉える過程と，音声情報をつなぎ合わせる過程を取り違えている。"),
+      text_block.call("エ：③が誤り。音声の説明量を増やして一括提示することが，情報を記憶し統合する負担の軽減になるとする点が誤り。④は適切。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅰ「視覚障害」1(2)②ア(イ)及びイ(イ)（69〜70頁、分割PDF10〜11ページ） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_05.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      text_block.call("エリクソンの同一性（アイデンティティ）の考え方を踏まえた青年期とその後の発達に関する記述として，適切でないものを，次のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "青年期には，進路や価値観を検討する中で，自分が何者であり，何をなすべきかという問題に直面する。これまでの自分の在り方を捉え直し，将来どのように生きるかを検討することが，同一性の形成に関わる。"),
+      text_choice.call("イ", "同一性は青年期の重要な発達課題であるが，成人期以降にも捉え直される。仕事や家庭などで担う役割が変わる中で，自分の生き方を考え直すことは，同一性の再構築に関わる。"),
+      text_choice.call("ウ", "青年期には，職業や価値観の選択を通して同一性を検討する。成人期以降の仕事や家庭での役割の選び直しは，形成された同一性を生活に適用する課題であり，同一性を再構築する発達過程とは別の課題として区分される。", true),
+      text_choice.call("エ", "青年期に進路を決めようとして迷うことは，自己の在り方を問い直す過程に関わる。同一性の形成を考える際には，進路の決定という結果とともに，自分が大切にする価値や将来の見通しも問題になる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。青年期には，これまでの自分を捉え直し，進路や価値観を検討することが同一性の形成に関わる。"),
+      text_block.call("イ：適切。同一性は青年期に重要である一方，成人期，中年期，老年期にも再構築されるものとして理解される。"),
+      text_block.call("ウ：不適切。成人期以降の役割の選び直しを，形成済みの同一性の適用と捉え，同一性の再構築とは別の課題に区分している点が誤り。成人期，中年期，老年期にも，新しい役割や経験との関係で同一性は再構築される。"),
+      text_block.call("エ：適切。青年期の迷いを，直ちに失敗と扱うのではなく，自己を問い直す過程として理解する。何を大切にして生きたいかという価値や将来の見通しと，具体的な進路選択とが関係する。"),
+    ],
+    source_text: "東京大学大学院法学政治学研究科・法学部 学習相談室「コラム25：アイデンティティと進路」（青年期の同一性形成と，成人期以降の再構築） | https://www.j.u-tokyo.ac.jp/adviser/column/n-25/",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      text_block.call("クロンバックが提唱した適性処遇交互作用（ATI）に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "適性には，学習者の知識や動機づけなどの個人差が，処遇には，教材や指導方法などの条件が含まれる。指導方法の効果が学習者の適性によって異なることに着目し，両者の組合せを検討する。", true),
+      text_choice.call("イ", "処遇には，教材の構成や指導方法などの条件が含まれる。二つの指導方法の成績の差が，学習者の適性の高低によらず同じ大きさで認められる場合に，適性処遇交互作用が成立する。"),
+      text_choice.call("ウ", "適性処遇交互作用では，学習者と指導方法との組合せを検討する。このとき，教材の提示順序や学習課題の構成を適性，学習前の知識や学習者の動機づけを処遇として位置付ける。"),
+      text_choice.call("エ", "適性には，学習者の知的能力や動機づけなどの個人差が含まれる。一つの指導方法のもとで適性の高い学習者ほど成績が高くなる関係を，適性と処遇との交互作用として捉える。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切です。クロンバックのATIは，学習者側の個人差と教育条件との関係を捉えます。平均的に効果の高い指導方法を選ぶことと，適性に応じて効果がどう異なるかを検討することとは区別されます。"),
+      text_block.call("イ：処遇の説明は適切です。指導方法の成績差が適性によらず同じなら，処遇の効果は認められても，適性に応じてその効果が変わる交互作用の説明にはなりません。"),
+      text_block.call("ウ：組合せを検討する点は適切です。適性と処遇の具体例が逆です。知識や動機づけなどが学習者側の適性，教材や課題の構成などが教育条件としての処遇に当たります。"),
+      text_block.call("エ：適性の説明は適切です。しかし，一つの指導方法で適性と成績が関係することだけでは，複数の処遇の効果が適性に応じて異なることを示せません。"),
+    ],
+    source_text: "日本心理学会『心理学ワールド』94号・山森光陽「教育心理学と教育政策」，「知見の一般化に慎重な態度」（ATIの定義及びクロンバックへの帰属） | https://psych.or.jp/publication/world094/pw10/\n石井英里子「児童生徒の個に応じた指導力―適性処遇交互作用研究からの小中学校外国語教育への示唆―」鹿児島県立短期大学地域研究所『研究年報』54号，2.2「ATIの概念」及びFigure 2・Figure 3（95〜97頁） | https://k-kentan.repo.nii.ac.jp/record/2956/files/07-%E7%9F%B3%E4%BA%95.pdf",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      text_block.call("次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅱ部 各論 3 新時代に対応した高等学校教育等の在り方について」に示された高等学校の役割に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+    ],
+    choices: [
+      text_choice.call("ア", "高等学校は，高等教育機関と実社会への接続を担い，学ぶことと将来との関係を見通した学びを充実させる。自己のキャリア形成と関連付けて生涯にわたり学び続けるため，義務教育段階の取組を発展させる。", true),
+      text_choice.call("イ", "高等学校は，多様な生徒が自己の将来とのつながりを見通し，学ぶ意欲を高める教育を進める。キャリア教育で育成する基盤となる資質・能力は，各職業に固有の専門的な知識・技能の習得として整理する。"),
+      text_choice.call("ウ", "高等学校は，高等教育機関と実社会への接続を担う。進学希望者には大学等での学修への準備を行い，実社会との接続に必要な資質・能力の育成は，高等教育段階で担うものと位置付ける。"),
+      text_choice.call("エ", "高等学校は，社会経済の変化と多様な生徒の背景を踏まえ，教育活動を充実させる。社会性・人間性の育成を福祉的機能，安全・安心な居場所の提供を社会的機能として捉え，実社会への接続を支える。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切です。高等学校は高等教育機関と実社会の双方への接続機能を担います。義務教育段階での取組を発展させ，自己のキャリア形成と関連付けて生涯にわたり学び続けるための，学びに向かう力やキャリア教育を充実させます。"),
+      text_block.call("イ：学習の意欲を高めるという前半は適切です。社会的・職業的自立に必要な基盤となる資質・能力を，各職業固有の専門的な知識・技能の習得に置き換える点が誤りです。キャリア教育の基盤と，特定の職業の専門的な知識・技能を同一視しません。"),
+      text_block.call("ウ：高等学校の接続機能という前半は適切です。進学希望者について，実社会への接続に必要な資質・能力の育成を高等教育段階へ移している点が誤りです。高等学校段階でも，社会的・職業的自立や社会の形成への主体的な参画を支える資質・能力を育てます。"),
+      text_block.call("エ：前半は適切ですが，福祉的機能と社会的機能の対応が逆です。安全・安心な居場所の提供が福祉的機能，社会性・人間性の育成が社会的機能です。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部3(1)，本文50頁（PDF55ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=55\n中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部3(1)③，本文20頁（PDF25ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=25\n文部科学省『キャリア教育』・キャリア教育の定義（誤答イの補助根拠） | https://www.mext.go.jp/a_menu/shotou/career/index.htm\n文部科学省『キャリア教育の推進に関する総合的調査研究協力者会議報告書』・第2章4(1)・5(2)，普通教育・職業教育とキャリア教育の関係（誤答イの補助根拠） | https://www.mext.go.jp/b_menu/shingi/chousa/shotou/023/toushin/04012801/002/003.htm",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..11).to_a
-  raise "承認済みの問番号は3〜11です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
+  raise "承認済みの問番号は3〜15です"
 end
 
 categories = {
@@ -221,6 +309,8 @@ categories = {
   6 => "curriculum_organization", 7 => "curriculum_organization",
   8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
   11 => "student_guidance_career",
+  12 => "special_support_education", 13 => "educational_psychology",
+  14 => "educational_psychology", 15 => "education_system",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
@@ -243,7 +333,7 @@ questions.each do |question|
         choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 }
       raise "問#{number}の条番号・空欄と選択肢の対応が不正です"
     end
-  elsif number >= 6
+  elsif (6..11).include?(number)
     count = [6, 11].include?(number) ? 3 : 4
     expected_labels = %w[① ② ③ ④].first(count)
     table_question = false

@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験28（承認済み問3〜11。20問完成までは下書き）
+# 模擬試験28（承認済み問3〜15。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -207,10 +207,97 @@ questions = [
     ],
     source_text: "『生徒指導提要』第3章3.5.2「学校危機への介入」（1）リスクマネジメント，第1・第2段落（印刷97頁／PDF100頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=100",
   },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      { type: "text", text: "言語障害のうち，構音障害のある生徒の理解及び指導に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "正しい音と自分の発音との違いを聞き分ける活動は，音の聴覚的な認知を支える。これにより単音を正確に発音できるようになれば，日常会話でも同じ音を使える水準に達したと捉え，その音の指導を評価する。"),
+      text_choice.call("イ", "音を聞き分ける課題と，舌や唇などの動きを調整する課題は区別して把握する。正しい音と誤った音を比較する活動は，構音器官の運動機能を高める指導として位置付ける。"),
+      text_choice.call("ウ", "単音，単語，文章や会話へと指導を進める際には，各段階の発音を確認する。単語や文章の段階では，発音の誤りを，語の意味や文の内容を理解する力の不足を示すものとして評価する。"),
+      text_choice.call("エ", "正しい音と自分の発音を比較し，違いを聞き分ける力を把握する。音の認知を支える指導と構音の仕方の指導を組み合わせ，個別の練習で得た発音を日常会話でも使えるように工夫する。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：単音を正しく発音できることから，日常会話での習熟まで判断している点が誤り。手引は，単音から会話へ進める指導に加え，在籍学級など日常生活での会話も含めた工夫が必要だとしている。"),
+      text_block.call("イ：音の比較は，音の聴覚的な認知やフィードバックを支える指導。構音器官の運動機能を高める指導とは，中心となる課題が異なる。"),
+      text_block.call("ウ：発音の正確さと，語や文の意味の理解を混同している。構音の困難と，言語の意味理解・表出の状態は区別して把握する。"),
+      text_block.call("エ：適切。聴覚的なフィードバック，構音の仕方，日常会話への定着という関係を正しく説明している。"),
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅵ「言語障害」1(2)②ア(イ)・(ウ)，3(1)①（225〜226・235〜236頁、分割PDF9〜10・19〜20ページ） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_10.pdf",
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "青年期の進路選択で生じる葛藤を，レヴィンの葛藤の類型から捉える。次の二つの状況に関する記述として，最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "text", text: "状況A：ある大学で希望する分野を学びたいが，その大学への進学に必要な多額の費用を負担することに不安も感じ，進学するかどうか迷っている。" },
+      { type: "text", text: "状況B：学びたい内容や生活環境の異なる二つの大学に，それぞれ同じ程度の魅力を感じている。どちらか一方へ入学する必要があり，進学先を決めかねている。" },
+    ],
+    choices: [
+      text_choice.call("ア", "Aは接近－接近型であり，同じ大学の学習内容と費用という二つの目標が競合している。Bは接近－接近型であり，魅力のある二つの進学先から一方を選ぶことが問題になる。"),
+      text_choice.call("イ", "Aは接近－回避型であり，一つの進学先に魅力と負担の両面がある。Bは接近－接近型であり，それぞれ魅力のある二つの進学先を同時には選べないことが問題になる。", true),
+      text_choice.call("ウ", "Aは回避－回避型であり，学習を望む気持ちと費用への不安という二つの目標が競合している。Bは接近－接近型であり，魅力のある二つの進学先から一方を選ぶことが問題になる。"),
+      text_choice.call("エ", "Aは接近－回避型であり，一つの進学先に魅力と負担の両面がある。Bは回避－回避型であり，いずれを選んでも他方を見送るため，二つの進学先は回避したい目標になる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：Bの説明は適切だが，Aの説明が誤り。Aは，一つの進学先に向かいたい気持ちと，その進学に伴う負担を避けたい気持ちが競合する接近－回避型である。"),
+      text_block.call("イ：適切。Aは単一の目標が魅力と負担の両面をもち，Bは二つの異なる目標がともに魅力をもつ。目標の数と，それぞれの目標に対する接近・回避の方向を区別している。"),
+      text_block.call("ウ：Bの説明は適切だが，Aを回避－回避型とする点が誤り。学習を望む気持ちは目標への接近であり，二つの避けたい目標に挟まれた状況ではない。"),
+      text_block.call("エ：Aの説明は適切だが，Bの説明が誤り。一方を見送ることへの残念さがあっても，二つの進学先自体はともに魅力的な目標である。回避－回避型は，二つの避けたい目標の間で選択を迫られる状況を指す。"),
+    ],
+    source_text: "人間環境大学「葛藤解決の心理学(自由とルールの狭間で生じるトラブルの解決方法)」コマシラバス，第2回「個人内葛藤の心理的メカニズム」細目②（レヴィンの三つの葛藤の類型） | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=SD301001&jn=2026",
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      { type: "text", text: "記憶の過程及び記憶を測定する方法に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "符号化は情報を記憶へ取り込み，貯蔵はその情報を保持し，検索は保持された情報を取り出すことに関わる。自由再生と再認はいずれも検索に関わるが，再認では，提示された項目が学習したものかどうかを判断する。", true),
+      text_choice.call("イ", "貯蔵は，符号化された情報を保持する過程である。自由再生では，提示された候補が以前学習した項目かどうかを判断し，再認では，候補の提示を受けずに学習した項目を思い出す。"),
+      text_choice.call("ウ", "符号化は，情報を記憶へ取り込む過程であり，検索は，保持された情報を取り出す過程である。再認は，検索とは区別され，提示された情報を新たに記憶へ取り込む符号化の働きを測定する方法である。"),
+      text_choice.call("エ", "再認では，提示された項目が以前学習したものかどうかを判断する。自由再生で項目を思い出せなかった場合は，その項目の貯蔵が失われたことを示しており，同じ項目に対する再認も失敗する。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切です。情報を取り込む，保持する，取り出すという過程を区別しています。記憶の測定では，学習した情報を生成する再生と，提示された情報を識別する再認を区別します。"),
+      text_block.call("イ：貯蔵の説明は適切です。自由再生と再認の説明が逆です。自由再生では学習した項目を自分で取り出し，再認では提示された項目について学習済みかどうかを判断します。"),
+      text_block.call("ウ：符号化と検索の説明は適切です。再認も，既に学習した情報に基づいて判断する検索に関わる方法です。新しい情報を取り込めるかだけを測定する方法ではありません。"),
+      text_block.call("エ：再認の説明は適切です。自由再生に失敗しても，項目の提示などの手掛かりによって再認できる場合があります。再生の失敗と，記憶が保持されていないこととは同一ではありません。"),
+    ],
+    source_text: "電子情報通信学会『知識ベース』S3群2編15章「記憶の符号化と検索」，15-1-1「符号化の性質」（PDF2頁）。 | https://ieice-hbkb.org/files/S3/S3gun_02hen_15.pdf\n京都大学広報誌『紅萠』「人文・社会科学系科目群 教育・心理・社会（各論）神経心理学I」，「憶える、憶えておく、思い出す」及び「損傷した部位ごとに異なる健忘症状」（再生・再認の方法の区別と，再生が困難でも再認によって改善する例）。 | https://www.kyoto-u.ac.jp/kurenai/201609/gakumon/",
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅰ部 総論 4 『令和の日本型学校教育』の構築に向けた今後の方向性 （3）これまでの実践とICTとの最適な組合せを実現する」からの抜粋である。文章中の空欄{{①}}～{{③}}に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "・ 全ての子供たちの可能性を引き出す，個別に最適な学びや支援（例えば，子供の学習状況に応じた教材等の提供により，知識・技能の習得等に効果的な学びを行うこと，子供の学習や生活，{{①}}を含む心身の健康状況等に関する様々な情報を把握・分析し，抱える問題を早期発見・解決すること，障害のある子供たちにとっての情報保障やコミュニケーションツールとなること）\n\n・ 可視化が難しかった学びの知見の共有やこれまでにない知見の生成（例えば，教育データの収集・分析により，各教師の実践知や{{②}}の可視化・定式化や新たな知見を生成すること，{{③}}の検証や個々の子供の効果的な学習方法等を特定すること）" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学校健康診断結果", "形式知", "統一的な評価基準"]),
+      fill_in_choice.call("イ", ["保健室の来室記録", "形式知", "経験的な仮説"]),
+      fill_in_choice.call("ウ", ["保健室の来室記録", "暗黙知", "統一的な評価基準"]),
+      fill_in_choice.call("エ", ["学校健康診断結果", "暗黙知", "経験的な仮説"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①は原文に一致します。②は「暗黙知」，③は「経験的な仮説」です。原文は，教師の知見を可視化・定式化することと，経験に基づく仮説を検証することを挙げています。"),
+      text_block.call("イ：③は原文に一致します。①は「学校健康診断結果」，②は「暗黙知」です。原文で具体的に挙げられた健康情報は学校健康診断結果であり，保健室の来室記録ではありません。来室記録の活用そのものが不適切という意味ではありません。"),
+      text_block.call("ウ：②は原文に一致します。①は「学校健康診断結果」，③は「経験的な仮説」です。子供の心身の状態を含む情報の把握・分析と，教師の経験に基づく仮説の検証という二つの対応を確認します。"),
+      text_block.call("エ：全て原文に一致します。ICTの活用により，学習・生活・健康の情報に基づく支援，障害のある子供の情報保障，教師の知見の可視化・共有や新しい知見の生成へつなげることを述べています。"),
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部4(3)，本文26頁（PDF31ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=31",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..11).to_a
-  raise "承認済みの問番号は3〜11です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
+  raise "承認済みの問番号は3〜15です"
 end
 
 categories = {
@@ -218,6 +305,8 @@ categories = {
   6 => "curriculum_organization", 7 => "student_guidance_career",
   8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
   11 => "student_guidance_career",
+  12 => "special_support_education", 13 => "educational_psychology",
+  14 => "educational_psychology", 15 => "education_system",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
@@ -240,7 +329,7 @@ questions.each do |question|
         choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 }
       raise "問#{number}の条番号・空欄と選択肢の対応が不正です"
     end
-  elsif number >= 6
+  elsif (6..11).cover?(number)
     count = [8, 11].include?(number) ? 3 : 4
     expected_labels = %w[① ② ③ ④].first(count)
     table_question = false
@@ -261,6 +350,15 @@ questions.each do |question|
     end
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
+    end
+  elsif number == 15
+    prompt = blocks.first
+    labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten }.uniq
+    unless quotes.size == 1 && labels == %w[① ② ③] && prompt[:type] == "fill_in_text" &&
+        prompt.fetch(:text).scan(/\{\{([①②③])\}\}/).flatten.uniq == %w[① ③] &&
+        prompt.fetch(:text).include?("「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）") &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "問15の資料名・抜粋・空欄と選択肢の対応が不正です"
     end
   end
   if blocks.any? { |block| block[:type] == "quote" }

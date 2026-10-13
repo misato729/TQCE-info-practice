@@ -17,10 +17,11 @@ class MockExamsCurriculumRevisionTest < ActionDispatch::IntegrationTest
   end
 
   test "承認された七問だけを改稿し対象外五百八問を維持する" do
-    # Later additions are outside this historical seven-question revision.
-    # Keep the original 508-question digest fixed, rather than rebasing it.
+    # Later curriculum/guidance (6..11) and psychology/report (12..15)
+    # additions are checked by their own approval/source fixtures and are
+    # outside this historical revision. Keep the original 508 hashes fixed.
     historical_entries = @all_entries.reject do |entry|
-      (26..30).cover?(entry.fetch(:exam_number)) && (6..11).cover?(entry.fetch(:attributes).fetch(:question_number))
+      (26..30).cover?(entry.fetch(:exam_number)) && (6..15).cover?(entry.fetch(:attributes).fetch(:question_number))
     end
     assert_equal 515, historical_entries.size
     assert_equal ANSWERS.keys.sort, @questions.keys.sort
