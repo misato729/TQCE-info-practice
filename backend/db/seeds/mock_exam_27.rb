@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験27（承認済み問3〜15。20問完成までは下書き）
+# 模擬試験27（承認済み問3〜15・19〜20。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -298,10 +298,63 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部3(1)，本文50頁（PDF55ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=55\n中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部3(1)③，本文20頁（PDF25ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=25\n文部科学省『キャリア教育』・キャリア教育の定義（誤答イの補助根拠） | https://www.mext.go.jp/a_menu/shotou/career/index.htm\n文部科学省『キャリア教育の推進に関する総合的調査研究協力者会議報告書』・第2章4(1)・5(2)，普通教育・職業教育とキャリア教育の関係（誤答イの補助根拠） | https://www.mext.go.jp/b_menu/shingi/chousa/shotou/023/toushin/04012801/002/003.htm",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次のプログラムは，二つの変数 x，y を3回更新するものである。各回の更新では，更新前の x と y の和を新しい x とし，更新前の x を新しい y とする。空欄 {{①}}・{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      text_block.call("= は右辺の値を求めた後，その値を左辺へ代入することを表す。各行は上から順に実行される。range(0, 3) は0，1，2を順に取り出し，行頭の字下げは処理の範囲を表す。t は更新前の値を一時的に保存するための変数である。"),
+      { type: "code", code: "01 x = 2\n02 y = 3\n03 for i in range(0, 3):\n04     t = 【①】\n05     x = x + y\n06     y = 【②】\n07 print(x)" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["x", "x"]),
+      fill_in_choice.call("イ", ["x", "t"], true),
+      fill_in_choice.call("ウ", ["y", "t"]),
+      fill_in_choice.call("エ", ["y", "x"]),
+    ],
+    explanation_blocks: [
+      text_block.call("05行で x を更新すると，更新前の x は x から読み取れなくなる。その値を04行で t に保存し，06行で y へ代入する必要がある。"),
+      {
+        type: "table",
+        headers: ["更新回数", "更新前の x，y", "t", "更新後の x，y"],
+        rows: [["1回目", "2，3", "2", "5，2"], ["2回目", "5，2", "5", "7，5"], ["3回目", "7，5", "7", "12，7"]],
+      },
+      text_block.call("ア：更新前の x を退避する点は正しいが，06行で更新後の x を y に入れてしまう。x，y はともに5，10，20と変わり，表示は20となる。"),
+      text_block.call("イ：正しい。各回の古い x を次の y に引き継ぐため，表示は12となる。"),
+      text_block.call("ウ：退避するのが更新前の y なので，y は3のまま変わらない。x は5，8，11と変わり，表示は11となる。"),
+      text_block.call("エ：退避する値が y であり，さらに y へ更新後の x を代入する。t は更新に使われず，アと同様に表示は20となる。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13（2）制御構造（114頁／PDF20頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20\n文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13（4）反復の例（117頁／PDF23頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=23",
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("図書館の利用状況を調べるため，次の二つの資料を作成した。資料の構造と分析に関する記述として適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("資料Ⅰ：ある一つの図書館について，2024年1月から2025年12月までの各月の来館者数を記録した。1行が一つの月に対応し，年月と来館者数の列を持つ。"),
+      text_block.call("資料Ⅱ：40の図書館について，2025年12月の来館者数と延床面積を記録した。1行が一つの図書館に対応し，図書館名，来館者数及び延床面積の列を持つ。"),
+    ],
+    choices: [
+      text_choice.call("ア", "資料Ⅰは時系列データ，資料Ⅱはクロスセクションデータである。資料Ⅰの来館者数を小さい順に並べたときの隣り合う値の差から，前月と比べた増減を分析できる。"),
+      text_choice.call("イ", "資料Ⅰは24個の月を対象とするクロスセクションデータ，資料Ⅱは40の図書館を対象とする時系列データである。記録の件数と対象の数に基づき，両者を分類できる。"),
+      text_choice.call("ウ", "資料Ⅰは一つの図書館を時間に沿って記録した時系列データ，資料Ⅱは同じ月の複数の図書館を記録したクロスセクションデータである。前者は時間的な推移，後者は図書館間の違いを調べるために利用できる。", true),
+      text_choice.call("エ", "資料Ⅰは時系列データ，資料Ⅱはクロスセクションデータである。資料Ⅱで延床面積の大きい図書館ほど来館者数が多ければ，同じ図書館が年月とともに面積を広げたときの来館者数の変化も記録されていると解釈できる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("データが「同じ対象について異なる時点を記録しているか」「同じ時点について異なる対象を記録しているか」を区別する。"),
+      text_block.call("ア：資料の分類は正しいが，時間の順序を来館者数の大小順へ置き換えると，隣り合う値は前月と当月を表すとは限らない。前月からの増減には年月の対応を用いる。"),
+      text_block.call("イ：両者の分類が逆である。24件，40件という件数自体では分類できず，各行がどの対象・時点に対応するかを確認する。"),
+      text_block.call("ウ：正しい。資料Ⅰは同じ図書館を24か月にわたって観測し，資料Ⅱは同じ月に40の図書館を観測している。"),
+      text_block.call("エ：資料の分類は正しいが，異なる図書館間の違いを，同じ図書館の時間的変化と取り違えている。資料Ⅱには，各図書館が面積を広げる前後の来館者数は記録されていない。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）「量的データと質的データ」・時系列データとクロスセクションデータ（本文184頁／PDF32頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=32",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
-  raise "承認済みの問番号は3〜15です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
+  raise "承認済みの問番号は3〜15・19〜20です"
 end
 
 categories = {
@@ -311,11 +364,13 @@ categories = {
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  expected_major = number >= 19 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
@@ -354,6 +409,14 @@ questions.each do |question|
     end
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
+    end
+  elsif number == 19
+    prompt = blocks.first
+    code = blocks.find { |block| block[:type] == "code" }
+    unless prompt[:type] == "fill_in_text" && prompt.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+        code && code.fetch(:code).scan(/【([①②])】/).flatten.uniq == %w[① ②] &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+      raise "問19のコードの空欄と選択肢の対応が不正です"
     end
   end
   if blocks.any? { |block| block[:type] == "quote" }

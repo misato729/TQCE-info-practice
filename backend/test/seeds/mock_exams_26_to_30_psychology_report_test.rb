@@ -4,7 +4,7 @@ require "digest"
 class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   EXAMS = (26..30).to_a.freeze
   NUMBERS = (12..15).to_a.freeze
-  PARTIAL_NUMBERS = (3..15).to_a.freeze
+  PARTIAL_NUMBERS = ((3..15).to_a + [19, 20]).freeze
   LABELS = %w[ア イ ウ エ].freeze
   BLANKS = %w[① ② ③].freeze
   CATEGORIES = { 12 => "special_support_education", 13 => "educational_psychology",
@@ -24,7 +24,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   end
 
   test "承認草案二十問の本文四択正答全解説出典分類を独立snapshotと照合する" do
-    assert_equal 65, @entries.size
+    assert_equal 75, @entries.size
     assert_equal 20, @added.size
     assert_equal APPROVED.fetch("sections").keys.sort, @questions.keys.sort
     @added.each do |entry|
@@ -86,7 +86,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
     EXAMS.each do |exam|
       entries = @entries.select { |entry| entry[:exam_number] == exam }
       assert_equal PARTIAL_NUMBERS, entries.map { |entry| entry[:attributes][:question_number] }, exam
-      assert_equal ANSWERS.fetch(exam), entries.last(4).map { |entry| answer(entry[:attributes])[:label] }, exam
+      assert_equal ANSWERS.fetch(exam), entries.select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }.map { |entry| answer(entry[:attributes])[:label] }, exam
       assert entries.map { |entry| answer(entry[:attributes])[:label] }.tally.values.all? { |count| count <= 5 }, exam
     end
     APPROVED.fetch("documents").each_value { |document| assert_match(/\A[0-9a-f]{64}\z/, document.fetch("sha256")) }
@@ -94,10 +94,14 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
 
   test "新規二十問以外の既存五百四十五問と問三から十一の固定内容を維持する" do
     entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
-    assert_equal 565, entries.size
+    assert_equal 575, entries.size
     previous = APPROVED.fetch("existing_545_payload_digests")
     assert_equal 545, previous.size
-    unchanged = entries.reject { |entry| @questions.key?(key(entry)) }
+    # Later approved Q19/Q20 are checked by their separate independent draft
+    # and calculation tests. Keep this historical 545-question fixture fixed.
+    unchanged = entries.reject do |entry|
+      @questions.key?(key(entry)) || (EXAMS.include?(entry[:exam_number]) && [19, 20].include?(entry[:attributes][:question_number]))
+    end
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|
       assert_equal previous.fetch(key(entry)), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), key(entry)
@@ -205,7 +209,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
 
   test "未完五セットは管理取得だけ可能で一般一覧next取得回答へ公開しない" do
     save_entries
-    assert_equal 65, Question.where(exam_number: EXAMS, publication_status: "draft").count
+    assert_equal 75, Question.where(exam_number: EXAMS, publication_status: "draft").count
     headers = admin_headers
     [nil, headers].each do |request_headers|
       get api_v1_exams_path, headers: request_headers
@@ -218,7 +222,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
       assert_no_public_answers(response.parsed_body)
       get "/api/v1/admin/questions", params: { exam_number: exam, publication_status: "draft" }, headers: headers
       assert_response :success
-      assert_equal 13, response.parsed_body.dig("meta", "total_count")
+      assert_equal 15, response.parsed_body.dig("meta", "total_count")
       assert_equal PARTIAL_NUMBERS, response.parsed_body.fetch("data").map { |record| record.fetch("question_number") }
     end
     @added.each do |entry|
@@ -284,7 +288,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "十三問のみの未完セットの管理API公開操作を不足で拒否する" do
+  test "十五問のみの未完セットの管理API公開操作を不足で拒否する" do
     save_entries
     EXAMS.each do |exam|
       record = Question.find_by!(exam_number: exam, question_number: 12)

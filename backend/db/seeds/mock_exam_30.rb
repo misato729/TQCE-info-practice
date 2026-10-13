@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験30（承認済み問3〜15。20問完成までは下書き）
+# 模擬試験30（承認済み問3〜15・19〜20。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -300,10 +300,64 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部6(2)④・⑤，本文78頁（PDF83ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=83",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムを実行したとき，06行で表示される配列 out として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("配列の添字は0から始まり，表示する配列は添字0，1，2，3，4の順に並べる。range(0, 5) は0から4までを順に取り出す。= は右辺の値を求めた後，その値を左辺へ代入することを表す。dest[i] は data の添字 i の値を書き込む先の，out の添字を表す。data と dest の要素は処理中に変更されない。行頭の字下げは処理の範囲を表す。"),
+      { type: "code", code: "01 data = [5, 7, 2, 9, 4]\n02 dest = [2, 4, 1, 0, 3]\n03 out = [0, 0, 0, 0, 0]\n04 for i in range(0, 5):\n05     out[dest[i]] = data[i]\n06 print(out)" },
+    ],
+    choices: [
+      text_choice.call("ア", "[9, 2, 5, 4, 7]", true),
+      text_choice.call("イ", "[2, 4, 7, 5, 9]"),
+      text_choice.call("ウ", "[5, 7, 2, 9, 4]"),
+      text_choice.call("エ", "[7, 4, 5, 2, 9]"),
+    ],
+    explanation_blocks: [
+      text_block.call("dest の値は読み取る位置ではなく，書き込む位置を指定する。各要素の対応は次のとおりである。"),
+      {
+        type: "table",
+        headers: ["i", "data[i]", "dest[i]", "書込み"],
+        rows: [["0", "5", "2", "out[2] = 5"], ["1", "7", "4", "out[4] = 7"], ["2", "2", "1", "out[1] = 2"], ["3", "9", "0", "out[0] = 9"], ["4", "4", "3", "out[3] = 4"]],
+      },
+      text_block.call("ア：正しい。書き込んだ値を out の添字0から順に並べると，9，2，5，4，7となる。"),
+      text_block.call("イ：これは，05行を out[i] = data[dest[i]] とし，dest を読み取る位置の指定に使った場合の結果である。提示したコードとは代入先と参照先の対応が逆である。"),
+      text_block.call("ウ：これは out[i] = data[i] とし，dest を使わず元の順番で書き込んだ場合の結果である。"),
+      text_block.call("エ：正しい結果を逆順に表示したものであり，例えば out[4 - dest[i]] = data[i] として，書込先を反対側から数えた場合に得られる。指定は添字0から順の表示である。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習14（1）リスト（122頁／PDF28頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("データAの各値を2倍して，データBを作った。Bの平均値，分散及び標準偏差がAのそれぞれ何倍になるか，組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("ここでは，分散は各値と平均値との差の2乗を合計してデータの個数で割った値，標準偏差は分散の正の平方根とする。"),
+      { type: "table", headers: ["データ", "値"], rows: [["A", "2，2，4，4"], ["B", "4，4，8，8"]] },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "table", headers: ["平均値", "分散", "標準偏差"], rows: [["1倍", "2倍", "2倍"]] }], correct: false },
+      { label: "イ", content_blocks: [{ type: "table", headers: ["平均値", "分散", "標準偏差"], rows: [["2倍", "4倍", "2倍"]] }], correct: true },
+      { label: "ウ", content_blocks: [{ type: "table", headers: ["平均値", "分散", "標準偏差"], rows: [["2倍", "2倍", "4倍"]] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "table", headers: ["平均値", "分散", "標準偏差"], rows: [["1倍", "4倍", "4倍"]] }], correct: false },
+    ],
+    explanation_blocks: [
+      text_block.call("各値と平均値が2倍になるため，平均との差も2倍になる。その2乗を使う分散は4倍，分散の正の平方根である標準偏差は2倍になる。"),
+      { type: "table", headers: ["データ", "平均値", "平均値からの差", "差の2乗の合計", "分散", "標準偏差"], rows: [["A", "3", "−1，−1，1，1", "4", "1", "1"], ["B", "6", "−2，−2，2，2", "16", "4", "2"]] },
+      text_block.call("ア：平均値は3から6へ2倍になる。分散も，平均との差を2乗して求めるため，2倍ではなく4倍である。標準偏差が2倍になる点は正しい。"),
+      text_block.call("イ：正しい。平均値6÷3＝2，分散4÷1＝4，標準偏差2÷1＝2となる。"),
+      text_block.call("ウ：平均値が2倍になる点は正しいが，分散と標準偏差の倍率が逆になっている。"),
+      text_block.call("エ：分散が4倍になる点は正しいが，平均値は変わらないのではなく2倍，標準偏差は4倍ではなく2倍となる。"),
+    ],
+    source_text: "総務省統計局「なるほど統計学園」データの散らばりを見る・分散と標準偏差 | https://www.stat.go.jp/naruhodo/10_tokucho/chirabari.html\n文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）「量的データと質的データ」・量的データの散らばり（本文185頁／PDF33頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=33",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
-  raise "承認済みの問番号は3〜15です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
+  raise "承認済みの問番号は3〜15・19〜20です"
 end
 
 categories = {
@@ -313,11 +367,13 @@ categories = {
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  expected_major = number >= 19 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1

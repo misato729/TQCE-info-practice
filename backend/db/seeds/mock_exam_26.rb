@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験26（承認済み問3〜15。20問完成までは下書き）
+# 模擬試験26（承認済み問3〜15・19〜20。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -291,10 +291,63 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部2(1)「日本型学校教育の成り立ちと成果」・本文5〜6頁（PDF10〜11頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=10",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次のプログラムは，配列 data の各値を先頭から順に調べ，元の値が偶数ならば2で割った値に，奇数ならば3倍して1を加えた値に置き換え，その結果を配列 out に保存するものである。各値への置換は一度だけ行う。空欄 {{①}}・{{②}} に当てはまるものの組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      text_block.call("= は代入，== は等しいかの比較，!= は等しくないかの比較，% は整数除算の余り，// は整数除算の商を表す。for x in data は各要素の値を先頭から順に x へ代入して繰り返す。x の変更によって data の要素は変更されない。if はその条件を判定し，elif は直前の if の条件が成立しなかったときだけ次の条件を判定する。行頭の字下げは処理の範囲を表し，out.append(x) は out の末尾に x を追加する。"),
+      { type: "code", code: "01 data = [2, 3, 4, 5, 6]\n02 out = []\n03 for x in data:\n04     if x % 2 【①】 0:\n05         x = x // 2\n06     【②】 x % 2 == 1:\n07         x = 3 * x + 1\n08     out.append(x)\n09 print(out)" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["==", "if"]),
+      fill_in_choice.call("イ", ["!=", "elif"]),
+      fill_in_choice.call("ウ", ["!=", "if"]),
+      fill_in_choice.call("エ", ["==", "elif"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("04行で元の値の偶数・奇数を区別する。偶数を2で割った後の値が奇数になる場合もあるので，06行を独立した if にすると，同じ値に二つの置換を行ってしまう。"),
+      {
+        type: "table",
+        headers: ["元の値", "適用する処理", "out に追加する値"],
+        rows: [["2", "2で割る", "1"], ["3", "3倍して1を加える", "10"], ["4", "2で割る", "2"], ["5", "3倍して1を加える", "16"], ["6", "2で割る", "3"]],
+      },
+      text_block.call("ア：偶数への最初の処理は正しいが，変換後の値で06行の条件を改めて判定する。2は1を経て4，6は3を経て10になり，表示は [4, 10, 2, 16, 10] となる。"),
+      text_block.call("イ：04行が奇数のときに成立するため，奇数を2で割ってしまう。06行は最初の条件が成立しなかった偶数について判定するので，3倍して1を加える処理は実行されず，表示は [2, 1, 4, 2, 6] となる。"),
+      text_block.call("ウ：奇数を2で割った後，その結果について06行を判定する。3は1を経て4，5は2となり，偶数はそのままなので，表示は [2, 4, 4, 2, 6] となる。"),
+      text_block.call("エ：正しい。元の値に応じて二つの処理のいずれか一方を実行し，表示は [1, 10, 2, 16, 3] となる。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13（2）制御構造（114頁／PDF20頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20",
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次の表は，同じ年における二つの市A・Bの人口と交通事故の発生件数を示したものである。人口規模の違いを考慮して比較するため，各市について人口1,000人当たりの発生件数を求める。この指標の値の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      { type: "table", headers: ["市", "人口（人）", "交通事故の発生件数（件）"], rows: [["A", "18,000", "36"], ["B", "60,000", "90"]] },
+    ],
+    choices: [
+      { label: "ア", content_blocks: [{ type: "table", headers: ["Aの人口1,000人当たりの件数", "Bの人口1,000人当たりの件数"], rows: [["2.0", "1.5"]] }], correct: true },
+      { label: "イ", content_blocks: [{ type: "table", headers: ["Aの人口1,000人当たりの件数", "Bの人口1,000人当たりの件数"], rows: [["2.0", "0.15"]] }], correct: false },
+      { label: "ウ", content_blocks: [{ type: "table", headers: ["Aの人口1,000人当たりの件数", "Bの人口1,000人当たりの件数"], rows: [["0.2", "1.5"]] }], correct: false },
+      { label: "エ", content_blocks: [{ type: "table", headers: ["Aの人口1,000人当たりの件数", "Bの人口1,000人当たりの件数"], rows: [["0.2", "0.15"]] }], correct: false },
+    ],
+    explanation_blocks: [
+      text_block.call("人口1,000人当たりの件数は「発生件数÷人口×1,000」で求める。総件数と，人口当たりの件数を区別する。"),
+      { type: "code", code: "A：36÷18,000×1,000＝2.0（件）\nB：90÷60,000×1,000＝1.5（件）\n総件数：Bの方が多い（90＞36）\n人口1,000人当たり：Aの方が多い（2.0＞1.5）" },
+      text_block.call("ア：正しい。総件数ではBの方が多いが，人口1,000人当たりの件数ではAの方が多い。"),
+      text_block.call("イ：Aの値は正しいが，Bの0.15は人口100人当たりの件数であり，指定された1,000人当たりの値ではない。"),
+      text_block.call("ウ：Bの値は正しいが，Aの0.2は人口100人当たりの件数であり，指定された1,000人当たりの値ではない。"),
+      text_block.call("エ：両市とも人口100人当たりの値となっており，指定された人口1,000人当たりの値の10分の1になっている。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）「量的データと質的データ」・人口規模を調整する変数変換（本文185頁／PDF33頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=33",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
-  raise "承認済みの問番号は3〜15です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
+  raise "承認済みの問番号は3〜15・19〜20です"
 end
 
 categories = {
@@ -304,11 +357,13 @@ categories = {
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  expected_major = number >= 19 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
@@ -347,6 +402,14 @@ questions.each do |question|
     end
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
+    end
+  elsif number == 19
+    prompt = blocks.first
+    code = blocks.find { |block| block[:type] == "code" }
+    unless prompt[:type] == "fill_in_text" && prompt.fetch(:text).scan(/\{\{([①②])\}\}/).flatten.uniq == %w[① ②] &&
+        code && code.fetch(:code).scan(/【([①②])】/).flatten.uniq == %w[① ②] &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 2 }
+      raise "問19のコードの空欄と選択肢の対応が不正です"
     end
   end
   if blocks.any? { |block| block[:type] == "quote" }

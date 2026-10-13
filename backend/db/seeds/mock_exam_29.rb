@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験29（承認済み問3〜15。20問完成までは下書き）
+# 模擬試験29（承認済み問3〜15・19〜20。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -298,10 +298,63 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部5(3)③，5(5)・(6)，本文72・74〜75頁，脚注100・101（PDF77・79〜80頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=77",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムを実行したとき，10行で表示される count の値として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("False は偽，True は真を表す。not on は，on が偽なら真，真なら偽となる。= は代入，== は等しいかの比較を表す。for signal in signals は各要素の値を先頭から順に signal へ代入して繰り返す。行頭の字下げは処理の範囲を表す。05～06行で必要な切替えを行った後，08行で on が真かどうかを判定する。"),
+      { type: "code", code: "01 signals = [1, 0, 0, 1, 1, 0]\n02 on = False\n03 count = 0\n04 for signal in signals:\n05     if signal == 1:\n06         on = not on\n07\n08     if on:\n09         count = count + 1\n10 print(count)" },
+    ],
+    choices: [
+      text_choice.call("ア", "2"),
+      text_choice.call("イ", "3"),
+      text_choice.call("ウ", "5", true),
+      text_choice.call("エ", "4"),
+    ],
+    explanation_blocks: [
+      text_block.call("入力が1のときに on の状態が反転し，入力が0のときはその状態を保つ。count は入力の値ではなく，切替え後の on が真である回に増える。"),
+      { type: "table", headers: ["signal", "処理後の on", "処理後の count"], rows: [["1", "真", "1"], ["0", "真", "2"], ["0", "真", "3"], ["1", "偽", "3"], ["1", "真", "4"], ["0", "真", "5"]] },
+      text_block.call("ア：2は，入力が1であり，切替え後の on も真である回だけを数えた値である。実際の08～09行は05行の分岐の外にあり，入力が0でも on が真なら count が増える。"),
+      text_block.call("イ：3は入力が1である回数である。例えば05〜06行を除き，代わりに繰返しの中で毎回 on = (signal == 1) とする処理なら3となるが，実際には0が来ても on の状態を保つ。"),
+      text_block.call("ウ：正しい。切替え後に on が真となるのは，1，2，3，5，6回目の計5回である。"),
+      text_block.call("エ：4は，08～09行の判定・加算を05行より前へ移し，切替え前の状態で数えた場合の値である。提示したコードでは切替え後に判定する。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習13（4）分岐と反復を組み合わせた例（117～118頁／PDF23～24頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=23",
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("同じ4人について学習時間と小テストの得点を記録し，散布図と相関係数によって二つの量的変数の関係を調べる。1行には同じ生徒の二つの測定値が記録されている。データの前処理に関する記述として適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      { type: "table", headers: ["生徒", "学習時間（分）", "得点（点）"], rows: [["A", "20", "70"], ["B", "40", "50"], ["C", "10", "80"], ["D", "30", "60"]] },
+    ],
+    choices: [
+      text_choice.call("ア", "学習時間の単位を分から時間へ統一する場合，学習時間の各値を60で割り，同じ行の得点との対応を保って分析する。"),
+      text_choice.call("イ", "数値の前後に意味のない空白が付いている場合，それを取り除いて数値として扱える形式に整え，生徒ごとの学習時間と得点を組にして分析する。"),
+      text_choice.call("ウ", "学習時間の小さい順に整理する場合，生徒，学習時間，得点を含む行全体を並べ替え，並べ替えた後の学習時間と得点の組を用いる。"),
+      text_choice.call("エ", "両列の並び順をそろえるため，学習時間の列と得点の列をそれぞれ独立に小さい順へ並べ替え，同じ順位の値を組にして分析する。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("二つの量的変数の関係を分析するときは，同じ対象に対応する値の組を保つ。値の一覧がそれぞれ正しくても，組合せが変われば別のデータになる。"),
+      {
+        type: "table",
+        headers: ["処理", "作られる（学習時間，得点）の組"],
+        rows: [["元の対応を保ち，行全体を学習時間の昇順に整理", "（10，80），（20，70），（30，60），（40，50）"], ["二列を独立に昇順にして同じ順位の値を組にする", "（10，50），（20，60），（30，70），（40，80）"]],
+      },
+      text_block.call("ア：適切。単位の換算と二つの記録の対応を区別し，同じ生徒の組を保っている。"),
+      text_block.call("イ：適切。意味のない空白を取り除いても観測値と対応は変わらず，数値として処理できる。"),
+      text_block.call("ウ：適切。行全体を並べ替えれば，生徒ごとの測定値の組は変わらない。元のデータでは学習時間が大きいほど得点が小さい関係が保たれる。"),
+      text_block.call("エ：不適切。例えばCの学習時間10分とBの得点50点を組にするなど，異なる生徒の値が結び付く。元の組は右下がりの一直線上にあるが，この処理後は右上がりの一直線上の組へ変わる。元の関係を分析したことにはならない。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）「量的データと質的データ」・行が観測対象，列が観測項目（本文184頁／PDF32頁）及び（2）「量的データ間の関係」（本文186頁／PDF34頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=32\n総務省統計局「なるほど統計学園」複数の変数の関係性を見る・散布図と対応する二変量の関係 | https://www.stat.go.jp/naruhodo/10_tokucho/hukusu.html",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
-  raise "承認済みの問番号は3〜15です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
+  raise "承認済みの問番号は3〜15・19〜20です"
 end
 
 categories = {
@@ -311,11 +364,13 @@ categories = {
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  expected_major = number >= 19 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1

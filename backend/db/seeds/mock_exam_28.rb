@@ -6,7 +6,7 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験28（承認済み問3〜15。20問完成までは下書き）
+# 模擬試験28（承認済み問3〜15・19〜20。20問完成までは下書き）
 questions = [
   {
     question_number: 3,
@@ -294,10 +294,59 @@ questions = [
     ],
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部4(3)，本文26頁（PDF31ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=31",
   },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("次のプログラムは，配列 data の5個の値の平均値について，小数点以下を切り捨てた整数を表示するために作成したものである。しかし，このままでは意図した表示にならない。修正方法として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      text_block.call("= は代入を表し，非負の整数について a // b は a を b で割った商の小数点以下を切り捨てた値を表す。for x in data は各要素の値を先頭から順に x へ代入して繰り返す。行頭の字下げは処理の範囲を表す。"),
+      { type: "code", code: "01 data = [3, 8, 4, 6, 9]\n02 total = 0\n03 for x in data:\n04     total = total + x\n05     total = total // 5\n06 print(total)" },
+    ],
+    choices: [
+      text_choice.call("ア", "05行の位置はそのままとし，06行を字下げして，繰返しの中で05行の直後に実行する。"),
+      text_choice.call("イ", "05行を03行の直前へ移し，字下げをなくして，繰返しが始まる前に実行する。"),
+      text_choice.call("ウ", "05行の字下げをなくし，繰返しが終了してから06行の直前に実行する。", true),
+      text_choice.call("エ", "05行を04行の直前へ移し，字下げはそのままとして，繰返しの中で加算の前に実行する。"),
+    ],
+    explanation_blocks: [
+      text_block.call("全ての値の合計30を求めた後，一度だけ5で割ると，平均値の整数部分6が得られる。加算の途中で除算すると，それまでの合計自体が変更され，切捨ても繰り返される。"),
+      { type: "code", code: "加算後の total：3 → 11 → 15 → 21 → 30\n繰返し終了後：30 // 5 = 6" },
+      text_block.call("ア：加算と整数除算を繰り返す点は変わらず，途中の値0，1，1，1，2を順に表示する。平均値の整数部分を一つ表示する処理にはならない。"),
+      text_block.call("イ：初期値0を5で割った後，全要素を加算するため，表示は合計の30となる。"),
+      text_block.call("ウ：正しい。除算を全要素の加算後に一度だけ行い，6を表示する。"),
+      text_block.call("エ：直前の total を5で割ってから次の値を加えるため，total は3，8，5，7，10と変わり，表示は10となる。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習14（1）リスト「リストを用いたプログラムの例2」（122頁／PDF28頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=28",
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      text_block.call("4人の通学時間を，次の区分に従って符号1～3へ変換した。元の通学時間と，変換後のデータの性質に関する記述として適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"),
+      { type: "table", headers: ["区分", "通学時間", "記録する符号"], rows: [["短い", "0分以上30分未満", "1"], ["中程度", "30分以上60分未満", "2"], ["長い", "60分以上", "3"]] },
+      { type: "table", headers: ["生徒", "A", "B", "C", "D"], rows: [["元の通学時間（分）", "20", "30", "55", "90"], ["変換後の符号", "1", "2", "2", "3"]] },
+    ],
+    choices: [
+      text_choice.call("ア", "変換後の符号は順序尺度である。符号2となったBとCについて，どちらの通学時間が長いか，何分違うかを，符号だけから判断することはできない。", true),
+      text_choice.call("イ", "変換後の符号は順序尺度である。符号の平均値2を中程度の区分の中央45分に対応させれば，元の4人の平均通学時間が得られる。"),
+      text_choice.call("ウ", "符号には1，2，3の順序があり，隣り合う符号の差は1であるため，変換後のデータは間隔尺度である。符号の差が等しければ，元の通学時間の差も等しい。"),
+      text_choice.call("エ", "変換後の符号は順序尺度である。符号2の生徒の人数が符号1の生徒の2倍であるため，それぞれの区分に属する生徒の通学時間の合計も同じ2倍の関係になる。"),
+    ],
+    explanation_blocks: [
+      text_block.call("量的な値をいくつかの区分に分け，順序を持つ質的データへ変換することを，教材では水準化（レベル化）と説明している。"),
+      text_block.call("ア：正しい。区分間の短い・長いという順序は残るが，同じ区分に入った元の値の差は符号だけでは分からない。Bは30分，Cは55分だが，どちらも符号2となる。"),
+      text_block.call("イ：尺度の分類は正しいが，符号の平均から元の時間の平均を求める処理が誤りである。元の平均は（20＋30＋55＋90）÷4＝48.75分であり，45分とは一致しない。同じ符号でも，区分内で元の値は異なり得る。"),
+      text_block.call("ウ：隣り合う符号の差が1でも，元の時間の差が等しいことは保証されない。BとCは符号の差が0なのに，元の時間の差は25分である。符号は順序尺度であり，間隔尺度ではない。"),
+      text_block.call("エ：尺度の分類と人数の比較は正しいが，人数の比を通学時間の合計の比と取り違えている。符号2の生徒の通学時間の合計は30＋55＝85分，符号1の生徒は20分であり，2倍ではない。人数は区分化後も集計できるが，時間の合計には元の量的な値が必要である。"),
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章・学習22（1）「量的データと質的データ」・尺度水準（本文184頁／PDF32頁）及び水準化（本文185頁／PDF33頁） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=33",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a
-  raise "承認済みの問番号は3〜15です"
+unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
+  raise "承認済みの問番号は3〜15・19〜20です"
 end
 
 categories = {
@@ -307,11 +356,13 @@ categories = {
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  expected_major = number >= 19 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1

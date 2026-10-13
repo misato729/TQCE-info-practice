@@ -4,7 +4,7 @@ require "digest"
 class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
   EXAMS = (26..30).to_a.freeze
   NUMBERS = (6..11).to_a.freeze
-  PARTIAL_NUMBERS = (3..15).to_a.freeze
+  PARTIAL_NUMBERS = ((3..15).to_a + [19, 20]).freeze
   LABELS = %w[ア イ ウ エ].freeze
   BLANKS = %w[① ② ③ ④].freeze
   ANSWERS = {
@@ -225,9 +225,9 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "未完五セットの十三問は管理取得のみ可能で一般一覧next取得回答へ公開しない" do
+  test "未完五セットの十五問は管理取得のみ可能で一般一覧next取得回答へ公開しない" do
     save_partial_entries
-    assert_equal 65, Question.where(exam_number: EXAMS, publication_status: "draft").count
+    assert_equal 75, Question.where(exam_number: EXAMS, publication_status: "draft").count
     headers = admin_headers
     [nil, headers].each do |request_headers|
       get api_v1_exams_path, headers: request_headers
@@ -240,7 +240,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
       assert_no_public_answers(response.parsed_body)
       get "/api/v1/admin/questions", params: { exam_number: exam, publication_status: "draft" }, headers: headers
       assert_response :success
-      assert_equal 13, response.parsed_body.dig("meta", "total_count")
+      assert_equal 15, response.parsed_body.dig("meta", "total_count")
       assert_equal PARTIAL_NUMBERS, response.parsed_body.fetch("data").map { |record| record.fetch("question_number") }
     end
     @entries.each do |entry|
@@ -285,7 +285,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "十三問のみ登録された未完セットを公開する管理操作は不足を返して拒否する" do
+  test "十五問のみ登録された未完セットを公開する管理操作は不足を返して拒否する" do
     save_partial_entries
     EXAMS.each do |exam|
       record = Question.find_by!(exam_number: exam, question_number: 6)
@@ -300,13 +300,13 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
 
   test "今回追加した三十問を除く既存五百十五問の変更前hashを全件維持する" do
     entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
-    assert_equal 565, entries.size
+    assert_equal 575, entries.size
     previous = APPROVED.fetch("existing_515_payload_digests")
     assert_equal 515, previous.size
-    # The later approved 20 psychology/report additions are checked by their
-    # own independent draft and PDF fixtures. Do not rebase these old hashes.
+    # Later approved psychology/report and algorithm/statistics additions are
+    # checked by their independent draft/PDF/calculation tests. Keep old hashes.
     unchanged = entries.reject do |entry|
-      @questions.key?(key(entry)) || (EXAMS.include?(entry[:exam_number]) && (12..15).cover?(entry[:attributes][:question_number]))
+      @questions.key?(key(entry)) || (EXAMS.include?(entry[:exam_number]) && ((12..15).cover?(entry[:attributes][:question_number]) || [19, 20].include?(entry[:attributes][:question_number])))
     end
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|
