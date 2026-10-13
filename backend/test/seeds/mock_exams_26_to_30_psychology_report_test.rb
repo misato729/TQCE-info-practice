@@ -18,7 +18,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   setup do
     @entries = QuestionSeedSync.collect do
       EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
-    end
+    end.select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @added = @entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @added.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -32,7 +32,6 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
       question = entry.fetch(:attributes)
       approved = APPROVED.fetch("sections").fetch(id)
       head, tail = approved.split(/^正答：[アイウエ].*$/, 2)
-      assert_equal "draft", entry.fetch(:publication_status), id
       assert_equal "teacher_education", question.fetch(:major_category_code), id
       assert_equal CATEGORIES.fetch(question[:question_number]), question.fetch(:category_code), id
       assert_equal approved[/^正答：([アイウエ])/, 1], answer(question).fetch(:label), id
@@ -94,14 +93,11 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
 
   test "新規二十問以外の既存五百四十五問と問三から十一の固定内容を維持する" do
     entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
-    assert_equal 575, entries.size
     previous = APPROVED.fetch("existing_545_payload_digests")
     assert_equal 545, previous.size
-    # Later approved Q19/Q20 are checked by their separate independent draft
-    # and calculation tests. Keep this historical 545-question fixture fixed.
-    unchanged = entries.reject do |entry|
-      @questions.key?(key(entry)) || (EXAMS.include?(entry[:exam_number]) && [19, 20].include?(entry[:attributes][:question_number]))
-    end
+    # Later additions are checked independently. Retain exactly the historical
+    # 545-question key set and its original, never-rebased payload hashes.
+    unchanged = entries.select { |entry| previous.key?(key(entry)) }
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|
       assert_equal previous.fetch(key(entry)), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), key(entry)
@@ -355,7 +351,9 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   end
 
   def save_entries
-    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry) } }
+    # Explicitly recreate the incomplete draft stage for unpublished API and
+    # incomplete-publication guard tests, even after the set is completed.
+    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry.merge(publication_status: "draft")) } }
   end
 
   def record_for(entry)

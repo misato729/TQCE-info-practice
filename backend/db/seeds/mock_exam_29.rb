@@ -6,8 +6,50 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験29（承認済み問3〜15・19〜20。20問完成までは下書き）
+# 模擬試験29（承認済みの全20問）
 questions = [
+  {
+    question_number: 1,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "江戸時代の教育機関の設立・運営及び教育の対象について述べた次のア～エのうち，適切でないものを一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "昌平坂学問所は，林家の家塾としての性格を持つ学問所を源流とし，寛政9年に幕府直轄の学校となった。幕府の旗本・御家人の子弟の教育から，諸藩の家臣などにも学ぶ機会を広げ，朱子学を中心に教えた。"),
+      text_choice.call("イ", "寺子屋は，庶民の日常生活に役立つ読み書きなどを学ぶ場となり，往来物などが教材として用いられた。師匠には町人，僧侶，武士などがおり，教育内容や運営の仕方には，地域や師匠による違いがあった。"),
+      text_choice.call("ウ", "備前の閑谷学校は，岡山藩主池田光政によって設けられ，庶民の子弟にも学ぶ機会を提供した。儒学を教育内容としながらも，藩士の子弟の教育を中心とする藩校とは，主な教育対象に違いがあった。"),
+      text_choice.call("エ", "大坂の懐徳堂は，有力町人の出資により創設され，享保11年に幕府の官許を受けた。官許後は町人の同志会から幕府へ経営主体が移り，資金の運用や日常の学校運営も幕府が直接担う官学となった。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。寛政9年（1797年）の幕府直轄化と，幕臣の子弟から諸藩の家臣へ学ぶ機会を広げた経緯に対応している。"),
+      text_block.call("イ：適切。庶民の実用的な学習，往来物の利用，師匠の出身や内容・運営の多様性を説明している。寺子屋が寺院や僧侶だけによって運営されたという意味ではない。"),
+      text_block.call("ウ：適切。池田光政が設立した閑谷学校は，庶民を対象とする郷校として知られる。藩校の全てが庶民を受け入れなかったと一般化する記述にはしていない。"),
+      text_block.call("エ：誤り。享保9年（1724年）に創設され，享保11年（1726年）に官許を得たが，その後も有力町人を中心とする運営と資金の拠出が続いた。官許を受けたことと，幕府直営への移管を混同している。"),
+    ],
+    source_text: "文部科学省『学制百年史』「一 幕末期の教育」・武家の教育／庶民の教育 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/mext_03454.html\n大阪大学文学部・懐徳堂記念会「懐徳堂の歴史」・懐徳堂の誕生／経営と教育 | https://www.let.osaka-u.ac.jp/kaitokudo/kaitokudo/",
+  },
+  {
+    question_number: 2,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "オーウェンとフレーベルの教育思想及び教育実践について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "オーウェンは，性格形成への環境の影響を重視し，ニュー・ラナークの性格形成学院で労働者の子どもの幼児教育にも取り組んだ。フレーベルは，遊びを内的なものが表れる自己活動として重視し，幼稚園をその活動を保護・援助する場として構想した。", true),
+      text_choice.call("イ", "オーウェンは，性格形成学院で仲間の幸福を大切にすることを教えた。その際，自分の意思で性格を作るという原理に立ち，性格の善悪について本人に責任を負わせ，道徳的な習慣を育てようとした。フレーベルは，幼稚園で遊びや自己活動を重視した。"),
+      text_choice.call("ウ", "オーウェンは，幼児期の環境が性格形成に及ぼす影響を重視した。フレーベルは，子どもの内にあるものを遊びを通して表現させることを重視し，この考え方を『新社会観』にまとめ，幼稚園を，子どもの遊びを保護し発達を援助するための場として構想した。"),
+      text_choice.call("エ", "オーウェンは，工場労働者の生活と子どもの教育の改善を結び付け，ニュー・ハーモニーの工場敷地内に性格形成学院を開設した。フレーベルは，『人間の教育』で人間が自らの内的なものを意識し，表現することを論じ，その自己活動として遊びを重視した。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：適切。環境による性格形成を重視するオーウェンと，内的なものの表現として遊び・自己活動を重視するフレーベルの説明が対応している。ただし，環境と自己活動は相互に排他的だとする記述ではない。"),
+      text_block.call("イ：誤り。仲間の幸福を大切にする指導は適切だが，本人が自分の性格を作るという原理が誤り。オーウェンは環境が性格を形成すると捉え，良い環境を整えることを重視した。"),
+      text_block.call("ウ：誤り。『新社会観』はオーウェンの著作であり，フレーベルの『人間の教育』と取り違えている。遊びの意義と幼稚園の構想の説明は適切。"),
+      text_block.call("エ：誤り。性格形成学院を工場敷地内に設けたのはニュー・ラナーク。ニュー・ハーモニーは後のアメリカでの共同体の実践の地である。フレーベルの著作と遊びの説明は適切。"),
+    ],
+    source_text: "水田聖一「子ども育成学・序説；ロバート・オウエンに見る教育・保育・福祉思想」『富山国際大学子ども育成学部紀要』1（2010年）、76〜78・81〜82頁 | https://www.tuins.ac.jp/common/docs/library/2010kodomo-PDF/2010-08mizuta.pdf\n金子晃之「ロバアト・オウエンの社会編成原理における隣人愛とコミュニティ」（一橋大学、1999年）博士論文要旨・第1章の性格形成原理 | https://www.soc.hit-u.ac.jp/research/archives/doctor/?choice=summary&thesisID=27\n白石崇人『資料から考える教育原理』（2017年、広島文教女子大学）第11章、129〜131頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf",
+  },
   {
     question_number: 3,
     major_category_code: "teacher_education",
@@ -299,6 +341,73 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部5(3)③，5(5)・(6)，本文72・74〜75頁，脚注100・101（PDF77・79〜80頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=77",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第12 情報実習 1 目標」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "情報に関する科学的な見方・考え方を働かせ，実践的・体験的な学習活動を行うことなどを通して，情報産業を担う情報技術者として必要な資質・能力を次のとおり育成することを目指す。\n\n（1）情報の各分野について{{①}}体系的・系統的に理解するとともに，関連する技術を身に付けるようにする。\n\n（2）情報の各分野に関する課題を発見し，情報産業に携わる者として{{②}}に解決する力を養う。\n\n（3）情報の各分野に関する課題を解決する力の向上を目指して自ら学び，{{③}}などに主体的かつ協働的に取り組む態度を養う。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["総合的に捉え","論理的かつ批判的","情報システムの分析やコンテンツの評価及びこれらの管理"]),
+      fill_in_choice.call("イ", ["総合的に捉え","合理的かつ創造的","情報システムの開発やコンテンツの制作及びこれらの運用"], true),
+      fill_in_choice.call("ウ", ["分野ごとに分け","合理的かつ創造的","情報システムの分析やコンテンツの評価及びこれらの管理"]),
+      fill_in_choice.call("エ", ["分野ごとに分け","論理的かつ批判的","情報システムの開発やコンテンツの制作及びこれらの運用"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：②・③が異なる。「合理的かつ創造的」に解決し，情報システムの開発・コンテンツの制作及びこれらの運用に取り組む。"),
+      text_block.call("イ：原文に一致する。各分野を総合的に捉え，課題解決と開発・制作・運用を結び付ける情報実習の目標である。"),
+      text_block.call("ウ：①・③が異なる。「総合的に捉え」と，情報システムの開発・コンテンツの制作・運用の組合せが入る。"),
+      text_block.call("エ：①・②が異なる。「総合的に捉え」と「合理的かつ創造的」が入る。③は一致する。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第12 情報実習 1 目標 1「目標」全文（419頁／PDF421頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=421",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い 情報システムとプログラミング」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "ア（ア） 情報システムにおける，情報の流れや処理の仕組み，情報セキュリティを確保する方法や技術について理解することでは，情報システムを活用するために，ユーザーが提供する情報，情報システムが提供する利便性，これらの情報の流れや処理の仕組み，情報システムを構成する情報技術などについて理解するようにする。その際，暗号化，ファイアウォールの設置，個人認証，アクセス制御，ネットワークのセグメント化などのシステムや組織としての情報セキュリティを確保する方法についても理解するようにする。\n\nなお，ここでいう情報システムとは，コンピュータやセンサ等を含む{{①}}，ネットワークなどのデータ通信，それらを制御する{{②}}，その{{③}}までを含み，それらがまとまって機能する仕組みのことである。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["ハードウェア","プロトコル","データ形式"]),
+      fill_in_choice.call("イ", ["インタフェース","ソフトウェア","データ形式"]),
+      fill_in_choice.call("ウ", ["インタフェース","プロトコル","運用体制"]),
+      fill_in_choice.call("エ", ["ハードウェア","ソフトウェア","運用体制"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("原典の情報システムは，コンピュータやセンサ等を含む「ハードウェア」，データ通信，それらを制御する「ソフトウェア」，「運用体制」までを含むまとまりである。機器・通信・制御プログラムに加え，運用する仕組みも含めて捉える。"),
+      text_block.call("ア：②・③が誤り。制御するものはソフトウェア，構成に含めるのは運用体制である。通信の規約であるプロトコルやデータ形式を入れた定義ではない。"),
+      text_block.call("イ：①・③が誤り。コンピュータやセンサ等を含むハードウェアと，運用体制が入る。②は一致する。"),
+      text_block.call("ウ：①・②が誤り。ハードウェアとソフトウェアが入る。③は一致する。"),
+      text_block.call("エ：三つとも原文に一致する。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 情報編・第1部 第2章第2節 情報Ⅱ 2（4）ア（ア）の説明と情報システムの定義・54頁（PDF62頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=62",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』（平成30年7月文部科学省）の「第2部 主として専門学科において開設される教科「情報」 第2章 専門教科情報科の各科目 第11節 メディアとサービス 第2 内容とその取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "ア メディアを利用したサービスと情報社会の関わり\n\nここでは，メディア及びメディアを利用したサービスの発展の歴史を取り上げ，メディア及びメディアを利用したサービスが情報社会に及ぼす影響について扱う。その際，実在のサービスなどに関連する{{①}}，{{②}}といった{{③}}などの具体的な事例を通して，望ましい社会の発展にメディア及びメディアを利用したサービスが果たす役割や寄与の仕方を考えるようにする。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["ビジネスモデル","オープンソースやクリエイティブ・コモンズ","ライセンス形態"], true),
+      fill_in_choice.call("イ", ["ビジネスモデル","シェアウェアやアドウェア","収益構造"]),
+      fill_in_choice.call("ウ", ["サービスレベル","オープンソースやクリエイティブ・コモンズ","収益構造"]),
+      fill_in_choice.call("エ", ["サービスレベル","シェアウェアやアドウェア","ライセンス形態"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：原文に一致する。実在のサービスのビジネスモデルと，オープンソースやクリエイティブ・コモンズなどのライセンス形態を扱う。"),
+      text_block.call("イ：②・③が異なる。原文の例はオープンソースやクリエイティブ・コモンズで，これらをライセンス形態として取り上げる。収益構造との混同である。"),
+      text_block.call("ウ：①・③が異なる。「ビジネスモデル」と「ライセンス形態」が入る。サービスの品質水準と事業の成り立ち，利用条件と収益の構造を区別する。"),
+      text_block.call("エ：①・②が異なる。原文はビジネスモデルと，オープンソースやクリエイティブ・コモンズの具体例を挙げる。③は一致する。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第2部 主として専門学科において開設される教科「情報」 第2章 専門教科情報科の各科目 第11節 メディアとサービス 第2 内容とその取扱い 2（3）ア「メディアを利用したサービスと情報社会の関わり」全文（166頁／PDF173頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=173",
+  },
+  {
     question_number: 19,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -353,23 +462,27 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
-  raise "承認済みの問番号は3〜15・19〜20です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験29の承認済み問番号は1〜20です"
 end
 
 categories = {
+  1 => "education_foundations", 2 => "education_foundations",
   3 => "education_system", 4 => "education_system", 5 => "education_system",
   6 => "curriculum_organization", 7 => "student_guidance_career",
   8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  16 => "information_education",
+  17 => "information_specialized",
+  18 => "information_specialized",
   19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  expected_major = number >= 19 ? "information" : "teacher_education"
+  expected_major = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
@@ -377,8 +490,12 @@ questions.each do |question|
     raise "問#{number}は4択・正答1件にしてください"
   end
   blocks = question.fetch(:content_blocks)
+  if number <= 2 && (blocks.any? { |block| %w[fill_in_text fill_in_quote].include?(block[:type]) } ||
+      choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+    raise "問1・2の原文列挙番号は空欄として扱わないでください"
+  end
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  if number <= 5 && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+  if (3..5).include?(number) && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
     labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt = blocks.first
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
@@ -410,16 +527,49 @@ questions.each do |question|
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
     end
+  elsif (16..18).include?(number)
+    labels = quotes.flat_map { |block| block.fetch(:text).scan(/{{([①②③])}}/).flatten }.uniq
+    prompt = blocks.first
+    unless quotes.size == 1 && labels == %w[① ② ③] && prompt[:type] == "fill_in_text" &&
+        prompt.fetch(:text).scan(/{{([①②③])}}/).flatten.uniq == %w[① ③] &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "問#{number}の抜粋・空欄と選択肢の対応が不正です"
+    end
   end
   if blocks.any? { |block| block[:type] == "quote" }
     raise "問#{number}の試験抜粋枠にはfill_in_quoteを使ってください"
   end
-  # 部分seedはdraftで保存するが、承認済み問題の内容は公開時と同じ品質で検査する。
-  entry = { exam_number: 29, attributes: question, publication_status: "draft" }
+  # 承認済みの全20問を公開する前に、投入元のデータを検査する。
+  entry = { exam_number: 29, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(29, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-QuestionSeedSync.import(exam_number: 29, questions: questions, publication_status: "draft")
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験29の全20問の正答位置は各記号5件にしてください"
+end
+
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, source_pattern = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, /第1部/] : [3, /第2部/]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, /第2章.*第10節/]
+  elsif prompt.include?("第3章") && prompt.include?("第7節")
+    [1, /第3章.*第7節/]
+  else
+    raise "問16〜18の導入文には出典の資料・章節を明示してください"
+  end
+  unless source.match?(source_pattern) && prompt.include?("解説 情報編") == source.include?("解説 情報編")
+    raise "問16〜18の導入文と出典範囲が一致しません"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+
+QuestionSeedSync.import(exam_number: 29, questions: questions, publication_status: "published")

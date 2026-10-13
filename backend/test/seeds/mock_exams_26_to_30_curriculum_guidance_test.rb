@@ -25,7 +25,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
   setup do
     @partial_entries = QuestionSeedSync.collect do
       EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
-    end
+    end.select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @entries = @partial_entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -44,7 +44,6 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
       question = entry.fetch(:attributes)
       approved = APPROVED.fetch("sections").fetch(id)
       head, tail = approved.split(/^正答：[アイウエ].*$/, 2)
-      assert_equal "draft", entry.fetch(:publication_status), id
       assert_equal "teacher_education", question.fetch(:major_category_code), id
       category = question[:question_number] == 7 ? Q7_CATEGORIES.fetch(entry[:exam_number]) : CATEGORIES.fetch(question[:question_number])
       assert_equal category, question.fetch(:category_code), id
@@ -300,14 +299,11 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
 
   test "今回追加した三十問を除く既存五百十五問の変更前hashを全件維持する" do
     entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
-    assert_equal 575, entries.size
     previous = APPROVED.fetch("existing_515_payload_digests")
     assert_equal 515, previous.size
-    # Later approved psychology/report and algorithm/statistics additions are
-    # checked by their independent draft/PDF/calculation tests. Keep old hashes.
-    unchanged = entries.reject do |entry|
-      @questions.key?(key(entry)) || (EXAMS.include?(entry[:exam_number]) && ((12..15).cover?(entry[:attributes][:question_number]) || [19, 20].include?(entry[:attributes][:question_number])))
-    end
+    # Keep the original comparison keys and hashes fixed; later approved
+    # additions have independent fixtures and are outside this historical set.
+    unchanged = entries.select { |entry| previous.key?(key(entry)) }
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|
       assert_equal previous.fetch(key(entry)), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), key(entry)
@@ -365,7 +361,9 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
   end
 
   def save_partial_entries
-    QuestionWriter.transaction { @partial_entries.each { |entry| QuestionSeedSync.call(**entry) } }
+    # Preserve regression coverage for the incomplete draft stage, independently
+    # of the publication state of today's complete seed files.
+    QuestionWriter.transaction { @partial_entries.each { |entry| QuestionSeedSync.call(**entry.merge(publication_status: "draft")) } }
   end
 
   def admin_headers

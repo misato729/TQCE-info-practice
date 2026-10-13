@@ -6,8 +6,55 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験30（承認済み問3〜15・19〜20。20問完成までは下書き）
+# 模擬試験30（承認済みの全20問）
 questions = [
+  {
+    question_number: 1,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "戦後日本の教育改革に関する次の①～④の出来事を，起こった時期が早いものから順に並べたものとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      text_block.call("①　内閣に教育刷新委員会が設置され，新しい学校制度や教育行政の在り方など，戦後の教育改革の基本方針について審議・建議を行った。"),
+      text_block.call("②　内閣総理大臣の諮問機関として臨時教育審議会が発足し，教育の諸問題について文部省の所管にとどまらず政府全体で取り組む改革の検討が始まった。"),
+      text_block.call("③　中央教育審議会が『21世紀を展望した我が国の教育の在り方について』の第一次答申をまとめ，自ら学び，自ら考える資質・能力などからなる「生きる力」を重視する方針を示した。"),
+      text_block.call("④　中央教育審議会が『今後における学校教育の総合的な拡充整備のための基本的施策について』を答申し，幼稚園から大学までの学校教育の改革を総合的に提言した。"),
+    ],
+    choices: [
+      text_choice.call("ア", "① → ② → ④ → ③"),
+      text_choice.call("イ", "① → ④ → ③ → ②"),
+      text_choice.call("ウ", "① → ② → ③ → ④"),
+      text_choice.call("エ", "① → ④ → ② → ③", true),
+    ],
+    explanation_blocks: [
+      text_block.call("①は昭和21年（1946年）の教育刷新委員会，④は昭和46年（1971年）の中央教育審議会答申，②は昭和59年（1984年）の臨時教育審議会の発足，③は平成8年（1996年）の中央教育審議会第一次答申である。"),
+      text_block.call("ア：昭和46年の答申と，昭和59年の臨時教育審議会発足の順序が逆。"),
+      text_block.call("イ：平成8年の「生きる力」の答申を，昭和59年の臨時教育審議会発足より前にしている。"),
+      text_block.call("ウ：昭和46年の答申を，昭和59年及び平成8年の出来事より後にしている。"),
+      text_block.call("エ：正しい。① → ④ → ② → ③となる。"),
+    ],
+    source_text: "文部科学省『学制百二十年史』「概説」・教育刷新委員会の設置 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1318255.htm\n文部科学省『学制百年史』「結語」・中教審答申と教育改革 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317884.htm\n文部科学省『学制百二十年史』「二 臨時教育審議会の発足」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1318296.htm\n文部科学省「新学習指導要領のねらいと［確かな学力］の育成について」・平成8年中央教育審議会答申 | https://www.mext.go.jp/a_menu/shotou/gakuryoku/reference.htm\n文部科学省「研究開発学校に関連する審議会答申等」・中央教育審議会第一次答申（平成8年7月19日） | https://curriculumdb.mext.go.jp/bc/kk/kk06/06",
+  },
+  {
+    question_number: 2,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "デュルケームとアリエスの教育及び子どもに関する研究について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "デュルケームは，教育を社会との関係から捉え，日常の共同生活の中で意図せず習慣が形成されることを「方法的社会化」とした。アリエスは，絵画や家族生活などを手掛かりに，子どもに対する見方の歴史的な変化を検討した。"),
+      text_choice.call("イ", "デュルケームは，社会が求める資質を若い世代に形成することを教育の役割とした。そのうち「共通の教育」は，職業上の役割ごとに異なる専門的資質を育てるものである。アリエスは，家族や学校の変化と子ども観との関係を論じた。"),
+      text_choice.call("ウ", "デュルケームは，教育を若い世代に対する意図的・組織的な社会化として捉えた。アリエスは，生物学的な成長と区別して，子どもに対する見方や，家族・学校の中での子どもの位置付けを歴史的に検討した。", true),
+      text_choice.call("エ", "デュルケームは，『〈子供〉の誕生』で教育を社会的な事実として研究した。アリエスは，『教育と社会学』で家族や学校における子どもの扱いの変化を論じ，子ども観を歴史的に検討する視点を示した。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：誤り。方法的社会化は，若い世代を対象とする意図的・計画的・組織的な教育を指す。日常生活で意図せず生じる社会化と取り違えている。アリエスに関する説明は適切。"),
+      text_block.call("イ：誤り。共通の教育は，同じ社会の成員として共有する資質を育てるものである。職業などに応じた特有の役割に関わる資質は，専門的・特殊な教育の側面。アリエスに関する説明は適切。"),
+      text_block.call("ウ：適切。教育の社会的性格と方法的社会化，子ども観の歴史的研究という両者の中心的な観点に対応している。「昔は子どもの年齢差を全く認識していなかった」という極端な一般化ではない。"),
+      text_block.call("エ：誤り。著作の帰属が逆。『教育と社会学』がデュルケーム，『〈子供〉の誕生』がアリエスである。"),
+    ],
+    source_text: "黒田経子「デュルケーム・『教育と社会学』の再検討―社会・子ども・教育―」191〜192頁 | https://soka.repo.nii.ac.jp/record/37605/files/soudaikyoikukenkyu0_1_10.pdf\n名古屋大学OCW「人間発達科学Ⅰ」第4回「〈子ども〉の発見①」、2〜6ページ | https://ocw.nagoya-u.jp/files/246/yoshikawa-4.pdf",
+  },
   {
     question_number: 3,
     major_category_code: "teacher_education",
@@ -301,6 +348,77 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅱ部6(2)④・⑤，本文78頁（PDF83ページ） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=83",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第2 情報Ⅱ 1 目標」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1） {{①}}コミュニケーションの実現，{{②}}の活用について理解を深め技能を習得するとともに，{{③}}について理解を深めるようにする。\n\n（2） 様々な事象を情報とその結び付きとして捉え，問題の発見・解決に向けて情報と情報技術を適切かつ効果的，創造的に活用する力を養う。\n\n（3） 情報と情報技術を適切に活用するとともに，新たな価値の創造を目指し，情報社会に主体的に参画し，その発展に寄与する態度を養う。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["多様な","コンピュータやデータ","情報社会と人との関わり"]),
+      fill_in_choice.call("イ", ["効果的な","情報システムや多様なデータ","情報社会と人との関わり"]),
+      fill_in_choice.call("ウ", ["効果的な","コンピュータやデータ","情報技術の発展と社会の変化"]),
+      fill_in_choice.call("エ", ["多様な","情報システムや多様なデータ","情報技術の発展と社会の変化"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("「情報Ⅱ」の知識・技能の目標は「多様な」コミュニケーションの実現，「情報システムや多様なデータ」の活用，「情報技術の発展と社会の変化」の理解である。対して「情報Ⅰ」の同じ柱の目標には，効果的なコミュニケーション，コンピュータやデータ，情報社会と人との関わりという表現が用いられている。両科目の目標の組合せを区別する。"),
+      text_block.call("ア：②・③が誤り。「情報Ⅰ」の表現を混ぜている。情報Ⅱでは情報システムや多様なデータと，情報技術の発展と社会の変化である。"),
+      text_block.call("イ：①・③が誤り。これらは「情報Ⅰ」の表現であり，情報Ⅱでは多様なコミュニケーションと，情報技術の発展と社会の変化を示す。"),
+      text_block.call("ウ：①・②が誤り。情報Ⅱでは多様なコミュニケーションと，情報システムや多様なデータを示す。③は一致する。"),
+      text_block.call("エ：三つとも「情報Ⅱ」の原文に一致する。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章第10節 第2款第2 情報Ⅱ 1 目標（1）〜（3）・192頁（PDF194頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=194\n高等学校学習指導要領（平成30年告示）・第2章第10節 第2款第1 情報Ⅰ 1 目標（1）・190頁（PDF192頁，誤答の帰属の確認） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=192",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第3 情報の表現と管理 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「情報の管理」の「情報の管理とドキュメンテーション」については，情報を有効に共有し活用するために必要な情報の整理や分類の重要性及び様々なドキュメントの作成方法について扱うこと。「コンピュータによる情報の管理と活用」については，コンピュータを用いて，情報の{{①}}による整理や分類及び情報を活用するために必要な{{②}}などを扱うこと。「情報の保護とセキュリティ」については，情報の{{③}}，安全かつ有効な共有と活用について扱うこと。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["階層化や構造化","抽出や共有","適切な保護と管理"], true),
+      fill_in_choice.call("イ", ["階層化や構造化","編集や配信","正確な更新と保存"]),
+      fill_in_choice.call("ウ", ["時系列化や並列化","抽出や共有","正確な更新と保存"]),
+      fill_in_choice.call("エ", ["時系列化や並列化","編集や配信","適切な保護と管理"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：原典に示す内容と一致する。整理・分類の階層化や構造化，活用のための抽出や共有，セキュリティのための適切な保護と管理を対応付ける。"),
+      text_block.call("イ：②・③が異なる。「抽出や共有」と「適切な保護と管理」が入る。編集・配信や更新・保存という別の操作の組合せではない。"),
+      text_block.call("ウ：①・③が異なる。「階層化や構造化」と「適切な保護と管理」が入る。②は一致する。"),
+      text_block.call("エ：①・②が異なる。整理・分類の方法は階層化や構造化，活用のための方法は抽出や共有である。③は一致する。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第3 情報の表現と管理 3 内容の取扱い 3（2）イ，参照先2（2）ア・イ・ウ（項番の参照を内容名に展開）（410頁／PDF412頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=412",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "text", text: "『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目」及び同部「第3章 各科目にわたる指導計画の作成と内容の取扱い」に示されている，情報科と数学科の学習内容の関連に関する次の①〜③の記述のうち，正しいものの個数を，下の選択肢ア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "①　「情報Ⅰ」の「情報通信ネットワークとデータの活用」については，「数学Ⅰ」の「データの分析」の内容と関連付けて扱うことが考えられるとしている。\n\n②　「情報Ⅱ」の「情報とデータサイエンス」については，確率や統計を応用する内容として，「数学A」の「場合の数と確率」との関連が深いとしている。\n\n③　「情報Ⅰ」の「コンピュータとプログラミング」におけるモデル化とシミュレーションについては，不確実な事象を扱うこととのつながりから，「数学B」の「統計的な推測」との関連が深いとしている。" },
+    ],
+    choices: [
+      text_choice.call("ア", "三つ"),
+      text_choice.call("イ", "二つ"),
+      text_choice.call("ウ", "一つ", true),
+      text_choice.call("エ", "なし"),
+    ],
+    explanation_blocks: [
+      text_block.call("記述①が正しく，②・③は関連付ける数学科の科目と内容を取り違えている。したがって，正しいものは一つである。"),
+      text_block.call("記述①：正しい。解説第3章の「他教科等との関連」は，情報Ⅰの情報通信ネットワークとデータの活用を，数学Ⅰのデータの分析と関連付ける例を示している。"),
+      text_block.call("記述②：誤り。情報Ⅱの情報とデータサイエンスについて，関連が深いと示されているのは「数学B」の「統計的な推測」である。"),
+      text_block.call("記述③：誤り。情報Ⅰのモデル化とシミュレーションについて，関連が深いと示されているのは「数学A」の「場合の数と確率」である。"),
+      text_block.call("選択肢ア（三つ）：②・③の取り違えを見落としているため誤り。"),
+      text_block.call("選択肢イ（二つ）：②又は③を正しいと判断しているため誤り。"),
+      text_block.call("選択肢ウ（一つ）：正しい記述①を数えた正答。"),
+      text_block.call("選択肢エ（なし）：記述①が正しいため誤り。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 情報編・第1部 第3章1（4）他教科等との関連・63頁（PDF71頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=71\n高等学校学習指導要領（平成30年告示）解説 情報編・第1部 第2章第2節 情報Ⅱ 2（3）数学科との関連の説明・49頁（PDF57頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=57\n高等学校学習指導要領（平成30年告示）解説 情報編・第1部 第2章第1節 情報Ⅰ 2（3）数学科との関連の説明・32頁（PDF40頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=40",
+  },
+  {
     question_number: 19,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -356,23 +474,27 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
-  raise "承認済みの問番号は3〜15・19〜20です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験30の承認済み問番号は1〜20です"
 end
 
 categories = {
+  1 => "education_foundations", 2 => "education_foundations",
   3 => "education_system", 4 => "education_system", 5 => "education_system",
   6 => "curriculum_organization", 7 => "special_support_education",
   8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  16 => "information_education",
+  17 => "information_education",
+  18 => "information_education",
   19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  expected_major = number >= 19 ? "information" : "teacher_education"
+  expected_major = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
@@ -380,8 +502,12 @@ questions.each do |question|
     raise "問#{number}は4択・正答1件にしてください"
   end
   blocks = question.fetch(:content_blocks)
+  if number <= 2 && (blocks.any? { |block| %w[fill_in_text fill_in_quote].include?(block[:type]) } ||
+      choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+    raise "問1・2の原文列挙番号は空欄として扱わないでください"
+  end
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  if number <= 5 && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+  if (3..5).include?(number) && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
     labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt = blocks.first
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
@@ -413,16 +539,62 @@ questions.each do |question|
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
     end
+  elsif (16..18).include?(number)
+    if number == 18
+      unless blocks.first[:type] == "text" && quotes.size == 1 &&
+          quotes.first.fetch(:text).scan(/^[①②③]　/).size == 3 &&
+          quotes.first.fetch(:text).scan(/\{\{[①②③]\}\}/).empty? &&
+          choices.map { |choice| choice.fetch(:content_blocks) } == %w[三つ 二つ 一つ なし].map { |text| [{ type: "text", text: text }] }
+        raise "正しい記述の個数を問う問題の形式が不正です"
+      end
+    else
+      labels = quotes.flat_map { |block| block.fetch(:text).scan(/{{([①②③])}}/).flatten }.uniq
+      prompt = blocks.first
+      unless quotes.size == 1 && labels == %w[① ② ③] && prompt[:type] == "fill_in_text" &&
+          prompt.fetch(:text).scan(/{{([①②③])}}/).flatten.uniq == %w[① ③] &&
+          choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+        raise "問#{number}の抜粋・空欄と選択肢の対応が不正です"
+      end
+      expected_wording = number == 17 ? "に示された内容に基づく記述である。" : "からの抜粋である。"
+      unless prompt.fetch(:text).include?(expected_wording)
+        raise "原文抜粋と項番を展開した記述を区別してください"
+      end
+    end
   end
   if blocks.any? { |block| block[:type] == "quote" }
     raise "問#{number}の試験抜粋枠にはfill_in_quoteを使ってください"
   end
-  # 部分seedはdraftで保存するが、承認済み問題の内容は公開時と同じ品質で検査する。
-  entry = { exam_number: 30, attributes: question, publication_status: "draft" }
+  # 承認済みの全20問を公開する前に、投入元のデータを検査する。
+  entry = { exam_number: 30, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(30, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-QuestionSeedSync.import(exam_number: 30, questions: questions, publication_status: "draft")
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験30の全20問の正答位置は各記号5件にしてください"
+end
+
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, source_pattern = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, /第1部/] : [3, /第2部/]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, /第2章.*第10節/]
+  elsif prompt.include?("第3章") && prompt.include?("第7節")
+    [1, /第3章.*第7節/]
+  else
+    raise "問16〜18の導入文には出典の資料・章節を明示してください"
+  end
+  unless source.match?(source_pattern) && prompt.include?("解説 情報編") == source.include?("解説 情報編")
+    raise "問16〜18の導入文と出典範囲が一致しません"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+
+QuestionSeedSync.import(exam_number: 30, questions: questions, publication_status: "published")

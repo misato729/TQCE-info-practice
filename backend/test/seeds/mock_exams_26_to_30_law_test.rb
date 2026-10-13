@@ -36,7 +36,6 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
     @entries.each do |entry|
       id = key(entry)
       attributes = entry.fetch(:attributes)
-      assert_equal "draft", entry.fetch(:publication_status), id
       assert_equal "teacher_education", attributes.fetch(:major_category_code), id
       assert_equal "education_system", attributes.fetch(:category_code), id
       assert_equal LABELS, attributes.fetch(:choices).map { |choice| choice.fetch(:label) }, id
@@ -307,7 +306,9 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
   end
 
   def save_entries
-    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry) } }
+    # Reconstruct the original incomplete, unpublished stage explicitly. The
+    # approved content stays under test after later questions complete the set.
+    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry.merge(publication_status: "draft")) } }
   end
 
   def admin_headers

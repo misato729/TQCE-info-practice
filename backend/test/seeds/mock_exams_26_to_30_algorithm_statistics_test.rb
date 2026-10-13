@@ -11,6 +11,7 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+      .select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @added = @entries.select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     @questions = @added.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -26,7 +27,6 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
       head, tail = draft.split(/^正答：[アイウエ].*$/, 2)
       choice_start = head.index(/^\| 選択肢 \|/) || head.index(/^[アイウエ]　/)
       assert choice_start, "#{id} 草案の選択肢境界"
-      assert_equal "draft", entry.fetch(:publication_status), id
       assert_equal "information", question.fetch(:major_category_code), id
       assert_equal "information_specialized", question.fetch(:category_code), id
       assert_equal draft[/^正答：([アイウエ])/, 1], answer(question).fetch(:label), id
@@ -530,7 +530,9 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
   end
 
   def save_entries
-    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry) } }
+    # Keep the originally incomplete, draft-only API stage as a deliberate
+    # test scenario after later approved questions make the live seed complete.
+    QuestionWriter.transaction { @entries.each { |entry| QuestionSeedSync.call(**entry.merge(publication_status: "draft")) } }
   end
 
   def record_for(entry)

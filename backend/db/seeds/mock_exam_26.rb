@@ -6,8 +6,50 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験26（承認済み問3〜15・19〜20。20問完成までは下書き）
+# 模擬試験26（承認済みの全20問）
 questions = [
+  {
+    question_number: 1,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "明治期の学校教育の理念及び教育勅語の成立について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "明治5年の学制は，全国に学校を設け，広く国民の就学を進めようとした。その序文では，学問を官職への登用に備えるためのものと捉え，学校で学ぶ意義を，国家に奉仕する官吏として身を立てることに求めていた。"),
+      text_choice.call("イ", "明治12年の教学聖旨は，元田永孚の思想を背景として教育の方針を示した。文明開化による学校教育の変化を踏まえ，欧米の知識や技芸の習得を仁義忠孝の教えに先行させ，そこから国民の道徳を形成することを重視した。"),
+      text_choice.call("ウ", "明治23年の教育勅語は，井上毅の原案を中心に元田永孚も協力して起草が進められた。親への孝行などの徳目と国家への奉仕を結び付ける内容を持ち，発布後は学校の修身教育を支える基本的な規範となった。", true),
+      text_choice.call("エ", "明治23年の教育勅語は，元田永孚と井上哲次郎を中心に起草され，学校に謄本が下賜された。井上哲次郎は翌年に『勅語衍義（えんぎ）』を刊行し，その内容は師範学校や中学校などの修身教育に用いられた。"),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：誤り。学制序文は，学問を自らの立身・生業に役立てるものとし，学問を国家や官職のためのものと考える従来の見方を批判している。全国への学校設置と就学の普及を目指した点は適切。"),
+      text_block.call("イ：誤り。教学聖旨は，知識や技芸に偏る文明開化の教育を批判し，仁義忠孝などを重視する徳育の立て直しを求めた。知識・技芸を先行させる方針ではない。"),
+      text_block.call("ウ：適切。井上毅と元田永孚の起草への関与，勅語の内容，その後の修身教育での位置付けが対応している。"),
+      text_block.call("エ：誤り。井上哲次郎の主要な役割は解説書『勅語衍義』の執筆である。教育勅語の起草の中心となった井上毅と取り違えている。謄本の下賜，翌年の解説書の刊行・利用は適切。"),
+    ],
+    source_text: "文部科学省『学制百年史』「二 学制の制定」・学制序文（被仰出書） | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/mext_03459.html\n文部科学省『学制百年史』「二 明治憲法と教育勅語」・起草と発布及び発布後の教育 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317610.htm\n服部有希「教育勅語の成立から終戦後の国会決議に至る経緯」『レファレンス』800（2017年）、82頁ほか | https://dl.ndl.go.jp/view/download/digidepo_10954500_po_080006.pdf?contentNo=1",
+  },
+  {
+    question_number: 2,
+    major_category_code: "teacher_education",
+    category_code: "education_foundations",
+    content_blocks: [
+      { type: "text", text: "コンドルセの公教育の構想について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+    ],
+    choices: [
+      text_choice.call("ア", "公教育は，市民が自ら判断し，権利を行使するための知識を得る機会を保障するものである。社会が学校を設ける責任を負うことから，教授する学説の選択は，その時々の政府の政策との適合を基準として行うべきだとした。"),
+      text_choice.call("イ", "公教育は，市民の判断力を育て，政治権力からの独立を保つべきものである。教育を受ける時期は学校に在学する期間に設定し，成人に対する公開講義は，学校の公教育とは別の私的な学習活動として位置付けた。"),
+      text_choice.call("ウ", "公教育は，法律によって保障された権利の平等を出発点として，社会に必要な人材を育てるものである。権利の平等は法律上の宣言で実質的にも保障されるとし，公教育の中心的な役割を才能ある者の選抜に求めた。"),
+      text_choice.call("エ", "公教育は，市民が権利を実際に行使できるようにする社会の義務であり，教授内容は政治権力からの独立を保つべきものとした。また，子どもの学校教育とともに，成人が公開講義などで学び続ける機会も構想した。", true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：誤り。権利行使のための知識を保障する点は適切だが，学説を政府の政策に適合させるという部分が誤り。公教育の政治権力からの独立を重視した。"),
+      text_block.call("イ：誤り。公教育を就学期間に限定していない。小学校の教師による成人向けの公開講義など，学校教育を終えた後も学ぶ機会を公教育の構想に含めた。"),
+      text_block.call("ウ：誤り。法律上の権利の平等を実際のものにするために，知識を得る機会を保障する公教育が必要だとした。権利の宣言だけで実質的な平等が保障される，という関係ではない。"),
+      text_block.call("エ：適切。権利の実質的保障，政治権力からの独立，成人を含む継続的な学習という三つの位置付けが対応している。"),
+    ],
+    source_text: "神田嘉延「自立と共生の教育社会学―地域民主主義と学校の再生―」『鹿児島大学教育学部教育実践研究紀要』17（2007年）、91〜92頁 | https://ir.kagoshima-u.ac.jp/record/1628/files/17-9.pdf",
+  },
   {
     question_number: 3,
     major_category_code: "teacher_education",
@@ -292,6 +334,74 @@ questions = [
     source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部2(1)「日本型学校教育の成り立ちと成果」・本文5〜6頁（PDF10〜11頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=10",
   },
   {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第1 情報Ⅰ 2 内容 コンピュータとプログラミング」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "イ 次のような思考力，判断力，表現力等を身に付けること。\n\n（ｱ） コンピュータで扱われる情報の特徴と{{①}}との関係について考察すること。\n\n（ｲ） 目的に応じた{{②}}を考え適切な方法で表現し，プログラミングによりコンピュータや情報通信ネットワークを活用するとともに，その過程を評価し改善すること。\n\n（ｳ） 目的に応じた{{③}}を適切に行うとともに，その結果を踏まえて問題の適切な解決方法を考えること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["コンピュータの能力","アルゴリズム","モデル化やシミュレーション"], true),
+      fill_in_choice.call("イ", ["コンピュータの能力","データ構造","データの分類や可視化"]),
+      fill_in_choice.call("ウ", ["通信回線の性能","アルゴリズム","データの分類や可視化"]),
+      fill_in_choice.call("エ", ["通信回線の性能","データ構造","モデル化やシミュレーション"]),
+    ],
+    explanation_blocks: [
+      text_block.call("①は「コンピュータの能力」，②は「アルゴリズム」，③は「モデル化やシミュレーション」である。扱う情報の特徴とコンピュータの能力との関係を考察し，処理手順を表現してプログラミングへつなげ，モデルやシミュレーションの結果から解決方法を考えるという三つの対応を問う。"),
+      text_block.call("ア：三つとも原文に一致する。"),
+      text_block.call("イ：②・③が誤り。データ構造はデータの組織化に関する概念で，この規定では処理手順を表すアルゴリズムを考える。また，（ｳ）は分類・可視化ではなくモデル化・シミュレーションである。"),
+      text_block.call("ウ：①・③が誤り。（ｱ）は通信回線の性能ではなくコンピュータの能力との関係，（ｳ）はモデル化・シミュレーションを対象としている。"),
+      text_block.call("エ：①・②が誤り。コンピュータの能力とアルゴリズムが入る。③は一致する。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章第10節 第2款第1 情報Ⅰ 2（3）イ（ｱ）〜（ｳ）・191頁（PDF193頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=193",
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第4 情報テクノロジー 3 内容の取扱い」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1）内容を取り扱う際には，次の事項に配慮するものとする。\n\nア 社会で利用されている具体的な情報システムや情報テクノロジーに着目させ，それぞれの{{①}}について理解できるよう留意して指導すること。\n\nイ 生徒や地域の実態，学科の特色等に応じて，適切な{{②}}を選択し，{{③}}を通して理解できるよう留意して指導すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["適性や限界","情報機器","調査"]),
+      fill_in_choice.call("イ", ["汎用性や互換性","情報技術","調査"]),
+      fill_in_choice.call("ウ", ["適性や限界","情報技術","実習"], true),
+      fill_in_choice.call("エ", ["汎用性や互換性","情報機器","実習"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：②・③が異なる。選択する対象は「情報技術」，理解する方法は「実習」である。①は一致する。"),
+      text_block.call("イ：①・③が異なる。「適性や限界」に着目し，「実習」を通して理解させる。汎用性や互換性の重要性そのものを否定しているのではない。"),
+      text_block.call("ウ：原文に一致する。技術の適性や限界を理解し，実態に応じて情報技術を選び，実習を通して理解するという対応である。"),
+      text_block.call("エ：①・②が異なる。「適性や限界」と「情報技術」が入る。情報機器の選定と，ここで指定された技術の選択を区別する。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第4 情報テクノロジー 3 内容の取扱い 3（1）ア・イ（411頁／PDF413頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=413",
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い 情報社会の問題解決」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "アの（イ） 情報に関する法規や制度，情報セキュリティの重要性，情報社会における個人の責任及び情報モラルについて理解することでは，情報社会で生活していくために，知的財産に関する法律，個人情報の保護に関する法律，不正アクセス行為の禁止等に関する法律などを含めた法規，更に，マナーの意義や基本的内容，情報を扱う上で個人の責任があること，情報セキュリティの3要素である{{①}}の重要性，情報セキュリティを確保するには{{②}}が行うべき対策があり技術的対策だけでは対応できないことなどを理解するようにする。その際，法を遵守すること，情報モラルを養うこと，情報セキュリティを確保することの重要性，大量かつ多様な情報の発信・公開・利用に対応した法規や制度の必要性が増していることを理解するようにするとともに，人の心理的な隙や行動のミスにつけ込み{{③}}パスワードなどの重要な情報を盗み出すソーシャルエンジニアリングにも触れる。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["機密性・完全性・可用性","管理者や開発者","情報通信技術を使って"]),
+      fill_in_choice.call("イ", ["機密性・完全性・可用性","組織や個人","情報通信技術を使わずに"], true),
+      fill_in_choice.call("ウ", ["機密性・信頼性・可用性","組織や個人","情報通信技術を使って"]),
+      fill_in_choice.call("エ", ["機密性・信頼性・可用性","管理者や開発者","情報通信技術を使わずに"]),
+    ],
+    explanation_blocks: [
+      text_block.call("原典の3要素は「機密性・完全性・可用性」。技術的対策に加え「組織や個人」の対策が必要であり，人の心理や行動を利用して「情報通信技術を使わずに」重要情報を盗み出すソーシャルエンジニアリングを扱う。"),
+      text_block.call("ア：②・③が原文と異なる。対策の主体として原典が挙げるのは組織や個人であり，管理者や開発者という職務別の組合せではない。また，この引用箇所は情報通信技術を使わずに重要情報を盗み出す方法を説明している。管理者の対策や情報通信技術を使う攻撃が存在しないという意味ではない。"),
+      text_block.call("イ：三つとも原文に一致する。"),
+      text_block.call("ウ：①・③が誤り。3要素の中央は信頼性ではなく完全性であり，③は「情報通信技術を使わずに」である。"),
+      text_block.call("エ：①・②が誤り。完全性と組織や個人が入る。③は一致する。"),
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）解説 情報編・第1部 第2章第1節 情報Ⅰ 2（1）アの（イ）の説明・25頁（PDF33頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=33",
+  },
+  {
     question_number: 19,
     major_category_code: "information",
     category_code: "information_specialized",
@@ -346,23 +456,27 @@ questions = [
   },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (3..15).to_a + [19, 20]
-  raise "承認済みの問番号は3〜15・19〜20です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "模擬試験26の承認済み問番号は1〜20です"
 end
 
 categories = {
+  1 => "education_foundations", 2 => "education_foundations",
   3 => "education_system", 4 => "education_system", 5 => "education_system",
   6 => "curriculum_organization", 7 => "career_education",
   8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
   11 => "student_guidance_career",
   12 => "special_support_education", 13 => "educational_psychology",
   14 => "educational_psychology", 15 => "education_system",
+  16 => "information_specialized",
+  17 => "information_education",
+  18 => "information_specialized",
   19 => "information_specialized", 20 => "information_specialized",
 }
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  expected_major = number >= 19 ? "information" : "teacher_education"
+  expected_major = number >= 16 ? "information" : "teacher_education"
   unless question.fetch(:major_category_code) == expected_major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
@@ -370,8 +484,12 @@ questions.each do |question|
     raise "問#{number}は4択・正答1件にしてください"
   end
   blocks = question.fetch(:content_blocks)
+  if number <= 2 && (blocks.any? { |block| %w[fill_in_text fill_in_quote].include?(block[:type]) } ||
+      choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+    raise "問1・2の原文列挙番号は空欄として扱わないでください"
+  end
   quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-  if number <= 5 && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
+  if (3..5).include?(number) && (number >= 4 || choices.any? { |choice| choice.fetch(:content_blocks).any? { |block| block[:type] == "fill_in_choice" } })
     labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
     prompt = blocks.first
     prompt_labels = prompt.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten.uniq
@@ -403,6 +521,14 @@ questions.each do |question|
     if number == 11 && !prompt.fetch(:text).start_with?("次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。")
       raise "問11の資料名・書き出しが不正です"
     end
+  elsif (16..18).include?(number)
+    labels = quotes.flat_map { |block| block.fetch(:text).scan(/{{([①②③])}}/).flatten }.uniq
+    prompt = blocks.first
+    unless quotes.size == 1 && labels == %w[① ② ③] && prompt[:type] == "fill_in_text" &&
+        prompt.fetch(:text).scan(/{{([①②③])}}/).flatten.uniq == %w[① ③] &&
+        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 3 }
+      raise "問#{number}の抜粋・空欄と選択肢の対応が不正です"
+    end
   elsif number == 19
     prompt = blocks.first
     code = blocks.find { |block| block[:type] == "code" }
@@ -415,12 +541,37 @@ questions.each do |question|
   if blocks.any? { |block| block[:type] == "quote" }
     raise "問#{number}の試験抜粋枠にはfill_in_quoteを使ってください"
   end
-  # 部分seedはdraftで保存するが、承認済み問題の内容は公開時と同じ品質で検査する。
-  entry = { exam_number: 26, attributes: question, publication_status: "draft" }
+  # 承認済みの全20問を公開する前に、投入元のデータを検査する。
+  entry = { exam_number: 26, attributes: question, publication_status: "published" }
   preview = QuestionSeedSync.preview(entry)
   payload = QuestionPayload.from_seed(26, question)
   QuestionWriter.validate_choices!(preview, payload.fetch("choices").map(&:deep_symbolize_keys))
   QuestionWriter.validate_publication!(preview, payload.fetch("choices").map(&:symbolize_keys))
 end
 
-QuestionSeedSync.import(exam_number: 26, questions: questions, publication_status: "draft")
+unless %w[ア イ ウ エ].all? { |label| questions.count { |question| question.fetch(:choices).any? { |choice| choice.fetch(:label) == label && choice.fetch(:correct) } } == 5 }
+  raise "模擬試験26の全20問の正答位置は各記号5件にしてください"
+end
+
+information_source_order = questions.select { |question| (16..18).cover?(question.fetch(:question_number)) }.map do |question|
+  prompt = question.fetch(:content_blocks).first.fetch(:text)
+  source = question.fetch(:source_text)
+  index, source_pattern = if prompt.include?("解説 情報編")
+    prompt.include?("第1部") ? [2, /第1部/] : [3, /第2部/]
+  elsif prompt.include?("第2章") && prompt.include?("第10節")
+    [0, /第2章.*第10節/]
+  elsif prompt.include?("第3章") && prompt.include?("第7節")
+    [1, /第3章.*第7節/]
+  else
+    raise "問16〜18の導入文には出典の資料・章節を明示してください"
+  end
+  unless source.match?(source_pattern) && prompt.include?("解説 情報編") == source.include?("解説 情報編")
+    raise "問16〜18の導入文と出典範囲が一致しません"
+  end
+  index
+end
+unless information_source_order.size == 3 && information_source_order.uniq.size == 3 && information_source_order == information_source_order.sort
+  raise "問16〜18は異なる3範囲を資料順に並べてください"
+end
+
+QuestionSeedSync.import(exam_number: 26, questions: questions, publication_status: "published")
