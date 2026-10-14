@@ -563,11 +563,11 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     assert AnswerHistory.exists?(added_history.id)
   end
 
-  test "メインseedは完成済み三十セット六百問を公開し再実行できる" do
+  test "メインseedは完成済み六百問を公開し作成中の承認十問を下書きで追加して再実行できる" do
     load Rails.root.join("db/seeds.rb")
-    assert_equal 600, Question.count
-    assert_equal 2400, QuestionChoice.count
-    assert_equal 600, QuestionChoice.where(is_correct: true).count
+    assert_equal 610, Question.count
+    assert_equal 2440, QuestionChoice.count
+    assert_equal 610, QuestionChoice.where(is_correct: true).count
     assert_equal 600, Question.published.count
     assert_equal 100, Question.where(exam_number: 21..25, publication_status: "published").count
     assert_equal 0, partial_questions.where(publication_status: "draft").count
@@ -575,6 +575,11 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     assert_equal 100, Question.where(exam_number: 26..30, publication_status: "published").count
     (26..30).each do |exam|
       assert_equal (1..20).to_a, Question.where(exam_number: exam).order(:question_number).pluck(:question_number)
+    end
+    assert_equal 10, Question.where(exam_number: 31..35, publication_status: "draft").count
+    assert_equal 0, Question.where(exam_number: 31..35, publication_status: "published").count
+    (31..35).each do |exam|
+      assert_equal [1, 2], Question.where(exam_number: exam).order(:question_number).pluck(:question_number)
     end
     assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
       load Rails.root.join("db/seeds.rb")

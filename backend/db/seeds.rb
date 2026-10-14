@@ -30,6 +30,11 @@ seed_entries = QuestionSeedSync.collect do
     mock_exam_28.rb
     mock_exam_29.rb
     mock_exam_30.rb
+    mock_exam_31.rb
+    mock_exam_32.rb
+    mock_exam_33.rb
+    mock_exam_34.rb
+    mock_exam_35.rb
   ].each do |seed_file|
     load Rails.root.join("db/seeds", seed_file).to_s
   end
