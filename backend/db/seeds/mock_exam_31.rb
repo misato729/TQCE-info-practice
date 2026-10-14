@@ -6,10 +6,12 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験31（承認済みの問1〜5。全20問がそろうまで下書き）
+# 模擬試験31（承認済みの問1〜10。全20問がそろうまで下書き）
 # 教育史の事実を根拠資料で確認した独自の記述問題。過去問の本文・選択肢の転記ではない。
 # 承認正本：document/模試31〜35_問1〜2草案_2026-10-14.md
 # 問3〜5承認正本：document/模試31_問3〜5草案_2026-10-14.md
+# 問6〜10承認正本：document/模試31〜35_問6〜10草案_2026-10-14.md
+# 文部科学省の公式原典を空欄化した独自の予想問題。原典の連続性・全肢代入は独立fixtureで検証する。
 questions = [
   {
     question_number: 1,
@@ -120,17 +122,133 @@ questions = [
     ],
     source_text: "e-Gov法令検索「教育公務員特例法」第22条第1項〜第3項 | https://laws.e-gov.go.jp/law/324AC0000000001/20260401_507AC0000000068#Mp-Ch_4-At_22\n同法第2条第1項・第2項 | https://laws.e-gov.go.jp/law/324AC0000000001/20260401_507AC0000000068#Mp-Ch_1-At_2",
   },
+  {
+    question_number: 6,
+    major_category_code: "teacher_education",
+    category_code: "curriculum_organization",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第3款 教育課程の実施と学習評価」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1）生徒のよい点や進歩の状況などを積極的に評価し，{{①}}を実感できるようにすること。また，各教科・科目等の目標の実現に向けた学習状況を把握する観点から，単元や題材など内容や時間のまとまりを見通しながら評価の場面や方法を工夫して，{{②}}を評価し，指導の改善や学習意欲の向上を図り，資質・能力の育成に生かすようにすること。\n（2）創意工夫の中で学習評価の{{③}}が高められるよう，{{④}}な取組を推進するとともに，学年や学校段階を越えて生徒の学習の成果が円滑に接続されるように工夫すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学習したことの意義や価値", "学習の過程や成果", "迅速性や効率性", "実践的かつ弾力的"]),
+      fill_in_choice.call("イ", ["他の生徒との学習成果の差", "学習の正確さや速さ", "妥当性や信頼性", "組織的かつ計画的"]),
+      fill_in_choice.call("ウ", ["学習したことの意義や価値", "学習の過程や成果", "妥当性や信頼性", "組織的かつ計画的"], true),
+      fill_in_choice.call("エ", ["他の生徒との学習成果の差", "学習の正確さや速さ", "迅速性や効率性", "実践的かつ弾力的"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①②は原文と一致する。③は「妥当性や信頼性」、④は「組織的かつ計画的」である。評価の質を確保する取組の規定を、評価の処理速度や運用の柔軟さへ置き換えている。"),
+      text_block.call("イ：③④は原文と一致する。①は「学習したことの意義や価値」、②は「学習の過程や成果」である。生徒が学んだことの価値を実感することと、過程・成果を評価することが示されており、他の生徒との差や正確さ・速さという比較軸をこの箇所の規定に置かない。"),
+      text_block.call("ウ：全て原文と一致する。学習の意義・価値の実感、過程・成果の評価、評価の妥当性・信頼性、組織的・計画的な取組を組み合わせて捉える。"),
+      text_block.call("エ：全て原文と異なる。①②は評価によって生徒に実感させる内容と評価対象、③④は評価の質と取組の在り方を取り違えている。"),
+    ],
+    source_text: "高等学校学習指導要領・第1章第3款2（1）〜（2）、PDF31頁／印刷29頁 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=31",
+  },
+  {
+    question_number: 7,
+    major_category_code: "teacher_education",
+    category_code: "career_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第5款 生徒の発達の支援」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "生徒が，{{①}}を見通しながら，{{②}}に向けて必要な基盤となる資質・能力を身に付けていくことができるよう，特別活動を要としつつ各教科・科目等の特質に応じて，{{③}}の充実を図ること。その中で，生徒が自己の在り方生き方を考え主体的に進路を選択することができるよう，{{④}}を通じ，組織的かつ計画的な進路指導を行うこと。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["学ぶことと自己の将来とのつながり", "社会的・職業的自立", "キャリア教育", "学校の教育活動全体"], true),
+      fill_in_choice.call("イ", ["学ぶことと自己の将来とのつながり", "社会的・職業的自立", "進路学習", "特別活動を中心とする学習活動"]),
+      fill_in_choice.call("ウ", ["学校での役割と社会での評価とのつながり", "社会的・職業的成功", "キャリア教育", "学校の教育活動全体"]),
+      fill_in_choice.call("エ", ["学校での役割と社会での評価とのつながり", "社会的・職業的成功", "進路学習", "特別活動を中心とする学習活動"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：全て原文と一致する。学ぶことと将来をつなぎ、社会的・職業的自立に向けて資質・能力を育てるキャリア教育と、学校の教育活動全体を通じた進路指導を示している。"),
+      text_block.call("イ：①②は原文と一致する。③は「キャリア教育」、④は「学校の教育活動全体」である。「特別活動を要とする」位置付けを、後続の進路指導を行う範囲と混同しない。"),
+      text_block.call("ウ：③④は原文と一致する。①は「学ぶことと自己の将来とのつながり」、②は「社会的・職業的自立」である。外部からの評価や職業上の成功ではなく、学びと将来の関係を見通し、自立に必要な基盤を身に付ける規定である。"),
+      text_block.call("エ：全て原文と異なる。①②はキャリア教育の見通しと目指す方向、③④は教育の名称と進路指導の実施範囲を取り違えている。"),
+    ],
+    source_text: "高等学校学習指導要領・第1章第5款1（3）全文、PDF32頁／印刷30頁 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=32",
+  },
+  {
+    question_number: 8,
+    major_category_code: "teacher_education",
+    category_code: "integrated_inquiry",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第4章 総合的な探究の時間 第2 各学校において定める目標及び内容」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "（1）各学校において定める目標については，各学校における教育目標を踏まえ，総合的な探究の時間を通して{{①}}を示すこと。\n（2）各学校において定める目標及び内容については，他教科等の目標及び内容との違いに留意しつつ，他教科等で{{①}}との関連を重視すること。\n（3）各学校において定める目標及び内容については，{{②}}を重視すること。\n（4）各学校において定める内容については，{{③}}，探究課題の解決を通して育成を目指す具体的な資質・能力を示すこと。\n（5）{{③}}については，地域や学校の実態，生徒の特性等に応じて，例えば，国際理解，情報，環境，福祉・健康などの現代的な諸課題に対応する横断的・総合的な課題，地域や学校の特色に応じた課題，生徒の興味・関心に基づく課題，{{④}}に関する課題などを踏まえて設定すること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["育成を目指す資質・能力", "他教科等との関連", "目標を実現するにふさわしい探究課題", "産業や地域の振興"]),
+      fill_in_choice.call("イ", ["習得した知識及び技能", "地域や社会との関わり", "生徒が興味・関心を抱く探究課題", "職業や自己の進路"]),
+      fill_in_choice.call("ウ", ["習得した知識及び技能", "他教科等との関連", "生徒が興味・関心を抱く探究課題", "産業や地域の振興"]),
+      fill_in_choice.call("エ", ["育成を目指す資質・能力", "地域や社会との関わり", "目標を実現するにふさわしい探究課題", "職業や自己の進路"], true),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：①③は一致する。②は「地域や社会との関わり」，④は「職業や自己の進路」。他教科等との関連は（2）に別に示されている。産業や地域の振興を学習対象にできないという意味ではなく，（5）の課題例における原文の位置付けを問う。"),
+      text_block.call("イ：②④は一致する。①は既に習得した内容の列挙ではなく「育成を目指す資質・能力」。③は興味・関心だけで課題を決める語句ではなく「目標を実現するにふさわしい探究課題」であり，（4）（5）の両方に入る。"),
+      text_block.call("ウ：全て異なる。学校の目標に示すのは育成を目指す資質・能力であり，地域・社会との関わりを重視する。探究課題には目標にふさわしいことが求められ，課題例の末尾は職業・自己の進路である。"),
+      text_block.call("エ：全て一致する。目標が示す資質・能力，内容が示す探究課題と具体的な資質・能力，地域・社会及び自己の進路との関わりを区別した組合せである。"),
+    ],
+    source_text: "高等学校学習指導要領 第4章 第2の3（1）〜（5），印刷475頁／PDF477頁 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=477",
+  },
+  {
+    question_number: 9,
+    major_category_code: "teacher_education",
+    category_code: "moral_education",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第1章 総則 第1款 高等学校教育の基本と教育課程の役割」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "学校における道徳教育は，{{①}}に関する教育を{{②}}を通じて行うことによりその充実を図るものとし，各教科に属する科目（以下「各教科・科目」という。），総合的な探究の時間及び特別活動（以下「{{③}}」という。）のそれぞれの特質に応じて，適切な指導を行うこと。\n\n道徳教育は，教育基本法及び学校教育法に定められた教育の根本精神に基づき，生徒が自己探求と自己実現に努め国家・社会の一員としての自覚に基づき行為しうる発達の段階にあることを考慮し，{{①}}を考え，{{④}}の下に行動し，自立した人間として他者と共によりよく生きるための基盤となる道徳性を養うことを目標とすること。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["人間としての在り方生き方", "公民科及び特別活動", "各教科・科目", "集団としての判断"]),
+      fill_in_choice.call("イ", ["人間としての在り方生き方", "学校の教育活動全体", "各教科・科目等", "主体的な判断"], true),
+      fill_in_choice.call("ウ", ["道徳的諸価値", "学校の教育活動全体", "各教科・科目等", "集団としての判断"]),
+      fill_in_choice.call("エ", ["道徳的諸価値", "公民科及び特別活動", "各教科・科目", "主体的な判断"]),
+    ],
+    explanation_blocks: [
+      text_block.call("①は「人間としての在り方生き方」、②は「学校の教育活動全体」、③は「各教科・科目等」、④は「主体的な判断」である。第1段落では道徳教育を行う範囲と各教科・科目等の特質に応じた指導を定め、第2段落では生徒の発達段階を考慮した道徳教育の目標を定めている。同じ①は、教育の内容と生徒が考える対象の双方に対応する。"),
+      text_block.call("ア：②③④が誤り。公民科と特別活動は中核的な指導の場面に関わるが、道徳教育を行う範囲全体を表す②ではない。総合的な探究の時間と特別活動まで含める③は「各教科・科目等」であり、目標では「主体的な判断」の下に行動することが示されている。"),
+      text_block.call("イ：全て原文と一致する。人間としての在り方生き方に関する教育を学校の教育活動全体で行い、生徒が人間としての在り方生き方を考えて主体的に判断する関係が示されている。"),
+      text_block.call("ウ：①④が誤り。「道徳的諸価値」は第7款2で中学校までの学習等を通じて深めた理解として扱う語句である。この抜粋の①は「人間としての在り方生き方」であり、④は「集団としての判断」ではない。"),
+      text_block.call("エ：①②③が誤り。④は正しいが、教育の対象、教育を行う範囲及び各教科・科目等をまとめた名称の三つが原文と異なる。"),
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』第1章第1款2(2)第1・第2段落（PDF21頁／印刷19頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=21\n同第1章第7款1・2（中核的な指導の場面及び道徳的諸価値、PDF34頁／印刷32頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=34",
+  },
+  {
+    question_number: 10,
+    major_category_code: "teacher_education",
+    category_code: "special_activities",
+    content_blocks: [
+      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領（平成30年告示）解説 特別活動編」（平成30年7月文部科学省）の「第2章 特別活動の目標 第1節 特別活動の目標」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
+      { type: "fill_in_quote", text: "「社会参画」はよりよいホームルームや学校生活づくりなど，集団や社会に参画し様々な問題を{{①}}しようとするという視点である。社会参画のために必要な資質・能力は，集団の中において，{{②}}な活動を通して，{{③}}する中で育まれるものと考えられる。学校は一つの小さな社会であると同時に，様々な集団から構成される。学校内の様々な集団における活動に主体的に関わることが，地域や社会に対する参画，持続可能な社会の担い手となっていくことにもつながっていく。また，主権者としての自覚の醸成にも結び付くものである。\n\nなお，社会は，様々な集団で構成されていると捉えられることから，ホームルームや学校の集団をよりよくするために参画することと，社会をよりよくするために参画することは，「社会参画」という意味で同じ視点として整理している。\n\n③　「自己実現」\n\n「自己実現」は，一般的には様々な意味で用いられるが，特別活動においては，集団の中で，現在及び将来の自己の生活の課題を発見し，よりよく改善しようとする視点である。自己実現のために必要な資質・能力は，自己の理解を深め，自己のよさや可能性を生かす力，{{④}}を考え設計する力など，集団の中において，個々人が共通して当面する現在及び将来に関わる課題を考察する中で育まれるものと考えられる。" },
+    ],
+    choices: [
+      fill_in_choice.call("ア", ["主体的に解決", "自発的，自治的", "個人が集団へ関与", "自己の生き方"], true),
+      fill_in_choice.call("イ", ["主体的に解決", "自発的，自治的", "集団が個人を支援", "自己の進路"]),
+      fill_in_choice.call("ウ", ["協働的に解決", "自主的，実践的", "個人が集団へ関与", "自己の生き方"]),
+      fill_in_choice.call("エ", ["協働的に解決", "自主的，実践的", "集団が個人を支援", "自己の進路"]),
+    ],
+    explanation_blocks: [
+      text_block.call("ア：全て一致する。社会参画では，個人が集団へ関与し，自発的・自治的な活動を通じて問題を主体的に解決する。自己実現では，進路選択に限らない自己の生き方の考察・設計を扱う。"),
+      text_block.call("イ：①②は一致する。③は「個人が集団へ関与」であり，集団から個人への支援という向きではない。④は「自己の生き方」であり，進路という一領域に置き換えない。"),
+      text_block.call("ウ：③④は一致する。①は「主体的に解決」，②は「自発的，自治的」。協働的な解決や自主的・実践的な活動の大切さを否定するものではなく，社会参画の視点について直接示された語句を区別する。"),
+      text_block.call("エ：全て異なる。主体的な問題解決，自発的・自治的な活動，個人から集団への関与，自己の生き方の設計という対応に訂正する。"),
+    ],
+    source_text: "高等学校学習指導要領解説 特別活動編 第2章 第1節1（1）②「社会参画」〜③「自己実現」，印刷12〜13頁／PDF20〜21頁 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=20",
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..5).to_a
-  raise "模擬試験31の承認済み問番号は1〜5です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
+  raise "模擬試験31の承認済み問番号は1〜10です"
 end
 
+categories = {
+  1 => "education_foundations", 2 => "education_foundations",
+  3 => "education_system", 4 => "education_system", 5 => "education_system",
+  6 => "curriculum_organization", 7 => "career_education",
+  8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
+}
 questions.each do |question|
   number = question.fetch(:question_number)
   choices = question.fetch(:choices)
-  expected_category = number <= 2 ? "education_foundations" : "education_system"
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == expected_category
+  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
   unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
@@ -143,12 +261,28 @@ questions.each do |question|
       raise "問#{number}の本文と選択肢は通常の文章ブロックにしてください"
     end
   else
-    labels = blocks.select { |block| block[:type] == "fill_in_quote" }.flat_map { |block| block.fetch(:text).scan(/\{\{([①②③④])\}\}/).flatten }.uniq
-    unless blocks.map { |block| block[:type] } == %w[fill_in_text fill_in_quote] &&
-        blocks.first.fetch(:text).include?("空欄 ① ～ ④") &&
-        blocks.last.fetch(:text).match?(/\A第\d+条第\d+項/) && labels == %w[① ② ③ ④] &&
+    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+    labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten }.uniq
+    expected_blocks = %w[fill_in_text fill_in_quote]
+    unless blocks.map { |block| block[:type] } == expected_blocks && quotes.size == 1 &&
+        blocks.first.fetch(:text).include?(number <= 5 ? "空欄 ① ～ ④" : "空欄 {{①}} ～ {{④}}") && labels == %w[① ② ③ ④] &&
         choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 && choice.fetch(:content_blocks).first.fetch(:cells).all? { |cell| !cell.strip.empty? } }
-      raise "問#{number}の条番号・4空欄と選択肢の対応が不正です"
+      raise "問#{number}の抜粋・4空欄と選択肢の対応が不正です"
+    end
+    if number <= 5 && !quotes.first.fetch(:text).match?(/\A第\d+条第\d+項/)
+      raise "問#{number}の抜粋枠の冒頭に条番号・項番号を表示してください"
+    end
+    if (6..10).cover?(number)
+      cells = choices.map { |choice| choice.fetch(:content_blocks).first.fetch(:cells) }
+      unless cells.transpose.all? { |column| column.group_by { |cell| cell }.values.map(&:size).sort == [2, 2] }
+        raise "問#{number}の選択肢は各列の語句を2対2にしてください"
+      end
+      if number == 6 && !(blocks.first.fetch(:text).include?("第1章 総則 第3款 教育課程の実施と学習評価") && question.fetch(:source_text).include?("第3款"))
+        raise "問6は総則第3款から出題してください"
+      end
+      if number == 7 && !(blocks.first.fetch(:text).include?("第1章 総則 第5款 生徒の発達の支援") && question.fetch(:source_text).include?("第5款"))
+        raise "問7は総則第5款から出題してください"
+      end
     end
   end
   explanation = question.fetch(:explanation_blocks)
@@ -156,7 +290,8 @@ questions.each do |question|
       %w[ア イ ウ エ].all? { |label| explanation.any? { |block| block.fetch(:text).start_with?("#{label}：") } }
     raise "問#{number}は全ての選択肢の解説を記載してください"
   end
-  unless question.fetch(:source_text).lines.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
+  sources = question.fetch(:source_text).lines
+  unless sources.any? && sources.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
     raise "問#{number}の出典は資料名・章節とURLを記載してください"
   end
 end
