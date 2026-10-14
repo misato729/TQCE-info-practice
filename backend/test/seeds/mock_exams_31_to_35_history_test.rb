@@ -9,6 +9,9 @@ class MockExams31To35HistoryTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+      .select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
+    # Keep the original ten-question approval snapshot independent of later
+    # additions. Legal questions 31-3..5 have their own approval/source tests.
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
 
