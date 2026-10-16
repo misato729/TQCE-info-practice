@@ -6,12 +6,13 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験31（承認済みの問1〜10。全20問がそろうまで下書き）
+# 模擬試験31（承認済み問11〜20追加。全20問）
 # 教育史の事実を根拠資料で確認した独自の記述問題。過去問の本文・選択肢の転記ではない。
 # 承認正本：document/模試31〜35_問1〜2草案_2026-10-14.md
 # 問3〜5承認正本：document/模試31_問3〜5草案_2026-10-14.md
 # 問6〜10承認正本：document/模試31〜35_問6〜10草案_2026-10-14.md
 # 文部科学省の公式原典を空欄化した独自の予想問題。原典の連続性・全肢代入は独立fixtureで検証する。
+# 問11〜20の承認本文・資料名は test/fixtures/mock_exams_31_to_35_approved_*_drafts.json に記録。
 questions = [
   {
     question_number: 1,
@@ -233,67 +234,824 @@ questions = [
     ],
     source_text: "高等学校学習指導要領解説 特別活動編 第2章 第1節1（1）②「社会参画」〜③「自己実現」，印刷12〜13頁／PDF20〜21頁 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=20",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "課題予防的生徒指導は、課題未然防止教育と課題早期発見対応から構成されます。課題未然防止教育は、{{①}}を対象に、生徒指導の諸課題の未然防止をねらいとした、{{②}}な教育プログラムの実施です。\n\n具体的には、いじめ防止教育、SOSの出し方教育を含む自殺予防教育、薬物乱用防止教育、情報モラル教育、非行防止教室等が該当します。生徒指導部を中心に、SC等の専門家等の協力も得ながら、{{③}}に位置付け、実践することが重要です。"
+      },
+      {
+        type: "text",
+        text: "注：SCはスクールカウンセラーを表す。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["全ての児童生徒", "個別的・即応的・随時的", "個別の支援計画"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["気になる一部の児童生徒", "意図的・組織的・系統的", "個別の支援計画"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["気になる一部の児童生徒", "個別的・即応的・随時的", "年間指導計画"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["全ての児童生徒", "意図的・組織的・系統的", "年間指導計画"]
+          }
+        ],
+        correct: true
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①は正しいが、②③が異なる。未然防止教育は、意図的・組織的・系統的な教育プログラムとして、年間指導計画に位置付ける。個別の状況への随時対応や個別の支援計画の作成を説明した箇所ではない。"
+      },
+      {
+        type: "text",
+        text: "イ：②は正しいが、①③が異なる。対象は全ての児童生徒であり、気になる一部の児童生徒への課題早期発見対応と区別する。ここで位置付けるのは年間指導計画である。"
+      },
+      {
+        type: "text",
+        text: "ウ：③は正しいが、①②が異なる。課題の予兆がある一部の児童生徒への即応的な働きかけではなく、全ての児童生徒への組織的・系統的な教育である。"
+      },
+      {
+        type: "text",
+        text: "エ：全て原文と一致する。全員を対象とした未然防止教育を、専門家の協力も得ながら年間指導計画に位置付けて実施するという対応である。"
+      }
+    ],
+    source_text: "『生徒指導提要』第1章1.2.3「課題予防的生徒指導：課題未然防止教育」全文（印刷20頁／PDF23頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=23\n文部科学省『生徒指導提要』第1章1.2.4（対象の比較），印刷21頁／PDF24頁 | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=24"
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      {
+        type: "text",
+        text: "注意欠如・多動性障害（ADHD）のある生徒の行動の把握と指導に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "集団活動のルールを説明できる場合には，気持ちを抑えてルールに沿って行動する力も身に付いていると捉える。勝敗がある活動では，ロールプレイによって適切な振る舞いを練習する。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ルールを理解していても，勝ちたい気持ちなどから行動を調整しにくい場合がある。自分の行動と出来事との関係を図示したり，実現可能な目当てと点検表を用いて振り返ったりして，自ら行動を選び調整する力を育てる。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "注意がそれやすい場合には，何に注目するかを明確にする。指示は複数の手順をまとめて口頭で示し，その全体を記憶してから作業へ移るようにすることで，必要な情報を保持する負担を軽減する。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "道具の操作がぎこちない場合には，手足を協調させる動きや手指の細かな動きを把握する。こうした運動・動作の困難を，注意がそれたり，思い付くままに行動したりする状態と同じものとして整理する。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：ルールの知識と，その場で衝動を抑えて実行する力を同一視している点が誤り。手引は，ルールを理解していても勝ちたい気持ちから守れない場合を挙げる。ロールプレイによる具体的な行動の指導は適切である。"
+      },
+      {
+        type: "text",
+        text: "イ：適切。ルールを理解することと行動を調整することを区別し，因果関係の理解，実現可能な目当て，点検表による振り返りを，自ら行動を調整する指導につなげている。"
+      },
+      {
+        type: "text",
+        text: "ウ：注目する箇所を明確にする点は適切。しかし，複数の口頭指示をまとめて保持することを負担の軽減とする点が誤り。手引では，指示を段階に分けて順に示すことなどを挙げている。"
+      },
+      {
+        type: "text",
+        text: "エ：運動・動作の困難を把握する点は適切だが，その困難を不注意・衝動性と同じ状態としている点が誤り。手足の協調や手指の巧緻性の困難と，注意集中や衝動の抑制の状態は区別して把握する。"
+      }
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅹ「注意欠陥多動性障害」1(2)②ア・イ・オ・カ（本文312〜313頁，分割PDF7〜8ページ） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_14.pdf"
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "マーシャの同一性地位の考え方に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "過去に進路や価値観について真剣に迷い，現在は特定の方向への取組が乏しい場合には，危機を経験した点から同一性達成に位置付けられる。周囲の期待を悩まずに受け入れ，その方向へ取り組む場合は，早期完了に位置付けられる。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "特定の方向への取組はまだ定まらず，進路や価値観を積極的に模索している状態は，モラトリアムに位置付けられる。過去に危機を経験した後，現在は積極的な模索も特定の方向への取組も乏しくなっている場合も，危機を経験した点からモラトリアムに位置付けられる。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "過去に危機を経験していても，現在は進路や価値観を積極的に模索せず，特定の方向への取組も乏しい場合には，同一性拡散に位置付けられる。一方，特定の方向への取組はまだ定まらず，自分の進む方向を積極的に模索している状態は，モラトリアムに位置付けられる。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "進路や価値観を真剣に検討し，選んだ方向へ現在も積極的に取り組む状態は，同一性達成に位置付けられる。一方，自分の進む方向を現在も模索しているが，特定の方向への取組が定まっていない状態は，同一性拡散に位置付けられる。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：早期完了の説明は適切だが，前半が誤り。同一性達成には，危機や探索の経験に加え，現在の積極的な関与が必要となる。危機を経験したことだけでは達成と判断できない。"
+      },
+      {
+        type: "text",
+        text: "イ：前半は適切だが，後半が誤り。現在も自分の方向を模索していることと，以前迷った経験があることは異なる。現在の積極的な模索も関与も乏しい状態は，同一性拡散に位置付けられる。"
+      },
+      {
+        type: "text",
+        text: "ウ：適切。同一性拡散は，危機の経験があるかどうかにかかわらず，現在の積極的な関与が乏しい状態を含む。モラトリアムでは，現在進行中の模索に注目する。"
+      },
+      {
+        type: "text",
+        text: "エ：前半は適切だが，後半は同一性拡散ではなくモラトリアム。選択した方向への関与が定まっていない点は共通していても，現在積極的に模索しているかどうかを区別する。"
+      }
+    ],
+    source_text: "三重大学教育心理学研究室掲載研究「方法」3（1）「アイデンティティ地位分類尺度」第1段落（マーシャの四分類） | https://educational-psychology.edu.mie-u.ac.jp/thesis/2006/nakahara/houhou.html\n内田尚宏ほか「学生のアイデンティティ発達に大学はどこまで関われるのか―学生支援の観点から―」『薬学教育』7巻，「アイデンティティとは何か」（苫米地憲昭）の四つのパターンの説明 | https://www.jstage.jst.go.jp/article/jjphe/7/0/7_2023-022/_html/-char/ja"
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "古典的条件づけにおける消去及び消去後にみられる反応の変化について述べたものとして，適切でないものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "消去では，無条件刺激を伴わずに条件刺激を繰り返し提示すると，条件反応が弱まる。反応が観察されにくくなったことと，それまでの学習内容が失われたこととは区別して捉える必要がある。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "消去後に休止期間を置き，条件刺激を提示すると，条件反応が再び現れることがある。これを自発的回復といい，休止中に条件刺激と無条件刺激を再び対提示する手続きを前提とするものではない。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "消去後に条件刺激と無条件刺激の対提示を再開し，条件反応が再び強まる過程を自発的回復という。これは，休止後に条件刺激を提示して反応の再出現を確かめる再条件づけと区別される。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "消去後に条件刺激と無条件刺激の対提示を再開すると，再び条件反応が形成される。再条件づけは，既に行った学習の影響を受け，最初に条件反応を獲得するときより速く進むことがある。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切。消去は条件刺激を単独で繰り返し提示する手続による反応の減弱に関わる。消去後の反応の回復などから，反応がみられなくなることを学習内容の消失と同一視しない。"
+      },
+      {
+        type: "text",
+        text: "イ：適切。消去後の休止を経て条件反応が再び現れるのが自発的回復である。条件刺激と無条件刺激を再び組み合わせる再条件づけとは手続が異なる。"
+      },
+      {
+        type: "text",
+        text: "ウ：不適切。二つの名称が逆である。対提示を再開して反応を再形成するのが再条件づけ，消去後の休止を経て反応が再出現するのが自発的回復である。"
+      },
+      {
+        type: "text",
+        text: "エ：適切。消去後も以前の学習の影響が残り，再条件づけが最初の条件づけより速く進むことがある。全ての場合に同じ速さで進むという意味ではない。"
+      }
+    ],
+    source_text: "北海道大学OCW・田山忠行『基礎心理学入門 第七章 学習』（2009年12月17日）「強化・消去」スライド及び図（PDF9頁、紙面番号なし） | https://ocw.hokudai.ac.jp/wp-content/uploads/2016/01/Psychology-2009-Note-12.pdf#page=9\n沼田恵太郎・宮田洋「皮膚電気条件づけ―その意義と研究動向―」3.1.3「実験セッションの構成」（印刷62頁／PDF8頁）、消去と自発的回復に関する説明（印刷79頁／PDF25頁） | https://kwansei.repo.nii.ac.jp/record/16203/files/61-2-3.PDF"
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）に示された個別最適な学び，協働的な学び及び学習の調整に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "個に応じた指導には，子供の特性や学習進度に応じて方法や教材，学習時間を柔軟にすることと，興味・関心等に応じた課題に取り組む機会を提供することがある。前者を学習の個性化，後者を指導の個別化として整理している。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "個別最適な学びを進めるため，教師は子供の成長やつまずき，悩みを理解し，きめ細かく指導・支援する。ここでいう子供自身による学習の調整は，教師が学習状況に応じて次の方法を決定し，子供がその手順を再現することを指す。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "協働的な学びには，異学年間や他校の子供との学び合いも含まれる。個別最適な学びとの一体的な充実とは，個人で得た成果を集団の学びへ持ち寄り，その成果を集団としての到達へ結び付ける一方向の関係として整理される。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "子供が学習状況を把握し，学習方法を見いだしたり，学び直しや発展的な学習を行ったりできるようにする。教師のきめ細かな支援とともに，個人の学びを協働へ生かし，協働の成果を再び個人の学びへ還元することも重視する。"
+          }
+        ],
+        correct: true
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：二つの名称と内容の対応が逆。特性・学習進度・到達度等に応じて指導方法・教材・学習時間等を柔軟にするのが「指導の個別化」。興味・関心やキャリア形成の方向性等に応じた課題に取り組む機会を提供し，子供自身が学習を調整するのが「学習の個性化」である。"
+      },
+      {
+        type: "text",
+        text: "イ：教師が子供の実態を理解してきめ細かく支援する点は適切。しかし，教師による方法の決定と子供による再現を，子供自身の学習の調整と同一視する点が誤り。答申は，子供が自分の学習状況を把握し，見通しを立て，新たな方法を見いだすこと等を挙げている。教師の支援を伴わない放任を求めるものでもない。"
+      },
+      {
+        type: "text",
+        text: "ウ：異学年や他校との学び合いを含む点は適切。しかし，個人から集団への一方向の関係としている点が誤り。答申は，個別最適な学びの成果を協働的な学びに生かし，更にその成果を個別最適な学びに還元することを挙げる。"
+      },
+      {
+        type: "text",
+        text: "エ：適切。自ら学習状況を把握して方法を調整することと，教師の専門的な指導・支援を組み合わせている。また，個人と協働の成果を往還させる関係も答申に沿っている。"
+      }
+    ],
+    source_text: "中央教育審議会「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」第Ⅰ部 総論3(1)「子供の学び」（本文17〜19頁／PDF22〜24頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=22"
+  },
+  {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第1 情報Ⅰ」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "ア 次のような知識及び技能を身に付けること。\n\n（ｱ）情報や{{①}}の特性を踏まえ，情報と情報技術を活用して問題を発見・解決する方法を身に付けること。\n\n（ｲ）情報に関する{{②}}，情報セキュリティの重要性，情報社会における{{③}}及び{{④}}について理解すること。\n\n（ｳ）情報技術が人や社会に果たす役割と及ぼす影響について理解すること。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["メディア", "法規や制度", "個人の責任", "情報モラル"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["メディア", "評価や改善", "組織の責任", "情報モラル"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["データベース", "法規や制度", "組織の責任", "情報デザイン"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["データベース", "評価や改善", "個人の責任", "情報デザイン"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：四つとも原文と一致する。情報やメディアの特性を踏まえた問題解決と，法規・制度，情報セキュリティ，個人の責任，情報モラルを関連付けて理解する。"
+      },
+      {
+        type: "text",
+        text: "イ：①④は一致するが，②は「法規や制度」，③は「個人の責任」である。評価・改善や組織の責任が不要という問題ではなく，情報社会の問題解決で理解すべき内容として原文に列挙された対象との対応を問う。"
+      },
+      {
+        type: "text",
+        text: "ウ：②は一致するが，①は「メディア」，③は「個人の責任」，④は「情報モラル」である。情報やメディアの特性を理解することと，データベースの仕組みを理解すること，また情報モラルと情報デザインを区別する。"
+      },
+      {
+        type: "text",
+        text: "エ：③は一致するが，①は「メディア」，②は「法規や制度」，④は「情報モラル」である。問題解決の過程を評価・改善することや情報デザイン一般を述べた箇所ではない。"
+      }
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章第10節 第2款第1「情報Ⅰ」2(1)ア(ｱ)〜(ｳ)・本文190頁（PDF192頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=192"
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第2 課題研究 3 内容の取扱い」に示された内容に基づく記述である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "（1）内容を取り扱う際には，次の事項に配慮するものとする。\n\nア {{①}}に応じて，「調査，研究，実験」，「作品制作」，「産業現場等における実習」，「職業資格の取得」の中から，{{②}}で情報産業に関する適切な課題を設定し，主体的かつ協働的に取り組む学習活動を通して，専門的な知識，技術などの{{③}}を図り，情報産業に関する課題の解決に取り組むことができるようにすること。なお，課題については，これら四つの指導項目の２項目以上にまたがるものを設定することができること。\n\nイ 課題研究の成果について{{④}}を設けるようにすること。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["生徒の興味・関心，進路希望等", "学級全体", "深化・総合化", "筆記試験で評価する機会"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["情報産業全体の技術水準や市場規模", "個人又はグループ", "整理・標準化", "筆記試験で評価する機会"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["生徒の興味・関心，進路希望等", "個人又はグループ", "深化・総合化", "発表する機会"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["情報産業全体の技術水準や市場規模", "学級全体", "整理・標準化", "発表する機会"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①③は一致する。②の原語は「個人又はグループ」であり，個人による研究とグループによる研究の双方を示す。④は「発表する機会」である。学級全体が一つのグループとして取り組むことの可否ではなく，この規定で示された実施の単位と成果発表の語句の一致を問う。"
+      },
+      {
+        type: "text",
+        text: "イ：②は一致する。①は生徒の興味・関心、進路希望等、③は深化・総合化、④は成果を発表する機会である。産業の技術水準や市場規模の調査、知識の整理、筆記試験による評価を一般に不適切とする問題ではなく、この規定が示す課題設定の基準と学習活動の対応を問う。"
+      },
+      {
+        type: "text",
+        text: "ウ：全て一致する。生徒の興味・関心や進路希望等に応じた課題を個人又はグループで設定し、知識・技術等の深化・総合化へ結び付け、成果を発表する機会を設ける。"
+      },
+      {
+        type: "text",
+        text: "エ：④は一致する。①②③が異なり、生徒側の興味・関心や進路希望等に応じ、個人又はグループで、専門的な知識・技術等の深化・総合化を図るという組合せになる。"
+      }
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章第7節 第2款 第2「課題研究」3(1)ア・イ、参照先2「内容」の指導項目(1)〜(4)、印刷409頁（PDF411頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=411"
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2 内容とその取扱い」の「コミュニケーションと情報デザイン」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "静止画については，デジタルカメラで撮影する際に{{①}}に応じてファイルサイズが変化したり，同じ{{①}}でもファイル形式を変えることで{{②}}が変わってファイルサイズが変化したりすることから，画質とファイルサイズがトレードオフの関係になっていることを確認する学習活動が考えられる。また，静止画を点の集まりとして扱う{{③}}と座標として扱う{{④}}について，実際に静止画を扱って特性の違いを理解し，用途に応じて使い分ける学習活動が考えられる。\n\nファイルの{{②}}については，完全に元に戻せる可逆圧縮と完全には元に戻せない非可逆圧縮を用いて，実際にファイルを圧縮・展開してそれぞれの特性の違いを把握する学習活動が考えられる。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["解像度", "圧縮方法", "ベクタ形式", "ラスタ形式"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["表示倍率", "描画方式", "ラスタ形式", "ベクタ形式"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["表示倍率", "描画方式", "ベクタ形式", "ラスタ形式"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["解像度", "圧縮方法", "ラスタ形式", "ベクタ形式"]
+          }
+        ],
+        correct: true
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：③・④が逆である。原典は点の集まりとして扱うものを「ラスタ形式」、座標として扱うものを「ベクタ形式」としている。①・②は一致する。"
+      },
+      {
+        type: "text",
+        text: "イ：①・②が異なる。ここでは撮影時の「解像度」と、ファイル形式によって変わる「圧縮方法」を扱う。「表示倍率」は保存された画像を表示する際の拡大・縮小の倍率であり、原典の撮影・保存時の条件と取り違えている。後段の可逆圧縮・非可逆圧縮も「圧縮方法」の違いである。③・④は一致する。"
+      },
+      {
+        type: "text",
+        text: "ウ：①・②はイと同じ取り違えであり、③・④も逆である。"
+      },
+      {
+        type: "text",
+        text: "エ：4語とも原文に一致する。解像度によるデータ量の違い、同じ解像度でも圧縮方法によってファイルサイズが変わること、ラスタ形式とベクタ形式の違いを区別する。"
+      }
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第1節 情報Ⅰ 2（2）コミュニケーションと情報デザイン イ（ア）に続く静止画及びファイル圧縮の学習活動例（29頁／PDF37頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=37"
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "text",
+        text: "配列dataについて，先頭と末尾を除き，直前と直後の要素の両方より値が大きい要素の個数を数えたい。同じ値であれば「大きい」には含めない。次のプログラムの空欄 ① に入れる条件として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "text",
+        text: "プログラムはPythonを模した疑似コードである。配列の添字は0から始まり，反復の範囲は両端を含む。インデントの深さが同じ部分を同じブロックとする。=は代入，==は等しいかの比較，>と<は大小比較，>=は以上の比較である。条件のandは両方の条件を満たすこと，orは少なくとも一方を満たすことを表す。"
+      },
+      {
+        type: "code",
+        code: "01 data = [2, 5, 5, 3, 6, 1, 4]\n02 count = 0\n03 iを1から要素数(data)-2まで1ずつ増やしながら繰り返す:\n04     if 【①】:\n05         count = count + 1\n06 表示する(count)"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "data[i] > data[i-1] or data[i] > data[i+1]"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "data[i] > data[i-1] and data[i] > data[i+1]"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "data[i] >= data[i-1] and data[i] >= data[i+1]"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "data[i] < data[i-1] and data[i] < data[i+1]"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：左右の少なくとも一方より大きければ数えてしまう。提示データでは添字1・2・4の3個となる。添字1の値5は右隣と等しく，添字2の値5は左隣と等しいため，求める条件を満たさない。"
+      },
+      {
+        type: "text",
+        text: "イ：両隣との厳密な大小比較をandで結ぶ。提示データでは添字4の値6だけが両隣の3と1より大きく，表示は1となる。"
+      },
+      {
+        type: "text",
+        text: "ウ：等しい値も含むため，添字1・2の値5まで数えてしまい，3個となる。「両方より大きい」と「両方以上」を区別する。"
+      },
+      {
+        type: "text",
+        text: "エ：両隣より小さい要素を数える。提示データでは添字3の値3と添字5の値1の2個となり，求める大小関係が逆である。"
+      }
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習13「基本的プログラム」（2）制御構造，本文114頁（PDF20ページ） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20"
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "text",
+        text: "ある小テストの得点を，次のように記録した。999は得点が記録されていないことを示す欠測コードであり，0は実際の得点が0点であったことを示す。"
+      },
+      {
+        type: "table",
+        headers: ["生徒番号", "1", "2", "3", "4", "5"],
+        rows: [
+          ["記録値", "12", "0", "999", "18", "999"]
+        ]
+      },
+      {
+        type: "text",
+        text: "得点の記録がある生徒だけを対象として，平均点を求めたい。このときの平均点として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。欠測値の補完は行わない。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "10点"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "12点"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "15点"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "6点"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：有効な記録は12・0・18の3件である。（12＋0＋18）÷3＝10点となる。欠測コードと実際の0点を区別し，対象となる記録数を分母にする。"
+      },
+      {
+        type: "text",
+        text: "イ：記録のある得点を小さい順に並べた0・12・18の中央値は12点である。しかし，問うているのは平均値であり，中央値ではない。"
+      },
+      {
+        type: "text",
+        text: "ウ：実際に記録された0点まで除くと，（12＋18）÷2＝15点になる。0点は有効な記録なので，欠測コード999と同じように除外してはいけない。"
+      },
+      {
+        type: "text",
+        text: "エ：欠測を0点として扱い，全5人を分母とすると，30÷5＝6点になる。しかし，今回は記録のある生徒だけを対象にするため，欠測の2人を分母に含めない。"
+      }
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章 学習22「量的データの分析」（1），欠測値の処理及び代表値，本文185頁（PDF33ページ） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=33"
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == (1..10).to_a
-  raise "模擬試験31の承認済み問番号は1〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+  raise "承認済みの問番号と一致しません"
 end
-
-categories = {
-  1 => "education_foundations", 2 => "education_foundations",
-  3 => "education_system", 4 => "education_system", 5 => "education_system",
-  6 => "curriculum_organization", 7 => "career_education",
-  8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
-}
+categories = {1 => "education_foundations", 2 => "education_foundations", 3 => "education_system", 4 => "education_system", 5 => "education_system", 6 => "curriculum_organization", 7 => "career_education", 8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities", 11 => "student_guidance_career", 12 => "special_support_education", 13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system", 16 => "information_specialized", 17 => "information_education", 18 => "information_specialized", 19 => "information_specialized", 20 => "information_specialized"}
 questions.each do |question|
   number = question.fetch(:question_number)
-  choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  major = number >= 16 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
-  unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
-    raise "問#{number}は4択・正答1件にしてください"
+  choices = question.fetch(:choices)
+  unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1 && choices.map { |choice| choice.fetch(:content_blocks) }.uniq.size == 4
+    raise "問#{number}は異なる4択・正答1件にしてください"
   end
   blocks = question.fetch(:content_blocks)
-  if number <= 3
-    unless blocks.all? { |block| block[:type] == "text" && !block.fetch(:text).strip.empty? } &&
-        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "text" && !choice.fetch(:content_blocks).first.fetch(:text).strip.empty? }
-      raise "問#{number}の本文と選択肢は通常の文章ブロックにしてください"
+  quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+  labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten }.uniq
+  table_labels = blocks.select { |block| block[:type] == "table" }.flat_map { |block| block.fetch(:rows).flatten.join.scan(/【([^】]+)】/).flatten }.uniq
+  required_fill = (4..10).cover?(number) || number == 11 || (number == 15 && 31 == 33) || ((16..18).cover?(number) && !(31 == 34 && number == 17))
+  if required_fill
+    expected_count = (4..10).cover?(number) ? 4 : {11 => 3, 16 => 4, 17 => 4, 18 => 4}.fetch(number)
+    expected_labels = %w[① ② ③ ④].first(expected_count)
+    actual_labels = labels.empty? ? table_labels : labels
+    unless quotes.size == 1 && blocks.first[:type] == "fill_in_text" && actual_labels == expected_labels &&
+        blocks.first.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten.uniq == (expected_count == 2 ? expected_labels : [expected_labels.first, expected_labels.last]) &&
+        choices.all? { |choice| choice[:content_blocks].size == 1 && choice[:content_blocks].first[:type] == "fill_in_choice" && choice[:content_blocks].first[:cells].size == expected_count }
+      # Legal prompts intentionally retain the past-paper bare labels.
+      legal = (4..5).cover?(number) && quotes.size == 1 && labels == expected_labels &&
+        blocks.first[:type] == "fill_in_text" && blocks.first[:text].include?("空欄 ① ～ ④") &&
+        choices.all? { |choice| choice[:content_blocks].size == 1 && choice[:content_blocks].first[:type] == "fill_in_choice" && choice[:content_blocks].first[:cells].size == expected_count }
+      raise "問#{number}の空欄・選択肢の対応が不正です" unless legal
     end
-  else
-    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-    labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten }.uniq
-    expected_blocks = %w[fill_in_text fill_in_quote]
-    unless blocks.map { |block| block[:type] } == expected_blocks && quotes.size == 1 &&
-        blocks.first.fetch(:text).include?(number <= 5 ? "空欄 ① ～ ④" : "空欄 {{①}} ～ {{④}}") && labels == %w[① ② ③ ④] &&
-        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 && choice.fetch(:content_blocks).first.fetch(:cells).all? { |cell| !cell.strip.empty? } }
-      raise "問#{number}の抜粋・4空欄と選択肢の対応が不正です"
+    if (4..5).cover?(number) && !quotes.first.fetch(:text).match?(/\A第\d+条第\d+項/)
+      raise "問#{number}は冒頭に条番号・項番号を記載してください"
     end
-    if number <= 5 && !quotes.first.fetch(:text).match?(/\A第\d+条第\d+項/)
-      raise "問#{number}の抜粋枠の冒頭に条番号・項番号を表示してください"
+    columns = choices.map { |choice| choice[:content_blocks].first[:cells] }.transpose
+    if number >= 6 && !columns.all? { |col| col.group_by { |v| v }.values.map(&:size).sort == [2, 2] }
+      raise "問#{number}の選択肢は各列2対2にしてください"
     end
-    if (6..10).cover?(number)
-      cells = choices.map { |choice| choice.fetch(:content_blocks).first.fetch(:cells) }
-      unless cells.transpose.all? { |column| column.group_by { |cell| cell }.values.map(&:size).sort == [2, 2] }
-        raise "問#{number}の選択肢は各列の語句を2対2にしてください"
-      end
-      if number == 6 && !(blocks.first.fetch(:text).include?("第1章 総則 第3款 教育課程の実施と学習評価") && question.fetch(:source_text).include?("第3款"))
-        raise "問6は総則第3款から出題してください"
-      end
-      if number == 7 && !(blocks.first.fetch(:text).include?("第1章 総則 第5款 生徒の発達の支援") && question.fetch(:source_text).include?("第5款"))
-        raise "問7は総則第5款から出題してください"
-      end
-    end
+  end
+  if number == 6 && !(blocks.first[:text].include?("第1章 総則 第3款 教育課程の実施と学習評価") && question[:source_text].include?("第3款"))
+    raise "問6は総則第3款から出題してください"
+  end
+  if number == 7 && !(blocks.first[:text].include?("第1章 総則 第5款 生徒の発達の支援") && question[:source_text].include?("第5款"))
+    raise "問7は総則第5款から出題してください"
   end
   explanation = question.fetch(:explanation_blocks)
-  unless explanation.all? { |block| block[:type] == "text" && !block.fetch(:text).strip.empty? } &&
-      %w[ア イ ウ エ].all? { |label| explanation.any? { |block| block.fetch(:text).start_with?("#{label}：") } }
-    raise "問#{number}は全ての選択肢の解説を記載してください"
+  texts = explanation.select { |block| block[:type] == "text" }.map { |block| block.fetch(:text) }
+  unless blocks.any? && explanation.any? && %w[ア イ ウ エ].all? { |label| texts.any? { |text| text.start_with?("#{label}：") || text.include?("#{label}は") || text.include?("#{label}を選ぶ") } }
+    raise "問#{number}は全肢解説が必要です"
   end
-  sources = question.fetch(:source_text).lines
-  unless sources.any? && sources.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
-    raise "問#{number}の出典は資料名・章節とURLを記載してください"
+  unless question.fetch(:source_text).lines.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
+    raise "問#{number}の出典形式が不正です"
   end
 end
-
-QuestionSeedSync.import(exam_number: 31, questions: questions, publication_status: "draft")
+answers = questions.map { |question| question[:choices].find { |choice| choice[:correct] }[:label] }
+unless answers.group_by { |v| v }.values.all? { |v| v.size <= 5 }
+  raise "正答位置を各5件以内に調整してください"
+end
+QuestionSeedSync.import(exam_number: 31, questions: questions, publication_status: "published")

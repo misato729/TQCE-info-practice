@@ -26,7 +26,8 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
   setup do
     @partial_entries = QuestionSeedSync.collect do
       EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
-    end
+    end.select { |entry| entry.fetch(:attributes).fetch(:question_number) <= 10 && !((32..35).cover?(entry[:exam_number]) && (3..5).cover?(entry[:attributes][:question_number])) }
+      .map { |entry| entry.merge(publication_status: "draft") } # Keep the approved 38-question draft scenario, not later additions.
     @entries = @partial_entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -318,6 +319,7 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
     previous = APPROVED.fetch("existing_613_payload_digests")
     assert_equal 613, previous.size
     entries = QuestionSeedSync.collect { (1..35).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+      .select { |entry| entry[:exam_number] < 31 || (entry[:attributes][:question_number] <= 10 && !((32..35).cover?(entry[:exam_number]) && (3..5).cover?(entry[:attributes][:question_number]))) }
     unchanged = entries.select { |entry| previous.key?(key(entry)) }
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|

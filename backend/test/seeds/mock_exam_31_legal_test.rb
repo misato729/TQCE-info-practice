@@ -12,6 +12,7 @@ class MockExam31LegalTest < ActionDispatch::IntegrationTest
   setup do
     @entries = QuestionSeedSync.collect { load Rails.root.join("db/seeds/mock_exam_31.rb") }
       .select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
+      .map { |entry| entry.merge(publication_status: "draft") } # Historical three-question draft test, independent of the completed set.
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
 

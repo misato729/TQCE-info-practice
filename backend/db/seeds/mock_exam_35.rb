@@ -7,11 +7,13 @@ fill_in_choice = lambda do |label, cells, correct = false|
   { label: label, content_blocks: [{ type: "fill_in_choice", cells: cells }], correct: correct }
 end
 
-# 模擬試験35（承認済みの問1・2及び問6〜10。全20問がそろうまで下書き）
+# 模擬試験35（問3〜5追加・全20問を公開）
+# 問3〜5：2026年10月16日の一回限りの実装承認。原典・作問記録は document/模試32〜35_問3〜5_作成実装_2026-10-16.md。
 # 教育史の事実を根拠資料で確認した独自の記述問題。過去問の本文・選択肢の転記ではない。
 # 承認正本：document/模試31〜35_問1〜2草案_2026-10-14.md
 # 問6〜10承認正本：document/模試31〜35_問6〜10草案_2026-10-14.md
 # 文部科学省の公式原典を空欄化した独自の予想問題。原典の連続性・全肢代入は独立fixtureで検証する。
+# 問11〜20の承認本文・資料名は test/fixtures/mock_exams_31_to_35_approved_*_drafts.json に記録。
 questions = [
   {
     question_number: 1,
@@ -54,6 +56,254 @@ questions = [
       text_block.call("エ：適切。両者とも子どもの自発的な活動を重視するが，フレーベルの遊び・恩物と，モンテッソーリの自己訂正的な教具・観察に基づく援助を区別している。どちらか一方だけが遊びや環境を重視するという対立ではない。"),
     ],
     source_text: "白石崇人『資料から考える教育原理』第11章・129〜131頁，第12章・142〜145頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n広島文教大学附属幼稚園「モンテッソーリ教育」 | https://www.h-bunkyo.ac.jp/kindergarten/about/montessori.html",
+  },
+  {
+    question_number: 3,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次の①～④は，「教育基本法」（平成18年法律第120号）に関する記述である。正しいものが幾つあるかを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "①　大学は，学術の中心として，高い教養と専門的能力を培い，深く真理を探究して新たな知見を創造し，その成果を広く社会に提供することにより，社会の発展に寄与するものとされている。また，自主性，自律性その他の教育及び研究の特性が尊重されなければならない。\n\n②　義務教育については，その機会を保障する責任を国に，その水準を確保する責任を地方公共団体に分けた上で，適切な役割分担及び相互の協力の下で両者がその実施に責任を負うものとされている。また，国又は地方公共団体の設置する学校における義務教育については，授業料を徴収しない。\n\n③　国及び地方公共団体が設置する学校は，特定の宗教のための宗教教育その他宗教的活動をしてはならない。また，宗教に関する寛容の態度，一般的な教養及び宗教の社会生活における地位を教育上尊重しなければならないとする規定についても，その対象となるのは，これらの国公立学校である。\n\n④　私立学校は，公の性質と学校教育における重要な役割を有している。このことを踏まえ，国及び地方公共団体は，私立学校の自主性を尊重しつつ，助成その他の適当な方法によって，私立学校教育の振興に努めなければならない。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "三つ"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "二つ"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "一つ"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "なし"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "①：正しい。第7条第1項は大学の教育，研究及び成果の社会への提供を通じた社会の発展への寄与を，第2項は自主性，自律性その他の教育及び研究の特性の尊重を定めている。"
+      },
+      {
+        type: "text",
+        text: "②：誤り。第5条第3項は，国及び地方公共団体が，義務教育の機会を保障し，その水準を確保するため，適切な役割分担及び相互の協力の下，その実施に責任を負うと定める。機会保障を国だけの責任，水準確保を地方公共団体だけの責任として分けた規定ではない。後半の国公立学校の義務教育における授業料不徴収は，同条第4項と一致する。"
+      },
+      {
+        type: "text",
+        text: "③：誤り。前半は第15条第2項と一致するが，後半は第1項の尊重規定まで国公立学校を対象とするものへ狭めている。宗教に関する寛容の態度，一般的な教養及び社会生活における地位の尊重には，第2項のような学校の設置主体による限定はない。特定宗教のための教育等の禁止と，宗教に関する教養等の尊重を区別する。"
+      },
+      {
+        type: "text",
+        text: "④：正しい。第8条は，私立学校の公の性質及び学校教育における重要な役割を踏まえ，国及び地方公共団体に，自主性を尊重しつつ私立学校教育の振興に努めることを求めている。助成その他の適当な方法を用いることも原文にある。"
+      },
+      {
+        type: "text",
+        text: "ア：正しいものは①④の二つであり，三つではない。"
+      },
+      {
+        type: "text",
+        text: "イ：正しいものは①④の二つなので，この選択肢が正答である。"
+      },
+      {
+        type: "text",
+        text: "ウ：①に加えて④も正しく，一つではない。"
+      },
+      {
+        type: "text",
+        text: "エ：正しい記述は①④にあるため，「なし」ではない。②は国と地方公共団体の責任の分け方，③は宗教に関する教養等の尊重規定の対象を取り違えている。"
+      }
+    ],
+    source_text: "e-Gov法令検索「教育基本法」第5条第3項・第4項，第7条，第8条，第15条 | https://laws.e-gov.go.jp/law/418AC0000000120#Mp-Ch_2-At_5"
+  },
+  {
+    question_number: 4,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の各文は，「学校教育法」（昭和22年法律第26号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "第34条第1項・第2項\n\n小学校においては、文部科学大臣の{{①}}を経た教科用図書又は文部科学省が{{②}}を有する教科用図書を使用しなければならない。\n\n２　前項に規定する教科用図書（以下この条において「教科用図書」という。）の{{③}}を文部科学大臣の定めるところにより記録した電磁的記録（電子的方式、磁気的方式その他人の知覚によつては認識することができない方式で作られる記録であつて、電子計算機による情報処理の用に供されるものをいう。）である教材がある場合には、同項の規定にかかわらず、文部科学大臣の定めるところにより、児童の教育の充実を図るため必要があると認められる教育課程の一部において、{{④}}当該教材を使用することができる。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["検定", "著作の名義", "内容", "教科用図書に代えて"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["認可", "監修の権限", "内容", "教科用図書に代えて"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["検定", "著作の名義", "要約", "教科用図書と併せて"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["認可", "監修の権限", "要約", "教科用図書と併せて"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：四つとも原文と一致する。第1項は文部科学大臣の検定を経た教科用図書又は文部科学省が著作の名義を有する教科用図書の使用を定める。第2項は，教科用図書の内容を記録した所定の電磁的記録である教材を，一定の条件の下で教科用図書に代えて使うことを認めている。"
+      },
+      {
+        type: "text",
+        text: "イ：①は「検定」，②は「著作の名義」が正しい。法が用いる教科用図書の要件を，「認可」や「監修の権限」へ取り違えている。③・④は第2項と一致する。"
+      },
+      {
+        type: "text",
+        text: "ウ：③は「内容」，④は「教科用図書に代えて」が正しい。単に内容を要約した教材を指すのではなく，教科用図書の内容を所定の方法で記録した電磁的記録を指す。また，この項の法的な取扱いは教科用図書との併用を定めるものではなく，教科用図書に代える使用を認めるものである。一般に教材を併用できないという意味ではない。"
+      },
+      {
+        type: "text",
+        text: "エ：①〜④の全てが原文と異なる。第1項の検定・著作名義の要件と，第2項の記録内容・代替使用の条件を区別して確認する。"
+      },
+      {
+        type: "text",
+        text: "第34条は第62条によって高等学校にも準用される。抜粋は準用元の原文であり，「小学校」「児童」を高等学校向けに書き換えていない。令和8年6月17日施行版の条文によっており，未施行の将来のデジタル教科書制度の改正と区別する。"
+      }
+    ],
+    source_text: "e-Gov法令検索「学校教育法」第34条第1項・第2項（令和8年6月17日施行版） | https://laws.e-gov.go.jp/law/322AC0000000026/20260617_508AC0000000037#Mp-Ch_4-At_34\n同法第62条 | https://laws.e-gov.go.jp/law/322AC0000000026/20260617_508AC0000000037#Mp-Ch_6-At_62"
+  },
+  {
+    question_number: 5,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の各文は，「教育公務員特例法」 （昭和24年法律第1号）の条文である。文章中の空欄 ① ～ ④ に当てはまる語句の組合せとして正しいものを下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "第25条第1項〜第3項\n\n公立の小学校等の教諭等の{{①}}は、児童、生徒又は幼児（以下「児童等」という。）に対する指導が不適切であると認定した教諭等に対して、その能力、適性等に応じて、当該指導の改善を図るために必要な事項に関する研修（以下この条において「指導改善研修」という。）を実施しなければならない。\n\n２　指導改善研修の期間は、{{②}}を超えてはならない。ただし、特に必要があると認めるときは、{{①}}は、{{③}}から引き続き二年を超えない範囲内で、これを延長することができる。\n\n３　{{①}}は、指導改善研修を実施するに当たり、指導改善研修を受ける者の能力、適性等に応じて、{{④}}に指導改善研修に関する計画書を作成しなければならない。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["任命権者", "一年", "第一項の認定を行つた日", "所属する学校ごと"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["研修実施者", "二年", "指導改善研修を開始した日", "その者ごと"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["研修実施者", "二年", "第一項の認定を行つた日", "所属する学校ごと"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["任命権者", "一年", "指導改善研修を開始した日", "その者ごと"]
+          }
+        ],
+        correct: true
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①②は一致する。③は「指導改善研修を開始した日」、④は「その者ごと」が正しい。延長を含めた二年という上限の起算点は、不適切な指導の認定日ではなく研修の開始日である。計画書も学校ごとではなく、受講者の能力・適性等に応じてその者ごとに作成する。"
+      },
+      {
+        type: "text",
+        text: "イ：③④は一致する。①は「任命権者」、②は「一年」が正しい。指導が不適切であると認定した教諭等に対する指導改善研修の実施義務は任命権者に課される。二年は特に必要な場合に延長したときの開始日からの上限であり、原則の上限ではない。"
+      },
+      {
+        type: "text",
+        text: "ウ：四つとも原文と異なる。正しくは「任命権者」「一年」「指導改善研修を開始した日」「その者ごと」である。原則期間と延長時の通算上限、研修実施前の認定と期間の起算点、学校単位と個人単位を区別する。"
+      },
+      {
+        type: "text",
+        text: "エ：四つとも原文と一致する。任命権者が指導改善研修を実施し、期間の上限は原則として一年とされる。特に必要な場合は、研修開始日から引き続き二年を超えない範囲で延長でき、受講者ごとの能力・適性等に応じた計画書を作成する。"
+      }
+    ],
+    source_text: "e-Gov法令検索「教育公務員特例法」第25条第1項〜第3項 | https://laws.e-gov.go.jp/law/324AC0000000001/20260401_507AC0000000068#Mp-Ch_4-At_25"
   },
   {
     question_number: 6,
@@ -167,67 +417,846 @@ questions = [
     ],
     source_text: "高等学校学習指導要領解説 特別活動編 第2章 第2節2（1）「特別活動の特質を踏まえた資質・能力の育成」第1段落，印刷25頁／PDF33頁 | https://www.mext.go.jp/content/1407196_22_1_1_2.pdf#page=33",
   },
+  {
+    question_number: 11,
+    major_category_code: "teacher_education",
+    category_code: "student_guidance_career",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『生徒指導提要』 （令和4年12月文部科学省）からの抜粋である。下の表は，同資料の図5「チーム支援のプロセス」を整理したものである。表中の空欄 {{①}} ， {{②}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "教育相談、キャリア教育、特別支援教育は、生徒指導と同様に児童生徒に対する指導・援助を行う分野として学校内の校務分掌に位置付けられ、それぞれに教育活動を展開しています。そのため、一人の児童生徒に対する指導・援助がお互いに独立した働きかけとして展開される場合も見受けられます。いじめや暴力行為、非行は生徒指導、不登校は教育相談、進路についてはキャリア教育（進路指導）、障害に関することは特別支援教育が担う、というように縦割りの意識と分業的な体制が強すぎると、複合的・重層的な課題を抱えた児童生徒への適切な指導・援助を行うことが阻害されてしまう状況も生じかねません。児童生徒一人一人への最適な指導・援助が行えるように、それぞれの分野の垣根を越えた包括的な支援体制をつくることが求められます。"
+      },
+      {
+        type: "text",
+        text: "以下は，困難課題対応的生徒指導及び課題早期発見対応の場合の図5を表へ整理したものであり，原図そのものではない。"
+      },
+      {
+        type: "table",
+        headers: ["段階", "チーム支援のプロセス"],
+        rows: [
+          ["1", "【①】"],
+          ["2", "課題の明確化と目標の共有"],
+          ["3", "チーム支援計画の作成"],
+          ["4", "チーム支援の実践"],
+          ["5", "【②】"]
+        ]
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["チーム支援の判断とアセスメントの実施", "児童生徒の進級に基づくチーム支援の終結・継続"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["チーム支援の判断とアセスメントの実施", "点検・評価に基づくチーム支援の終結・継続"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["チーム支援の判断とスクリーニングの実施", "点検・評価に基づくチーム支援の終結・継続"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["チーム支援の判断とスクリーニングの実施", "児童生徒の進級に基づくチーム支援の終結・継続"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①は正しいが、②が異なる。最終段階は点検・評価に基づく終結・継続であり、進級をその判断根拠とするのではない。年度を越える場合も、新年度に再度アセスメントを行い、計画を見直して支援を継続することが示されている。"
+      },
+      {
+        type: "text",
+        text: "イ：全て原典と一致する。初期には、課題に関連する情報を収集・分析・共有し、支援仮説を立てるアセスメントを実施して、チーム支援の必要性と方向性を判断する。最終段階では目標の達成状況を点検・評価し、終結又は継続を判断する。"
+      },
+      {
+        type: "text",
+        text: "ウ：②は正しいが、①が異なる。スクリーニングは、支援が必要な児童生徒を早期に見いだす働きに関わる。このプロセスの初期段階として示されるのは、支援対象の問題状況等を把握し、支援の必要性と方向性を判断するアセスメントである。"
+      },
+      {
+        type: "text",
+        text: "エ：①②が異なる。対象の発見に関わるスクリーニングと、個々の支援方針を判断するアセスメントを区別し、終結・継続は進級ではなく目標の達成状況等の点検・評価に基づくことを確認する。"
+      }
+    ],
+    source_text: "『生徒指導提要』第3章3.4.2の第1段落（印刷89頁／PDF92頁）及び同（1）図5「チーム支援のプロセス」・①（印刷90頁／PDF93頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=92\n同⑤「点検・評価に基づくチーム支援の終結・継続」（印刷93頁／PDF96頁） | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=96\n文部科学省『生徒指導提要』第1章1.2.4（スクリーニングとの比較），印刷21頁／PDF24頁 | https://www.mext.go.jp/content/20230220-mxt_jidou01-000024699-201-1.pdf#page=24"
+  },
+  {
+    question_number: 12,
+    major_category_code: "teacher_education",
+    category_code: "special_support_education",
+    content_blocks: [
+      {
+        type: "text",
+        text: "知的障害のある生徒の知的機能と適応行動の把握に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "知的機能の状態がほぼ同程度でも，生活年齢や経験によって適応行動の困難さは異なり得る。同じ年齢段階で求められる生活上の行動と照らし，どのような支援や配慮の下で行えているかも含めて把握する。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "知的機能の発達と適応行動の困難さを関連付けて把握する。適応行動を判断するときは，実際の年齢ではなく，同じ知的発達の水準にある生徒に求められる行動を基準として，日常生活の遂行状況を評価する。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "知能検査の得点に加えて，生活場面での行動を観察する。知能検査の得点がほぼ等しい生徒については，生活経験や周囲の要求の違いによらず，必要となる適応行動の支援も同程度であると捉える。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "支援や配慮によって，日常生活や社会生活で行える活動が増える場合がある。このように支援を受けてできる活動を，特別な支援なしに同年齢で求められる行動ができる水準として扱い，適応行動を評価する。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切。知的機能の状態だけでなく，生活年齢や経験，要求される行動，支援・配慮の条件も含めて適応行動を捉える。同程度の知的機能でも必要な支援が同じになるとは限らない。"
+      },
+      {
+        type: "text",
+        text: "イ：知的機能と適応行動を関連付ける点は適切。しかし，適応行動の判断基準を知的発達の水準へ置き換えている点が誤り。手引は，同じ年齢段階に標準的に要求される行動との関係で把握するとしている。"
+      },
+      {
+        type: "text",
+        text: "ウ：検査と行動観察を併用する点は適切だが，同程度の検査得点から支援も同程度と推定する点が誤り。生活年齢や経験，心理的・社会的・環境的な条件により状態像が異なることを考慮する。"
+      },
+      {
+        type: "text",
+        text: "エ：支援によって活動が可能になる場合がある点は適切。しかし，支援を受けてできることと，支援なしでできることを同じ条件として評価する点が誤り。どの条件や支援の下で可能なのかを区別して，必要な支援を把握する。"
+      }
+    ],
+    source_text: "文部科学省『障害のある子供の教育支援の手引』第3編Ⅲ「知的障害」1(2)①ア(ア)c・d・(イ)c〜e，④（本文122・124・133頁，分割PDF3・5・14ページ） | https://www.mext.go.jp/content/20211014-mxt_tokubetu02-000018454_07.pdf"
+  },
+  {
+    question_number: 13,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "児童期から青年期にかけての仲間関係を，ギャング集団，チャム集団，ピア集団として捉える考え方に関する記述として，最も適切なものを，次のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ギャング集団では，共通の活動や独自のルール，役割分担を通して結び付きが強まる。この名称は，仲間遊びを行う集団のうち，反社会的な行動を共通の目的として継続する集団を区別するために用いられる。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "チャム集団では，気が合うことや趣味が似ていることなど，内面的な類似性が重視される。ピア集団になると，共通の関心よりも外面的に同じ行動をとることが，仲間として結び付く中心的な特徴になる。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ギャング集団では，共通の活動や役割分担などを通して，社会的な知識や技能を学ぶ。ピア集団では，趣味や関心の類似性に加えて自他の違いも認め合うようになり，異性を含む集団が形成されることもある。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ピア集団では，互いの考え方の違いを認めながら関係を形成する。チャム集団では，内面的な類似性よりも同じ遊びや外面的な同一行動を重視し，集団内の役割や独自のルールによって結び付きが強まる。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：共通の活動・ルール・役割分担は適切だが，後半が誤り。ギャング集団は児童期の仲間遊び集団を表す概念であり，反社会的行動を共通目的とする集団の分類ではない。社会的な知識や技能を学ぶ働きもある。"
+      },
+      {
+        type: "text",
+        text: "イ：チャム集団の説明は適切だが，ピア集団の説明が誤り。外面的な同一行動を重視する特徴はギャング集団に対応する。ピア集団では，自他の違いを認める関係が発達する。"
+      },
+      {
+        type: "text",
+        text: "ウ：適切。ギャング集団の学習機能と，ピア集団での自他の違いの承認，異性を含む構成の可能性を捉えている。"
+      },
+      {
+        type: "text",
+        text: "エ：ピア集団の説明は適切だが，後半はチャム集団ではなくギャング集団の特徴。チャム集団は，気が合うことなど内面的な類似性に基づく結び付きを重視する。"
+      }
+    ],
+    source_text: "川崎医療福祉大学臨床心理学科・本城瑞恵「私のイチオシ心理学キーワード：ギャング集団・チャム集団・ピア集団」（2024年6月27日），各集団を説明する三段落 | https://w.kawasaki-m.ac.jp/psycho/?p=6870"
+  },
+  {
+    question_number: 14,
+    major_category_code: "teacher_education",
+    category_code: "educational_psychology",
+    content_blocks: [
+      {
+        type: "text",
+        text: "バンデューラの観察学習及びモデリングに関する記述として，最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "観察学習では，学習者自身がその行動を実行して強化を受ける前に，モデルの行動から学ぶことができる。行動の獲得と実際の遂行は区別され，遂行には予想される結果や動機付けが関わる。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "観察学習では，モデルの行動に注目し，その内容を記憶に保持する。モデルが報酬を受けるのを観察した後，観察者自身にも報酬を与える場合，この観察者自身への報酬による強化を，代理強化と呼ぶ。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "代理強化は，他者の行動とその結果を観察することに関わる。モデルの行動を学習したかどうかは，観察直後に同じ行動を実行したかどうかで決まり，実行されなかった行動は未獲得と判断する。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "モデリングは，モデルが示した行動を観察することによる変化である。新しい行動の獲得を観察学習と呼び，既に獲得している行動の抑制や促進は，モデルの観察とは別の仕組みとして区別される。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：適切。観察者が自ら実行して直接強化されることが，観察による行動の獲得の前提になるわけではない。また，学習した行動を実際に示すかどうかには，動機付けや予想される結果が関わる。"
+      },
+      {
+        type: "text",
+        text: "イ：注意・保持については適切。代理強化は，モデルが行動の結果として報酬を受けたことを観察することに関わる。観察者自身に報酬を与えて行動を定着させる直接的な強化と取り違えている。"
+      },
+      {
+        type: "text",
+        text: "ウ：代理強化の説明は適切。しかし，行動の獲得と遂行は区別する。行動が直ちに示されなかったことだけから，その行動を学習していないとは判断できない。"
+      },
+      {
+        type: "text",
+        text: "エ：新しい行動の獲得については適切。モデルを観察することは，既に獲得した行動の抑制・脱抑制・促進にも関わる。これらをモデル観察とは別の仕組みに外す点が誤り。"
+      }
+    ],
+    source_text: "法政大学通信教育部・柴田良一『スタディガイド（学習指導書）〈教育心理学〉―『子どもと親と教師をそだてる教育心理学入門』―』E「観察学習」（印刷15〜16頁／PDF17〜18頁），「モデリング」（印刷16頁／PDF18頁） | https://www.tsukyo.hosei.ac.jp/wp/wp-content/uploads/2025/06/92e0ccbc8be59c69e6525fb1e7de87b0.pdf#page=17\n熊本大学公開科目『基盤的教育論』「代理強化」・モデルが報酬を得ることの観察 | https://www.gsis.kumamoto-u.ac.jp/opencourses/pf/3Block/07/07-3_text.html"
+  },
+  {
+    question_number: 15,
+    major_category_code: "teacher_education",
+    category_code: "education_system",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次のア～エは，「『令和の日本型学校教育』の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）」 （令和3年1月26日中央教育審議会）の「第Ⅰ部 総論 4 『令和の日本型学校教育』の構築に向けた今後の方向性 （2）連携・分担による学校マネジメントを実現する」に示された内容に関する記述である。最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "子育てに悩みや不安を抱える保護者に，地域の実情に応じた学習機会や相談体制を整える。答申は，この家庭教育支援の対象を幼児教育段階までとし，義務教育段階の保護者への支援は学校内の教育相談に移すと整理している。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "校長のリーダーシップの下，教師が子供と向き合えるよう業務の適正化と役割分担を進める。その際，財務・総務等に通じる専門職として答申が位置付けるのは，主幹教諭や指導教諭などのミドルリーダーである。"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "学校が地域の関係機関と連携することを，社会とつながる協働的な学びの実現と働き方改革の双方に結び付ける。その実現に向けて，教育課程と関連付け，各学校の教育活動の質を組織的かつ計画的に高める。"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "学校・家庭・地域がそれぞれの役割と責任を果たすよう，保護者やPTA，福祉機関，社会教育施設等との協働を進める。この役割分担について，答申が前面に立って強力に推進するよう求める主体は，各学校の学校運営協議会である。"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：地域の実情に応じて保護者の学習機会や相談体制を整える点は適切。しかし答申は，家庭教育支援を幼児教育段階にとどめず，義務教育段階も含めて推進するとしている。対象を幼児教育段階までと整理した点が誤り。義務教育段階の学校内で教育相談を行うことを否定するものではなく，この答申における家庭教育支援の対象段階の説明が異なる。〔印刷26頁／PDF31頁、4(2)冒頭の箇条書き〕"
+      },
+      {
+        type: "text",
+        text: "イ：業務の適正化と役割分担は適切。財務・総務等に通じる専門職として位置付けられているのは事務職員である。主幹教諭や指導教諭などのミドルリーダーには，経験や専門性を生かしてリーダーシップを発揮できる組織運営が求められている。教師が財務・総務を学ぶことの可否ではなく，この箇所で対応させた対象が誤りである。〔印刷25頁／PDF30頁、4(2)第2段落〕"
+      },
+      {
+        type: "text",
+        text: "ウ：適切。地域の関係機関と学校との連携・協働を，社会とつながる協働的な学びと，学校の働き方改革の双方へ結び付けている。また，その実現には教育課程との関連付けが求められ，教育活動の質を組織的・計画的に高めるカリキュラム・マネジメントが重要である。〔印刷26頁／PDF31頁、4(2)後半の連続した2段落〕"
+      },
+      {
+        type: "text",
+        text: "エ：学校・家庭・地域の役割と責任や，関係機関との協働については適切。ただし，この答申が学校・家庭・地域の役割分担について「前面に立って強力に推進する」よう求める主体は，文部科学省である。学校運営協議会が学校運営への参加・参画や連携に関わることを否定する問題ではなく，ここで明示された推進主体の対応が異なる。〔印刷26頁／PDF31頁、4(2)「その他，学校が家庭や地域社会と連携することで」からの段落〕"
+      }
+    ],
+    source_text: "中央教育審議会『「令和の日本型学校教育」の構築を目指して～全ての子供たちの可能性を引き出す，個別最適な学びと，協働的な学びの実現～（答申）』・第Ⅰ部 総論4(2)「連携・分担による学校マネジメントを実現する」、印刷25〜26頁（PDF30〜31頁） | https://www.mext.go.jp/content/20210126-mxt_syoto02-000012321_2-4.pdf#page=30"
+  },
+  {
+    question_number: 16,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第2章 各学科に共通する各教科 第10節 情報 第2款 各科目 第2 情報Ⅱ」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "ア 次のような知識及び技能を身に付けること。\n\n（ｱ）多様かつ大量のデータの存在やデータ活用の有用性，{{①}}が社会に果たす役割について理解し，目的に応じた適切なデータの収集や整理，{{②}}について理解し技能を身に付けること。\n\n（ｲ）データに基づく現象のモデル化やデータの処理を行い{{③}}する方法について理解し技能を身に付けること。\n\n（ｳ）データ処理の結果を基にモデルを{{④}}することの意義とその方法について理解し技能を身に付けること。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["データサイエンス", "符号化", "蓄積・共有", "評価"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["情報デザイン", "整形", "蓄積・共有", "設計"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["情報デザイン", "符号化", "解釈・表現", "設計"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["データサイエンス", "整形", "解釈・表現", "評価"]
+          }
+        ],
+        correct: true
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①④は一致するが，②は「整形」，③は「解釈・表現」である。目的に応じてデータを扱えるよう収集・整理・整形し，モデル化や処理の結果を解釈して表現することを述べる。"
+      },
+      {
+        type: "text",
+        text: "イ：②は一致するが，①は「データサイエンス」，③は「解釈・表現」，④は「評価」である。情報デザインの社会的役割や，データの蓄積・共有一般を述べた箇所ではない。"
+      },
+      {
+        type: "text",
+        text: "ウ：③は一致するが，①は「データサイエンス」，②は「整形」，④は「評価」である。処理した結果を基に行うのは，ここではモデルの設計ではなく評価である。符号化は，この箇所の原語である整形と区別する。"
+      },
+      {
+        type: "text",
+        text: "エ：四つとも原文と一致する。データの収集・整理・整形，現象のモデル化と処理，解釈・表現，結果に基づくモデルの評価という関係を捉える。"
+      }
+    ],
+    source_text: "高等学校学習指導要領（平成30年告示）・第2章第10節 第2款第2「情報Ⅱ」2(3)ア(ｱ)〜(ｳ)・本文193頁（PDF195頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=195"
+  },
+  {
+    question_number: 17,
+    major_category_code: "information",
+    category_code: "information_education",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「高等学校学習指導要領」（平成30年3月文部科学省告示第68号）の「第3章 主として専門学科において開設される各教科 第7節 情報 第2款 各科目 第11 メディアとサービス 1 目標」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "情報に関する科学的な見方・考え方を働かせ，{{①}}な学習活動を行うことなどを通して，メディア及びメディアを利用したサービスの活用に必要な資質・能力を次のとおり育成することを目指す。\n\n（1）メディア及びメディアを利用したサービスについて体系的・系統的に理解するとともに，関連する技術を身に付けるようにする。\n\n（2）メディアを利用したサービスに関する課題を発見し，情報産業に携わる者として{{②}}に解決する力を養う。\n\n（3）メディアを利用したサービスの{{③}}を目指して自ら学び，メディアを利用した{{④}}などに主体的かつ協働的に取り組む態度を養う。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["実践的・体験的", "直観的かつ経験的", "多様かつ独創的な制作と発信", "サービスの設計"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["理論的・概念的", "合理的かつ創造的", "安全かつ効果的な運用と管理", "コンテンツの制作"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["実践的・体験的", "合理的かつ創造的", "安全かつ効果的な運用と管理", "サービスの設計"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["理論的・概念的", "直観的かつ経験的", "多様かつ独創的な制作と発信", "コンテンツの制作"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：①④は一致する。②は合理的かつ創造的、③は安全かつ効果的な運用と管理である。サービスを対象とするこの科目の目標を、コンテンツの制作・発信の目標へ置き換えない。"
+      },
+      {
+        type: "text",
+        text: "イ：②③は一致する。①は実践的・体験的、④はサービスの設計である。理論・概念の学習やコンテンツ制作を一般に否定するのではなく、ここで示された学習活動と主体的に取り組む対象の対応を確認する。"
+      },
+      {
+        type: "text",
+        text: "ウ：全て原文に一致する。実践的・体験的な学習活動を通してサービスの活用に必要な資質・能力を育成し、課題を合理的・創造的に解決し、安全・効果的な運用と管理、サービスの設計へ結び付ける。"
+      },
+      {
+        type: "text",
+        text: "エ：全て異なる。実践的・体験的な学習活動、合理的かつ創造的な解決、安全かつ効果的な運用と管理、サービスの設計が正しい対応である。メディア利用の技術だけでなく、サービスとしての活用・運用・設計を扱うことがポイントとなる。"
+      }
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』・第3章第7節 第2款 第11「メディアとサービス」1「目標」全文、印刷418頁（PDF420頁） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=420"
+  },
+  {
+    question_number: 18,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "fill_in_text",
+        text: "次の文章は，『高等学校学習指導要領（平成30年告示）解説 情報編』の「第1部 各学科に共通する教科『情報』 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2 内容とその取扱い」の「情報とデータサイエンス」からの抜粋である。文章中の空欄 {{①}} ～ {{③}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      },
+      {
+        type: "fill_in_quote",
+        text: "ここで扱うデータの{{①}}とは，データを処理しやすいように欠損値や外れ値に関して適切な処理を施したり，不要なデータなどを削除したり，適当な長さに分割，調整，結合したり，値や単位の変換を行うことであり，データの{{②}}とは，必要に応じて表形式のデータなどに変換したり，必要な項目を追加，削除したり，あらかじめ必要な値を計算するなどのデータ全体の加工を意味している。\n\nなお，データの収集，{{①}}，{{②}}に関しては，関係データベースの関係演算を扱うとともにデータベースの管理や操作を行うプログラミング言語についても触れる。\n\nイ（ア） 目的に応じて，適切なデータを収集し，{{①}}し，{{②}}することでは，多様かつ大量のデータを活用することの効果と影響を踏まえて社会においてデータを活用することが有効である場面，測定しようとするもの以外で結果に影響を与える{{③}}，信頼性の高いデータを収集し適切に問題解決に活用するために必要なデータの{{①}}や{{②}}，データを収集する際に存在する様々なバイアスやデータの入手元の違いによる信頼性を含めたデータの特性について判断する力を養う。また，機械学習の技術を用いた人工知能の判断の精度を上げるために，目的に応じてどのようなデータを用意すればよいかを考える力を養うことも考えられる。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["整理", "整形", "交絡因子"]
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["整形", "整理", "交絡因子"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["整理", "整形", "選択バイアス"]
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["整形", "整理", "選択バイアス"]
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：3語とも原文に一致する。この解説では、欠損値・外れ値への処理や値・単位の変換などをデータの「整理」、表形式への変換、項目の追加・削除、必要な値の計算などデータ全体の加工を「整形」と説明している。また、測定しようとするもの以外で結果に影響を与えるものを「交絡因子」としている。"
+      },
+      {
+        type: "text",
+        text: "イ：①・②が逆である。一般的な語感から同義として扱うのではなく、この解説がそれぞれに挙げている具体的な処理との対応を確認する。③は一致する。"
+      },
+      {
+        type: "text",
+        text: "ウ：③が異なる。選択バイアスは、原典の続く段落で、対象となるデータを選択する際に生じる偏りとされている。ここで問う、測定対象以外で結果に影響を与える交絡因子と区別する。①・②は一致する。"
+      },
+      {
+        type: "text",
+        text: "エ：①・②が逆であり、③も選択バイアスと交絡因子を取り違えている。"
+      }
+    ],
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』・第1部 第2章 共通教科情報科の各科目 第2節 情報Ⅱ 2（3）情報とデータサイエンス ア（ア）に続く整理・整形の説明及びイ（ア）、同頁のバイアスの説明（50頁／PDF58頁） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=58"
+  },
+  {
+    question_number: 19,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "text",
+        text: "次のプログラムを実行したときに表示される値として正しいものを，下のア～エの中から一つ選んで記号で答えなさい。nは正の整数とし，a % bはaをbで割った余り，a // bは整数の商を表す。0を2で割った余りも0である。"
+      },
+      {
+        type: "text",
+        text: "プログラムはPythonを模した疑似コードである。配列の添字は0から始まり，反復の範囲は両端を含む。インデントの深さが同じ部分を同じブロックとする。=は代入，==は等しいかの比較，>と<は大小比較，>=は以上の比較である。条件のandは両方の条件を満たすこと，orは少なくとも一方を満たすことを表す。"
+      },
+      {
+        type: "code",
+        code: "01 n = 40308\n02 total = 0\n03 n > 0の間，繰り返す:\n04     digit = n % 10\n05     if digit % 2 == 0:\n06         total = total + digit\n07     n = n // 10\n08 表示する(total)"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "4"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "12"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "15"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "8"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "text",
+        text: "ア：偶数の桁の個数は，8・0・0・4の4個である。しかし，06行は個数を1ずつ増やす処理ではなく，その桁の値を加える処理である。"
+      },
+      {
+        type: "text",
+        text: "イ：digitは8，0，3，0，4の順になる。偶数の桁8・0・0・4を加え，totalは8，8，8，8，12と変化するので，12を表示する。"
+      },
+      {
+        type: "text",
+        text: "ウ：全ての桁の和は15だが，3は05行の条件を満たさない。3を加えず，偶数の桁の和12を表示する。"
+      },
+      {
+        type: "text",
+        text: "エ：最初に取り出した桁8だけの値である。反復はnが0になるまで続き，途中の0や3を経て4も処理されるため，最後のtotalは12となる。"
+      }
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章 学習13「基本的プログラム」（2）制御構造，本文114頁（PDF20ページ） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf#page=20"
+  },
+  {
+    question_number: 20,
+    major_category_code: "information",
+    category_code: "information_specialized",
+    content_blocks: [
+      {
+        type: "text",
+        text: "ある学校で，A群とB群の生徒80人全員について，ある行事に参加したかどうかを調べ，次の表にまとめた。A群とB群に重複はなく，未回答者はいない。"
+      },
+      {
+        type: "table",
+        headers: ["所属", "参加した", "参加しなかった", "合計"],
+        rows: [
+          ["A群", "12人", "8人", "20人"],
+          ["B群", "18人", "42人", "60人"],
+          ["合計", "30人", "50人", "80人"]
+        ]
+      },
+      {
+        type: "text",
+        text: "この80人について，①全体に占める「参加した生徒」の割合と，②参加した生徒に占める「A群の生徒」の割合の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。"
+      }
+    ],
+    choices: [
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "① 45％，② 40％"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "① 37.5％，② 40％"
+          }
+        ],
+        correct: true
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "① 37.5％，② 60％"
+          }
+        ],
+        correct: false
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "① 45％，② 60％"
+          }
+        ],
+        correct: false
+      }
+    ],
+    explanation_blocks: [
+      {
+        type: "table",
+        headers: ["求める割合", "分子", "分母", "計算結果"],
+        rows: [
+          ["① 全体に占める参加した生徒の割合", "参加した30人", "全体80人", "30÷80×100＝37.5％"],
+          ["② 参加した生徒に占めるA群の生徒の割合", "参加したA群12人", "参加した30人", "12÷30×100＝40％"]
+        ]
+      },
+      {
+        type: "text",
+        text: "ア：②は正しいが，①が誤りである。A群の参加率60％とB群の参加率30％を単純に平均すると45％になるが，両群の人数は異なる。全体の参加率は参加した人数の合計を全体の人数で割って求める。"
+      },
+      {
+        type: "text",
+        text: "イ：正しい。①の分母は80人，②の分母は参加した30人である。同じ表から割合を求める場合も，どの集団を100％とするかに合わせて分母を選ぶ。"
+      },
+      {
+        type: "text",
+        text: "ウ：①は正しいが，②が誤りである。60％は12÷20×100で求める「A群に占める参加した生徒の割合」であり，②とは分母が異なる。"
+      },
+      {
+        type: "text",
+        text: "エ：①・②ともに誤りである。①は群別割合の単純平均45％ではなく37.5％，②はA群の参加率60％ではなく，参加した生徒の中でA群が占める40％である。"
+      }
+    ],
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第4章 学習24「データの形式と可視化」（1）質的データとその種類，本文202〜203頁（PDF50〜51ページ） | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_006.pdf#page=51\n総務省統計局 Data StaRt／ゼミナール編（2）3-2-2 クロス集計／クロス集計表・相対度数と周辺度数 | https://www.stat.go.jp/dstart/point/seminar/02/3-2-2.html"
+  },
 ]
 
-unless questions.map { |question| question.fetch(:question_number) } == [1, 2, 6, 7, 8, 9, 10]
-  raise "模擬試験35の承認済み問番号は1・2及び6〜10です"
+unless questions.map { |question| question.fetch(:question_number) } == (1..20).to_a
+  raise "承認済みの問番号と一致しません"
 end
-
-categories = {
-  1 => "education_foundations", 2 => "education_foundations",
-
-  6 => "curriculum_organization", 7 => "student_guidance_career",
-  8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities",
-}
+categories = {1 => "education_foundations", 2 => "education_foundations", 3 => "education_system", 4 => "education_system", 5 => "education_system", 6 => "curriculum_organization", 7 => "student_guidance_career", 8 => "integrated_inquiry", 9 => "moral_education", 10 => "special_activities", 11 => "student_guidance_career", 12 => "special_support_education", 13 => "educational_psychology", 14 => "educational_psychology", 15 => "education_system", 16 => "information_specialized", 17 => "information_education", 18 => "information_specialized", 19 => "information_specialized", 20 => "information_specialized"}
 questions.each do |question|
   number = question.fetch(:question_number)
-  choices = question.fetch(:choices)
-  unless question.fetch(:major_category_code) == "teacher_education" && question.fetch(:category_code) == categories.fetch(number)
+  major = number >= 16 ? "information" : "teacher_education"
+  unless question.fetch(:major_category_code) == major && question.fetch(:category_code) == categories.fetch(number)
     raise "問#{number}の分類が不正です"
   end
-  unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1
-    raise "問#{number}は4択・正答1件にしてください"
+  choices = question.fetch(:choices)
+  unless choices.map { |choice| choice.fetch(:label) } == %w[ア イ ウ エ] && choices.count { |choice| choice.fetch(:correct) } == 1 && choices.map { |choice| choice.fetch(:content_blocks) }.uniq.size == 4
+    raise "問#{number}は異なる4択・正答1件にしてください"
   end
   blocks = question.fetch(:content_blocks)
-  if number <= 3
-    unless blocks.all? { |block| block[:type] == "text" && !block.fetch(:text).strip.empty? } &&
-        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "text" && !choice.fetch(:content_blocks).first.fetch(:text).strip.empty? }
-      raise "問#{number}の本文と選択肢は通常の文章ブロックにしてください"
+  quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
+  labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten }.uniq
+  table_labels = blocks.select { |block| block[:type] == "table" }.flat_map { |block| block.fetch(:rows).flatten.join.scan(/【([^】]+)】/).flatten }.uniq
+  required_fill = (number == 3 && [32, 34].include?(35)) || (4..10).cover?(number) || number == 11 || (number == 15 && 35 == 33) || ((16..18).cover?(number) && !(35 == 34 && number == 17))
+  if required_fill
+    expected_count = (3..10).cover?(number) ? 4 : {11 => 2, 16 => 4, 17 => 4, 18 => 3}.fetch(number)
+    expected_labels = %w[① ② ③ ④].first(expected_count)
+    actual_labels = labels.empty? ? table_labels : labels
+    expected_quote_count = (35 == 34 && number == 4) ? 2 : 1
+    unless quotes.size == expected_quote_count && blocks.first[:type] == "fill_in_text" && actual_labels == expected_labels &&
+        blocks.first.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten.uniq == (expected_count == 2 ? expected_labels : [expected_labels.first, expected_labels.last]) &&
+        choices.all? { |choice| choice[:content_blocks].size == 1 && choice[:content_blocks].first[:type] == "fill_in_choice" && choice[:content_blocks].first[:cells].size == expected_count }
+      # Legal prompts intentionally retain the past-paper bare labels.
+      legal = (4..5).cover?(number) && quotes.size == expected_quote_count && labels == expected_labels &&
+        blocks.first[:type] == "fill_in_text" && blocks.first[:text].include?("空欄 ① ～ ④") &&
+        choices.all? { |choice| choice[:content_blocks].size == 1 && choice[:content_blocks].first[:type] == "fill_in_choice" && choice[:content_blocks].first[:cells].size == expected_count }
+      raise "問#{number}の空欄・選択肢の対応が不正です" unless legal
     end
-  else
-    quotes = blocks.select { |block| block[:type] == "fill_in_quote" }
-    labels = quotes.flat_map { |block| block.fetch(:text).scan(/\{\{([^{}]+)\}\}/).flatten }.uniq
-    expected_blocks = %w[fill_in_text fill_in_quote]
-    unless blocks.map { |block| block[:type] } == expected_blocks && quotes.size == 1 &&
-        blocks.first.fetch(:text).include?(number <= 5 ? "空欄 ① ～ ④" : "空欄 {{①}} ～ {{④}}") && labels == %w[① ② ③ ④] &&
-        choices.all? { |choice| choice.fetch(:content_blocks).size == 1 && choice.fetch(:content_blocks).first[:type] == "fill_in_choice" && choice.fetch(:content_blocks).first.fetch(:cells).size == 4 && choice.fetch(:content_blocks).first.fetch(:cells).all? { |cell| !cell.strip.empty? } }
-      raise "問#{number}の抜粋・4空欄と選択肢の対応が不正です"
+    if (4..5).cover?(number) && !quotes.first.fetch(:text).match?(/\A第\d+条(?:第\d+項)?/)
+      raise "問#{number}は冒頭に条番号・項番号を記載してください"
     end
-    if number <= 5 && !quotes.first.fetch(:text).match?(/\A第\d+条第\d+項/)
-      raise "問#{number}の抜粋枠の冒頭に条番号・項番号を表示してください"
+    columns = choices.map { |choice| choice[:content_blocks].first[:cells] }.transpose
+    if !columns.all? { |col| col.group_by { |v| v }.values.map(&:size).sort == [2, 2] }
+      raise "問#{number}の選択肢は各列2対2にしてください"
     end
-    if (6..10).cover?(number)
-      cells = choices.map { |choice| choice.fetch(:content_blocks).first.fetch(:cells) }
-      unless cells.transpose.all? { |column| column.group_by { |cell| cell }.values.map(&:size).sort == [2, 2] }
-        raise "問#{number}の選択肢は各列の語句を2対2にしてください"
-      end
-      if number == 6 && !(blocks.first.fetch(:text).include?("第1章 総則 第3款 教育課程の実施と学習評価") && question.fetch(:source_text).include?("第3款"))
-        raise "問6は総則第3款から出題してください"
-      end
-      if number == 7 && !(blocks.first.fetch(:text).include?("第1章 総則 第5款 生徒の発達の支援") && question.fetch(:source_text).include?("第5款"))
-        raise "問7は総則第5款から出題してください"
-      end
-    end
+  end
+  if number == 6 && !(blocks.first[:text].include?("第1章 総則 第3款 教育課程の実施と学習評価") && question[:source_text].include?("第3款"))
+    raise "問6は総則第3款から出題してください"
+  end
+  if number == 7 && !(blocks.first[:text].include?("第1章 総則 第5款 生徒の発達の支援") && question[:source_text].include?("第5款"))
+    raise "問7は総則第5款から出題してください"
   end
   explanation = question.fetch(:explanation_blocks)
-  unless explanation.all? { |block| block[:type] == "text" && !block.fetch(:text).strip.empty? } &&
-      %w[ア イ ウ エ].all? { |label| explanation.any? { |block| block.fetch(:text).start_with?("#{label}：") } }
-    raise "問#{number}は全ての選択肢の解説を記載してください"
+  texts = explanation.select { |block| block[:type] == "text" }.map { |block| block.fetch(:text) }
+  unless blocks.any? && explanation.any? && %w[ア イ ウ エ].all? { |label| texts.any? { |text| text.start_with?("#{label}：") || text.include?("#{label}は") || text.include?("#{label}を選ぶ") } }
+    raise "問#{number}は全肢解説が必要です"
   end
-  sources = question.fetch(:source_text).lines
-  unless sources.any? && sources.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
-    raise "問#{number}の出典は資料名・章節とURLを記載してください"
+  unless question.fetch(:source_text).lines.all? { |line| line.strip.match?(/\A.+ \| https:\/\/\S+\z/) }
+    raise "問#{number}の出典形式が不正です"
   end
 end
-
-QuestionSeedSync.import(exam_number: 35, questions: questions, publication_status: "draft")
+answers = questions.map { |question| question[:choices].find { |choice| choice[:correct] }[:label] }
+unless answers.group_by { |v| v }.transform_values(&:size) == %w[ア イ ウ エ].to_h { |label| [label, 5] }
+  raise "正答位置を各5件に調整してください"
+end
+QuestionSeedSync.import(exam_number: 35, questions: questions, publication_status: "published")
