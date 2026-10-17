@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/improvement_revision_20261017"
 require "digest"
 
 class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
@@ -67,7 +68,7 @@ class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
     assert_equal "0b2305b999c05808333269861ce7dd2eaa607cb10890cb47bc3538f349b26b1b", APPROVED.fetch("sha256")
     assert_equal @questions.keys.sort, APPROVED.fetch("sections").keys.sort
     APPROVED.fetch("sections").each do |id, raw|
-      question = @questions.fetch(id)
+      question = ImprovementRevision20261017.historical_attributes(id, @questions.fetch(id))
       head, tail = raw.split(/^正答：[アイウエ]\s*$/, 2)
       assert head && tail, id
       assert_equal raw[/^正答：([アイウエ])$/, 1], correct(question)[:label], id

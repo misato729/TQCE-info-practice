@@ -1,9 +1,12 @@
 # Preserve historical approval fixtures. Only the explicitly reviewed current
 # payloads may delegate their old snapshots to this independently tested change.
+require_relative "improvement_revision_20261017"
+
 module PriorityRevision20261017
   DATA = JSON.parse(File.read(Rails.root.join("test/fixtures/priority_revision_20261017.json"))).freeze
 
   def self.historical_attributes(id, current)
+    current = ImprovementRevision20261017.historical_attributes(id, current)
     previous = DATA.fetch("previous_entries")[id]
     return current unless previous
 

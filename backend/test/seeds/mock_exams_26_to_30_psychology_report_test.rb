@@ -30,7 +30,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
     assert_equal APPROVED.fetch("sections").keys.sort, @questions.keys.sort
     @added.each do |entry|
       id = key(entry)
-      question = entry.fetch(:attributes)
+      question = HistoryRevision20261017.historical_attributes(id, entry.fetch(:attributes))
       approved = APPROVED.fetch("sections").fetch(id)
       head, tail = approved.split(/^正答：[アイウエ].*$/, 2)
       assert_equal "teacher_education", question.fetch(:major_category_code), id

@@ -15,6 +15,7 @@ class MockExamsPriorityRevisionTest < ActionDispatch::IntegrationTest
 
   setup do
     @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+      .map { |entry| ImprovementRevision20261017.historical_entry(entry) }
     @entries = @all.select { |entry| DATA.fetch("previous_entries").key?(key(entry)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end

@@ -26,7 +26,8 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
     assert_equal 25, @added.size
     @added.each do |entry|
       question = entry.fetch(:attributes)
-      assert_equal expected.fetch(key(entry)), question.deep_stringify_keys, key(entry)
+      historical = ImprovementRevision20261017.historical_attributes(key(entry), question)
+      assert_equal expected.fetch(key(entry)), historical.deep_stringify_keys, key(entry)
       assert_equal "published", entry[:publication_status]
       assert_equal LABELS, question[:choices].map { |choice| choice[:label] }
       assert_equal 1, question[:choices].count { |choice| choice[:correct] }
@@ -48,7 +49,9 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
     end
     guidance = JSON.parse(File.read(File.expand_path("../fixtures/mock_exams_21_to_25_guidance_psychology_report_approved.json", __dir__)))
     guidance.fetch("questions").each do |row|
-      assert_equal row.fetch("attributes"), entry(row.fetch("exam"), row.dig("attributes","question_number"))[:attributes].deep_stringify_keys
+      current = entry(row.fetch("exam"), row.dig("attributes","question_number"))
+      historical = ImprovementRevision20261017.historical_attributes(key(current), current[:attributes])
+      assert_equal row.fetch("attributes"), historical.deep_stringify_keys
     end
     actual_digests = @entries.select { |row| row[:attributes][:question_number] <= 10 }.to_h do |row|
       id = key(row)

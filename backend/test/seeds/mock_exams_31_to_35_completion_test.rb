@@ -84,7 +84,7 @@ class MockExams31To35CompletionTest < ActionDispatch::IntegrationTest
       assert_match(/\A[0-9a-f]{64}\z/, snapshot.fetch("sha256"), name)
       snapshot.fetch("sections").each do |id, section|
         approved_keys << id
-        question = @questions.fetch(id)
+        question = HistoryRevision20261017.historical_attributes(id, @questions.fetch(id))
         remaps = snapshot.fetch("label_remaps").fetch(id, {})
         head, tail = section.split(/^正答：[アイウエ]\s*$/, 2)
         assert head && tail, id

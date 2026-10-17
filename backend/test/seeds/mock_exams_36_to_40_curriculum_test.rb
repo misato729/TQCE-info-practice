@@ -1,5 +1,6 @@
 require "test_helper"
 require "digest"
+require_relative "../support/improvement_revision_20261017"
 
 class MockExams36To40CurriculumTest < ActionDispatch::IntegrationTest
   EXAMS = (36..40).to_a.freeze
@@ -24,7 +25,8 @@ class MockExams36To40CurriculumTest < ActionDispatch::IntegrationTest
     assert_equal "document/模試36〜40_問6〜10草案_2026-10-16.md", APPROVED.fetch("source_path")
     assert_equal "2ebbcad7ce4e73047209201c39981f037322cd9adb4e6f1b9ca8aa3402d35d10", APPROVED.fetch("sha256")
     @entries.each do |entry|
-      id, question = key(entry), entry.fetch(:attributes)
+      id = key(entry)
+      question = ImprovementRevision20261017.historical_attributes(id, entry.fetch(:attributes))
       raw = APPROVED.fetch("sections").fetch(id)
       head, tail = raw.split(/^正答：[アイウエ]$/, 2)
       assert head && tail, id
@@ -71,7 +73,7 @@ class MockExams36To40CurriculumTest < ActionDispatch::IntegrationTest
       preview = QuestionSeedSync.preview(entry)
       QuestionWriter.validate_publication!(preview, QuestionPayload.from_seed(entry[:exam_number], question).fetch("choices").map(&:symbolize_keys))
     end
-    assert_equal 3, quote(@entries.find { |entry| key(entry) == "40-6" }[:attributes]).scan("{{②}}").size
+    assert_equal 1, quote(@entries.find { |entry| key(entry) == "40-6" }[:attributes]).scan("{{②}}").size
     { 8 => [36, 39], 10 => [36, 38, 40] }.each do |number, body_exams|
       actual = @entries.select { |entry| entry[:attributes][:question_number] == number && !entry[:attributes][:content_blocks].first[:text].include?("解説") }.map { |entry| entry[:exam_number] }
       assert_equal body_exams, actual, number

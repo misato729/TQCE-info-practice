@@ -577,19 +577,74 @@ questions = [
       { type: "text", text: "③　keyがDataの7要素のいずれかと等しい値になる確率がそれぞれ1/7であるとき，cの平均はAで3，Bで4となる。" },
     ],
     choices: [
-      { label: "ア", content_blocks: [{ type: "text", text: "①と②" }], correct: true },
-      { label: "イ", content_blocks: [{ type: "text", text: "①と③" }], correct: false },
-      { label: "ウ", content_blocks: [{ type: "text", text: "②と③" }], correct: false },
-      { label: "エ", content_blocks: [{ type: "text", text: "①と②と③" }], correct: false },
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "①と②",
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "①のみ",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "②と③",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "①と③",
+          },
+        ],
+        correct: false,
+      },
     ],
     explanation_blocks: [
-      { type: "text", text: "①は正しい。4は添字5にあり，添字0～5の6要素と比較する。②も正しい。5は元の配列にはないため，Aは7要素の比較で終了する。Bは番兵Work[7]とも比較して8回となるが，i＝nなのでpos＝−1とする。" },
-      { type: "table", headers: ["key", "Aのpos", "Aのc", "Bのpos", "Bのc"], rows: [["4", "5", "6", "5", "6"], ["5", "−1", "7", "−1", "8"]] },
-      { type: "text", text: "③は誤り。各要素を見つけるまでの比較回数は両プログラムとも1～7回であり，平均は次のようになる。" },
-      { type: "code", code: "(1+2+3+4+5+6+7)÷7＝4回" },
-      { type: "text", text: "イ・ウ・エはいずれも誤った③を含む。" },
+      {
+        type: "text",
+        text: "①は正しい。4は添字5にあり、AもBも添字0〜5の6要素と比較する。②も正しい。5は元の配列にはないため、Aは7要素と比較して終了する。Bは追加した番兵Work[7]とも比較して8回となるが、i＝nなのでpos＝−1となる。",
+      },
+      {
+        type: "table",
+        headers: ["key", "Aのpos", "Aのc", "Bのpos", "Bのc"],
+        rows: [
+          ["4", "5", "6", "5", "6"],
+          ["5", "−1", "7", "−1", "8"],
+        ],
+      },
+      {
+        type: "text",
+        text: "③は誤り。探索が成功する各位置について、A・Bとも比較回数は1〜7回となる。各位置の確率は等しいので、平均はいずれも4回である。",
+      },
+      {
+        type: "code",
+        code: "(1 + 2 + 3 + 4 + 5 + 6 + 7) / 7 = 4",
+      },
+      {
+        type: "text",
+        text: "アが正しい組合せである。イは正しい②が欠けている。ウは誤った③を含み、正しい①が欠けている。エは誤った③を含み、正しい②が欠けている。③を否定しただけではアとイが残るため、不在時にBが番兵まで比較することも確認する。",
+      },
     ],
-    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』，第3章・学習15「アルゴリズムの比較」 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n香川大学『プログラミング』第6章「関数」・線形探索と番兵法 | https://guppy.eng.kagawa-u.ac.jp/~kagawa/2022/Programming/Reveal/Chapter6.html",
+    source_text: "文部科学省『高等学校情報科「情報Ⅰ」教員研修用教材（本編）』第3章・学習15『アルゴリズムの比較』、探索回数の比較を参考に配列・コード・記述を独自に作成 | https://www.mext.go.jp/content/20200722-mxt_jogai02-100013300_005.pdf\n香川大学『プログラミング』第6章『関数』・線形探索と番兵法（探索方法の補助資料） | https://guppy.eng.kagawa-u.ac.jp/~kagawa/2022/Programming/Reveal/Chapter6.html",
   },
   {
     question_number: 20,

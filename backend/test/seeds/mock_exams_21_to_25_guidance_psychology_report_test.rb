@@ -34,7 +34,8 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
     @added.each do |entry|
       key = key_for(entry)
       attributes = entry.fetch(:attributes)
-      assert_equal expected.fetch(key), attributes.deep_stringify_keys, key
+      historical = ImprovementRevision20261017.historical_attributes(key, attributes)
+      assert_equal expected.fetch(key), historical.deep_stringify_keys, key
       assert_equal "draft", entry.fetch(:publication_status), key
       assert_equal "teacher_education", attributes.fetch(:major_category_code), key
       assert_equal CATEGORIES.fetch(attributes[:question_number]), attributes.fetch(:category_code), key
