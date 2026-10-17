@@ -563,17 +563,25 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
     assert AnswerHistory.exists?(added_history.id)
   end
 
-  test "メインseedは完成済み八百問を公開し再実行できる" do
+  test "メインseedは完成済み千問を公開し再実行できる" do
     load Rails.root.join("db/seeds.rb")
-    assert_equal 800, Question.count
-    assert_equal 3200, QuestionChoice.count
-    assert_equal 800, QuestionChoice.where(is_correct: true).count
-    assert_equal 800, Question.published.count
+    assert_equal 1000, Question.count
+    assert_equal 4000, QuestionChoice.count
+    assert_equal 1000, QuestionChoice.where(is_correct: true).count
+    assert_equal 1000, Question.published.count
     assert_equal 0, Question.where(publication_status: "draft").count
     (36..40).each do |exam|
       questions = Question.where(exam_number: exam).order(:question_number)
       assert_equal (1..20).to_a, questions.pluck(:question_number)
       assert_equal ["published"], questions.pluck(:publication_status).uniq
+    end
+    assert_equal 200, Question.where(exam_number: 41..50, publication_status: "published").count
+    (41..50).each do |exam|
+      questions = Question.where(exam_number: exam).order(:question_number)
+      assert_equal (1..20).to_a, questions.pluck(:question_number)
+      assert_equal ["published"], questions.pluck(:publication_status).uniq
+      assert_equal 80, QuestionChoice.where(question_id: questions.select(:id)).count
+      assert_equal 20, QuestionChoice.where(question_id: questions.select(:id), is_correct: true).count
     end
     assert_equal 100, Question.where(exam_number: 21..25, publication_status: "published").count
     assert_equal 0, partial_questions.where(publication_status: "draft").count
