@@ -7,7 +7,10 @@ class MockExams36To40FoundationsLawTest < ActionDispatch::IntegrationTest
   APPROVED = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_36_to_40_approved_foundations_law.json"))).freeze
 
   setup do
+    # Preserve the originally approved 25-question scenario when later questions are added.
     @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+      .map { |entry| entry.merge(publication_status: "draft") }
+      .select { |entry| entry.fetch(:attributes).fetch(:question_number) <= 5 }
   end
 
   test "承認二十五問の本文選択肢全肢解説出典を独立Markdown保存と照合する" do
