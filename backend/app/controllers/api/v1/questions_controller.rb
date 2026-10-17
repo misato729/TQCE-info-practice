@@ -118,7 +118,9 @@ module Api
           category_code: question.category_code,
           choices: question.question_choices.map { |choice| serialize_choice(choice) },
         }
-        payload[:is_favorite] = current_user.favorites.exists?(question_id: question.id) if current_user
+        if current_user
+          payload[:is_favorite] = current_user.paid_content_access? && current_user.favorites.exists?(question_id: question.id)
+        end
         payload
       end
 

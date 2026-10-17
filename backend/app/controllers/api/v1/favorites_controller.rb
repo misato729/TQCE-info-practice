@@ -2,6 +2,7 @@ module Api
   module V1
     class FavoritesController < ApplicationController
       before_action :authenticate_user!
+      before_action :authorize_favorites!
       before_action :set_question, only: %i[create destroy]
 
       def index
@@ -41,6 +42,12 @@ module Api
       end
 
       private
+
+      def authorize_favorites!
+        return if current_user.paid_content_access?
+
+        render_error(:paid_membership_required, "お気に入りの利用には有料会員資格が必要です", :forbidden)
+      end
 
       def positive_integer_param(name, default:, maximum: nil)
         raw_value = params[name].presence || default

@@ -2,13 +2,16 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { computed, ref } from 'vue'
 import { useAuth, type AuthUser } from '../app/composables/useAuth.ts'
+import { useDemoFavorites } from '../app/composables/useDemoFavorites.ts'
 
 const globals = globalThis as any
 globals.computed = computed
+globals.useAuth = useAuth
 
 const user: AuthUser = {
   id: 1, name: 'Test User', email: 'test@example.invalid', role: 'user', paid_content_access: false,
   membership: { status: 'free', purchased_at: null, expires_at: null },
+  favorite_questions: [],
 }
 
 const createAuth = (token: string | null, api: (...args: any[]) => Promise<unknown>) => {
@@ -54,15 +57,107 @@ test('composables share the cookie and deduplicate concurrent user requests', as
 
 test('an old in-flight response cannot restore a logged-out session', async () => {
   let resolve!: (response: unknown) => void
-  const { auth, states } = createAuth('session-token', async () => await new Promise(done => { resolve = done }))
-  states.get('favorite-question-ids').value = [1, 2]
+  const { auth } = createAuth('session-token', async () => await new Promise(done => { resolve = done }))
   const request = auth.ensureCurrentUser()
   auth.logout()
   resolve({ data: user })
   assert.equal(await request, null)
   assert.equal(auth.user.value, null)
   assert.equal(auth.accessToken.value, null)
-  assert.deepEqual(states.get('favorite-question-ids').value, [])
+  assert.deepEqual(useDemoFavorites().favoriteIds.value, [])
+})
+
+test('login hydrates all sidebar favorites without fetching a favorites endpoint', async () => {
+  const calls: string[] = []
+  const paid = { ...user, paid_content_access: true, favorite_questions: [{ id: 17, exam_number: 2, question_number: 3 }] }
+  const { auth } = createAuth(null, async (path) => {
+    calls.push(path)
+    return { data: { access_token: 'paid-token', user: paid } }
+  })
+  const sidebar = useDemoFavorites()
+  await auth.login({ email: user.email, password: 'test-only' })
+  assert.equal(sidebar.isFavoriteAt(2, 3), true)
+  assert.deepEqual(sidebar.favoriteIds.value, [17])
+  await auth.ensureCurrentUser()
+  assert.deepEqual(calls, ['/api/v1/auth/login'])
+  auth.logout()
+  assert.equal(sidebar.isFavoriteAt(2, 3), false)
+})
+
+test('initial user request hydrates favorites once and mutations only send PUT or DELETE', async () => {
+  const calls: Array<[string, string | undefined]> = []
+  const question = { id: 23, exam_number: 3, question_number: 8 }
+  const paid = { ...user, paid_content_access: true, favorite_questions: [] }
+  const { auth } = createAuth('paid-token', async (path, options) => {
+    calls.push([path, options?.method])
+    return path === '/api/v1/me' ? { data: paid } : { data: { question } }
+  })
+  const favorites = useDemoFavorites()
+  await auth.ensureCurrentUser()
+  const other = useDemoFavorites()
+  await favorites.toggleFavorite(question)
+  assert.equal(other.isFavoriteAt(3, 8), true)
+  await other.toggleFavorite(question)
+  assert.equal(favorites.isFavoriteAt(3, 8), false)
+  assert.deepEqual(calls, [['/api/v1/me', undefined], ['/api/v1/questions/23/favorite', 'PUT'], ['/api/v1/questions/23/favorite', 'DELETE']])
+})
+
+test('anonymous and free sessions never request favorites', async () => {
+  let requests = 0
+  const { auth } = createAuth(null, async () => { requests += 1; return { data: user } })
+  const favorites = useDemoFavorites()
+  const question = { id: 1, exam_number: 1, question_number: 1 }
+  await assert.rejects(favorites.toggleFavorite(question))
+  auth.user.value = { ...user, favorite_questions: [question] }
+  auth.accessToken.value = 'free-token'
+  assert.equal(favorites.canUseFavorites.value, false)
+  assert.equal(favorites.isFavoriteAt(1, 1), false)
+  await assert.rejects(favorites.toggleFavorite(question))
+  assert.equal(requests, 0)
+})
+
+test('stale mutations cannot mark another session favorites', async () => {
+  let resolve!: (value: unknown) => void
+  const question = { id: 8, exam_number: 1, question_number: 8 }
+  const { auth } = createAuth('first-token', async () => await new Promise(done => { resolve = done }))
+  auth.user.value = { ...user, paid_content_access: true, favorite_questions: [] }
+  const favorites = useDemoFavorites()
+  const mutation = favorites.toggleFavorite(question)
+  auth.logout()
+  auth.accessToken.value = 'second-token'
+  auth.user.value = { ...user, id: 2, paid_content_access: true, favorite_questions: [] }
+  resolve({ data: { question } })
+  await mutation
+  assert.equal(favorites.isFavorite(question.id), false)
+})
+
+test('failed mutations retain the existing favorite colors without a reload request', async () => {
+  let requests = 0
+  const question = { id: 8, exam_number: 1, question_number: 8 }
+  const { auth } = createAuth('paid-token', async () => {
+    requests += 1
+    throw new Error('Network failure')
+  })
+  auth.user.value = { ...user, paid_content_access: true, favorite_questions: [question] }
+  const favorites = useDemoFavorites()
+  await assert.rejects(favorites.toggleFavorite(question))
+  assert.equal(favorites.isFavoriteAt(1, 8), true)
+  assert.equal(requests, 1)
+})
+
+test('permission loss clears coloring without fetching user data again', async () => {
+  let requests = 0
+  const question = { id: 8, exam_number: 1, question_number: 8 }
+  const { auth } = createAuth('paid-token', async () => {
+    requests += 1
+    throw { data: { error: { code: 'paid_membership_required' } } }
+  })
+  auth.user.value = { ...user, paid_content_access: true, favorite_questions: [question] }
+  const favorites = useDemoFavorites()
+  await assert.rejects(favorites.toggleFavorite(question))
+  assert.equal(favorites.canUseFavorites.value, false)
+  assert.deepEqual(favorites.favoriteIds.value, [])
+  assert.equal(requests, 1)
 })
 
 test('user state and tokens are isolated between Nuxt app instances', async () => {

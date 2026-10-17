@@ -25,18 +25,37 @@ type FavoriteMeta = {
 type ApiResponse = { data: FavoriteItem[], meta: FavoriteMeta }
 
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, authHeaders, logout } = useAuth()
-const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
+const { isLoggedIn, user, accessToken, authHeaders, logout, ensureCurrentUser } = useAuth()
+const { canUseFavorites, isFavorite, setFavorite, toggleFavorite, disableFavorites } = useDemoFavorites()
 const favorites = ref<FavoriteItem[]>([])
 const meta = ref<FavoriteMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
 const loading = ref(false)
 const loadError = ref('')
 const removingId = ref<number | null>(null)
+const checkingAccess = ref(false)
+const accessError = ref('')
+let loadVersion = 0
+
+const resolveAccess = async () => {
+  if (!isLoggedIn.value || user.value) return
+  checkingAccess.value = true
+  accessError.value = ''
+  try {
+    const currentUser = await ensureCurrentUser()
+    if (!currentUser && isLoggedIn.value && !user.value) accessError.value = '利用資格を確認できませんでした。'
+  }
+  finally {
+    checkingAccess.value = false
+  }
+}
 
 const loadFavorites = async () => {
-  if (!isLoggedIn.value) {
+  const version = ++loadVersion
+  const token = accessToken.value
+  if (!canUseFavorites.value) {
     favorites.value = []
+    loading.value = false
     return
   }
 
@@ -47,24 +66,26 @@ const loadFavorites = async () => {
       headers: authHeaders.value,
       query: { page: page.value, per_page: 20 },
     })
-    if (!isLoggedIn.value) return
+    if (version !== loadVersion || token !== accessToken.value || !canUseFavorites.value) return
     if (response.data.length === 0 && page.value > 1) {
       page.value -= 1
       return
     }
     favorites.value = response.data
     meta.value = response.meta
-    response.data.forEach(item => setFavorite(item.question.id, true))
+    response.data.forEach(item => setFavorite(item.question, true))
   }
   catch (error: any) {
+    if (version !== loadVersion || token !== accessToken.value) return
     if ((error?.statusCode ?? error?.status) === 401) logout()
+    else if (error?.data?.error?.code === 'paid_membership_required') disableFavorites()
     else {
       favorites.value = []
       loadError.value = 'お気に入りを読み込めませんでした。もう一度お試しください。'
     }
   }
   finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
 
@@ -72,7 +93,7 @@ const toggleFromList = async (item: FavoriteItem) => {
   if (removingId.value) return
   removingId.value = item.id
   try {
-    const added = await toggleFavorite(item.question.id)
+    const added = await toggleFavorite(item.question)
     meta.value.total_count += added ? 1 : -1
   }
   catch (error: any) {
@@ -88,7 +109,9 @@ const majorCategoryLabel = (code?: string) => (
   code ? MAJOR_CATEGORIES.find(item => item.value === code)?.label ?? code : ''
 )
 
-watch([isLoggedIn, page], loadFavorites, { immediate: true })
+onMounted(() => { void resolveAccess() })
+watch(isLoggedIn, () => { void resolveAccess() })
+watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate: true })
 </script>
 
 <template>
@@ -97,8 +120,25 @@ watch([isLoggedIn, page], loadFavorites, { immediate: true })
 
     <div v-if="!isLoggedIn" class="empty-state">
       <h2>ログインが必要です</h2>
-      <p>お気に入りはログインユーザーのみ利用できます。</p>
+      <p>お気に入りは有料会員向けの機能です。</p>
       <NuxtLink class="primary-link" to="/login?redirect=/favorites">ログインへ</NuxtLink>
+    </div>
+
+    <div v-else-if="checkingAccess || (!user && !accessError)" class="empty-state" role="status">
+      <UIcon class="empty-icon spin" name="i-lucide-loader-circle" />
+      <p>利用資格を確認しています。</p>
+    </div>
+
+    <div v-else-if="accessError && !user" class="empty-state" role="alert">
+      <p>{{ accessError }}</p>
+      <button class="primary-link" type="button" @click="resolveAccess">再確認</button>
+    </div>
+
+    <div v-else-if="!canUseFavorites" class="empty-state">
+      <UIcon class="empty-icon" name="i-lucide-lock-keyhole" />
+      <h2>有料会員向けの機能です</h2>
+      <p>お気に入りに登録した問題をまとめて確認できます。</p>
+      <NuxtLink class="primary-link" to="/premium">有料会員について</NuxtLink>
     </div>
 
     <div v-else-if="loading" class="empty-state" aria-live="polite">

@@ -1,11 +1,18 @@
 import type { Ref } from 'vue'
 
+export type FavoriteQuestion = {
+  id: number
+  exam_number: number
+  question_number: number
+}
+
 export type AuthUser = {
   id: number
   name: string
   email: string
   role: 'user' | 'admin'
   paid_content_access: boolean
+  favorite_questions: FavoriteQuestion[]
   membership: {
     status: 'free' | 'active' | 'revoked'
     purchased_at: string | null
@@ -36,7 +43,6 @@ export const useAuth = () => {
   })
   accessTokens.set(nuxtApp, accessToken)
   const user = useState<AuthUser | null>('auth-user', () => null)
-  const favoriteIds = useState<number[]>('favorite-question-ids', () => [])
   const isLoggedIn = computed(() => Boolean(accessToken.value))
   const authHeaders = computed<Record<string, string>>(() => {
     const headers: Record<string, string> = {}
@@ -74,7 +80,6 @@ export const useAuth = () => {
   const logout = () => {
     accessToken.value = null
     user.value = null
-    favoriteIds.value = []
   }
 
   const ensureCurrentUser = async (force = false) => {

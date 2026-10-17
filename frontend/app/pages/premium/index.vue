@@ -107,7 +107,7 @@ const startCheckout = async () => {
         <ul>
           <li><UIcon name="i-lucide-circle-check" />模擬試験1〜5を含む、公開中の全模擬試験</li>
           <li><UIcon name="i-lucide-circle-check" />今後追加される模擬試験6以降</li>
-          <li><UIcon name="i-lucide-circle-check" />回答履歴とお気に入りの継続利用</li>
+          <li><UIcon name="i-lucide-circle-check" />お気に入り登録とサイドバーでの目印表示</li>
         </ul>
         <p class="scope-note">資格はアカウント削除、全額返金、支払取消し、異議申立てによる取消し、またはサービス終了まで有効です。</p>
       </div>

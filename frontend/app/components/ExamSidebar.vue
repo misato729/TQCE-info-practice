@@ -4,6 +4,7 @@ import { EXAM_CATALOG, FREE_EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/
 const route = useRoute()
 const openExam = ref<number | null>(null)
 const { user, accessToken, ensureCurrentUser } = useAuth()
+const { isFavoriteAt } = useDemoFavorites()
 const accessStatus = ref<'ready' | 'pending' | 'error'>(
   accessToken.value && !user.value ? 'pending' : 'ready',
 )
@@ -120,7 +121,9 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
               v-for="question in exam.question_numbers"
               :key="question"
               :to="examTarget(exam, question)"
-              :class="{ active: isCurrentQuestion(exam.exam_number, question) }"
+              :class="{ active: isCurrentQuestion(exam.exam_number, question), favorite: isFavoriteAt(exam.exam_number, question) }"
+              :aria-label="`問${question}${isFavoriteAt(exam.exam_number, question) ? '（お気に入り）' : ''}`"
+              :title="isFavoriteAt(exam.exam_number, question) ? 'お気に入り' : undefined"
             >
               問{{ question }}
             </NuxtLink>
@@ -249,6 +252,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 
 .question-list a {
   min-height: 36px;
+  border: 1px solid transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,6 +268,11 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   background: #cce8e8;
   color: var(--teal-dark);
 }
+
+.question-list a.favorite { border-color: #d5b043; background: #fff3bf; color: #715310; }
+.question-list a.favorite:hover { background: #ffe89a; }
+.question-list a.active { box-shadow: inset 0 0 0 2px var(--teal-dark); }
+.question-list a:focus-visible { outline: 2px solid var(--teal-dark); outline-offset: 2px; }
 
 .sr-only {
   position: absolute;

@@ -327,7 +327,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
         <article>
           <UIcon name="i-lucide-user-check" />
           <h3>模擬試験1〜5は無料</h3>
-          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴とお気に入りの保存にはログインが必要です。</p>
+          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴の保存にはログインが必要です。お気に入りは有料会員向けです。</p>
         </article>
         <article>
           <UIcon name="i-lucide-badge-check" />

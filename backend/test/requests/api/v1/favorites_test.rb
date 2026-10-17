@@ -9,6 +9,8 @@ class Api::V1::FavoritesTest < ActionDispatch::IntegrationTest
       password_confirmation: "password123",
     )
     @headers = { "Authorization" => "Bearer #{AuthToken.issue(@user)}" }
+    payment = Payment.create!(user: @user, stripe_checkout_session_id: "cs_favorites", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
+    Membership.create!(user: @user, source_payment: payment, status: "active", activated_at: Time.current)
     @free_question = create_question(1)
     @premium_question = create_question(6)
   end
@@ -97,16 +99,47 @@ class Api::V1::FavoritesTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "無料会員は有料問題を新規登録できず既存項目もロック表示する" do
+  test "資格失効時は無料問題を含む全操作を拒否し既存データを保持する" do
+    @user.membership.update!(status: "revoked")
+    Favorite.create!(user: @user, question: @free_question)
     Favorite.create!(user: @user, question: @premium_question)
 
-    put api_v1_question_favorite_path(@premium_question), headers: @headers
+    assert_no_difference "Favorite.count" do
+      get api_v1_favorites_path, headers: @headers
+      assert_response :forbidden
+      assert_equal "paid_membership_required", response.parsed_body.dig("error", "code")
+      [@free_question, @premium_question].each do |question|
+        put api_v1_question_favorite_path(question), headers: @headers
+        assert_response :forbidden
+        delete api_v1_question_favorite_path(question), headers: @headers
+        assert_response :forbidden
+      end
+    end
+
+    @user.membership.update!(status: "active")
+    get api_v1_favorites_path, headers: @headers
+    assert_response :ok
+    assert_equal 2, response.parsed_body.fetch("data").size
+  end
+
+  test "購入歴のない無料会員も全操作を拒否し管理者は購入せず利用できる" do
+    free_user = User.create!(name: "無料ユーザー", email: "free@example.com", password: "password123")
+    headers = { "Authorization" => "Bearer #{AuthToken.issue(free_user)}" }
+    get api_v1_favorites_path, headers: headers
+    assert_response :forbidden
+    put api_v1_question_favorite_path(@free_question), headers: headers
+    assert_response :forbidden
+    delete api_v1_question_favorite_path(@free_question), headers: headers
     assert_response :forbidden
 
-    get api_v1_favorites_path, headers: @headers
-    item = response.parsed_body.fetch("data").find { |entry| entry.dig("question", "id") == @premium_question.id }
-    assert item.fetch("locked")
-    assert_not item.fetch("question").key?("body_excerpt")
+    free_user.update!(role: "admin")
+    headers = { "Authorization" => "Bearer #{AuthToken.issue(free_user)}" }
+    put api_v1_question_favorite_path(@premium_question), headers: headers
+    assert_response :created
+    get api_v1_favorites_path, headers: headers
+    assert_response :ok
+    delete api_v1_question_favorite_path(@premium_question), headers: headers
+    assert_response :no_content
   end
 
   private

@@ -1,54 +1,63 @@
-type FavoriteResponse = {
-  data: {
-    question: { id: number }
-  }
-}
+import type { FavoriteQuestion } from './useAuth'
+
+type FavoriteResponse = { data: { question: FavoriteQuestion } }
 
 export const useDemoFavorites = () => {
   const { $api: api } = useNuxtApp()
-  const { authHeaders } = useAuth()
-  const favoriteIds = useState<number[]>('favorite-question-ids', () => [])
+  const { user, accessToken, isLoggedIn, authHeaders } = useAuth()
+  const canUseFavorites = computed(() => isLoggedIn.value && user.value?.paid_content_access === true)
+  const favorites = computed(() => canUseFavorites.value ? user.value?.favorite_questions ?? [] : [])
+  const favoriteIds = computed(() => favorites.value.map(question => question.id))
 
   const isFavorite = (questionId: number) => favoriteIds.value.includes(questionId)
 
-  const setFavorite = (questionId: number, favorite: boolean) => {
-    favoriteIds.value = favorite
-      ? Array.from(new Set([questionId, ...favoriteIds.value]))
-      : favoriteIds.value.filter(id => id !== questionId)
+  const isFavoriteAt = (examNumber: number, questionNumber: number) => (
+    favorites.value.some(question => question.exam_number === examNumber && question.question_number === questionNumber)
+  )
+
+  const setFavorite = (question: FavoriteQuestion, favorite: boolean) => {
+    if (!canUseFavorites.value || !user.value) return
+    const remaining = favorites.value.filter(item => item.id !== question.id)
+    user.value.favorite_questions = favorite
+      ? [{ id: question.id, exam_number: question.exam_number, question_number: question.question_number }, ...remaining]
+      : remaining
   }
 
-  const replaceFavorites = (questionIds: number[]) => {
-    favoriteIds.value = Array.from(new Set(questionIds))
+  const disableFavorites = () => {
+    if (!user.value) return
+    user.value.favorite_questions = []
+    user.value.paid_content_access = false
   }
 
-  const toggleFavorite = async (questionId: number) => {
-    if (isFavorite(questionId)) {
-      await api(`/api/v1/questions/${questionId}/favorite`, {
-        method: 'DELETE',
+  const toggleFavorite = async (question: FavoriteQuestion) => {
+    if (!canUseFavorites.value) throw new Error('お気に入りの利用には有料会員資格が必要です。')
+    const owner = user.value
+    const token = accessToken.value
+    const adding = !isFavorite(question.id)
+
+    try {
+      const response = await api<FavoriteResponse | undefined>(`/api/v1/questions/${question.id}/favorite`, {
+        method: adding ? 'PUT' : 'DELETE',
         headers: authHeaders.value,
       })
-      setFavorite(questionId, false)
-      return false
+      if (user.value?.id === owner?.id && accessToken.value === token) {
+        setFavorite(response?.data.question ?? question, adding)
+      }
+      return adding
     }
-
-    const response = await api<FavoriteResponse>(`/api/v1/questions/${questionId}/favorite`, {
-      method: 'PUT',
-      headers: authHeaders.value,
-    })
-    setFavorite(response.data.question.id, true)
-    return true
-  }
-
-  const removeFavorite = async (questionId: number) => {
-    if (isFavorite(questionId)) await toggleFavorite(questionId)
+    catch (error: any) {
+      if (accessToken.value === token && error?.data?.error?.code === 'paid_membership_required') disableFavorites()
+      throw error
+    }
   }
 
   return {
-    favoriteIds: readonly(favoriteIds),
+    canUseFavorites,
+    favoriteIds,
     isFavorite,
+    isFavoriteAt,
     setFavorite,
-    replaceFavorites,
+    disableFavorites,
     toggleFavorite,
-    removeFavorite,
   }
 }

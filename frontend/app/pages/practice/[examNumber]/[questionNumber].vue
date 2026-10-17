@@ -68,8 +68,9 @@ type SourceReference = {
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, authHeaders, logout } = useAuth()
-const { isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
+const { isLoggedIn, user, authHeaders, logout } = useAuth()
+const { canUseFavorites, isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
+const updatingFavorite = ref(false)
 
 const allExamNumbers = EXAM_CATALOG.map(exam => exam.exam_number)
 const allQuestionNumbers = Object.freeze(Array.from({ length: 20 }, (_, index) => index + 1))
@@ -279,7 +280,7 @@ watch(
 )
 
 watch(question, (loaded) => {
-  if (loaded && typeof loaded.is_favorite === 'boolean') setFavorite(loaded.id, loaded.is_favorite)
+  if (loaded && typeof loaded.is_favorite === 'boolean') setFavorite(loaded, loaded.is_favorite)
 }, { immediate: true })
 
 watch(questionErrorStatus, (errorStatus) => {
@@ -406,21 +407,25 @@ const closeFavoriteModal = () => {
 }
 
 const handleFavoriteClick = async () => {
-  if (!question.value) return
+  if (!question.value || updatingFavorite.value || (isLoggedIn.value && !user.value)) return
 
-  if (!isLoggedIn.value) {
+  if (!canUseFavorites.value) {
     favoriteModalOpen.value = true
     await nextTick()
     favoriteModalCloseButton.value?.focus()
     return
   }
 
+  updatingFavorite.value = true
   try {
-    await toggleFavorite(question.value.id)
+    await toggleFavorite(question.value)
   }
   catch (error: any) {
     if ((error?.statusCode ?? error?.status) === 401) logout()
     answerError.value = error?.data?.error?.message ?? 'お気に入りを更新できませんでした。'
+  }
+  finally {
+    updatingFavorite.value = false
   }
 }
 
@@ -474,6 +479,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
             class="favorite-button"
             :class="{ active: questionIsFavorite }"
             type="button"
+            :disabled="updatingFavorite || (isLoggedIn && !user)"
             :aria-pressed="isLoggedIn ? questionIsFavorite : false"
             :aria-label="questionIsFavorite ? 'お気に入りから解除する' : 'お気に入りに登録する'"
             :title="questionIsFavorite ? 'お気に入りから解除' : 'お気に入りに登録'"
@@ -610,10 +616,10 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
               <UIcon name="i-lucide-star" />
             </span>
             <h2 id="favorite-modal-title">お気に入り機能について</h2>
-            <p>お気に入り登録は、会員登録後にご利用いただけます。</p>
+            <p>お気に入り登録は、有料会員向けの機能です。</p>
             <div class="favorite-modal-actions">
-              <NuxtLink class="primary-link" :to="{ path: '/signup', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">会員登録へ</NuxtLink>
-              <NuxtLink class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">ログインへ</NuxtLink>
+              <NuxtLink class="primary-link" to="/premium" @click="closeFavoriteModal">有料会員について</NuxtLink>
+              <NuxtLink v-if="!isLoggedIn" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">ログインへ</NuxtLink>
             </div>
           </section>
         </div>
@@ -646,6 +652,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 }
 .favorite-button:hover { color: #c78b00; transform: scale(1.08); }
 .favorite-button.active { color: #f0b323; }
+.favorite-button:disabled { opacity: .6; cursor: wait; }
 .question-panel { padding: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .question-text { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.8; }
 .choices { display: grid; gap: 10px; margin-top: 28px; }

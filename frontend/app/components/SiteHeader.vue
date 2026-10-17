@@ -11,7 +11,9 @@ const menuItems = computed(() => [
   ...(isLoggedIn.value
     ? [
         { label: '解答履歴', to: '/history', icon: 'i-lucide-history' },
-        { label: 'お気に入り一覧', to: '/favorites', icon: 'i-lucide-star' },
+        ...(user.value?.paid_content_access
+          ? [{ label: 'お気に入り一覧', to: '/favorites', icon: 'i-lucide-star' }]
+          : []),
         { label: 'アカウント設定', to: '/account', icon: 'i-lucide-user-round' },
         ...(user.value?.role === 'admin'
           ? [{ label: '管理画面', to: '/admin/questions', icon: 'i-lucide-shield-check' }]
