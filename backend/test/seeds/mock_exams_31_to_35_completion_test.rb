@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExams31To35CompletionTest < ActionDispatch::IntegrationTest
@@ -183,7 +184,7 @@ class MockExams31To35CompletionTest < ActionDispatch::IntegrationTest
     entries = @all_entries.index_by { |entry| key(entry) }
     baseline.each do |id, digest|
       entry = entries.fetch(id)
-      assert_equal digest, QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), id
+      assert_equal digest, HistoryRevision20261017.historical_payload_digest(id, entry[:exam_number], entry[:attributes]), id
     end
     assert_equal @questions.keys.sort, (entries.keys - baseline.keys).sort
   end

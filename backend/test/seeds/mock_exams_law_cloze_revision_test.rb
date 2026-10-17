@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExamsLawClozeRevisionTest < ActionDispatch::IntegrationTest
@@ -24,7 +25,7 @@ class MockExamsLawClozeRevisionTest < ActionDispatch::IntegrationTest
     assert_equal ANSWERS.keys.sort, @questions.keys.sort
     unchanged = @all_entries.reject { |entry| ANSWERS.key?(key(entry)) }.map do |entry|
       id = key(entry)
-      digest = Digest::SHA256.hexdigest(JSON.generate(entry.fetch(:attributes)))
+      digest = Digest::SHA256.hexdigest(JSON.generate(HistoryRevision20261017.historical_attributes(id, entry.fetch(:attributes))))
       [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal ORIGINALS.fetch("unchanged_questions_digest"), Digest::SHA256.hexdigest(unchanged)

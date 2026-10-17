@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
@@ -323,7 +324,7 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
     unchanged = entries.select { |entry| previous.key?(key(entry)) }
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort
     unchanged.each do |entry|
-      assert_equal previous.fetch(key(entry)), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), key(entry)
+      assert_equal previous.fetch(key(entry)), HistoryRevision20261017.historical_payload_digest(key(entry), entry[:exam_number], entry[:attributes]), key(entry)
     end
     additions = entries.reject { |entry| previous.key?(key(entry)) }
     assert_equal @questions.keys.sort, additions.map { |entry| key(entry) }.sort

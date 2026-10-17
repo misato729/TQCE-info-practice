@@ -35,7 +35,9 @@ questions = [
     ],
     source_text: "日田市咸宜園教育研究センター『咸宜園とは』 | https://www.city.hita.oita.jp/site/kangien/1736.html
 大阪大学適塾記念センター『適塾』 | https://www.tekijuku.osaka-u.ac.jp/ja/tekijuku
-早稲田大学リポジトリ『伊藤仁斎と荻生徂徠の学問』 | https://waseda.repo.nii.ac.jp/record/3126/files/Tsuchida2_09410009.pdf",
+片岡龍「仁斎から徂徠（一）」10頁（古義学と古文辞学）。土田健次郎研究代表『伊藤仁斎・東涯の諸稿本に関する総合研究』（2001年3月科研費研究成果報告書）所収・PDF154頁 | https://waseda.repo.nii.ac.jp/record/3126/files/Tsuchida2_09410009.pdf#page=154
+京都市「文化史15 京都の私塾」・古義堂 | https://www2.city.kyoto.lg.jp/somu/rekishi/fm/nenpyou/htmlsheet/bunka15.html
+本居宣長記念館「令和4年度 秋の企画展」・旧宅での古典講釈と鈴屋、『古事記伝』 | https://www.norinagakinenkan.com/pages/91/",
   },
   {
     question_number: 2,
@@ -53,7 +55,8 @@ questions = [
     explanation_blocks: [
       text_block.call("イが適切です。アはロックの教育思想です。『教育論』では，家庭教師による紳士教育と，健康，徳，知恵，礼儀及び習慣形成が論じられました。イはルソーの教育思想を正しく説明しています。ルソーは『エミール』で子どもの発達に即した教育を説きました。消極教育は放任ではなく，発達に適した環境を用意し，経験を通じて学ばせる考え方です。ウはペスタロッチの教育思想です。頭・心・手の調和，直観教授及び家庭的な共同生活が対応します。エはヘルバルトの教育思想です。道徳的品性，統覚及び段階的な教授理論が対応します。"),
     ],
-    source_text: "神戸大学学術成果リポジトリ『ルソーにおける消極教育』 | https://da.lib.kobe-u.ac.jp/da/kernel/81001379/81001379.pdf
+    source_text: "木村吉彦「ルソーの『消極教育』論について―教育方法としての『自由』の適用原理―」『上越教育大学研究紀要』12巻1号（1992年）285〜298頁 | https://juen.repo.nii.ac.jp/record/5437/files/kiyo12_1-24.pdf
+宮ヶ谷徳三「ルソー・『エミール』・革命―フランス革命二百周年モンモランシーの国際研究集会に参加して―」『近代』69巻（1990年）29〜46頁 | https://da.lib.kobe-u.ac.jp/da/kernel/81001379/81001379.pdf
 国立国会図書館サーチ『エミール』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000002-I000002320860
 立教大学図書館『ルソーと「エミール」』 | https://library.rikkyo.ac.jp/digitallibrary/jeanjacquesrousseau/contents/con_05.html",
   },

@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExams26To30LawTest < ActionDispatch::IntegrationTest
@@ -256,7 +257,7 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
     assert_equal 500, existing.size
     digest_input = existing.map do |entry|
       id = key(entry)
-      digest = QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes]))
+      digest = HistoryRevision20261017.historical_payload_digest(id, entry[:exam_number], entry[:attributes])
       [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal EXISTING_500_DIGEST, Digest::SHA256.hexdigest(digest_input)

@@ -52,8 +52,8 @@ questions = [
       text_block.call("エが適切です。アは，外部から課された作業を手順どおり実施すること自体を中心としている点が誤りです。キルパトリックは，学習者が目的を自覚し，主体的に取り組む活動を重視しました。イはパーカーストのドルトン・プランについての記述です。ウはヘルバルトの教育思想です。多方面の興味，統覚及び道徳的品性が対応します。エはプロジェクト・メソッドを正しく説明しています。教師の提案から始まる活動であっても，学習者が目的を主体的に受け入れ，社会的な状況の中で計画・遂行する場合にはプロジェクトとなり得ます。"),
     ],
     source_text: "国立国会図書館サーチ『プロジェクト法』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000002-I000001093995
-J-STAGE『キルパトリックのプロジェクト・メソッド』 | https://www.jstage.jst.go.jp/article/kyouikutetsugaku1959/1962/7/1962_7_14/_article/-char/ja/
-J-STAGE『プロジェクト・メソッドにおける目的的活動』 | https://www.jstage.jst.go.jp/article/nasemjournal/19/0/19_KJ00006622222/_pdf",
+市村尚久「キルパトリック教育理論におけるプロジェクト法の位置」『教育哲学研究』1962巻7号（1962年）14〜30頁 | https://www.jstage.jst.go.jp/article/kyouikutetsugaku1959/1962/7/1962_7_14/_article/-char/ja/
+中野真志「カリキュラムにおける学習活動と学習経験に関する研究」『教育方法学研究』19巻（1994年）82〜83頁（目的の受容と教師の提案） | https://www.jstage.jst.go.jp/article/nasemjournal/19/0/19_KJ00006622222/_pdf",
   },
   {
     question_number: 3,

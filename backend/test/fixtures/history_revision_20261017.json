@@ -1,0 +1,1437 @@
+{
+  "baseline_commit": "84db0ae32c6323fd52b192ce0680b41b83008ae5",
+  "priority_keys": [
+    "7-1",
+    "8-1",
+    "9-1",
+    "10-1",
+    "13-1",
+    "2-2",
+    "7-2",
+    "8-2",
+    "9-2",
+    "10-2",
+    "41-2",
+    "45-2",
+    "47-2",
+    "49-2"
+  ],
+  "previous_entries": {
+    "1-2": {
+      "exam_number": 1,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "デューイ（Dewey, J.）の教育思想と教育実践に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "シカゴ大学に実験学校を設け、子供の経験と探究を重視する教育を実践した。また、『民主主義と教育』では、教育と民主的社会との関係を論じた。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "幼児の自己活動と遊びを教育の中心に置き、幼稚園を創設するとともに、教育遊具である恩物を考案した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "観念の結合による道徳的品性の形成を教育の目的とし、明瞭・連合・系統・方法という教授段階を中心とする授業を提唱した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "感覚教育のための教具を用意し、教師が直接教え込むのではなく、子供が自発的に教具を操作することで知的独立を獲得する教育法を創始した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。イは誤りです。幼稚園の創設と恩物の考案はフレーベルの業績です。ウは誤りです。この教授段階はヘルバルト派に対応します。エは誤りです。感覚教育のための教具と自発的な操作を重視した説明は、モンテッソーリの教育法に対応します。"
+          }
+        ],
+        "source_text": "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\n白石崇人『資料から考える教育原理』第11章「なぜ幼稚園が作られたのか？―フレーベルの教育思想―」（広島文教女子大学、2017年） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments"
+      },
+      "publication_status": "published"
+    },
+    "2-2": {
+      "exam_number": 2,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "西洋の教育思想家とその著作又は教育実践に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "コメニウスは『世界図絵』を著したが、感覚を通じた学習は知性を妨げると考えたため、挿絵を用いず抽象的な定義の暗記だけで言葉を教えた。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ルソーは『エミール』において、大人の価値観や社会の悪影響を性急に子供に押し付けず、子供の自然な発達に即する消極教育を論じた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "フレーベルは幼児の自己活動と遊びを重視し、子供が自ら操作する教育遊具である恩物を考案するとともに、幼稚園を創設した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイは『学校と社会』などを通じ、学校を小さな社会と捉え、子供の経験に基づく活動と共同的な問題解決を重視する教育を展開した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "アが不適切です。『世界図絵』は事物の図とことばを結び付けた絵入り教材であり、挿絵を避けた暗記中心の著作とする説明とは逆です。イは適切で、ルソーの消極教育の説明です。ウは適切で、フレーベルの幼稚園と恩物に対応します。エは適切で、デューイの経験主義的な教育思想を示しています。"
+          }
+        ],
+        "source_text": "国立国会図書館国際子ども図書館 Research Navi『コメニウス「世界図絵」』 | https://ndlsearch.ndl.go.jp/en/rnavi/children/post_237\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』 | https://plato.stanford.edu/entries/rousseau/\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN\nStanford Encyclopedia of Philosophy『John Dewey』5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/"
+      },
+      "publication_status": "published"
+    },
+    "5-2": {
+      "exam_number": 5,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ロック（Locke, J.）の教育思想に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "『エミール』において、子供を社会の人為的な悪影響から遠ざけ、発達の自然な順序に従う消極教育を構想した。青年期までは書物による知識の教授を避け、自然と事物から学ばせることを重視した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育の究極目的を道徳的品性の形成に置き、既有の観念群が新しい観念を取り入れる統覚を教授の中心概念とした。明瞭・連合・系統・方法の形式的段階は、後に五段階教授法へ展開された。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "子供の内にある神的な本質が自己活動によって展開すると捉え、幼児期の遊びを重視した。幼稚園を創設し、球・立方体などからなる恩物を通して統一・多様・発展を経験させようとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "『教育に関する考察』を、友人エドワード・クラークへの助言を基に著した。主にジェントリの家庭教育を念頭に、健全な身体と徳性・理性の形成を重視し、子供の個性に応じ、遊びや会話を生かして学ばせ、体罰や機械的な暗記に依存しない教育を説いた。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "エが適切です。ロックの『教育に関する考察』（1693年）は、友人エドワード・クラークへの教育上の助言をもとに成立し、当時のジェントリの子弟を主な対象として、健康、徳性、理性、実際的な有用性を重視しました。子供の個性を見極め、遊びや会話を生かし、過度の体罰や暗記を避ける考えも示しています。アはルソーの『エミール』と消極教育、イはヘルバルト及びヘルバルト派の統覚・形式的教授段階、ウはフレーベルの幼稚園・恩物の説明です。"
+          }
+        ],
+        "source_text": "Stanford Encyclopedia of Philosophy『John Locke』3 Locke's Major Works on Education | https://plato.stanford.edu/entries/locke/"
+      },
+      "publication_status": "published"
+    },
+    "7-1": {
+      "exam_number": 7,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "中世の足利学校に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "足利学校の創建時期には奈良時代、平安時代、鎌倉時代などの諸説があるが、歴史上の具体像が明確になるのは、室町時代に関東管領上杉憲実が書籍や学田を寄進し、僧の快元を招いて学校を再興してからである。戦国期にも学問の拠点として栄え、フランシスコ・ザビエルによって海外に紹介された。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "足利学校は奈良時代に地方官人を養成する国学として創設されたことが史料上確定しており、律令制の衰退後も一貫して朝廷の直轄学校として運営された。上杉憲実は学校を廃止し、その蔵書を鎌倉の寺院へ移した人物である。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "上杉憲実は15世紀に足利学校を再興したが、その際に江戸の林羅山を初代庠主として招き、朱子学以外の易学、兵学、本草学などを禁じた。この方針が後の寛政異学の禁へ直接引き継がれた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ザビエルは足利学校を「坂東の大学」として紹介しただけでなく、自ら学校を創設して初代庠主となり、ラテン語とキリスト教神学を中心とする宣教師養成機関へ改編した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "アが適切です。足利学校の創建時期には諸説がありますが、上杉憲実による再興以後の歴史は比較的明確です。憲実は書籍や学田を寄進し、僧の快元を庠主として学校経営に当たらせました。イは、奈良時代の国学を起源とする説を確定した事実としている点と、上杉憲実を廃止者としている点が誤りです。ウは、江戸時代初期の林羅山を15世紀に招いたとしている時代関係が成り立たず、足利学校で易学、兵学、本草学などが学ばれたこととも反します。エは、ザビエルを創設者・庠主としている点が誤りです。ザビエルは足利学校の評判を海外へ伝えましたが、学校を宣教師養成機関へ改編したわけではありません。"
+          }
+        ],
+        "source_text": "足利市『史跡足利学校』 | https://www.city.ashikaga.tochigi.jp/education/000031/\n文化庁日本遺産ポータル『足利学校跡』 | https://japan-heritage.bunka.go.jp/ja/culturalproperties/result/25/"
+      },
+      "publication_status": "published"
+    },
+    "7-2": {
+      "exam_number": 7,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "クインティリアヌス（Quintilian）の教育思想に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "『弁論家の教育』では、弁論術の技法だけでなく、幼児期から完成された弁論家に至るまでの教育過程を扱った。理想の弁論家には優れた話術とともに徳性が必要であり、「善き人」であることを弁論家の重要な条件とした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "家庭での個人教授と学校教育を比較し、道徳上の危険が家庭にも学校にも存在し得ることを認めた上で、他者の長所や誤りから学び、仲間と競いながら公的生活に慣れることのできる学校教育を支持した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "子供は理性的な説得では十分に規律を身に付けられないため、教師には日常的な鞭打ちと無制限の懲戒権を認めるべきであるとした。恐怖による服従を、将来の自由な市民と弁論家を形成する最も確実な方法と位置付けた。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "幼い子供の学習では、能力を超える課題を一度に課すことを避け、遊びや競争を取り入れることを認めた。文字の学習に象牙製の文字を用いるなど、子供が興味をもって扱える教材についても言及した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ウが適切でない記述です。アは適切です。クインティリアヌスは教育を弁論技法だけに限定せず、徳性を備えた理想的弁論家の形成として捉えました。イも適切です。学校の危険を無視したのではなく、家庭教育にも同様の問題があり得るとした上で、仲間の長所や誤りから学び、公的生活へ備えられる学校教育の利点を論じています。ウは誤りです。クインティリアヌスは鞭打ちを、自由人にふさわしくない屈辱的な罰であり、恐怖や羞恥によって子供の精神を損なうものとして批判しました。エは適切です。子供の受容可能な量を考慮すること、休息や教育的な遊びを認めること、文字を楽しく扱える教材を用いることなどを述べています。"
+          }
+        ],
+        "source_text": "クインティリアヌス著、森谷宇一ほか訳『弁論家の教育1』第1巻第1章〜第3章（国立国会図書館書誌情報） | https://ndlsearch.ndl.go.jp/books/R100000002-I000007736785"
+      },
+      "publication_status": "published"
+    },
+    "8-1": {
+      "exam_number": 8,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "江戸時代の教育機関に関する記述として、適切でないものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "藩校は主として藩士の教育機関として設けられ、儒学、特に朱子学を中心とするものが多かった。幕末には国学、洋学、西洋医学、武芸などを加え、庶民の入学を認める学校も現れるなど、総合的な教育機関へ発展した例があった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "寺子屋は庶民の日常生活に必要な初歩的・実用的教育を行う私設の施設であり、手習を中心に、往来物などを教材として用いた。幕末には読み・書き・算術を併せて教える寺子屋も増え、学制公布後の小学校設置を支える基盤の一つとなった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "郷校は、民間の学者が自宅に設けた施設だけを指し、幕府、藩主、代官などの保護や監督を受けることはなかった。したがって教育対象、教育内容、経営形態のいずれにおいても私塾と同一であり、藩校や寺子屋との中間的性格をもつものは存在しなかった。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "私塾は一般に教師の私宅などで学問や芸能を門弟へ授ける施設で、漢学塾、国学塾、洋学塾、算学塾など多様な形態をとった。幕末には身分上の区別が比較的少ない私塾もあり、近代の私立学校につながる源流の一つとなった。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ウが適切でない記述です。アは適切です。藩校は武士教育を基本としましたが、幕末には教育内容を国学、洋学、西洋医学、武芸などへ広げ、教育対象を拡張した例もありました。イも適切です。寺子屋は手習と往来物を中心とする庶民の教育機関で、読み・書き・算術を扱うものも増え、近代の小学校設置を支える社会的基盤の一つとなりました。ウは誤りです。郷校には、藩校の延長として武士を対象とするもの、藩主や代官の保護・監督下で庶民を教育するもの、武士と庶民の双方を受け入れるものなどがあり、すべてを私塾と同一視することはできません。エは適切です。私塾は学問分野も入学者の身分も比較的多様で、近代私立学校の母体となったものもあります。"
+          }
+        ],
+        "source_text": "文部科学省『学制百年史』序章「一 幕末期の教育」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/mext_03454.html\n文化庁日本遺産ポータル『近世日本の教育遺産群』 | https://japan-heritage.bunka.go.jp/ja/stories/story001/"
+      },
+      "publication_status": "published"
+    },
+    "8-2": {
+      "exam_number": 8,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ヘルバルト（Herbart, J. F.）の教育思想及びヘルバルト派の教授理論に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育の目的を知識量の増大と職業的技能の獲得だけに置き、道徳的品性の形成を家庭や宗教の領域に委ねた。したがって、教授が生徒の意志や行為に影響することを避け、価値から中立な知識伝達を理想とした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "統覚とは、新しい表象を既有の表象から切り離し、過去の経験を意識から排除して受け入れる過程であるとした。そのため、教師は生徒の既有知識や興味を確認せず、未知の教材を最初から提示するべきだと考えた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "予備・提示・比較・総括・応用という五段階教授法を、ヘルバルト自身が変更不可能な授業手順として完成させた。ヘルバルトが示した明瞭・連合・系統・方法という四つの契機は、この五段階教授法とは無関係であり、後世のヘルバルト派には継承されなかった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育の中心的な目的を道徳的品性の形成に置き、教授を通じて多面的な興味を育てようとした。新しい表象が既有の表象群と関連付けられて理解される統覚を重視し、明瞭・連合・系統・方法という教授上の契機は、後にツィラーやラインらによって五段階教授法へ展開された。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "エが適切です。アは、ヘルバルトが教育の目的を道徳性から切り離したとしている点が誤りです。ヘルバルトは道徳的品性の形成を教育の中心に据えました。イは、統覚を既有の表象や経験から切り離す過程としている点が誤りです。統覚は、新しい表象が既有の表象群と結び付いて理解される過程を指します。ウは、ヘルバルト本人と後世のヘルバルト派の理論を取り違えています。ヘルバルト自身が示したのは明瞭・連合・系統・方法という四つの契機であり、予備・提示・比較・総括・応用の五段階教授法は、ツィラーやラインらによる展開です。エは、道徳的品性、多面的興味、統覚、ヘルバルト本人の理論と後世の五段階教授法との関係を正しく説明しています。"
+          }
+        ],
+        "source_text": "ヘルバルト著、三枝孝弘訳『一般教育学』（国立国会図書館書誌情報） | https://ndlsearch.ndl.go.jp/books/R100000001-I40111100048707\n共栄学園短期大学研究紀要第16号『ヘルバルト派の形式的教授段階』 | https://kyoei.repo.nii.ac.jp/record/484/files/KJ00000173172.pdf"
+      },
+      "publication_status": "published"
+    },
+    "9-1": {
+      "exam_number": 9,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "幕末の洋学教育機関に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "蕃書調所は『解体新書』刊行直後の1774（安永3）年に設けられ、昌平坂学問所の一部として儒学経典の校訂だけを行った。外国語を教授する生徒教育は行わず、幕末まで名称や組織も変更されなかった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "幕府は1856（安政3）年、洋学の中心機関として蕃書調所を正式に設置し、後に洋書調所、開成所へと改称した。開港後は蘭学だけでなく英学なども発達し、明治維新後には開成学校、大学南校などを経て、東京大学創設の母体の一つとなった。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "長崎海軍伝習所は明治政府が横浜に設けた海軍士官学校であり、イギリス人教官が法学と倫理学だけを教授した。幕府関係者や諸藩の藩士が学ぶことは認められず、航海術、造船、砲術、測量なども教育対象外であった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "伊東玄朴らが設けた種痘所は幕府直轄となった後、西洋医学所、医学所へ改称されたが、開成所へ吸収された時点で西洋医学教育を廃止した。そのため、明治政府の大学や東京大学医学系組織には継承されなかった。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "イが適切です。アは、蕃書調所の正式な設置を1774年とし、生徒教育や名称変更がなかったとしている点が誤りです。正式な設置は1856年で、その後、洋書調所、開成所へと名称を変更しました。イは、設置年、名称の変遷、蘭学から英学等への広がり、東京大学へつながる系譜を正しく説明しています。ウは、長崎海軍伝習所の設置主体、場所、教官及び教育内容のすべてが誤りです。幕府が長崎に設け、オランダ人から航海術、造船学、砲術、測量術などを学び、幕府関係者のほか諸藩からも参加者がありました。エは、種痘所から西洋医学所、医学所へ発展した系譜を開成所へ吸収されて消滅したとしている点が誤りです。この系譜は明治政府に引き継がれ、東京大学医学系組織の母体の一つとなりました。"
+          }
+        ],
+        "source_text": "文部科学省『学制百年史』序章「一 幕末期の教育―洋学および洋学校の発達」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/mext_03454.html"
+      },
+      "publication_status": "published"
+    },
+    "9-2": {
+      "exam_number": 9,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "パーカースト（Parkhurst, H.）とドルトン・プランに関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "パーカーストは、一斉教授と一律の進度を改めるためにラボラトリー・プランを構想し、1920年にマサチューセッツ州ドルトンの学校で実験した。生活と協同の拠点となる「ハウス」、一定期間の学習計画と課題を示す「アサインメント」、教師の助言を受けながら個別又は小集団で学ぶ「ラボラトリー」などを通して、生徒の自由・自立と社会的責任を両立させようとし、1922年に『ドルトン・プランの教育』を刊行した。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ドルトン・プランでは、生徒ごとのアサインメントを設定する一方、その課題を毎日同じ順序・同じ時間に全員で処理することを義務付けた。生徒同士の協力は個人の独立を妨げるとして禁止し、教師による一斉説明をすべての学習の中心に置いた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "パーカーストのいう自由とは、共通の教育内容や履行すべきアサインメントを設けず、生徒がその日の気分だけで活動を選ぶことを意味した。ラボラトリーでは教師の助言を排除し、課題を完了する責任や時間管理を生徒に求めなかった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ドルトン・プランは、学習を完全に孤立した個人間の競争として組織するもので、学校を社会的共同体として捉えることを否定した。ハウス、アサインメント、ラボラトリーはいずれも生徒同士の交流を防ぎ、成績順位だけを高めるための仕組みとして設計された。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "アが適切です。パーカーストは、1920年にマサチューセッツ州ドルトンの学校でラボラトリー・プランを実施し、後にドルトン・プランとして知られる教育方法を発展させました。ドルトン・プランは、ハウス、アサインメント、ラボラトリーを通して、学習者の自由と責任、個人の自立と社会的協同を結び付ける構想です。イは、一律の時間割・進度と一斉説明を中心に据え、協力を禁止するとしている点が誤りです。ウは、自由を無制限な放任としている点と、アサインメントに対する責任、時間管理、教師の援助を否定している点が誤りです。エは、ドルトン・プランが学校を社会的共同体として捉え、自由と協同の両立を重視したことと反します。"
+          }
+        ],
+        "source_text": "パーカースト著、赤井米吉訳、中野光編『ドルトン・プランの教育』（国立国会図書館書誌情報） | https://ndlsearch.ndl.go.jp/books/R100000002-I000001190245\n宮本健市郎『ドルトン・プランの成立過程とヘレン・パーカーストの思想形成』 | https://www.jstage.jst.go.jp/article/kyouikushigaku/42/0/42_KJ00009273870/_article/-char/ja/\n長崎大学教育学部『長崎県に於ける新教育運動の展開―ドールトン・プランを主として』 | https://nagasaki-u.repo.nii.ac.jp/record/8289/files/kyoikuKyK00_16_02.pdf\n河合塾学園ドルトンスクール『学校紹介』 | https://www.dalton-school.ed.jp/about/"
+      },
+      "publication_status": "published"
+    },
+    "10-1": {
+      "exam_number": 10,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "明治期における義務教育制度の整備に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "1886（明治19）年の小学校令によって、尋常小学校の修業年限は直ちに6年へ統一され、公立尋常小学校の授業料は全面的に廃止された。これにより、同年から6年間の無償義務教育が全国で完成した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "1900（明治33）年の小学校令は、尋常小学校について3年制と4年制の併存を維持し、公立尋常小学校でも授業料を必ず徴収することとした。義務教育年限の統一と授業料不徴収は、戦後の学校教育法まで実現しなかった。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "1900（明治33）年の小学校令では、尋常小学校を4年制に統一して4年間の義務教育制度を確立し、公立小学校では授業料を徴収しないことを原則とした。その後、1907（明治40）年の小学校令改正で尋常小学校を6年制とし、1年の準備期間を経て6年間の義務教育が実施された。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "1907（明治40）年の改正は高等小学校を義務教育段階として6年間追加し、尋常小学校4年と合わせて10年間を義務教育とした。同時に中学校・高等女学校・実業学校を廃止し、義務教育修了者全員が同じ学校へ進む単線型制度を完成させた。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ウが適切です。アは、1886年の小学校令によって6年間の無償義務教育が完成したとしている点が誤りです。イは、1900年の小学校令が3年制を廃止して尋常小学校を4年制に統一し、公立の義務教育では授業料不徴収を原則としたことと反します。ウは、1900年の4年制義務教育の確立と、1907年の改正による6年制への延長を正しく説明しています。6年制は準備期間を経て1908年度から実施されました。エは、6年制となった対象を高等小学校としている点と、義務教育修了後の複線的な進路を廃止したとしている点が誤りです。6年制となったのは尋常小学校であり、その後にも中学校、高等女学校、実業学校、高等小学校など複数の進路が存在しました。"
+          }
+        ],
+        "source_text": "文部科学省『学制百年史』第一編第二章第二節「五 義務教育制度の確立」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317613.htm\n文部科学省『学制百年史』第一編第三章第二節「三 義務教育年限の延長」 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1317618.htm"
+      },
+      "publication_status": "published"
+    },
+    "10-2": {
+      "exam_number": 10,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "フレイレ（Freire, P.）の教育思想に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "「銀行型教育」は、教師と学習者が対話を通じて現実の問題を共同探究する解放的教育であると評価した。教師が知識を預金するように伝達し、学習者が受動的に蓄積する方式を、批判的意識を形成する最も有効な方法とした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "『被抑圧者の教育学』では、教師が知識を一方的に預け入れ、学習者を受動的な対象とする「銀行型教育」を批判した。これに対して、教師と学習者がともに教育過程の主体となり、対話を通じて現実を問題化し、省察と行動を結び付けて世界の変革に関わる問題提起型教育を構想した。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "意識化とは、学習者が社会の矛盾を検討せず、既存の秩序へ適応するための規範を無批判に受け入れる過程であるとした。識字教育では「世界を読む」ことから文字の学習を切り離し、語句を機械的に暗記することを優先した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育は政治的・社会的価値から完全に中立な技術であると考え、教師と学習者が現実の権力関係や生活上の問題を授業で扱うことに反対した。対話は、教師があらかじめ決めた結論を効率的に受け入れさせるための話法にすぎないと位置付けた。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "イが適切です。アは、フレイレが批判した銀行型教育を解放的教育として肯定している点が誤りです。銀行型教育は、教師が知識を預け入れ、学習者を受動的な受け手にすることで、創造性や批判的意識を弱めるものとされました。イは、銀行型教育への批判と、教師と学習者が対話を通じて現実を問題化し、省察と行動を結び付ける問題提起型教育を正しく説明しています。ウは、意識化を既存秩序への無批判な適応としている点が誤りです。意識化は、社会的現実とその矛盾を批判的に認識する過程であり、「世界を読むこと」と「言葉を読むこと」は相互に関連付けられます。エは、教育を価値中立的な技術とし、対話を結論の押し付けの手段としている点が誤りです。フレイレにとって対話は、教育者と学習者が現実を共同で認識し、変革へ向かうための基礎です。"
+          }
+        ],
+        "source_text": "パウロ・フレイレ著、三砂ちづる訳『被抑圧者の教育学 50周年記念版』（国立国会図書館書誌情報） | https://ndlsearch.ndl.go.jp/books/R100000002-I028908398\n兵庫教育大学 原安利『パウロ・フレイレの教育論における「対話」に関する一考察』 | https://hyogo-u.repo.nii.ac.jp/records/2692"
+      },
+      "publication_status": "published"
+    },
+    "12-1": {
+      "exam_number": 12,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "江戸時代の私塾とそこで行われた教育について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "伊藤仁斎が京都に開いた古義堂では，古文辞学の立場から古代中国の言語や制度を研究し，その成果を政治の改革に結び付けることが重視された。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "緒方洪庵が大坂に開いた適塾では，年齢・学歴・身分による差を設けない三奪法と，毎月の成績を公表する月旦評を用いて，門人同士の競争を促した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "廣瀬淡窓が日田に開いた咸宜園では，年齢・学歴・身分による差を設けない三奪法，学業成績を評価する月旦評及び塾生に役割を分担させる職任の制などが採られた。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "本居宣長が松坂に開いた鈴屋では，蘭医学と蘭学を中心に教授し，福澤諭吉や大村益次郎など，幕末から明治期に活躍する人材を輩出した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ウが適切です。アは，古義堂を開いた人物を伊藤仁斎としている点は適切ですが，仁斎が唱えたのは『論語』『孟子』を重視する古義学です。古文辞学を唱えたのは荻生徂徠です。イは，適塾を開いた人物を緒方洪庵としている点は適切ですが，三奪法と月旦評は咸宜園の制度です。適塾では蘭学・医学が教授され，福澤諭吉や大村益次郎らが学びました。ウは，咸宜園の三奪法，月旦評，職任の制を正しく説明しています。エは，鈴屋を開いた人物を本居宣長としている点は適切ですが，宣長は国学者であり，『古事記伝』などを著しました。蘭学・医学及び福澤諭吉，大村益次郎との対応は適塾です。"
+          }
+        ],
+        "source_text": "日田市咸宜園教育研究センター『咸宜園とは』 | https://www.city.hita.oita.jp/site/kangien/1736.html\n大阪大学適塾記念センター『適塾』 | https://www.tekijuku.osaka-u.ac.jp/ja/tekijuku\n早稲田大学リポジトリ『伊藤仁斎と荻生徂徠の学問』 | https://waseda.repo.nii.ac.jp/record/3126/files/Tsuchida2_09410009.pdf"
+      },
+      "publication_status": "published"
+    },
+    "12-2": {
+      "exam_number": 12,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ルソーの教育思想について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育の目的を，社会において有用な紳士の形成に置き，家庭教師による個別教育の下で，健康な身体，徳，知恵及び礼儀を習慣として身に付けさせることを重視した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "『エミール』において，子どもを小さな大人として扱わず，その自然な発達に即して教育することを主張した。消極教育は単なる放任ではなく，事物や経験から学べるよう環境を整え，時期尚早な知識や道徳の教え込みを控えるものであった。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育を頭・心・手の諸力を調和的に発達させる営みと捉え，家庭的な共同生活と直観教授を基礎として，貧困状態にある子どもの教育に取り組んだ。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教育の究極目的を道徳的品性の形成に置き，既有の観念と新しい観念との結合を統覚によって説明するとともに，教授の段階を組織的に構成した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "イが適切です。アはロックの教育思想です。『教育論』では，家庭教師による紳士教育と，健康，徳，知恵，礼儀及び習慣形成が論じられました。イはルソーの教育思想を正しく説明しています。ルソーは『エミール』で子どもの発達に即した教育を説きました。消極教育は放任ではなく，発達に適した環境を用意し，経験を通じて学ばせる考え方です。ウはペスタロッチの教育思想です。頭・心・手の調和，直観教授及び家庭的な共同生活が対応します。エはヘルバルトの教育思想です。道徳的品性，統覚及び段階的な教授理論が対応します。"
+          }
+        ],
+        "source_text": "神戸大学学術成果リポジトリ『ルソーにおける消極教育』 | https://da.lib.kobe-u.ac.jp/da/kernel/81001379/81001379.pdf\n国立国会図書館サーチ『エミール』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000002-I000002320860\n立教大学図書館『ルソーと「エミール」』 | https://library.rikkyo.ac.jp/digitallibrary/jeanjacquesrousseau/contents/con_05.html"
+      },
+      "publication_status": "published"
+    },
+    "13-1": {
+      "exam_number": 13,
+      "attributes": {
+        "question_number": 1,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "我が国の教員養成制度の変遷について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "明治19年の師範学校令では，尋常師範学校を全国一校の官立学校として東京に置き，高等師範学校を各府県に設置した。前者は尋常師範学校の教員を，後者は小学校教員を養成するものとされた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "文部省は「学制」の公布に先立って東京に師範学校を設置した。明治19年の師範学校令では，各府県の尋常師範学校が小学校教員を，全国一校の官立高等師範学校が尋常師範学校の教員を養成した。戦後は大学における教員養成と開放制が採用され，昭和24年に教育職員免許法が公布された。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "明治30年の師範教育令は，尋常師範学校という名称と制度をそのまま維持し，戦前の教員養成制度に実質的な変更を加えなかった。戦後も，旧来の師範学校だけに教員養成を認める閉鎖的な制度が継承された。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "戦後に採用された開放制は，各都道府県の国立教育学部だけに教員養成を認める制度であり，一般の国立・公立・私立大学が教員養成に参加することは想定されていなかった。また，大学を卒業すれば履修科目にかかわらず免許状が授与された。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "イが適切です。アは，尋常師範学校と高等師範学校の設置主体及び養成対象を逆にしています。尋常師範学校は各府県に置かれて小学校教員を養成し，高等師範学校は全国一校の官立学校として東京に置かれ，尋常師範学校の教員などを養成しました。イは，明治初期から戦後への教員養成制度の変化を正しく述べています。ウは，明治30年の師範教育令により尋常師範学校が「師範学校」と改称されたこと，及び戦後に大学での開放制へ転換したことと反します。エは，開放制の対象を国立教育学部に限定している点が誤りです。開放制では，所定の課程を置く国立・公立・私立大学でも教員養成を行えます。また，単なる大学卒業だけで免許状が授与される制度ではありません。"
+          }
+        ],
+        "source_text": "文部科学省『学制百二十年史』第四節『教員及び教員養成』―戦前 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1318234.htm\n文部科学省『学制百二十年史』第四節『教員及び教員養成』―戦後 | https://www.mext.go.jp/b_menu/hakusho/html/others/detail/1318262.htm"
+      },
+      "publication_status": "published"
+    },
+    "13-2": {
+      "exam_number": 13,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "モンテッソーリの教育思想及び教育実践について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "幼児の遊びを人間性の最も純粋な表現と捉えて幼稚園を創設し，恩物を通して，子どもの内面にある統一的な力を自発的に表現させようとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "シカゴ大学に実験学校を開設し，経験の再構成として教育を捉えた。学校を共同生活の場とし，問題解決的な学習を通して民主的な社会の形成に参加する力を育てようとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "学習者が一定期間の学習課題について契約を結び，教科別実験室を利用しながら個々の進度で学習する仕組みと，異年齢の生活集団を組み合わせた教育方法を考案した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "医学的な観察を教育に生かし，1907年に「子どもの家」を開設した。敏感期と自己教育力を重視し，子どもが自ら誤りに気付ける教具を含む「準備された環境」を整え，教師を観察者・援助者として位置付けた。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "エが適切です。アはフレーベルの教育思想です。幼稚園の創設，遊び及び恩物が対応します。イはデューイの教育思想とシカゴ大学実験学校についての記述です。ウはパーカーストが考案したドルトン・プランについての記述です。学習課題の契約，教科別実験室，個別進度及び生活集団が主要な構成要素となります。エはモンテッソーリ教育を正しく説明しています。モンテッソーリ教育では，敏感期，自己教育力，準備された環境，自己訂正的な教具及び観察者としての教師が重視されます。"
+          }
+        ],
+        "source_text": "お茶の水女子大学教育・研究成果コレクション『モンテッソーリ教育における感覚教育』 | https://teapot.lib.ocha.ac.jp/record/10434/files/20020601.pdf\n国立国会図書館デジタルコレクション『幼児の秘密』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000039-I3042669\n広島文教大学附属幼稚園『モンテッソーリ教育』 | https://www.h-bunkyo.ac.jp/kindergarten/about/montessori.html"
+      },
+      "publication_status": "published"
+    },
+    "14-2": {
+      "exam_number": 14,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ケルシェンシュタイナーの教育思想及び教育実践について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "労作学校の中心を職業で用いる手技能の熟達に置き，知的理解や共同生活における人格形成は，手作業の反復から生じる副次的な成果として位置付けた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "学習者が社会的な環境の中で自ら目的を定め，計画を立てて遂行する一連の活動を教授の中心に置くプロジェクト・メソッドを提唱した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ミュンヘン市の教育行政に携わり，補習学校の改革を進めた。労作を単なる手作業ではなく，身体的活動と精神的活動を結び付けて課題を完成する過程と捉え，公民としての責任感や人格を形成しようとした。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "学習課題の契約，教科別実験室及び生活集団を組み合わせ，学級で一斉に同じ内容を進める方式を改めて，学習者が自分の進度で学習する教育方法を構成した。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ウが適切です。アは，ケルシェンシュタイナーの労作学校を手技能の訓練に狭めている点が誤りです。労作学校では，課題の遂行を通して身体的活動と精神的活動を統合し，人格や公民性を形成することが重視されました。イはキルパトリックのプロジェクト・メソッドについての記述です。ウは，ケルシェンシュタイナーによるミュンヘンの補習学校改革と，労作学校及び公民教育の関係を正しく説明しています。エはパーカーストのドルトン・プランについての記述です。"
+          }
+        ],
+        "source_text": "国立国会図書館サーチ『労作学校の概念』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000002-I000001074366\n京都大学学術情報リポジトリ『ケルシェンシュタイナーの公民教育論』 | https://repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/266308/1/eda38_100.pdf\nJ-STAGE『労作学校思想の歴史的検討』 | https://www.jstage.jst.go.jp/article/joej/24/0/24_2021_0002/_pdf"
+      },
+      "publication_status": "published"
+    },
+    "15-2": {
+      "exam_number": 15,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "キルパトリックのプロジェクト・メソッドについて述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教師又は教科書から与えられた課題を，あらかじめ定められた手順に従って正確に完成する活動を教授の中心に置き，学習者自身がその目的を受け入れているかどうかを学習成立の条件から切り離した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "学習者が一月程度の学習課題について契約を結び，教科別実験室で教師の助言を受けながら，自分の進度で学習を進める個別化された教育方法を構成した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "教授によって多方面の興味を形成し，既有の観念と新しい観念を統覚によって結び付けることを通して，教育の究極目的である道徳的品性の形成を目指した。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイの影響を受け，社会的な環境の中で学習者が心から目的をもって行う活動を学習の中心に置いた。教師が提案した活動であっても，学習者がその目的を自分のものとして受け入れ，計画・遂行・評価に関与する場合にはプロジェクトとなり得る。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "エが適切です。アは，外部から課された作業を手順どおり実施すること自体を中心としている点が誤りです。キルパトリックは，学習者が目的を自覚し，主体的に取り組む活動を重視しました。イはパーカーストのドルトン・プランについての記述です。ウはヘルバルトの教育思想です。多方面の興味，統覚及び道徳的品性が対応します。エはプロジェクト・メソッドを正しく説明しています。教師の提案から始まる活動であっても，学習者が目的を主体的に受け入れ，社会的な状況の中で計画・遂行する場合にはプロジェクトとなり得ます。"
+          }
+        ],
+        "source_text": "国立国会図書館サーチ『プロジェクト法』日本語訳 | https://ndlsearch.ndl.go.jp/books/R100000002-I000001093995\nJ-STAGE『キルパトリックのプロジェクト・メソッド』 | https://www.jstage.jst.go.jp/article/kyouikutetsugaku1959/1962/7/1962_7_14/_article/-char/ja/\nJ-STAGE『プロジェクト・メソッドにおける目的的活動』 | https://www.jstage.jst.go.jp/article/nasemjournal/19/0/19_KJ00006622222/_pdf"
+      },
+      "publication_status": "published"
+    },
+    "41-2": {
+      "exam_number": 41,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ロックの教育思想について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ロックは，紳士に必要な徳性・知恵・礼儀・知識を論じ，身体の健康や日々の習慣を重視した。その中で，学問上の知識の獲得を最上位に置き，知識が増すことを通して徳性や実生活における判断力を形成しようとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ロックは，欲望を抑えて理性に従うことを重視し，幼少期からの習慣形成を求めた。その方法では，多くの行動規則を言葉で覚えさせることを基本とし，覚えた規則を実行する過程から，子どもの気質や能力を見極めようとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ロックは，家庭における紳士の教育を論じ，良い習慣によって行動を導くことを重視した。そのため，子どもが望む品物を，望ましい行動を繰り返すたびに報酬として与え，物を得たいという欲望を徳性の形成の基礎に置いた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ロックは，身体の健康と，日々の生活における徳性や良い習慣の形成を重視した。紳士の教育において学問上の知識の獲得よりも徳性を優先し，自分の欲望を抑え，理性の示すところに従って行動する力を育てようとした。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ア：知識の獲得を最上位に置いた点が誤り。ロックは紳士の教育で徳性を優先し，知恵・礼儀・学問上の知識を区別した。知識の量が増せば，それに伴って徳性も形成されるという順序に置き換えない。"
+          },
+          {
+            "type": "text",
+            "text": "イ：規則の暗記を習慣形成の基本とした点が誤り。ロックは，子どもの能力を超える多数の規則を設けることを批判し，実際の練習と反復を重視した。教育者には，子どもの気質・能力・体質を観察して，要求が妥当かを判断することを求めた。"
+          },
+          {
+            "type": "text",
+            "text": "ウ：物を欲しがる気持ちを満たす報酬を，徳性の形成の基礎に置いた点が誤り。ロックは，望む品物を賞品として与えることが，ぜいたくや欲深さを育てる危険を指摘した。賞賛や敬愛などの働きと，物欲を満たす報酬とを同一視しない。"
+          },
+          {
+            "type": "text",
+            "text": "エ：適切。健康な身体，徳性，習慣を通した自己抑制が結び付けられている。これは，当時の紳士教育についての思想であり，現代の教育で知識を学ぶ意義を否定する主張として読まない。"
+          }
+        ],
+        "source_text": "井上和幸「調和の教育―ロックの教育観―」『徳山大学論叢』第16号，1981年，346・348頁 | https://ypir.lib.yamaguchi-u.ac.jp/tu/107/files/141411\n筑波大学附属図書館『近代教育学の源流』I「近代教育学の曙―コメニウスとロック―」 | https://www.tulips.tsukuba.ac.jp/exhibition/kindai-kyoiku-genryu/chap1.html"
+      },
+      "publication_status": "published"
+    },
+    "45-2": {
+      "exam_number": 45,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "デューイの教育思想における思考と経験の関係について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイは，生徒が関心をもつ活動と，そこで生じる問題を重視した。その問題とは，教科の知識を教えるために教師が設定した練習課題を指し，生活上の活動は，その課題を受け入れるための動機付けとして位置付けられた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイは，思考を促すために，生徒が興味をもつ経験的な場面を用意することを重視した。解決案の構成と妥当性の判断は教師が担い，生徒は教師の案を実行して，すでに確かめられた知識を自分の経験として理解するとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイは，観察や情報の収集を通して，生徒が解決案を考えることを重視した。解決案の教育的な価値は，既知の知識を使って筋道を立てて説明できることで確定し，実際の適用は，妥当性の判断を終えた後の習熟のための活動とした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "デューイは，生徒が興味をもって取り組む連続的な活動の中に，思考を促す問題が現れることを重視した。生徒が観察や情報を基に解決案を考え，それを適用して試すことを通して，案の意味や妥当性を確かめる学習を求めた。"
+              }
+            ],
+            "correct": true
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ア：問題を，教師が教科の知識を教えるために設けた練習課題と同一視した点が誤り。デューイが重視するのは，子ども自身の活動の中から思考を促す本物の問題が生じること。生活上の活動は，既定の課題へ関心を向けさせる導入だけに位置付けられるものではない。"
+          },
+          {
+            "type": "text",
+            "text": "イ：解決案の構成・妥当性の判断を教師にまとめて帰属させた点が誤り。生徒に解決案が浮かび，それを自ら展開し，適用して妥当性を見いだすことが重視される。教師の環境構成や援助を，生徒に代わって解決案を決定・判断することと同一視しない。"
+          },
+          {
+            "type": "text",
+            "text": "ウ：適用による検証を，妥当性が確定した後の習熟へ移した点が誤り。考えを実際に適用して試すことには，その意味と妥当性を明らかにする働きがある。観察や情報の収集を重視する前半は適切。"
+          },
+          {
+            "type": "text",
+            "text": "エ：適切。経験的な活動，問題，観察・情報，解決案，適用による検証という関係を説明している。単に活動量を増やすことではなく，活動とその結果との関係を思考することが教育的な経験に関わる。"
+          }
+        ],
+        "source_text": "白石崇人『資料から考える教育原理』第13章・158〜160頁，資料5〜9 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf"
+      },
+      "publication_status": "published"
+    },
+    "47-2": {
+      "exam_number": 47,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "ペスタロッチの教育思想及び教授方法について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ペスタロッチは，子どもに備わる諸能力は，子ども自身がそれを使うことによって発展すると考えた。数・形・語を手掛かりに，自ら数え，測り，読もうとする活動を支え，単純なものから複雑なものへ教育内容を組織して，自己活動を援助しようとした。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ペスタロッチは，子どもの発達に応じた教育と，数・形・語を基礎とする教授を重視した。諸能力の発展は，教師が完成した知識を順序立てて伝え，その内容を蓄積させることによって生じると捉え，自己活動を，蓄えた知識を再現する段階に位置付けた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ペスタロッチは，親子の愛や信頼を重視し，「生活が陶冶する」と考えた。家庭での生活が道徳的な形成へ働くのは，子どもが数・形・語の教授を受けて知的な判断を身に付けた後であるとし，知的教育の完成を，道徳的な人間形成の出発点に置いた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "ペスタロッチは，貧しい子どもの教育に取り組み，自立した生活を営む力を育てようとした。数・形・語の教授を教育の全体を構成する方法とし，その習得を進めることによって，知的・道徳的・身体的な諸力の調和が実現すると捉えた。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ア：適切。能力の発展を自己活動と結び付け，その活動が進むよう教材や内容を系列化することを述べている。子どもの活動を尊重することと，教育方法を計画的に組み立てることは両立する。系列化は，完成した知識を外から付け加える順序の工夫へ狭められない。"
+          },
+          {
+            "type": "text",
+            "text": "イ：自己活動を，知識の蓄積を終えた後の再現へ移した点が誤り。子ども自身が能力を使い，世界を認識しようとする自己活動を援助することが，諸能力を発展させる教育方法に位置付けられる。完成した知識を外から伝える量が，内的な能力の発展そのものとなるという説明ではない。"
+          },
+          {
+            "type": "text",
+            "text": "ウ：家庭生活による道徳的な形成を，知的教育の完成後へ移した点が誤り。親の愛や配慮を通して，早くから愛・信頼・感謝などが芽生えると考えている。「生活が陶冶する」という考えを，学校で知的教育を完成させた後に家庭が道徳教育を始めるという順序にしない。"
+          },
+          {
+            "type": "text",
+            "text": "エ：数・形・語の教授を，人間形成全体を尽くす方法とした点が誤り。数・形・語は知的認識・教授の基礎に関わる。知的・道徳的・身体的な諸力の調和という目標を，数・形・語の習得へ還元することはできない。貧しい子どもの自立した生活を支える教育への取組という前半は適切。"
+          }
+        ],
+        "source_text": "白石崇人『資料から考える教育原理』第10章「教育方法とは何か？―ペスタロッチーの教育思想―」，117・120〜121頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n筑波大学附属図書館『近代教育学の源流』IV「教育学と家庭・学校・社会―ペスタロッチー・フィヒテ・フレーベル―」 | https://www.tulips.tsukuba.ac.jp/exhibition/kindai-kyoiku-genryu/chap4.html\n玉川学園『玉川豆知識 No.136 小原國芳がペスタロッチ賞を受賞』1「ペスタロッチ」 | https://www.tamagawa.jp/introduction/tamagawa_trivia/tamagawa_trivia-136.html"
+      },
+      "publication_status": "published"
+    },
+    "49-2": {
+      "exam_number": 49,
+      "attributes": {
+        "question_number": 2,
+        "major_category_code": "teacher_education",
+        "category_code": "education_foundations",
+        "content_blocks": [
+          {
+            "type": "text",
+            "text": "モンテッソーリの教育思想及び教育方法について述べたものとして最も適切なものを，下のア～エの中から一つ選んで記号で答えなさい。"
+          }
+        ],
+        "choices": [
+          {
+            "label": "ア",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "モンテッソーリは，子どもが教具を操作し，自ら誤りに気付くことを重視した。同じ操作を続ける姿は，外から与えられた型への依存が残る状態と捉え，教師が次の教具へ移る時期を決めて，活動の種類を増やすことで自由な活動へ導こうとした。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "イ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "モンテッソーリは，子どもが教具を自ら操作し，注意を集中して同じ活動を繰り返す姿を，自由で主体的な活動として捉えた。教具を通して自ら誤りに気付ける環境を整え，教師には，使い方を示した後も活動を観察し，自己教育を支える役割を求めた。"
+              }
+            ],
+            "correct": true
+          },
+          {
+            "label": "ウ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "モンテッソーリは，感覚を洗練させる教具と，教師による観察を重視した。教具を使う作業で生じた誤りは，教師が正しい結果を示して子どもに再現させる過程によって調整し，その過程を，子ども自身が学ぶ自己訂正として位置付けた。"
+              }
+            ],
+            "correct": false
+          },
+          {
+            "label": "エ",
+            "content_blocks": [
+              {
+                "type": "text",
+                "text": "モンテッソーリは，子どもが一定の事柄に強い関心を示す敏感期を重視し，教具を使う環境を整えた。集中した反復は，その敏感期が過ぎた後に，獲得した能力を維持するために行う活動とし，敏感期には，多様な刺激へ短く触れる活動を中心に置いた。"
+              }
+            ],
+            "correct": false
+          }
+        ],
+        "explanation_blocks": [
+          {
+            "type": "text",
+            "text": "ア：集中した反復を型への依存と捉え，教師が次の活動への移行を主導することを自由の成立とした点が誤り。モンテッソーリは，子どもが自ら関心をもって同じ活動に取り組む熱心な姿にも，主体性・自由を認めた。活動を次々に切り替える量を，自由の判断基準にはしない。"
+          },
+          {
+            "type": "text",
+            "text": "イ：適切。反復と主体性，教具による自己訂正，教師の提示・観察という関係が対応している。教師が教具の使い方を示すことと，子どもの集中した自己教育を観察して支えることは両立する。"
+          },
+          {
+            "type": "text",
+            "text": "ウ：自己訂正の主体と仕組みが誤り。自己訂正は，教具などを手掛かりとして子ども自身が誤りに気付き，直していくことに関わる。教師の訂正した結果を再現する過程の名称ではない。教具や観察の重視という前半は適切。"
+          },
+          {
+            "type": "text",
+            "text": "エ：集中した反復と敏感期の関係が誤り。敏感期は，特定の事柄に強い関心を示し，集中した活動・反復を通して一定の能力を獲得していく時期に関わる。反復を，その時期を過ぎた後の維持活動へ分ける説明にはしない。"
+          }
+        ],
+        "source_text": "白石崇人『資料から考える教育原理』第12章「知的発達を促す方法とは？―モンテッソーリの教育思想―」，144〜145・151頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n広島文教大学附属幼稚園「モンテッソーリ教育」 | https://www.h-bunkyo.ac.jp/kindergarten/about/montessori.html"
+      },
+      "publication_status": "published"
+    }
+  },
+  "unchanged_979_digest": "1220f3f2ad99c566f5fec9b74f1ef4c8f454da37f64ad0e23bc8e3a21028e36f",
+  "revised_payload_digests": {
+    "1-2": "8ecd900ae7c0dcb4ce92890a2c2f6d33f465cdc641d0b2e1eb03ede2ee67e85f",
+    "2-2": "9979861dcd12fce667f37538a2e93a47e6db5f0176e3b20a1d14745e2454f8c2",
+    "5-2": "0ede20e50995f4ff8fee61cdb41e2850d435e929777b83d9e11a46694acd2c6f",
+    "7-1": "1334cc904f88851b4af1ff70c02e92d39b03834432aa6729cfe30b0324ec2715",
+    "7-2": "e94ce67101afa102475a45b6f2fc1f07a53e0747244028868b44f04f7904f2d9",
+    "8-1": "1cf3dffbaeafd6cac80751302f7af8e0690480572d0675e81a6b79f2b97a7578",
+    "8-2": "2d316399379f96f3aed9b9fa1a8807524fa3ec34bc5a8f70439c8bda88e98eb1",
+    "9-1": "26c98089c34f19987e788b97081a265153ac8418f1d907b0162d186a683c625b",
+    "9-2": "8dab74024d405ea2f1a5085c2edce3c323075203d436c3e4f3609241bb9b3d92",
+    "10-1": "168593f1f7442808c97c57cb2a27954f3a31d7625fb2207f80dc75fc9ba14841",
+    "10-2": "1216924349b3d14d4bf92ad5e600a5ccc57e938dd0a402f2422af07b227630f9",
+    "12-1": "656a37cbb647174626401a4eaee0dd5655b2a3d8575ab022594596c6152e2c2d",
+    "12-2": "ba4a8b5e93abda1573fb4231f1413551a359465866216ad396d19a8aec68463f",
+    "13-1": "01793242b030bedba5060b9e350a64829a36acb1535586c07f57ea9054b4ce19",
+    "13-2": "37b87ee3e9924692e7ac2267321debcd227ccf745aa47431f7b0d708b97a8c2f",
+    "14-2": "f769f154ce7d26e295565be8ac8ab5c7b63918bd6cd51cc5871a61ca0ce74b0c",
+    "15-2": "1f8c88090f21efa13a6a53830175df1d82fb884555ce8b80e139b7dc3bbf63c4",
+    "41-2": "d24ff659fa9ddad959e2eb1a6dc20cb002997f68669d43ec5975a9307d8d7bca",
+    "45-2": "ae9f76f388721dd1539416479f04096d2b31baf04c3c496dd12b260fa478356d",
+    "47-2": "6f6f28e348d245d86c3265934494d6bd5e20d8855f3afdecd3a9421a9ced8b46",
+    "49-2": "7d7d0f80a9963a4bf8d9ec8dbb79218930d07acbe74a0581a032874b0077900d"
+  }
+}

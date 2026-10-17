@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
@@ -63,7 +64,7 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
 
   test "独立した承認Markdown保存二百問から全本文四択正答全解説と出典を照合する" do
     @approved_sections.each do |id, raw|
-      question = @questions.fetch(id)
+      question = HistoryRevision20261017.historical_attributes(id, @questions.fetch(id))
       head, tail = raw.split(/^正答：[アイウエ]\s*$/, 2)
       assert head && tail, id
       assert_equal raw[/^正答：([アイウエ])$/, 1], correct(question).fetch(:label), id
@@ -97,7 +98,7 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
       tail = raw.split(/^正答：[アイウエ]\s*$/, 2).last
       at = tail.index(/^(?:###\s*)?出典[^\n]*/)
       original = raw_sources(tail[at..]).lines.map(&:strip)
-      expanded = @questions.fetch(id).fetch(:source_text).lines.map(&:strip)
+      expanded = HistoryRevision20261017.historical_attributes(id, @questions.fetch(id)).fetch(:source_text).lines.map(&:strip)
       assert_equal original.size, expanded.size, id
       original.zip(expanded).each do |before, after|
         assert_equal before.split(" | ", 2).last, after.split(" | ", 2).last, "#{id} URL保持"

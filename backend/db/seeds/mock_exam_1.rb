@@ -51,9 +51,12 @@ questions = [
       text_choice.call("エ", "感覚教育のための教具を用意し、教師が直接教え込むのではなく、子供が自発的に教具を操作することで知的独立を獲得する教育法を創始した。"),
     ],
     explanation_blocks: [
-      text_block.call("アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。イは誤りです。幼稚園の創設と恩物の考案はフレーベルの業績です。ウは誤りです。この教授段階はヘルバルト派に対応します。エは誤りです。感覚教育のための教具と自発的な操作を重視した説明は、モンテッソーリの教育法に対応します。"),
+      text_block.call("アが適切です。デューイはシカゴ大学に実験学校を設け、子供の経験に基づく活動と探究を重視しました。『民主主義と教育』も代表作です。"),
+      text_block.call("イ：幼稚園の創設と恩物の考案はフレーベルの業績であり、デューイのものではありません。"),
+      text_block.call("ウ：道徳的品性の形成と、明瞭・連合・系統・方法の四段階はヘルバルト本人の教授論に対応します。後世のヘルバルト派が発展させた五段階教授法とは区別します。"),
+      text_block.call("エ：感覚教育のための教具を用意し、子供の自発的な操作による自己教育を援助する説明は、モンテッソーリの教育法に対応します。"),
     ],
-    source_text: "Stanford Encyclopedia of Philosophy『John Dewey』1. Biographical Sketch; 5. Philosophy of Education | https://plato.stanford.edu/entries/dewey/\n白石崇人『資料から考える教育原理』第11章「なぜ幼稚園が作られたのか？―フレーベルの教育思想―」（広島文教女子大学、2017年） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\nUniversity of Chemistry and Technology, Prague『Johan Friedrich Herbart』Formal Steps | https://e-learning.vscht.cz/mod/page/view.php?id=63074\nAssociation Montessori Internationale “Montessori Environments” | https://montessori-ami.org/about-montessori/montessori-environments",
+    source_text: "白石崇人『資料から考える教育原理』（広島文教女子大学、2017年）第13章「教育はどのような社会を生み出し得るか？―デューイの教育思想―」152〜162頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n白石崇人『資料から考える教育原理』第11章（フレーベル）・第12章（モンテッソーリ）128〜151頁 | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n奥山和夫「情意的学習法の理論とその試み」『共栄学園短期大学研究紀要』第16号（2000年）2頁・表1「ヘルバルト派の形式的教授段階論」 | https://kyoei.repo.nii.ac.jp/record/484/files/KJ00000173172.pdf",
   },
   {
     question_number: 3,

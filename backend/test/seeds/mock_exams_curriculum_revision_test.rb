@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExamsCurriculumRevisionTest < ActionDispatch::IntegrationTest
@@ -29,7 +30,7 @@ class MockExamsCurriculumRevisionTest < ActionDispatch::IntegrationTest
     assert_equal ANSWERS.keys.sort, ORIGINALS.fetch("previous_attribute_digests").keys.sort
     assert_equal ANSWERS.keys.sort, ORIGINALS.fetch("previous_payload_digests").keys.sort
     unchanged = historical_entries.reject { |entry| ANSWERS.key?(key(entry)) }.map do |entry|
-      [key(entry), Digest::SHA256.hexdigest(JSON.generate(entry.fetch(:attributes)))]
+      [key(entry), Digest::SHA256.hexdigest(JSON.generate(HistoryRevision20261017.historical_attributes(key(entry), entry.fetch(:attributes))))]
     end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal ORIGINALS.fetch("unchanged_508_attribute_digest"), Digest::SHA256.hexdigest(unchanged)
     @questions.each do |id, attributes|

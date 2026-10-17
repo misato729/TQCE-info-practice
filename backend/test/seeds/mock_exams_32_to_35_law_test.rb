@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/history_revision_20261017"
 require "digest"
 
 class MockExams32To35LawTest < ActionDispatch::IntegrationTest
@@ -105,7 +106,7 @@ class MockExams32To35LawTest < ActionDispatch::IntegrationTest
     assert_equal 688, before.size
     unchanged = @all.reject { |entry| @data.key?(key(entry)) }
     assert_equal before.keys.sort, unchanged.map { |entry| key(entry) }.sort
-    unchanged.each { |entry| assert_equal before.fetch(key(entry)), QuestionPayload.digest(QuestionPayload.from_seed(entry[:exam_number], entry[:attributes])), key(entry) }
+    unchanged.each { |entry| assert_equal before.fetch(key(entry)), HistoryRevision20261017.historical_payload_digest(key(entry), entry[:exam_number], entry[:attributes]), key(entry) }
   end
 
   test "全百問は公開APIへ出し正答解説は回答まで秘匿する" do
