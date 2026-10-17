@@ -1,10 +1,13 @@
 # Historical approvals remain immutable. Only the 21 explicitly authorized
 # history corrections may delegate their *old* snapshots to this revision.
 # A changed current revision must fail here, not silently inherit an exemption.
+require_relative "priority_revision_20261017"
+
 module HistoryRevision20261017
   DATA = JSON.parse(File.read(Rails.root.join("test/fixtures/history_revision_20261017.json"))).freeze
 
   def self.historical_attributes(id, current)
+    current = PriorityRevision20261017.historical_attributes(id, current)
     previous = DATA.fetch("previous_entries")[id]
     return current unless previous
 

@@ -272,7 +272,9 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
         assert_includes prompt, "高等学校学習指導要領"
         assert_includes prompt, "文章中の空欄 {{①}} ～"
         quote = question.content_blocks.second.fetch("text")
-        labels = quote.scan(/\{\{([①②③④])\}\}/).flatten
+        # Repeated source terms use the same blank rather than exposing the
+        # answer later in the excerpt. Validate every token, then its first order.
+        labels = quote.scan(/\{\{([^{}]+)\}\}/).flatten.uniq
         assert_equal %w[① ② ③ ④].first(labels.size), labels
         assert_includes [3, 4], labels.size
         assert_operator quote.length, :>=, 140

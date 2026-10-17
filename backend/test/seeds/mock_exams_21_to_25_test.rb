@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/priority_revision_20261017"
 
 class MockExams21To25Test < ActionDispatch::IntegrationTest
   EXAM_NUMBERS = (21..25).to_a.freeze
@@ -401,6 +402,15 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
 
   def official_excerpt(key)
     location = ORIGINAL_FIXTURE.fetch("locations").fetch(key)
+    if key == "25-8"
+      # The old raw official page remains immutable. The approved extension
+      # starts earlier on that same page; check the current revision before
+      # applying this new boundary, never manufacture source text from answers.
+      question = partial_questions.find_by!(exam_number: 25, question_number: 8)
+      assert_equal PriorityRevision20261017::DATA.fetch("revised_payload_digests").fetch(key),
+        QuestionPayload.digest(QuestionPayload.from_record(question)), key
+      location = location.merge("start" => "今回の改訂において，総合的な探究の時間については，内容の設定に際し，")
+    end
     pages = ORIGINAL_FIXTURE.fetch("pages").fetch(location.fetch("source"))
     text = location.fetch("pdf_pages").map do |page|
       # The printed running header is not part of a paragraph crossing pages.

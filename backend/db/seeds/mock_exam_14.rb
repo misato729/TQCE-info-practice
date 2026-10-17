@@ -185,19 +185,76 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "integrated_inquiry",
     content_blocks: [
-      { type: "fill_in_text", text: "次の文章は，「高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編」（平成30年7月文部科学省）の「第3章 総合的な探究の時間の目標 第2節 目標の趣旨 1 総合的な探究の時間の特質に応じた学習の在り方」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。" },
-      { type: "fill_in_quote", text: "探究の見方・考え方を働かせるということを目標の冒頭に置いたのは，探究の重要性に鑑み，{{①}}を総合的な探究の時間の本質と捉え，中心に据えることを意味している。総合的な探究の時間における学習では，{{②}}が発展的に繰り返されていく。これを探究と呼ぶ。なお，小中学校における総合的な学習の時間では，「{{③}}を働かせる」としているのに対して，総合的な探究の時間では「{{④}}を働かせる」としている。" },
+      {
+        type: "fill_in_text",
+        text: "次の文章は，「高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編」（平成30年7月文部科学省）の「第3章 総合的な探究の時間の目標 第2節 目標の趣旨 1 総合的な探究の時間の特質に応じた学習の在り方」からの抜粋である。文章中の空欄 {{①}} ～ {{④}} に当てはまる語句の組合せとして正しいものを，下のア～エの中から一つ選んで記号で答えなさい。",
+      },
+      {
+        type: "fill_in_quote",
+        text: "{{①}}を働かせるということを目標の冒頭に置いたのは，探究の重要性に鑑み，{{②}}を総合的な探究の時間の本質と捉え，中心に据えることを意味している。総合的な探究の時間における学習では，{{③}}が発展的に繰り返されていく。これを探究と呼ぶ。なお，小中学校における総合的な学習の時間では，「{{④}}を働かせる」としているのに対して，総合的な探究の時間では「{{①}}を働かせる」としている。",
+      },
     ],
     choices: [
-      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["探究の過程", "課題解決的な学習", "探究的な見方・考え方", "探究の見方・考え方"] }], correct: false },
-      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["探究の成果", "問題解決的な学習", "探究的な見方・考え方", "探究の見方・考え方"] }], correct: false },
-      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["探究の過程", "問題解決的な学習", "探究の見方・考え方", "探究的な見方・考え方"] }], correct: false },
-      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["探究の過程", "問題解決的な学習", "探究的な見方・考え方", "探究の見方・考え方"] }], correct: true },
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["探究の見方・考え方", "探究の成果", "課題解決的な学習", "探究的な見方・考え方"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["探究的な見方・考え方", "探究の過程", "課題解決的な学習", "探究の見方・考え方"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["探究的な見方・考え方", "探究の成果", "問題解決的な学習", "探究の見方・考え方"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["探究の見方・考え方", "探究の過程", "問題解決的な学習", "探究的な見方・考え方"],
+          },
+        ],
+        correct: true,
+      },
     ],
     explanation_blocks: [
-      { type: "text", text: "本質として中心に据えるのは探究の過程であり，問題解決的な学習を発展的に繰り返すことを探究と説明しています。小中学校では「探究的な見方・考え方」，高等学校では「探究の見方・考え方」と表記します。アは②が「課題解決的」，イは①が「成果」となっている点が異なります。ウは③・④の学校段階ごとの表記が逆です。" },
+      {
+        type: "text",
+        text: "エが正しい。高校では「探究の見方・考え方」を働かせ、探究の過程を本質として中心に据える。原文は「問題解決的な学習」が発展的に繰り返されることを探究と説明する。小中学校の表記は「探究的な見方・考え方」である。",
+      },
+      {
+        type: "text",
+        text: "ア：①④の学校段階の対応は一致する。②は「探究の過程」、③は「問題解決的な学習」である。成果だけを本質とする説明ではなく、この箇所の原語も「課題解決的」ではない。",
+      },
+      {
+        type: "text",
+        text: "イ：②は一致する。①は冒頭・末尾とも「探究の見方・考え方」、③は「問題解決的な学習」、④は「探究的な見方・考え方」である。①④の校種の表記を逆にしている。",
+      },
+      {
+        type: "text",
+        text: "ウ：③は一致する。①は両箇所とも「探究の見方・考え方」、②は「探究の過程」、④は「探究的な見方・考え方」である。校種の表記と、探究の成果・過程を区別する。",
+      },
     ],
-    source_text: "『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』第3章第2節1（1）第1段落 | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=20",
+    source_text: "『高等学校学習指導要領（平成30年告示）解説 総合的な探究の時間編』第3章第2節1（1）第1段落（原文を抜粋し空欄化して作成） | https://www.mext.go.jp/content/20260115-mxt__kyoiku01_2_9.pdf#page=20",
   },
   {
     question_number: 9,
@@ -354,17 +411,66 @@ questions = [
       { type: "fill_in_quote", text: "「データ構造とアルゴリズム」の「データの型」については，{{①}}などを扱う。「データ構造」については，{{②}}などを扱う。「アルゴリズム」については，具体的な事例を取り上げ，データ構造の選択と効率的なアルゴリズム及びその表記方法について扱う。\n\n「プログラミング」の「プログラム言語の種類と特性」については，目的に応じた適切なプログラミング言語の選択について扱う。「プログラムの作成」については，{{③}}によるプログラムの構造化についても扱う。「プログラムの統合」については，{{④}}でプログラムの動作を確認する実習を取り入れる。" },
     ],
     choices: [
-      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["数値型，文字型，論理型", "配列，リスト，レコード", "関数の定義と使用", "統合の後"] }], correct: false },
-      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["配列，リスト，レコード", "数値型，文字型，論理型", "関数の定義と使用", "統合の前後"] }], correct: false },
-      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["数値型，文字型，論理型", "配列，リスト，レコード", "関数の定義と使用", "統合の前後"] }], correct: true },
-      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["数値型，文字型，論理型", "配列，リスト，レコード", "ライブラリの選択と導入", "統合の前"] }], correct: false },
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["数値型，文字型，論理型", "配列，リスト，レコード", "ライブラリの選択と導入", "統合の後"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["配列，リスト，レコード", "数値型，文字型，論理型", "関数の定義と使用", "統合の前後"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["数値型，文字型，論理型", "配列，リスト，レコード", "関数の定義と使用", "統合の前後"],
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["配列，リスト，レコード", "数値型，文字型，論理型", "ライブラリの選択と導入", "統合の後"],
+          },
+        ],
+        correct: false,
+      },
     ],
     explanation_blocks: [
-      { type: "text", text: "数値型・文字型・論理型はデータの型，配列・リスト・レコードはデータ構造の例である。関数の定義と使用によってプログラムを構造化し，統合の前後で動作を確認する。" },
-      { type: "text", text: "アは④を統合後に限定している。イは①と②を取り違えている。エは③が「関数の定義と使用」，④が「統合の前後」となる。" },
-      { type: "text", text: "作問上の注記：原典の項番参照を具体的な内容名へ展開しているため，「抜粋」ではなく「示された内容に基づく記述」とした。" },
+      {
+        type: "text",
+        text: "アは，③の「ライブラリの選択と導入」が異なる。ここで構造化の方法として挙げるのは関数の定義と使用である。ライブラリの導入とは区別する。④の「統合の後」が異なる。動作確認は統合の前後の双方で行う規定であり，統合後だけではない。",
+      },
+      {
+        type: "text",
+        text: "イは，①の「配列，リスト，レコード」が異なる。数値型・文字型・論理型が型の例であり，配列等は次のデータ構造の例である。②の「数値型，文字型，論理型」が異なる。配列・リスト・レコードがデータ構造の例であり，数値型等はデータの型である。",
+      },
+      {
+        type: "text",
+        text: "ウが示された内容と一致する。①は「数値型，文字型，論理型」，②は「配列，リスト，レコード」，③は「関数の定義と使用」，④は「統合の前後」となる。",
+      },
+      {
+        type: "text",
+        text: "エは，①の「配列，リスト，レコード」が異なる。数値型・文字型・論理型が型の例であり，配列等は次のデータ構造の例である。②の「数値型，文字型，論理型」が異なる。配列・リスト・レコードがデータ構造の例であり，数値型等はデータの型である。③の「ライブラリの選択と導入」が異なる。ここで構造化の方法として挙げるのは関数の定義と使用である。ライブラリの導入とは区別する。④の「統合の後」が異なる。動作確認は統合の前後の双方で行う規定であり，統合後だけではない。",
+      },
     ],
-    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』第3章第7節，第2款第6「情報システムのプログラミング」3（2）イ・ウ，参照先2（2）・（3）・本文413頁 | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=415",
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）』第3章第7節，第2款第6「情報システムのプログラミング」3（2）イ・ウ，参照先2（2）・（3）・本文413頁（原典に基づき編集・空欄化して作成） | https://www.mext.go.jp/content/20230120-mxt_kyoiku02-100002604_03.pdf#page=415",
   },
   {
     question_number: 17,
@@ -375,16 +481,66 @@ questions = [
       { type: "fill_in_quote", text: "ア（ウ）社会や自然などにおける事象をモデル化する方法，シミュレーションを通してモデルを評価し改善する方法について理解することでは，モデル化とシミュレーションを身近な問題を発見し解決する手段として活用するために，実際の事象を{{①}}などにモデル化して表現する方法，モデル化した事象をシミュレーションできるように表現し{{②}}を変えるなどしてシミュレーションする方法，作成したモデルのシミュレーションを通じてモデルを改善する方法を理解するようにする。その際，{{③}}によってシミュレーションの結果や精度が異なる場合があることを理解するようにする。\n\nイ（ウ）目的に応じたモデル化やシミュレーションを適切に行うとともに，その結果を踏まえて問題の適切な解決方法を考えることでは，モデル化とシミュレーションの考え方を様々な場面で活用するために，モデル化とシミュレーションを問題の発見や解決に役立てたり，その結果から問題の適切な解決方法を考えたり選択したりする力を養う。その際，学校や地域の実態及び生徒の状況に応じて，数学科と連携し，不確実な事象を含む{{④}}を扱うことも考えられる。" },
     ],
     choices: [
-      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["図や数式", "条件", "モデルの違い", "確定的モデル"] }], correct: false },
-      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["図や数式", "条件", "モデルの違い", "確率的モデル"] }], correct: true },
-      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["図や数式", "条件", "処理装置の違い", "確率的モデル"] }], correct: false },
-      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["手順や文章", "計算結果", "モデルの違い", "確率的モデル"] }], correct: false },
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["手順や文章", "条件", "モデルの違い", "確定的モデル"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["図や数式", "条件", "モデルの違い", "確率的モデル"],
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["図や数式", "計算結果", "処理装置の違い", "確率的モデル"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["手順や文章", "計算結果", "処理装置の違い", "確定的モデル"],
+          },
+        ],
+        correct: false,
+      },
     ],
     explanation_blocks: [
-      { type: "text", text: "事象を図や数式などにモデル化し，条件を変えてシミュレーションを行う。モデルが異なれば結果や精度も異なる場合があり，不確実な事象を含む確率的モデルも対象となる。" },
-      { type: "text", text: "アの④は「確率的モデル」，ウの③は「モデルの違い」が正しい。エは①が「図や数式」，②が「条件」となる。計算結果を先に変更するのではなく，条件の変更が結果に与える影響を調べる。" },
+      {
+        type: "text",
+        text: "アは，①の「手順や文章」が異なる。原典が事象のモデル表現の例として挙げるのは図や数式である。④の「確定的モデル」が異なる。不確実な事象を含むのは確率的モデルであり，確定的モデルとの取り違えである。",
+      },
+      {
+        type: "text",
+        text: "イが原文と一致する。①は「図や数式」，②は「条件」，③は「モデルの違い」，④は「確率的モデル」となる。",
+      },
+      {
+        type: "text",
+        text: "ウは，②の「計算結果」が異なる。条件を変え，その影響として結果を観察する。結果自体を変更する規定ではない。③の「処理装置の違い」が異なる。同じ事象でもモデルの違いにより結果・精度が変わることを扱う。",
+      },
+      {
+        type: "text",
+        text: "エは，①の「手順や文章」が異なる。原典が事象のモデル表現の例として挙げるのは図や数式である。②の「計算結果」が異なる。条件を変え，その影響として結果を観察する。結果自体を変更する規定ではない。③の「処理装置の違い」が異なる。同じ事象でもモデルの違いにより結果・精度が変わることを扱う。④の「確定的モデル」が異なる。不確実な事象を含むのは確率的モデルであり，確定的モデルとの取り違えである。",
+      },
     ],
-    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第1部，第2章第1節「情報Ⅰ」2（3）ア（ウ）・イ（ウ）・本文33〜34頁 | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=41",
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第1部，第2章第1節「情報Ⅰ」2（3）ア（ウ）・イ（ウ）・本文33〜34頁（原文を抜粋し空欄化して作成） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=41",
   },
   {
     question_number: 18,
@@ -395,16 +551,66 @@ questions = [
       { type: "fill_in_quote", text: "イ 音・音声の編集\n\nここでは，音・音声の編集を取り上げ，音・音声を扱うソフトウェアの特徴，編集技法などの制作と編集に関する知識と技術を扱う。その際，実際に作品を制作したり，編集したりする活動などを通して，{{①}}音源や{{②}}音源とアプリケーションソフトウェアを利用した音や音楽の作成，録音機器などを利用した音・音声の録音・取り込み，{{③}}などを利用した音・音声の編集，{{④}}などについて扱う。また，音・音声の様々なファイル形式について扱うとともに，音声合成や歌声合成などについても触れる。" },
     ],
     choices: [
-      { label: "ア", content_blocks: [{ type: "fill_in_choice", cells: ["PCM（Pulse Code Modulation）", "MIDI（Musical Instrument Digital Interface）", "波形編集ソフトウェア", "ミキシング"] }], correct: true },
-      { label: "イ", content_blocks: [{ type: "fill_in_choice", cells: ["WAV（Waveform Audio File Format）", "MIDI（Musical Instrument Digital Interface）", "波形編集ソフトウェア", "ミキシング"] }], correct: false },
-      { label: "ウ", content_blocks: [{ type: "fill_in_choice", cells: ["PCM（Pulse Code Modulation）", "MIDI（Musical Instrument Digital Interface）", "波形編集ソフトウェア", "ラスタライズ"] }], correct: false },
-      { label: "エ", content_blocks: [{ type: "fill_in_choice", cells: ["PCM（Pulse Code Modulation）", "MIDI（Musical Instrument Digital Interface）", "画像編集ソフトウェア", "ミキシング"] }], correct: false },
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["PCM（Pulse Code Modulation）", "MIDI（Musical Instrument Digital Interface）", "波形編集ソフトウェア", "ミキシング"],
+          },
+        ],
+        correct: true,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["PCM（Pulse Code Modulation）", "MIDI（Musical Instrument Digital Interface）", "音声認識ソフトウェア", "サンプリング"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["WAV（Waveform Audio File Format）", "AAC（Advanced Audio Coding）", "波形編集ソフトウェア", "ミキシング"],
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "fill_in_choice",
+            cells: ["WAV（Waveform Audio File Format）", "AAC（Advanced Audio Coding）", "音声認識ソフトウェア", "サンプリング"],
+          },
+        ],
+        correct: false,
+      },
     ],
     explanation_blocks: [
-      { type: "text", text: "原文はPCM音源とMIDI音源を用いた作成，波形編集ソフトウェアによる編集，ミキシングを挙げている。" },
-      { type: "text", text: "イの①は「PCM」が正しい。WAVは音声データを保存するファイル形式であり，PCMのデータを保存できるが，PCMという符号化方式の名称と同じではない。ウの④は「ミキシング」，エの③は「波形編集ソフトウェア」となる。ミキシングは複数の音を混ぜて音量等を調整する処理，ラスタライズは図形等を画素の集合へ変換する処理である。" },
+      {
+        type: "text",
+        text: "アが原文と一致する。①は「PCM（Pulse Code Modulation）」，②は「MIDI（Musical Instrument Digital Interface）」，③は「波形編集ソフトウェア」，④は「ミキシング」となる。",
+      },
+      {
+        type: "text",
+        text: "イは，③の「音声認識ソフトウェア」が異なる。ここで音・音声を編集する道具として挙げるのは波形編集ソフトウェアである。音声認識の道具とは区別する。④の「サンプリング」が異なる。この列挙で扱う編集処理はミキシングであり，サンプリングへ置き換えない。",
+      },
+      {
+        type: "text",
+        text: "ウは，①の「WAV（Waveform Audio File Format）」が異なる。原典が挙げるのはPCM音源である。WAVはファイル形式の名称であり，PCMという符号化方式の名称との取り違えである。②の「AAC（Advanced Audio Coding）」が異なる。音や音楽の作成ではMIDI音源とアプリケーションソフトウェアの利用を挙げる。AACへの置換は原文と異なる。",
+      },
+      {
+        type: "text",
+        text: "エは，①の「WAV（Waveform Audio File Format）」が異なる。原典が挙げるのはPCM音源である。WAVはファイル形式の名称であり，PCMという符号化方式の名称との取り違えである。②の「AAC（Advanced Audio Coding）」が異なる。音や音楽の作成ではMIDI音源とアプリケーションソフトウェアの利用を挙げる。AACへの置換は原文と異なる。③の「音声認識ソフトウェア」が異なる。ここで音・音声を編集する道具として挙げるのは波形編集ソフトウェアである。音声認識の道具とは区別する。④の「サンプリング」が異なる。この列挙で扱う編集処理はミキシングであり，サンプリングへ置き換えない。",
+      },
     ],
-    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第2部，第2章第10節，第2「内容とその取扱い」2（4）イ・本文158〜159頁 | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=165\nMicrosoft Learn「リソース交換ファイル形式（RIFF）」 | https://learn.microsoft.com/ja-jp/windows/win32/xaudio2/resource-interchange-file-format--riff-",
+    source_text: "文部科学省『高等学校学習指導要領（平成30年告示）解説 情報編』第2部，第2章第10節，第2「内容とその取扱い」2（4）イ・本文158〜159頁（原文を抜粋し空欄化して作成） | https://www.mext.go.jp/content/1407073_11_1_2.pdf#page=165\nMicrosoft Learn「リソース交換ファイル形式（RIFF）」 | https://learn.microsoft.com/ja-jp/windows/win32/xaudio2/resource-interchange-file-format--riff-",
   },
   {
     question_number: 19,

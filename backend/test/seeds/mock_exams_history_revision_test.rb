@@ -23,7 +23,11 @@ class MockExamsHistoryRevisionTest < ActionDispatch::IntegrationTest
     assert_equal PRIORITY.sort, DATA.fetch("priority_keys").sort
     outside = @all.reject { |entry| KEYS.include?(key(entry)) }
     assert_equal 979, outside.size
-    digest_input = outside.map { |entry| [key(entry), payload_digest(entry)] }.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
+    # Later approved Q3..19 changes are checked independently, without rebasing
+    # this original history-only approval or exempting unknown current edits.
+    digest_input = outside.map do |entry|
+      [key(entry), PriorityRevision20261017.historical_payload_digest(key(entry), entry[:exam_number], entry[:attributes])]
+    end.sort.map { |id, digest| "#{id}|#{digest}" }.join("\n")
     assert_equal DATA.fetch("unchanged_979_digest"), Digest::SHA256.hexdigest(digest_input)
     @entries.each do |entry|
       id = key(entry)

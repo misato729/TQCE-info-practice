@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/priority_revision_20261017"
 require "digest"
 
 class MockExams36To40FoundationsLawTest < ActionDispatch::IntegrationTest
@@ -17,7 +18,10 @@ class MockExams36To40FoundationsLawTest < ActionDispatch::IntegrationTest
     assert_equal 25, @entries.size
     assert_equal APPROVED.fetch("sections").keys.sort, @entries.map { |e| key(e) }.sort
     @entries.each do |entry|
-      id, question = key(entry), entry.fetch(:attributes)
+      id = key(entry)
+      # Keep the original Markdown approval immutable. Current 38-5 is guarded
+      # and source-checked by the later priority revision tests, not rebaselined.
+      question = PriorityRevision20261017.historical_attributes(id, entry.fetch(:attributes))
       draft = APPROVED.fetch("sections").fetch(id)
       answer_match = draft.match(/^正答：([アイウエ])$/)
       head, tail = draft[0...answer_match.begin(0)], draft[answer_match.end(0)..]

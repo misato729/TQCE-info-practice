@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/priority_revision_20261017"
 
 class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
   EXAMS = (21..25).to_a.freeze
@@ -51,7 +52,7 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
     end
     actual_digests = @entries.select { |row| row[:attributes][:question_number] <= 10 }.to_h do |row|
       id = key(row)
-      digest = QuestionPayload.digest(QuestionPayload.from_seed(row[:exam_number], row[:attributes]))
+      digest = PriorityRevision20261017.historical_payload_digest(id, row[:exam_number], row[:attributes])
       [id, CURRICULUM_REVISION_BASELINE.fetch(id, digest)]
     end
     assert_equal guidance.fetch("existing_1_to_10_digests"), actual_digests
