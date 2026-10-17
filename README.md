@@ -153,6 +153,8 @@ bin/rails db:prepare && bin/rails db:seed
 
 そのため、Fly.io のGitHub自動デプロイを設定している場合は、seedファイルを含む変更をpushすると、アプリのリリース前に本番DBへ問題データが反映されます。`release_command` が失敗した場合は新しいリリースへ切り替わりません。
 
+全1,000問のseedを含むDB準備・リリース処理に約7分25秒かかった実行ログを確認したため、`backend/fly.toml` の `[deploy]` で `release_command_timeout = '15m'` を指定しています。これはリリース処理の完了を待つ時間の延長であり、seedの自動実行や検証を省略する設定ではありません。[Fly.io公式仕様](https://docs.fly.io/reference/configuration#run-one-off-commands-before-releasing-a-deployment)
+
 ローカルDBへ問題データを反映する場合は、コンテナ起動後にプロジェクトルートで以下を実行します。
 
 ```sh
@@ -180,7 +182,17 @@ https://tqce-info-practice.fly.dev
 
 ### release_command が失敗する場合
 
-`release_command failed` が出た場合は、ほとんどの場合 `SECRET_KEY_BASE` または `DATABASE_URL` の未設定、あるいはDB接続エラーです。以下で secrets が入っているか確認してください。
+`release_command failed` は、処理の異常終了だけでなく、完了待ちのタイムアウトでも発生します。まず該当リリース用マシンのログで、起動時刻、終了時刻、終了コードを確認してください。マシンIDが分かる場合は、そのマシンに絞ってログを取得できます。
+
+```sh
+fly logs -a tqce-info-practice --machine <machine-id> --no-tail
+```
+
+待ち時間を超えた後に終了コード0が記録されている場合は、デプロイが失敗扱いでもDB更新が完了している可能性があります。アプリのデプロイ結果とDBの反映状況は別に確認してください。先の処理が実行中のまま、別のデプロイやseedを重ねないでください。
+
+処理時間超過には `release_command_timeout` を使用します。まだ時間が足りない場合は、DB接続・ロック待ちやseedの所要時間も調べ、無制限に待つ設定やseedを省略する方法で回避しないでください。再デプロイ時に `--release-command-timeout` が明示されている場合は、その値も確認してください。
+
+認証情報の未設定やDB接続エラーが記録されている場合は、以下で必要なsecretsの名前が存在するか確認します。値や接続文字列をログへ出力しないでください。
 
 ```sh
 fly secrets list -a tqce-info-practice

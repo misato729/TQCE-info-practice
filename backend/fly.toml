@@ -11,6 +11,7 @@ primary_region = 'nrt'
 
 [deploy]
   release_command = "/bin/sh -c './bin/rails db:prepare && ./bin/rails db:seed'"
+  release_command_timeout = '15m'
 
 [env]
   RACK_ENV = 'production'
