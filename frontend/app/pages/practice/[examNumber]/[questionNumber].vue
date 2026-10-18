@@ -572,11 +572,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
             </ul>
           </div>
 
-          <p class="ai-note">
-            <UIcon name="i-lucide-triangle-alert" />
-            生成AIで作成した問題には誤りが含まれる可能性があります。解説と根拠資料もあわせて確認してください。
-          </p>
-
           <div v-if="completed" class="completed-message">
             <strong>{{ completionHeading }}</strong>
             <p>{{ completionMessage }}</p>
@@ -684,8 +679,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .correct-answer > span { color: var(--teal-dark); font-weight: 900; }
 .source-section ul { display: grid; gap: 8px; margin: 0; padding-left: 1.2em; color: #506168; line-height: 1.7; }
 .source-section a { color: var(--teal-dark); font-weight: 700; text-underline-offset: 3px; }
-.ai-note { display: flex; align-items: flex-start; gap: 8px; margin: 24px 0 0; padding: 13px 15px; background: #fff7dc; color: #685715; font-size: 13px; line-height: 1.65; }
-.ai-note :deep(svg) { flex: 0 0 auto; margin-top: 2px; }
 .next-button { margin-top: 24px; }
 .completed-message { margin-top: 24px; padding: 18px; border: 1px solid var(--line); background: #fff; }
 .completed-message p { color: var(--muted); }

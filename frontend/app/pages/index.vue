@@ -336,9 +336,9 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           <NuxtLink class="text-link" to="/premium">有料会員について</NuxtLink>
         </article>
         <article>
-          <UIcon name="i-lucide-shield-alert" />
+          <UIcon name="i-lucide-book-open" />
           <h3>根拠資料も確認</h3>
-          <p>生成AIで作成した問題には誤りが含まれる可能性があります。解説と根拠資料を確認してください。</p>
+          <p>各問題の解説と、出題の根拠となる資料を確認できます。</p>
         </article>
       </div>
     </section>

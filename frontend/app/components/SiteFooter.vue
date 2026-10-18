@@ -12,7 +12,6 @@ const { apiStatus } = useApiStatus()
         </NuxtLink>
         <div class="footer-copy">
           <strong>高等学校（情報）教員資格認定試験　予想問題演習サイト</strong>
-          <span>生成AIで作成した問題には誤りが含まれる可能性があります。</span>
         </div>
         <nav class="footer-links" aria-label="サイトポリシー">
           <NuxtLink to="/privacy-policy">プライバシーポリシー</NuxtLink>
