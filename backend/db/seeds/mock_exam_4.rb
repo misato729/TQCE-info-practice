@@ -42,18 +42,72 @@ questions = [
     major_category_code: "teacher_education",
     category_code: "education_foundations",
     content_blocks: [
-      text_block.call("ペスタロッチ（Pestalozzi, J. H.）の教育思想と実践に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。"),
+      {
+        type: "text",
+        text: "ペスタロッチ（Pestalozzi, J. H.）の教育思想と実践に関する記述として、最も適切なものを、次のア～エの中から一つ選んで記号で答えなさい。",
+      },
     ],
     choices: [
-      text_choice.call("ア", "社会の人為的な慣習から子供を遠ざけ、発達の自然な順序に従う消極教育を唱えた。『エミール』では、青年期まで家庭教師が一人の子供を導く構想を示し、感覚、理性、道徳性の発達を年齢段階に即して論じた。"),
-      text_choice.call("イ", "教育の目的を道徳的品性の形成に置き、既有の観念群が新しい観念を取り入れる統覚を重視した。教授を明瞭、連合、系統、方法の段階として捉える考え方は、後にヘルバルト派によって五段階教授法へ展開された。"),
-      text_choice.call("ウ", "子供の内にある神的な本質が自己活動を通して展開すると捉え、遊びを幼児期の主要な活動に位置付けた。幼稚園を創設し、球や立方体などからなる恩物を教育遊具として考案した。"),
-      text_choice.call("エ", "教育を頭・心・手の諸力の調和的発達として捉え、具体物の直観から学ぶ方法を重視した。貧困児の教育に取り組み、イヴェルドンの学園では知的教育と道徳的・実際的教育を結び付けようとした。", true),
+      {
+        label: "ア",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ペスタロッチは，貧困児の教育に取り組み，直観に基づく認識を教授の出発点とした。数・形・語という三要素は，知的・道徳的・身体的な諸力の調和的発達を表す名称として整理したものである。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "イ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ペスタロッチは，『ゲルトルート教授法』で教育方法を体系化し，自己活動を通した学習を重視した。認識の過程では，まず言葉による定義を明確に理解させ，それを具体物の直観によって確かめさせる順序を基礎とした。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "ウ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "ペスタロッチは，家庭における親子の関係や生活を人間形成の基礎とし，貧しい子供の教育に取り組んだ。また，主著『人間の教育』において，幼児の遊びを神的な本質の表現として論じた。",
+          },
+        ],
+        correct: false,
+      },
+      {
+        label: "エ",
+        content_blocks: [
+          {
+            type: "text",
+            text: "教育を頭・心・手の諸力の調和的発達として捉え、具体物の直観から学ぶ方法を重視した。貧困児の教育に取り組み、イヴェルドンの学園では知的教育と道徳的・実際的教育を結び付けようとした。",
+          },
+        ],
+        correct: true,
+      },
     ],
     explanation_blocks: [
-      text_block.call("エが適切です。ペスタロッチは、知的・道徳的・身体的な諸力を調和的に育てる教育を構想し、具体的な事物の直観から出発する教授を重視しました。また、貧困児の教育やイヴェルドンの学園での実践で知られます。アは誤りです。消極教育と『エミール』はルソーに対応します。イは誤りです。統覚、道徳的品性、形式的教授段階はヘルバルト及びヘルバルト派に対応します。ウは誤りです。幼稚園と恩物、遊びを中心とする幼児教育はフレーベルに対応します。"),
+      {
+        type: "text",
+        text: "ア：誤り。直観と貧困児教育はペスタロッチに対応するが，数・形・語は直観に基づく認識の要素である。諸力の調和的発達を表す頭・心・手と，同じ三要素であるかのように扱わない。",
+      },
+      {
+        type: "text",
+        text: "イ：誤り。著作と自己活動の重視は適切だが，定義と直観の順序が逆である。具体的な事物の直観を出発点とし，数・形・語に関わる自己活動を援助しながら，明瞭な概念による把握へ導こうとした。",
+      },
+      {
+        type: "text",
+        text: "ウ：誤り。家庭的関係と貧困児教育はペスタロッチに対応する。『人間の教育』を著し，遊びを内的なもの・神性の表現として論じたのはフレーベルである。",
+      },
+      {
+        type: "text",
+        text: "エ：適切。頭・心・手の調和的発達，直観から出発する教授，貧困児教育やイヴェルドンの学園での実践はペスタロッチに対応する。数・形・語は，この教育全体の目的と区別した認識・教授の基礎として捉える。",
+      },
     ],
-    source_text: "白石崇人『資料から考える教育原理』第10章「教育方法とは何か？―ペスタロッチーの教育思想―」（広島文教女子大学、2017年） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n玉川学園『玉川豆知識 No.136 小原國芳がペスタロッチ賞を受賞』1 ペスタロッチ | https://www.tamagawa.jp/introduction/tamagawa_trivia/tamagawa_trivia-136.html\nStanford Encyclopedia of Philosophy『Jean-Jacques Rousseau』5 Education | https://plato.stanford.edu/entries/rousseau/\nEncyclopaedia Britannica『Johann Friedrich Herbart』 | https://www.britannica.com/biography/Johann-Friedrich-Herbart\nFriedrich-Fröbel-Museum “Froebel’s theory of education” | https://froebel-museum.de/pages/en/friedrich-froebel/froebel92s-theory.php?lang=EN",
+    source_text: "白石崇人『資料から考える教育原理』（広島文教女子大学、2017年）第10章117〜120頁（実践・直観・概念形成）、第11章129〜131頁（フレーベル） | https://h-bunkyo.repo.nii.ac.jp/record/1355/files/20Siryokyoiku.pdf\n玉川学園『玉川豆知識 No.136 小原國芳がペスタロッチ賞を受賞』1「ペスタロッチ」（頭・心・手の調和） | https://www.tamagawa.jp/introduction/tamagawa_trivia/tamagawa_trivia-136.html\n筑波大学教育学系・附属図書館『近代教育学の源流』IV「教育学と家庭・学校・社会―ペスタロッチー・フィヒテ・フレーベル―」（直観・数形語・著作） | https://www.tulips.tsukuba.ac.jp/exhibition/kindai-kyoiku-genryu/chap4.html",
   },
   {
     question_number: 3,

@@ -37,7 +37,7 @@ const fillInParts = (text = ''): FillInPart[] => (
     })
 )
 
-const blankLabels = ['①', '②', '③', '④', '⑤']
+const blankLabels = ['①', '②', '③', '④', '⑤', '⑥']
 </script>
 
 <template>

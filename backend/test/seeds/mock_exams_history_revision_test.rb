@@ -10,7 +10,7 @@ class MockExamsHistoryRevisionTest < ActionDispatch::IntegrationTest
   setup do
     @all = QuestionSeedSync.collect do
       (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
-    end
+    end.map { |entry| FinalReview20261018.historical_entry(entry) }
     @entries = @all.select { |entry| KEYS.include?(key(entry)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end

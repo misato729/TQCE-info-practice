@@ -444,7 +444,7 @@ questions = [
         text: "エ：自立と依存が葛藤する点は適切です。しかし，その中心を親と同じ判断基準の定着とする部分が誤りです。親の価値観を捉え直し，自分自身の価値観や判断を獲得することが関わります。",
       },
     ],
-    source_text: "人間環境大学『対人関係の心理学』・青年期の対人関係・第9回 細目①『親からの自立』・自立欲求と依存欲求の葛藤，反抗と友人関係 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PS40101&jn=2022\n人間環境大学『発達心理学』・幼児期Ⅱ・幼児期Ⅱ 細目①『自己概念の発達』・第一次反抗期 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PSC22001&jn=2026\n人間環境大学『教育・学校心理学』・第13回 発達（3）・細目①・第二反抗期，心理的離乳と依存／自立の葛藤 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PSC22101&jn=2022\n片瀬一男『モラトリアム人間の就職事情』・8頁『モラトリアムの変容言説』・エリクソンの心理社会的モラトリアムを，役割実験と職業等の成人役割を見出すための猶予期間として説明（東北学院大学教養学部論集 第156号） | https://www.tohoku-gakuin.ac.jp/research/journal/bk2010/pdf/bk2010no07_02.pdf",
+    source_text: "人間環境大学『対人関係論』・青年期の対人関係・第9回 細目①『親からの自立』・自立欲求と依存欲求の葛藤，反抗と友人関係 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PS40101&jn=2022\n人間環境大学『発達心理学』・幼児期Ⅱ 細目①『自己概念の発達』・第一次反抗期 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PSC22001&jn=2026\n人間環境大学『教育・学校心理学』・第13回 発達（3）・細目①・第二反抗期，心理的離乳と依存／自立の葛藤 | https://irweb.kawahara.ac.jp/uhe_syllabus/SyllabusDetail.aspx?jc=PSC22101&jn=2022\n片瀬一男『モラトリアム人間の就職事情』・8頁『モラトリアムの変容言説』・エリクソンの心理社会的モラトリアムを，役割実験と職業等の成人役割を見出すための猶予期間として説明（東北学院大学教養学部論集 第156号） | https://www.tohoku-gakuin.ac.jp/research/journal/bk2010/pdf/bk2010no07_02.pdf",
   },
   {
     question_number: 14,

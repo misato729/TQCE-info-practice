@@ -171,6 +171,43 @@ class Api::V1::Admin::QuestionsTest < ActionDispatch::IntegrationTest
     assert_not AnswerHistory.exists?(history.id)
   end
 
+  test "新規六空欄のブロックを保存再取得でき列数不一致の公開だけを拒否する" do
+    labels = %w[① ② ③ ④ ⑤ ⑥]
+    payload = question_payload(exam_number: 2, question_number: 1)
+    payload[:content_blocks] = [
+      { type: "fill_in_text", text: "空欄①〜⑥の語句を選びなさい。" },
+      { type: "fill_in_quote", text: labels.map { |label| "{{#{label}}}" }.join("と") },
+    ]
+    payload[:choices].each_with_index do |choice, index|
+      choice[:content_blocks] = [{ type: "fill_in_choice", cells: labels.map { |label| "語句#{index + 1}・#{label}" } }]
+    end
+    post "/api/v1/admin/questions", params: { question: payload }, headers: @headers, as: :json
+    assert_response :created
+    id = response.parsed_body.dig("data", "id")
+    get "/api/v1/admin/questions/#{id}", headers: @headers
+    assert_response :success
+    assert_equal payload[:content_blocks].as_json, response.parsed_body.dig("data", "content_blocks")
+    assert_equal payload[:choices].map { |choice| choice[:content_blocks].as_json }, response.parsed_body.dig("data", "choices").map { |choice| choice.fetch("content_blocks") }
+
+    (2..20).each { |number| create_question(exam_number: 2, question_number: number) }
+    payload[:publication_status] = "published"
+    invalid = payload.deep_dup
+    invalid[:choices].last[:content_blocks].first[:cells].pop
+    patch "/api/v1/admin/questions/#{id}", params: { question: invalid }, headers: @headers, as: :json
+    assert_response :unprocessable_content
+    assert_equal "draft", Question.find(id).publication_status
+    assert_includes response.parsed_body.dig("error", "message"), "セル数"
+
+    patch "/api/v1/admin/questions/#{id}", params: { question: payload }, headers: @headers, as: :json
+    assert_response :success
+    assert_equal "published", response.parsed_body.dig("data", "publication_status")
+    get "/api/v1/questions/#{id}"
+    assert_response :success
+    assert_equal 6, response.parsed_body.dig("data", "choices", 0, "content_blocks", 0, "cells").size
+    assert_not response.parsed_body.fetch("data").key?("explanation_blocks")
+    assert response.parsed_body.dig("data", "choices").none? { |choice| choice.key?("is_correct") }
+  end
+
   private
 
   def create_question(exam_number:, question_number:, publication_status: "draft")

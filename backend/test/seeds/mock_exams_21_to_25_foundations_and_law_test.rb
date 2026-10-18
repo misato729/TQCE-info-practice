@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/final_review_20261018"
 
 class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
   EXAMS = (21..25).to_a.freeze
@@ -52,6 +53,9 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
 
       next if LAW_AUDIT_REVISIONS.include?(key)
 
+      # Keep the original approval immutable. Only the exact reviewed 24-1
+      # payload may delegate; raw current content has its own final-review test.
+      attributes = FinalReview20261018.historical_attributes(key, attributes)
       approved = approved_sections.fetch(key)
       head, tail = approved.split(/^正答：[アイウエ].*$/, 2)
       assert_equal attributes[:choices].find { |choice| choice[:correct] }[:label], approved[/^正答：([アイウエ])/, 1]

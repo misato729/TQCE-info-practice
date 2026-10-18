@@ -1,4 +1,5 @@
 require "test_helper"
+require_relative "../support/final_review_20261018"
 
 class MockExams31To35HistoryTest < ActionDispatch::IntegrationTest
   EXAMS = (31..35).to_a.freeze
@@ -25,7 +26,10 @@ class MockExams31To35HistoryTest < ActionDispatch::IntegrationTest
     assert_equal "document/模試31〜35_問1〜2草案_2026-10-14.md", APPROVED.fetch("source_path")
 
     @entries.each do |entry|
-      id, question = key(entry), entry.fetch(:attributes)
+      id = key(entry)
+      # Preserve the original ten-question approval. The exact 31-1 revision
+      # is independently checked as raw current data by the final-review test.
+      question = FinalReview20261018.historical_attributes(id, entry.fetch(:attributes))
       draft = APPROVED.fetch("sections").fetch(id)
       answer_line = draft.match(/^正答：([アイウエ])$/)
       assert answer_line, id

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ContentBlock, ContentBlockType } from '~/types/adminQuestion'
+import { createAdminContentBlock, FILL_IN_CHOICE_COLUMN_COUNTS, FILL_IN_CHOICE_LABELS, getAdminContentBlockOptions, resizeFillInChoiceCells } from '~/utils/adminContentBlocks'
 
 const props = defineProps<{
   context: 'question' | 'explanation' | 'choice'
@@ -7,30 +8,11 @@ const props = defineProps<{
 
 const blocks = defineModel<ContentBlock[]>({ required: true })
 const selectedType = ref<ContentBlockType>('text')
+const editorId = useId()
+const fieldId = (field: string, blockIndex: number, cellIndex?: number) => `${editorId}-${field}-${blockIndex}${cellIndex === undefined ? '' : `-${cellIndex}`}`
+const retainedChoiceCells = new WeakMap<ContentBlock, string[]>()
 
-const typeOptions = computed(() => {
-  if (props.context === 'choice') {
-    return [
-      { value: 'text', label: '通常文' },
-      { value: 'table', label: '表' },
-    ] as const
-  }
-  if (props.context === 'explanation') {
-    return [
-      { value: 'text', label: '通常文' },
-      { value: 'quote', label: '枠付き引用文' },
-      { value: 'table', label: '表' },
-      { value: 'code', label: 'プログラム' },
-    ] as const
-  }
-  return [
-    { value: 'text', label: '通常文' },
-    { value: 'quote', label: '枠付き引用文' },
-    { value: 'table', label: '表' },
-    { value: 'code', label: 'プログラム' },
-    { value: 'code_group', label: 'プログラム比較' },
-  ] as const
-})
+const typeOptions = computed(() => getAdminContentBlockOptions(props.context))
 
 watch(typeOptions, (options) => {
   if (!options.some(option => option.value === selectedType.value)) selectedType.value = 'text'
@@ -47,17 +29,20 @@ const blockLabel = (type: ContentBlockType) => ({
   fill_in_choice: '穴埋め選択肢',
 }[type])
 
-const createBlock = (type: ContentBlockType): ContentBlock => {
-  if (type === 'table') return { type, headers: ['見出し1', '見出し2'], rows: [['', '']] }
-  if (type === 'code') return { type, title: '', code: '' }
-  if (type === 'code_group') return { type, items: [{ title: 'プログラムA', code: '' }, { title: 'プログラムB', code: '' }] }
-  if (type === 'quote') return { type, text: '', source: '' }
-  if (type === 'fill_in_choice') return { type, cells: ['', '', ''] }
-  return { type, text: '' }
+const addBlock = () => {
+  blocks.value = [...blocks.value, createAdminContentBlock(selectedType.value)]
 }
 
-const addBlock = () => {
-  blocks.value = [...blocks.value, createBlock(selectedType.value)]
+const resizeChoiceCells = (block: ContentBlock, columnCount: number) => {
+  const resized = resizeFillInChoiceCells(block.cells, columnCount, retainedChoiceCells.get(block))
+  retainedChoiceCells.set(block, resized.retainedCells)
+  block.cells = resized.cells
+}
+
+const updateChoiceCell = (block: ContentBlock, cellIndex: number, value: string) => {
+  const cells = [...(block.cells ?? ['', '', ''])]
+  cells[cellIndex] = value
+  block.cells = cells
 }
 
 const removeBlock = (index: number) => {
@@ -115,39 +100,51 @@ const removeCodeItem = (block: ContentBlock, index: number) => {
       <div class="block-card-body">
         <template v-if="['text', 'fill_in_text', 'fill_in_quote'].includes(block.type)">
           <div class="admin-field">
-            <label :for="`block-text-${index}`">文章</label>
-            <textarea :id="`block-text-${index}`" v-model="block.text" required :placeholder="block.type.startsWith('fill_in_') ? '空欄は {{①}} の形式で入力します' : '表示する文章を入力します'" />
+            <label :for="fieldId('block-text', index)">文章</label>
+            <textarea :id="fieldId('block-text', index)" v-model="block.text" required :placeholder="block.type.startsWith('fill_in_') ? '空欄は {{①}} の形式で入力します' : '表示する文章を入力します'" />
           </div>
         </template>
 
         <template v-else-if="block.type === 'quote'">
-          <div class="admin-field"><label :for="`quote-text-${index}`">引用文</label><textarea :id="`quote-text-${index}`" v-model="block.text" required /></div>
-          <div class="admin-field compact-field"><label :for="`quote-source-${index}`">引用元（任意）</label><input :id="`quote-source-${index}`" v-model="block.source" type="text"></div>
+          <div class="admin-field"><label :for="fieldId('quote-text', index)">引用文</label><textarea :id="fieldId('quote-text', index)" v-model="block.text" required /></div>
+          <div class="admin-field compact-field"><label :for="fieldId('quote-source', index)">引用元（任意）</label><input :id="fieldId('quote-source', index)" v-model="block.source" type="text"></div>
         </template>
 
         <template v-else-if="block.type === 'table'">
-          <div class="admin-field"><label :for="`table-headers-${index}`">見出し</label><input :id="`table-headers-${index}`" :value="(block.headers ?? []).join('\t')" type="text" required @input="updateHeaders(block, ($event.target as HTMLInputElement).value)"><small>列はTabキーで区切ります。</small></div>
-          <div class="admin-field"><label :for="`table-rows-${index}`">セル</label><textarea :id="`table-rows-${index}`" :value="rowsText(block)" required @input="updateRows(block, ($event.target as HTMLTextAreaElement).value)" /><small>列はTab、行は改行で区切ります。</small></div>
+          <div class="admin-field"><label :for="fieldId('table-headers', index)">見出し</label><input :id="fieldId('table-headers', index)" :value="(block.headers ?? []).join('\t')" type="text" required @input="updateHeaders(block, ($event.target as HTMLInputElement).value)"><small>列はTabキーで区切ります。</small></div>
+          <div class="admin-field"><label :for="fieldId('table-rows', index)">セル</label><textarea :id="fieldId('table-rows', index)" :value="rowsText(block)" required @input="updateRows(block, ($event.target as HTMLTextAreaElement).value)" /><small>列はTab、行は改行で区切ります。</small></div>
         </template>
 
         <template v-else-if="block.type === 'code'">
-          <div class="admin-field compact-field"><label :for="`code-title-${index}`">タイトル（任意）</label><input :id="`code-title-${index}`" v-model="block.title" type="text"></div>
-          <div class="admin-field"><label :for="`code-body-${index}`">プログラム</label><textarea :id="`code-body-${index}`" v-model="block.code" class="code-input" required spellcheck="false" /></div>
+          <div class="admin-field compact-field"><label :for="fieldId('code-title', index)">タイトル（任意）</label><input :id="fieldId('code-title', index)" v-model="block.title" type="text"></div>
+          <div class="admin-field"><label :for="fieldId('code-body', index)">プログラム</label><textarea :id="fieldId('code-body', index)" v-model="block.code" class="code-input" required spellcheck="false" /></div>
         </template>
 
         <template v-else-if="block.type === 'code_group'">
           <div class="code-item-list">
             <section v-for="(item, itemIndex) in block.items" :key="itemIndex" class="code-item">
               <div class="code-item-head"><strong>比較 {{ itemIndex + 1 }}</strong><button type="button" :disabled="(block.items?.length ?? 0) <= 2" @click="removeCodeItem(block, itemIndex)"><UIcon name="i-lucide-x" />削除</button></div>
-              <div class="admin-field compact-field"><label :for="`group-title-${index}-${itemIndex}`">タイトル</label><input :id="`group-title-${index}-${itemIndex}`" v-model="item.title" type="text" required></div>
-              <div class="admin-field"><label :for="`group-code-${index}-${itemIndex}`">プログラム</label><textarea :id="`group-code-${index}-${itemIndex}`" v-model="item.code" class="code-input" required spellcheck="false" /></div>
+              <div class="admin-field compact-field"><label :for="fieldId('group-title', index, itemIndex)">タイトル</label><input :id="fieldId('group-title', index, itemIndex)" v-model="item.title" type="text" required></div>
+              <div class="admin-field"><label :for="fieldId('group-code', index, itemIndex)">プログラム</label><textarea :id="fieldId('group-code', index, itemIndex)" v-model="item.code" class="code-input" required spellcheck="false" /></div>
             </section>
           </div>
           <button class="add-code-button" type="button" @click="addCodeItem(block)"><UIcon name="i-lucide-plus" />比較するプログラムを追加</button>
         </template>
 
         <template v-else-if="block.type === 'fill_in_choice'">
-          <div class="admin-field"><label :for="`fill-choice-${index}`">空欄ごとの語句</label><input :id="`fill-choice-${index}`" :value="(block.cells ?? []).join('\t')" type="text" required @input="block.cells = ($event.target as HTMLInputElement).value.split('\t')"><small>①〜の順にTabキーで区切ります。</small></div>
+          <div class="admin-field compact-field">
+            <label :for="fieldId('fill-choice-columns', index)">空欄数</label>
+            <select :id="fieldId('fill-choice-columns', index)" :value="block.cells?.length ?? 3" @change="resizeChoiceCells(block, Number(($event.target as HTMLSelectElement).value))">
+              <option v-for="columnCount in FILL_IN_CHOICE_COLUMN_COUNTS" :key="columnCount" :value="columnCount">{{ columnCount }}個</option>
+            </select>
+          </div>
+          <fieldset class="fill-choice-fields">
+            <legend>空欄ごとの語句</legend>
+            <div v-for="(label, cellIndex) in FILL_IN_CHOICE_LABELS.slice(0, block.cells?.length ?? 3)" :key="label" class="admin-field">
+              <label :for="fieldId('fill-choice-cell', index, cellIndex)">{{ label }}</label>
+              <input :id="fieldId('fill-choice-cell', index, cellIndex)" :value="block.cells?.[cellIndex] ?? ''" type="text" @input="updateChoiceCell(block, cellIndex, ($event.target as HTMLInputElement).value)">
+            </div>
+          </fieldset>
         </template>
       </div>
     </article>
@@ -176,6 +173,9 @@ const removeCodeItem = (block: ContentBlock, index: number) => {
 .block-card-body { display: grid; gap: 14px; padding: 15px; }
 .block-card-body .admin-field + .admin-field { margin-top: 0; }
 .compact-field textarea { min-height: 80px; }
+.fill-choice-fields { min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; border: 0; }
+.fill-choice-fields legend { margin-bottom: 8px; color: var(--admin-text); font-size: 13px; font-weight: 700; }
+.fill-choice-fields .admin-field { min-width: 0; }
 .code-input { min-height: 150px !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; font-size: 13px !important; tab-size: 2; }
 .code-item-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .code-item { display: grid; gap: 12px; padding: 13px; border: 1px solid var(--admin-line); border-radius: 5px; }
@@ -189,6 +189,7 @@ const removeCodeItem = (block: ContentBlock, index: number) => {
 .add-block-row button { min-height: 35px; display: inline-flex; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid var(--admin-line-strong); border-radius: 4px; background: var(--admin-surface-3); color: var(--admin-text); font-size: 12px; font-weight: 800; cursor: pointer; }
 @media (max-width: 700px) {
   .code-item-list { grid-template-columns: 1fr; }
+  .fill-choice-fields { grid-template-columns: 1fr; }
   .add-block-row { align-items: stretch; flex-direction: column; }
 }
 </style>
