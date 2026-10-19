@@ -3,6 +3,7 @@ module UserPayload
 
   def call(user)
     membership = user.membership
+    verification_grant = user.verification_access_grant
     {
       id: user.id,
       name: user.name,
@@ -15,6 +16,7 @@ module UserPayload
         purchased_at: membership&.activated_at&.iso8601,
         expires_at: nil,
       },
+      verification_access: verification_grant&.active? ? { expires_at: verification_grant.expires_at.iso8601 } : nil,
       created_at: user.created_at.iso8601,
     }
   end

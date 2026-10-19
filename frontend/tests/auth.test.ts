@@ -102,6 +102,27 @@ test('initial user request hydrates favorites once and mutations only send PUT o
   assert.deepEqual(calls, [['/api/v1/me', undefined], ['/api/v1/questions/23/favorite', 'PUT'], ['/api/v1/questions/23/favorite', 'DELETE']])
 })
 
+test('verification access uses the server entitlement without pretending a purchase', async () => {
+  const calls: string[] = []
+  const verification = {
+    ...user,
+    paid_content_access: true,
+    verification_access: { expires_at: '2026-10-20T00:00:00Z' },
+    favorite_questions: [{ id: 61, exam_number: 6, question_number: 1 }],
+  }
+  const { auth } = createAuth('verification-token', async (path) => {
+    calls.push(path)
+    return { data: verification }
+  })
+  await auth.ensureCurrentUser()
+  assert.equal(auth.user.value?.role, 'user')
+  assert.equal(auth.user.value?.membership.status, 'free')
+  assert.equal(auth.user.value?.membership.purchased_at, null)
+  assert.equal(useDemoFavorites().canUseFavorites.value, true)
+  assert.equal(useDemoFavorites().isFavoriteAt(6, 1), true)
+  assert.deepEqual(calls, ['/api/v1/me'])
+})
+
 test('anonymous and free sessions never request favorites', async () => {
   let requests = 0
   const { auth } = createAuth(null, async () => { requests += 1; return { data: user } })

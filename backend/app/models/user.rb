@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :payments, dependent: :nullify
   has_one :membership, dependent: :destroy
+  has_one :verification_access_grant, dependent: :destroy
 
   before_validation :normalize_email
 
@@ -18,7 +19,7 @@ class User < ApplicationRecord
   validates :role, inclusion: { in: MasterData.values(MasterData::USER_ROLES) }
 
   def paid_content_access?
-    role == "admin" || membership&.status == "active"
+    role == "admin" || membership&.status == "active" || verification_access_grant&.active? || false
   end
 
   private

@@ -60,6 +60,19 @@ Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTE
 
 ローカルでは `STRIPE_LIVEMODE=false` を使用します。本番では本番用のキー、Price、Webhook署名シークレットにそろえて `STRIPE_LIVEMODE=true` とし、テスト環境の値と混在させないでください。カード番号等はStripe Checkoutが取り扱い、本アプリのDBには保存しません。
 
+## 本番確認用の期限付き資格
+
+購入済みの有料会員資格と区別するため、運用確認には `verification_access_grants` を使います。決済記録やStripe IDを作らず、最長7日で失効します。アカウント画面には検証用であることと期限を表示し、一般会員を管理者へ昇格させません。販売開始フラグやStripe設定は変更しません。
+
+対象と付与理由を確認して、バックエンドで次を実行します。既存の資格は上書きしません。日時・メールアドレス・運用者は実行時に対象へ置き換え、パスワードをコマンド引数やログへ記載しないでください。
+
+```sh
+USER_EMAIL='<確認用ユーザー>' REASON='Netlify移行の承認済み動作確認' GRANTED_BY='<承認した運用者>' EXPIRES_AT='<付与から7日以内のISO 8601日時>' bin/rails verification_access:grant
+USER_EMAIL='<確認用ユーザー>' bin/rails verification_access:revoke
+```
+
+期限切れ・取消後は同じログイントークンでも有料問題・お気に入りAPIを拒否します。履歴・お気に入りは削除しません。付与・取消用の公開APIはありません。これは購入・Webhook・返金の実決済試験の代わりにはなりません。
+
 ## 公開前のアクセス制限
 
 一般利用者の閲覧制限にはNetlifyのProject visibilityを `Private` にして使用します。フロントエンドのBasic認証は廃止し、ローカルでもBasic認証の入力は不要です。会員ログイン、管理者権限、有料コンテンツの利用資格の確認は別の仕組みとして維持します。NetlifyのPrivate設定はFly.ioのAPIを保護しないため、API側の認証・認可も維持します。

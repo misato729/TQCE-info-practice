@@ -42,6 +42,7 @@ const paymentConfig = computed(() => paymentConfigResponse.value?.data)
 const paymentEnabled = computed(() => paymentConfig.value?.enabled === true)
 const alreadyActive = computed(() => user.value?.paid_content_access === true)
 const isAdmin = computed(() => user.value?.role === 'admin')
+const isVerificationAccount = computed(() => Boolean(user.value?.verification_access) && user.value?.membership.status !== 'active')
 const canceled = computed(() => route.query.canceled === '1')
 
 const startCheckout = async () => {
@@ -118,7 +119,7 @@ const startCheckout = async () => {
         <div class="active-state">
           <UIcon name="i-lucide-badge-check" />
           <div>
-            <h2>{{ isAdmin ? '管理者権限で全問題を利用できます' : '有料会員資格は有効です' }}</h2>
+            <h2>{{ isAdmin ? '管理者権限で全問題を利用できます' : isVerificationAccount ? '検証用資格で全問題を利用できます' : '有料会員資格は有効です' }}</h2>
             <p>模擬試験6以降を利用できます。購入手続きは必要ありません。</p>
           </div>
         </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_08_000002) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_19_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -154,6 +154,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_08_000002) do
     t.check_constraint "role::text = ANY (ARRAY['user'::character varying::text, 'admin'::character varying::text])", name: "users_role_valid"
   end
 
+  create_table "verification_access_grants", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "reason", limit: 255, null: false
+    t.string "granted_by", limit: 100, null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_verification_access_grants_on_user_id", unique: true
+    t.check_constraint "char_length(btrim(reason::text)) > 0 AND char_length(btrim(granted_by::text)) > 0", name: "verification_access_grants_audit_required"
+    t.check_constraint "expires_at > created_at AND expires_at <= (created_at + 'P7D'::interval)", name: "verification_access_grants_limited_duration"
+  end
+
   add_foreign_key "answer_histories", "question_choices", column: "selected_choice_id"
   add_foreign_key "answer_histories", "questions", on_delete: :cascade
   add_foreign_key "answer_histories", "users", on_delete: :cascade
@@ -163,4 +176,5 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_08_000002) do
   add_foreign_key "memberships", "users", on_delete: :cascade
   add_foreign_key "payments", "users", on_delete: :nullify
   add_foreign_key "question_choices", "questions", on_delete: :cascade
+  add_foreign_key "verification_access_grants", "users", on_delete: :cascade
 end

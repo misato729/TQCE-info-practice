@@ -18,6 +18,7 @@ export type AuthUser = {
     purchased_at: string | null
     expires_at: null
   }
+  verification_access?: { expires_at: string } | null
   created_at?: string
 }
 

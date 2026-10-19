@@ -17,6 +17,7 @@
 | `favorites` | 有料会員・管理者のお気に入り。資格失効時も保持 |
 | `payments` | Stripe Checkoutによる決済と返金・異議申立て状態 |
 | `memberships` | ユーザーの有料コンテンツ利用資格 |
+| `verification_access_grants` | 購入とは独立した、最長7日の運用確認用アクセス資格 |
 | `stripe_webhook_events` | 処理済みStripe Event IDを保持する冪等性記録 |
 | `question_seed_states` | seedの前回内容と公開状態、管理画面での削除を保持する同期記録 |
 
@@ -42,6 +43,7 @@ erDiagram
     users ||--o{ favorites : registers
     users o|--o{ payments : makes
     users ||--o| memberships : owns
+    users ||--o| verification_access_grants : verifies
     payments ||--o| memberships : grants
     questions ||--|{ question_choices : has
     questions ||--o{ answer_histories : answered
@@ -132,6 +134,17 @@ erDiagram
         datetime updated_at
     }
 
+    verification_access_grants {
+        bigint id PK
+        bigint user_id FK,UK
+        varchar reason
+        varchar granted_by
+        datetime expires_at
+        datetime revoked_at
+        datetime created_at
+        datetime updated_at
+    }
+
     stripe_webhook_events {
         bigint id PK
         varchar stripe_event_id UK
@@ -172,7 +185,7 @@ erDiagram
 - パスワードは平文で保存しない。
 - メールアドレスは登録・更新時に前後の空白を除去し、小文字へ正規化する。
 - 有料会員資格は `role` で表さず、`memberships` で管理する。管理者権限と購入状態を混在させない。
-- アカウント削除時は、そのユーザーの `answer_histories`、`favorites`、`memberships` を削除し、`payments.user_id` は `NULL` にする。
+- アカウント削除時は、そのユーザーの `answer_histories`、`favorites`、`memberships`、`verification_access_grants` を削除し、`payments.user_id` は `NULL` にする。
 
 ### 3.2 questions
 
@@ -437,6 +450,25 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 - 処理に失敗した場合はトランザクションをロールバックし、Event IDを処理済みとして残さない。
 - 実行環境と `livemode` が一致しないイベントは拒否する。
 
+### 3.9 verification_access_grants
+
+運用者が本番確認用に付与する資格であり、Stripeで購入した事実を表さない（2026年10月19日合意）。決済・購入資格のテーブルや制約は変更しない。
+
+| カラム | 型 | NULL | 制約・説明 |
+|---|---|---:|---|
+| `id` | BIGINT | NO | 主キー |
+| `user_id` | BIGINT | NO | `users.id`。一意。ユーザー削除時に削除 |
+| `reason` | VARCHAR(255) | NO | 付与理由。空白のみは禁止 |
+| `granted_by` | VARCHAR(100) | NO | 付与した運用者を特定する記録。空白のみは禁止 |
+| `expires_at` | DATETIME | NO | `created_at` より後、かつ7日以内。DBのCHECK制約でも保証 |
+| `revoked_at` | DATETIME | YES | 手動取消日時。未取消は `NULL` |
+| `created_at` | DATETIME | NO | 付与日時 |
+| `updated_at` | DATETIME | NO | 更新日時 |
+
+- 未取消かつ `expires_at > 現在時刻` の場合だけ有効。APIリクエストごとに判定し、トークンへ固定しない。
+- 購入資格の返金・異議申立て処理とは独立させる。検証用資格の失効を理由に、購入由来の有効な資格や履歴・お気に入りを削除しない。
+- 運用コマンドで既存の一般ユーザーに付与し、再実行で既存資格や期限を無断で上書きしない。付与・取消の公開APIは設けない。
+
 ## 4. 固定値
 
 ### 4.1 ユーザーロール
@@ -579,7 +611,7 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 ### 5.2 解答保存
 
 - 認証済みユーザーの解答だけを保存する。
-- 模擬試験6以降では、解答判定前に `memberships.status = active` または `users.role = admin` を確認する。
+- 模擬試験6以降では、解答判定前に `memberships.status = active`、`users.role = admin` 又は未取消・期限内の `verification_access_grants` を確認する。検証用資格は購入由来の資格と区別する。
 - 選択した選択肢が対象問題に属することを確認する。
 - 正誤は選択肢の `is_correct` からサーバー側で判定する。
 - 解答履歴の保存とレスポンス生成は同じ判定結果を使用する。

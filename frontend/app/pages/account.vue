@@ -17,6 +17,7 @@ const handleLogout = async () => {
 const membershipLabel = computed(() => {
   if (user.value?.role === 'admin') return '管理者（全問題利用可）'
   if (user.value?.membership.status === 'active') return '有料会員'
+  if (user.value?.verification_access) return '検証用（有料機能利用可）'
   if (user.value?.membership.status === 'revoked') return '無料会員（有料資格は失効）'
   return '無料会員'
 })
@@ -59,6 +60,7 @@ const deleteAccount = async () => {
         <div><span>会員区分</span><strong>{{ membershipLabel }}</strong></div>
         <div v-if="user?.membership.purchased_at"><span>購入確認日時</span><strong>{{ new Date(user.membership.purchased_at).toLocaleString('ja-JP') }}</strong></div>
         <div v-if="user?.membership.status === 'active'"><span>有効期限</span><strong>なし（買い切り）</strong></div>
+        <div v-if="user?.verification_access && user?.membership.status !== 'active'"><span>検証用資格の期限</span><strong>{{ new Date(user.verification_access.expires_at).toLocaleString('ja-JP') }}</strong></div>
       </section>
       <section v-if="!user?.paid_content_access" class="content-panel membership-action">
         <h2>有料会員</h2>
