@@ -310,6 +310,9 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   .exam-sidebar {
     width: 100%;
     min-height: auto;
+    max-height: 240px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
     padding: 14px;
     border-right: 0;
     border-bottom: 1px solid #cdd9dc;
