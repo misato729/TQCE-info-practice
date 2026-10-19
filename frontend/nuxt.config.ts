@@ -23,6 +23,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     apiBaseInternal: '',
+    // Keep defaults empty so build-time credentials are never bundled.
+    // Nuxt supplies NUXT_BASIC_AUTH_* through private runtime config at runtime.
     basicAuthUser: '',
     basicAuthPassword: '',
     public: {

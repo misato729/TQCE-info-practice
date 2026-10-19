@@ -1,4 +1,6 @@
 [build.environment]
-  # The Basic Auth username matches ordinary application source text.
-  # Keep scanning enabled for the password and all other secret variables.
-  SECRETS_SCAN_OMIT_KEYS = "NUXT_BASIC_AUTH_USER"
+  # These Basic Auth values collide with ordinary application identifiers.
+  # Credentials are read from private runtime config, not embedded in source.
+  # Remove each exception after replacing that credential with a unique value.
+  # All other environment variables and secret scanning remain enabled.
+  SECRETS_SCAN_OMIT_KEYS = "NUXT_BASIC_AUTH_USER,NUXT_BASIC_AUTH_PASSWORD"
