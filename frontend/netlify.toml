@@ -1,0 +1,4 @@
+[build.environment]
+  # The Basic Auth username matches ordinary application source text.
+  # Keep scanning enabled for the password and all other secret variables.
+  SECRETS_SCAN_OMIT_KEYS = "NUXT_BASIC_AUTH_USER"
