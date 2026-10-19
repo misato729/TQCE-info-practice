@@ -37,7 +37,9 @@ Authorization: Bearer <access_token>
 * 本番環境ではHTTPSを必須とする
 * Nuxtのサーバー側ユーザー確認は、設定済みなら非公開の `NUXT_API_BASE_INTERNAL` を接続先に使う。未設定なら公開APIのURLを使う。ブラウザの接続先とBearer認証・管理者権限の検査は変更しない。
 
-Bearerトークン方式は、VercelとFly.ioでフロントエンドとバックエンドのドメインが分かれる構成を想定して採用する。
+Bearerトークン方式は、NetlifyとFly.ioでフロントエンドとバックエンドのドメインが分かれる構成を想定して採用する。
+
+公開前のサイト閲覧制限はNetlifyのPrivate設定で行い、フロントエンドのBasic認証は使用しない。これはAPIのBearer認証とは別の制限であり、会員ログイン・管理者権限・有料会員の認可は変更しない。Fly.ioのAPIへNetlifyのPrivate設定は適用されないため、API側の検査を省略しない。
 
 ### 任意認証
 
@@ -757,11 +759,12 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | 環境 | 許可例 |
 | --- | --- |
 | 開発 | `http://localhost:3000` |
-| 本番 | Vercelで公開するフロントエンドURL |
+| 本番 | Netlifyで公開するフロントエンドURL。移行先は `https://luminous-piroshki-d94b2b.netlify.app` |
 
 * 許可メソッドは使用するHTTPメソッドに限定する
 * 許可ヘッダーに `Authorization` と `Content-Type` を含める
 * 本番環境でワイルドカード `*` は使用しない
+* Netlify移行の疎通に必要な新オリジンの追加はIssue #3で確認する。許可範囲の限定、開発用・旧Vercel許可の整理及び許可外オリジンの拒否確認はIssue #5で行う。ここに記載した許可例だけで実環境へ反映済みとはみなさず、確認結果を `document/Netlify移行確認_2026-10-19.md` に記録する
 
 ## セキュリティ・実装上の注意
 

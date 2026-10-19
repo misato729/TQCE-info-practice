@@ -60,13 +60,13 @@ Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTE
 
 ローカルでは `STRIPE_LIVEMODE=false` を使用します。本番では本番用のキー、Price、Webhook署名シークレットにそろえて `STRIPE_LIVEMODE=true` とし、テスト環境の値と混在させないでください。カード番号等はStripe Checkoutが取り扱い、本アプリのDBには保存しません。
 
-### Basic認証の入力欄が消える場合
+## 公開前のアクセス制限
 
-フロントエンドのBasic認証は `frontend/server/middleware/basic-auth.ts` で処理します。未認証時は `401` と `WWW-Authenticate: Basic ...`、認証成功時は `200` を返すことを確認し、サイト側の認証処理とブラウザ側の入力画面を切り分けてください。認証情報・Authorizationヘッダー・`.env` の値はログや資料へ出力しないでください。
+一般利用者の閲覧制限にはNetlifyのProject visibilityを `Private` にして使用します。フロントエンドのBasic認証は廃止し、ローカルでもBasic認証の入力は不要です。会員ログイン、管理者権限、有料コンテンツの利用資格の確認は別の仕組みとして維持します。NetlifyのPrivate設定はFly.ioのAPIを保護しないため、API側の認証・認可も維持します。
 
-アプリ内ブラウザで入力欄がすぐ閉じる場合は、認証入力中の自動移動・再読み込みを止め、ユーザーの入力完了を待ちます。それでも入力できなければ、通常のChromeやSafariで同じローカルURLを開いて確認してください。通常のブラウザとアプリ内ブラウザの認証状態が共有されるとは限りません。認証を無効化したり、認証情報をURLへ埋め込んだりする方法は使いません。
+この変更をデプロイする前に、本番・プレビュー・各デプロイURLがPrivateの対象であることを確認してください。旧Vercelなど他の配信先ではNetlifyのPrivate設定は適用されません。旧環境の自動デプロイを止め、Basic認証が残る最後の成功デプロイを切戻し用に保持し、保護のない新コードを旧環境へ配信しないでください。NetlifyをPublicへ切り替える判断は別途行います。
 
-HTTP取得が成功しても、表示や回答操作を確認したことにはなりません。HTTP確認、ユーザーの目視確認、エージェントの実操作確認を区別して記録します。模試20の表示不統一と認証確認時の切り分け記録は [原因と再発防止策](document/模試20_表示不統一の原因と再発防止_2026-10-08.md) を参照してください。
+HTTP確認、ユーザーの目視確認、エージェントの実操作確認は区別して記録します。
 
 ## Nuxtのレンダリング方針
 
@@ -76,7 +76,7 @@ HTTP取得が成功しても、表示や回答操作を確認したことには�
 - 問題演習、解答履歴、お気に入り、アカウント、決済結果確認、管理画面はユーザー固有データを扱うためCSRにします。これらのルートには `noindex, nofollow` も設定します。
 - 有料会員案内と特定商取引法に基づく表記は公開本文をSSRし、販売状態や販売者情報だけをクライアントからRails APIで確認します。
 
-現在のBasic認証はNuxtのサーバーミドルウェアで実施しています。そのため、公開ページをprerenderしてCDNから直接配信するとBasic認証を経由しなくなる可能性があります。Basic認証が必要な期間はSSGを有効化せず、公開前にBasic認証を外すか、ホスティング側で静的ファイルも保護できることを確認してからSSGへ切り替えてください。
+Basic認証の廃止によってレンダリング方式やキャッシュ方針は変更しません。公開ページのSSRとユーザー固有画面のCSR・noindexを維持し、SSG/prerenderへの変更はこの作業には含めません。
 
 共通レイアウトはRailsの `/api/v1/health` と `/api/v1/exams` を呼びません。試験サイドバーは `frontend/app/utils/examCatalog.ts` の固定カタログを使い、未ログインユーザー及び無料会員には模擬試験1〜5、有料会員及び管理者には全公開分を表示します。問題の公開・非公開を変更するときは、固定カタログの試験番号と問番号も同じ変更内で更新してください。
 
@@ -84,7 +84,34 @@ HTTP取得が成功しても、表示や回答操作を確認したことには�
 
 お気に入りは有料会員と管理者向けです。サイドバーの黄色表示には、既存のログイン・ユーザー情報レスポンスに含まれる `favorite_questions`（公開中の問題ID・模試番号・問番号のみ）を使います。開閉・ページ移動や登録解除後の確認用通信は追加せず、共有状態を更新します。無料会員には空配列を返し、既存データは削除せず保持します。別端末で変更した状態は再読み込み・再ログイン時に同期します。
 
-Netlifyではリポジトリのベースディレクトリを `frontend`、ビルドコマンドを `npm run build` とし、Nuxt/Nitroの自動検出を使用します。`NUXT_PUBLIC_API_BASE` にFly.ioのAPI URLを設定し、Railsの `CORS_ORIGINS` に実際のNetlify本番ドメインを追加してください。デプロイプレビューを許可する場合は、無制限なオリジン許可にせず、運用するドメインだけを明示的に設定します。
+## フロントエンドのデプロイ（Netlify）
+
+フロントエンドはNetlify、バックエンドはFly.io、DBはNeonを使用します。Netlifyの移行先URLは https://luminous-piroshki-d94b2b.netlify.app/ です。ビルド・デプロイの成功報告と、実際の画面・API疎通の完了は区別します。移行時の確認状況と切替・切戻しの手順は [Netlify移行確認記録](document/Netlify移行確認_2026-10-19.md) を参照してください。
+
+| 設定 | 値 |
+| --- | --- |
+| デプロイ対象ブランチ | `main` |
+| Base directory | `frontend` |
+| Build command | `npm run build` |
+| Publish directory | `dist`（Base directoryからの相対パス） |
+| Functions directory | 初期値の `netlify/functions` から変更不要。Nuxt/Nitroが必要なFunctionsを自動生成する |
+| Node.js | `NODE_VERSION=22`（ローカルDockerと同じメジャーバージョン） |
+
+Netlifyの管理画面で次の環境変数を設定します。`NUXT_PUBLIC_API_BASE` はBuildsとFunctionsの両方のスコープで利用できるようにし、秘密値をIssue・ログ・リポジトリへ保存しません。
+
+| 変数 | 設定内容 |
+| --- | --- |
+| `NUXT_PUBLIC_API_BASE` | `https://tqce-info-practice.fly.dev`（`/api/v1`は付けない） |
+
+Docker用の `NUXT_API_BASE_INTERNAL=http://backend:3000` はNetlifyへ設定しません。DB接続情報・Stripeの秘密鍵もNetlifyへ移さず、Fly.io側で管理します。フロントエンドでは `NUXT_BASIC_AUTH_USER` / `NUXT_BASIC_AUTH_PASSWORD` を使用しないため、Netlifyでは不要です。既存のローカル `.env` やFly.ioの設定は、バックエンドの互換用設定として利用される場合があるため、この変更では削除しません。
+
+Netlifyに残っている旧Basic認証変数を原因とするビルド失敗を避けるため、`frontend/netlify.toml` の既存の検査除外はこの2変数だけ維持します。Netlifyで未使用の2変数を削除した後に、この除外設定も撤去してください。他の環境変数の検査は有効なままです。
+
+公開前はNetlifyのPrivate設定によるログイン制限を維持します。閲覧できるNetlifyアカウントで画面を確認し、動作確認のためだけにPublicへ変更しません。
+
+Railsの `CORS_ORIGINS` には新しいNetlifyオリジンを追加します。移行中は既存の許可値を確認して保持し、本番の許可範囲の絞り込み・旧Vercelや開発用許可の整理はIssue #5で行います。`FRONTEND_URL` とStripeの戻り先・販売設定はIssue #6で確認します。デプロイプレビューを許可する場合も、無制限なオリジン許可にせず対象を明示します。
+
+`Cannot find module @rollup/rollup-linux-x64-gnu` などでインストールが失敗した場合は、成功時のNode/npm・インストール設定・キャッシュ条件とlockfileを照合します。ビルド前に失敗している場合、ビルドコマンドへの `npm install` の追加だけでは対処できません。成功時の対処が未確認のまま、lockfileの全再生成や依存バージョンの更新を実施しないでください。
 
 ## 停止
 
@@ -116,7 +143,7 @@ fly launch --no-deploy
 ```sh
 fly secrets set SECRET_KEY_BASE=<secret>
 fly secrets set DATABASE_URL=<neon-production-database-url>
-fly secrets set CORS_ORIGINS=https://tqce-info-practice.vercel.app
+fly secrets set CORS_ORIGINS=https://luminous-piroshki-d94b2b.netlify.app
 ```
 
 有料会員を販売する場合は、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。実値はコマンド履歴や共有ログへ残さない方法で設定してください。
@@ -127,7 +154,7 @@ fly secrets set STRIPE_LIVEMODE=true
 fly secrets set STRIPE_SECRET_KEY=<stripe-secret-key>
 fly secrets set STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
 fly secrets set STRIPE_PRICE_ID=<stripe-price-id>
-fly secrets set FRONTEND_URL=https://tqce-info-practice.vercel.app
+fly secrets set FRONTEND_URL=https://luminous-piroshki-d94b2b.netlify.app
 ```
 
 `NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_ADDRESS`、`NUXT_PUBLIC_SELLER_PHONE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定します。これらは秘密情報ではなく、公開販売設定APIを通じて特定商取引法に基づく表記へ表示されます。
@@ -189,7 +216,7 @@ seedは試験ナンバーと問番号をキーに再実行できます。管理�
 - 初回移行では `backend/db/seeds/legacy_digests_20260907.json` の旧225問のハッシュとDBを比較します。このファイルは今後の改稿時にも変更しないでください。同期管理を導入する前に削除され、記録のない問題については削除意図を判別できません。
 - 本番への初回反映では、新しい `question_seed_states` テーブルのマイグレーションが必要です。通常の `release_command` の `db:prepare` で適用されます。
 
-デプロイ後、Vercel 側の `NUXT_PUBLIC_API_BASE` には Fly.io のバックエンド URL を設定します。
+デプロイ後、Netlify側の `NUXT_PUBLIC_API_BASE` にはFly.ioのバックエンドURLを設定します。
 
 ```text
 https://tqce-info-practice.fly.dev
