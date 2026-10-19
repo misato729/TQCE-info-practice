@@ -1,21 +1,20 @@
-configured_origins = ENV.fetch("CORS_ORIGINS", "")
-  .split(",")
-  .map(&:strip)
-  .reject(&:empty?)
+require_relative "../../lib/cors_policy"
 
-allowed_origins = [
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-  "https://tqce-info-practice.vercel.app",
-  %r{\Ahttps://[a-z0-9-]+\.vercel\.app\z}
-] + configured_origins
+allowed_origins = CorsPolicy.origins(
+  environment: Rails.env,
+  configured: ENV.fetch("CORS_ORIGINS", ""),
+)
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
-  allow do
-    origins(*allowed_origins)
+  unless allowed_origins.empty?
+    allow do
+      origins(*allowed_origins)
 
-    resource "*",
-      headers: :any,
-      methods: %i[get post put patch delete options head]
+      resource "/api/v1/*",
+        headers: CorsPolicy::HEADERS,
+        methods: CorsPolicy::METHODS,
+        credentials: false,
+        max_age: 300
+    end
   end
 end

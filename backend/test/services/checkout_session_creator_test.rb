@@ -6,7 +6,7 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
     attr_accessor :price
 
     def initialize
-      @price = TestObject.new(active: true, currency: "jpy", unit_amount: 500, type: "one_time")
+      @price = TestObject.new(active: true, currency: "jpy", unit_amount: 500, type: "one_time", livemode: false)
     end
 
     def retrieve(id)
@@ -83,7 +83,7 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
   end
 
   test "Stripe Priceの金額が500円でなければSessionを作成しない" do
-    @prices.price = TestObject.new(active: true, currency: "jpy", unit_amount: 499, type: "one_time")
+    @prices.price = TestObject.new(active: true, currency: "jpy", unit_amount: 499, type: "one_time", livemode: false)
 
     with_payment_env do
       assert_raises(CheckoutSessionCreator::ConfigurationError) do
@@ -114,6 +114,50 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
         result = CheckoutSessionCreator.new(user: @user, client: @client).call
         assert_equal "cs_existing", result.session_id
         assert_equal "https://checkout.stripe.com/existing", result.checkout_url
+      end
+    end
+  end
+
+  test "Priceの実行モードが異なる場合はSessionを作成しない" do
+    @prices.price.livemode = true
+    with_payment_env do
+      assert_raises(CheckoutSessionCreator::ConfigurationError) do
+        CheckoutSessionCreator.new(user: @user, client: @client).call
+      end
+    end
+    assert_nil @sessions.params
+    assert_not Payment.exists?(user: @user)
+  end
+
+  test "不正な戻り先やキーのモードではStripeへ接続しない" do
+    [
+      { "FRONTEND_URL" => "https://example.test/redirect?token=private" },
+      { "FRONTEND_URL" => "https://user:password@example.test" },
+      { "FRONTEND_URL" => "http://example.test" },
+      { "STRIPE_SECRET_KEY" => "sk_live_private" },
+    ].each do |overrides|
+      with_payment_env do
+        with_env(overrides) do
+          assert_raises(CheckoutSessionCreator::ConfigurationError) do
+            CheckoutSessionCreator.new(user: @user, client: @client).call
+          end
+          assert_not_includes PaidMembership.configuration_issues.join, "private"
+        end
+      end
+    end
+    assert_nil @prices.retrieved_id
+    assert_nil @sessions.params
+  end
+
+  test "本番の戻り先はHTTPSでテストモードの販売を拒否する" do
+    with_payment_env do
+      assert_includes PaidMembership.configuration_issues(environment: "production"), "production_requires_live_mode"
+      with_env("STRIPE_LIVEMODE" => "true", "STRIPE_SECRET_KEY" => "sk_live_example") do
+        assert_empty PaidMembership.configuration_issues(environment: "production")
+        with_env("FRONTEND_URL" => "http://localhost:3000") do
+          assert_includes PaidMembership.configuration_issues(environment: "production"), "invalid_frontend_origin"
+          assert_empty PaidMembership.configuration_issues(environment: "development")
+        end
       end
     end
   end

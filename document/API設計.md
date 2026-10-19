@@ -499,7 +499,7 @@ Accept: application/json
 }
 ```
 
-`enabled` は販売開始フラグが有効で、Stripe、戻り先URL及び販売事業者情報の必須環境変数がすべて設定されている場合だけ `true` とする。
+`enabled` は販売開始フラグが有効で、Stripe、戻り先URL及び販売事業者情報の必須環境変数がすべて設定され、キーの実行モード・戻り先URLの形式が妥当な場合だけ `true` とする。本番はHTTPSオリジン・本番モードを必須とし、認証情報・パス・クエリ・フラグメントを戻り先へ含めない。これは実Stripeでの購入試験や販売者情報の最終承認が済んだことを意味しない。
 
 ### Checkout Session作成
 
@@ -526,7 +526,7 @@ Accept: application/json
 
 * Stripe Checkout Sessionは `mode = payment`、数量1、初期対応の決済手段はカードとして作成する
 * Checkoutは日本語表示とし、Stripe Dashboardへ登録した利用規約への同意を必須にする。支払確定ボタン付近にも、500円の買い切り、自動更新なし及び提供開始後の利用者都合による返金条件を表示する
-* 金額は500円、通貨は `jpy` とし、Stripe上のPrice設定とサーバーの期待値が一致しない場合はSessionを作成しない
+* 金額は500円、通貨は `jpy` とし、Stripe上のPriceの有効状態・一回払い・金額・通貨・`livemode` とサーバーの期待値が一致しない場合はSessionを作成しない
 * ログインユーザーIDをStripeの `client_reference_id` または `metadata` に設定し、ローカルの決済記録と照合する
 * Session作成後、Checkout Session IDを持つ `pending` の決済記録を保存してからURLを返す
 * Stripe APIへの作成要求には要求ごとの冪等性キーを使用する。ユーザー単位のDBロックと未完了決済の再利用を併用し、同一ユーザーの再送で利用可能なSessionを重複作成しない
@@ -766,10 +766,12 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | 開発 | `http://localhost:3000` |
 | 本番 | Netlifyで公開するフロントエンドURL。移行先は `https://luminous-piroshki-d94b2b.netlify.app` |
 
-* 許可メソッドは使用するHTTPメソッドに限定する
-* 許可ヘッダーに `Authorization` と `Content-Type` を含める
-* 本番環境でワイルドカード `*` は使用しない
-* Netlify移行の疎通に必要な新オリジンの追加はIssue #3で確認する。許可範囲の限定、開発用・旧Vercel許可の整理及び許可外オリジンの拒否確認はIssue #5で行う。ここに記載した許可例だけで実環境へ反映済みとはみなさず、確認結果を `document/Netlify移行確認_2026-10-19.md` に記録する
+* 本番は `CORS_ORIGINS` で明示したHTTPSオリジンの完全一致だけを許可する。localhost及びVercelの自動許可はしない。未設定時は許可せず、不正値・ワイルドカード・パス・認証情報・末尾の `/` を含む値は起動時に拒否する
+* 開発だけが `http://localhost:3000` と `http://127.0.0.1:3000` を既定で許可する。プレビューは必要な個別オリジンだけを明示する
+* 対象パスは `/api/v1/*`、許可メソッドは `GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD`、許可ヘッダーは `Authorization, Content-Type` とする
+* Cookie認証をCORSで許可しない（`credentials: false`）。Bearerヘッダーを使用する。プリフライトの最大保持は300秒とする
+* 許可オリジンのAPIエラーレスポンスにもCORSヘッダーを付ける。許可外には付けない。CORSはAPIの認証・認可の代替ではない
+* 実環境の反映・許可外拒否の確認結果は `document/公開前運用確認_2026-10-20.md` に記録する
 
 ## セキュリティ・実装上の注意
 

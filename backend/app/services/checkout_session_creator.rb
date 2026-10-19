@@ -46,7 +46,8 @@ class CheckoutSessionCreator
     valid = price.active &&
       price.currency == PaidMembership::CURRENCY &&
       price.unit_amount == PaidMembership::AMOUNT &&
-      price.type == "one_time"
+      price.type == "one_time" &&
+      price.livemode == PaidMembership.livemode?
     raise ConfigurationError, "Stripe Priceの設定が販売条件と一致しません" unless valid
   end
 
