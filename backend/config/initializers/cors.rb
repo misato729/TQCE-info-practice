@@ -12,6 +12,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
 
       resource "/api/v1/*",
         headers: CorsPolicy::HEADERS,
+        expose: ["Retry-After"],
         methods: CorsPolicy::METHODS,
         credentials: false,
         max_age: 300

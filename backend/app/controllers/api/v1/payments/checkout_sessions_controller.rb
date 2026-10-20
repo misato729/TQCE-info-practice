@@ -3,6 +3,7 @@ module Api
     module Payments
       class CheckoutSessionsController < ApplicationController
         before_action :authenticate_user!
+        before_action :throttle_checkout
 
         def create
           result = CheckoutSessionCreator.new(user: current_user).call
@@ -21,6 +22,13 @@ module Api
         rescue Stripe::StripeError
           Rails.logger.error("Stripe Checkout Session creation failed")
           render_error(:payment_provider_error, "決済サービスへ接続できませんでした", :bad_gateway)
+        end
+
+        private
+
+        def throttle_checkout
+          throttle_request!(:checkout_ip)
+          throttle_request!(:checkout_user, subject: current_user.id.to_s) unless performed?
         end
       end
     end

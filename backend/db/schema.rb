@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_19_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_21_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_19_000001) do
     t.index ["user_id", "created_at"], name: "index_answer_histories_on_user_id_and_created_at", order: { created_at: :desc }
     t.index ["user_id", "question_id"], name: "index_answer_histories_on_user_id_and_question_id"
     t.index ["user_id"], name: "index_answer_histories_on_user_id"
+  end
+
+  create_table "api_rate_limit_buckets", primary_key: "key", id: { type: :string, limit: 64 }, force: :cascade do |t|
+    t.bigint "request_count", null: false
+    t.datetime "expires_at", null: false
+    t.index ["expires_at"], name: "index_api_rate_limit_buckets_on_expires_at"
+    t.check_constraint "request_count > 0", name: "api_rate_limit_count_positive"
   end
 
   create_table "favorites", force: :cascade do |t|

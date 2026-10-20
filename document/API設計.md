@@ -142,9 +142,28 @@ Accept: application/json
 | `404 Not Found` | `not_found` | 対象が存在しない、非公開問題への一般アクセス |
 | `409 Conflict` | `membership_already_active`, `checkout_session_in_progress` | 有料会員の重複購入、未完了又は完了確認中の決済が存在する |
 | `422 Unprocessable Entity` | `validation_error` | バリデーションエラー、選択肢の指定不正 |
+| `429 Too Many Requests` | `rate_limit_exceeded` | 登録・ログイン・回答・Checkoutの一時的な回数上限 |
 | `500 Internal Server Error` | `internal_server_error` | サーバー内部エラー |
 | `502 Bad Gateway` | `payment_provider_error` | Stripe APIへの接続失敗 |
-| `503 Service Unavailable` | `payment_unavailable`, `webhook_unavailable` | 決済又はWebhookの必須設定不足 |
+| `503 Service Unavailable` | `payment_unavailable`, `webhook_unavailable`, `rate_limiter_unavailable` | 決済・Webhookの必須設定不足、又は回数制限用DBの障害 |
+
+### 操作回数の制限
+
+PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作を数える。追加APIやRedisは使用しない。値は公開前の初期設定であり、学校等の共有IPや実利用の影響を確認して調整する。
+
+| 対象 | 単位 | 固定時間窓の上限 |
+| --- | --- | --- |
+| `POST /api/v1/auth/signup` | IP | 15分10回 |
+| `POST /api/v1/auth/login` | IP | 5分30回 |
+| `POST /api/v1/questions/:id/answer` | IP | 1分120回 |
+| `POST /api/v1/payments/checkout_sessions` | IP、ログインユーザーそれぞれ | 5分20回、5分10回 |
+
+- 上限を超えた操作は処理前に `429` と既存のエラー形式を返す。次の窓までの秒数を `Retry-After`、キャッシュ禁止を `Cache-Control: no-store` で示す。境界の前後では短時間に2窓分の操作が可能な方式であり、厳密な直近N分の上限ではない。
+- Checkoutは認証後、IP・ユーザーの順で確認する。Webhook、公開GET、管理API等へこの制限を流用しない。Stripeの署名検証・再送・冪等性は従来どおり維持する。
+- カウンター保存が失敗した場合は制限を迂回せず `503 rate_limiter_unavailable`、`Retry-After: 60` を返す。
+- Fly.ioではFly Proxyが付ける `Fly-Client-IP`、それ以外は直接接続の `REMOTE_ADDR` を正規化して使う。任意の `X-Forwarded-For` は信用しない。別のプロキシを追加するときは信頼境界を再点検する。
+- IP・ユーザーIDの平文はカウンターへ保存せず、秘密鍵付きハッシュ・回数・失効時刻だけを保存する。多量通信へのネットワーク防御の代替にはならない。
+- 2026年10月21日時点ではローカル実装・検証段階。本番適用にはマイグレーションを含むリリースと実環境確認が必要。
 
 ## API一覧
 
@@ -770,14 +789,14 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 * 開発だけが `http://localhost:3000` と `http://127.0.0.1:3000` を既定で許可する。プレビューは必要な個別オリジンだけを明示する
 * 対象パスは `/api/v1/*`、許可メソッドは `GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD`、許可ヘッダーは `Authorization, Content-Type` とする
 * Cookie認証をCORSで許可しない（`credentials: false`）。Bearerヘッダーを使用する。プリフライトの最大保持は300秒とする
-* 許可オリジンのAPIエラーレスポンスにもCORSヘッダーを付ける。許可外には付けない。CORSはAPIの認証・認可の代替ではない
+* 許可オリジンのAPIエラーレスポンスにもCORSヘッダーを付け、`Retry-After` をブラウザから参照できるよう公開する。許可外には付けない。CORSはAPIの認証・認可の代替ではない
 * 実環境の反映・許可外拒否の確認結果は `document/公開前運用確認_2026-10-20.md` に記録する
 
 ## セキュリティ・実装上の注意
 
 * パスワードは `bcrypt` などでハッシュ化し、平文保存しない
 * アクセストークン、パスワード、Authorizationヘッダーをログへ出力しない
-    * Railsの共通設定で `password`、`token`、`secret`、`api_key`、`authorization`、`cookie` を含むキーを、大文字・小文字を区別せずフィルタリングする。確認用・現在のパスワード、入れ子の値、ログ用リクエスト環境の認証・Cookieヘッダーも対象とする
+    * Railsの共通設定で `password`、`token`、`secret`、`api_key`、`authorization`、`cookie`、`dsn` を含むキーを、大文字・小文字を区別せずフィルタリングする。確認用・現在のパスワード、入れ子の値、ログ用リクエスト環境の認証・Cookieヘッダーも対象とする
     * フィルターを通さない生の本文・ヘッダー・レスポンス・環境変数を独自にログへ出力しない。設定変更前に保存されたログは遡って保護されない
 * 公開問題取得時は `question_choices.is_correct`、解答解説、根拠資料を返さない
 * 回答判定は必ずサーバー側で行う
@@ -792,7 +811,8 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 * seed管理中の試験ナンバー・問番号の変更は `422` で拒否する。管理APIでの削除は同期記録にも残し、seedによる再作成を防ぐ
 * 管理画面のルートガードと管理APIの両方で権限を確認し、フロントエンドの画面制御だけに依存しない
 * コンテンツブロックでは許可したキーと文字列だけを受け付け、任意のHTMLやスクリプトを保存・描画しない
-* 会員登録、ログイン、回答及びCheckout Session作成APIには必要に応じてレート制限を設ける
+* 会員登録、ログイン、回答及びCheckout Session作成APIには上記の共有レート制限を設ける
+* APIの障害通知は初期状態で無効。個別承認後に有効化する場合も、固定の障害名・時刻・ランダムID・検証／本番の環境名・重大度だけを送信する。リクエスト、例外の本文、利用者情報、認証情報、DB・Stripeの識別子は送らない。設定と制限は `document/運用手順.md` を参照する
 * アカウント削除と問題削除はトランザクションで実行する
 * Stripeのシークレットキー、Webhook署名シークレット及びPrice IDは環境変数で管理し、ログやAPIレスポンスへ出力しない
 * Webhookは未加工の本文で署名検証し、Stripe Event ID及びCheckout Session IDの一意制約とDBトランザクションで冪等に処理する

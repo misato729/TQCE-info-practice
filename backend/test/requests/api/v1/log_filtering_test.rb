@@ -12,6 +12,7 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
         "refresh_token" => "test-only-refresh-token",
         "client_secret" => "test-only-client-secret",
         "api_key" => "test-only-api-key",
+        "sentry_error_dsn" => "test-only-notification-destination",
         "Authorization" => "Bearer test-only-authorization",
       }],
       "exam_number" => 1,

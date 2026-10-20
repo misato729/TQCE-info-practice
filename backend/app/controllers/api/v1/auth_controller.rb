@@ -1,6 +1,8 @@
 module Api
   module V1
     class AuthController < ApplicationController
+      before_action :throttle_auth_requests
+
       def signup
         user = User.new(signup_params)
 
@@ -27,6 +29,10 @@ module Api
       end
 
       private
+
+      def throttle_auth_requests
+        throttle_request!(action_name.to_sym)
+      end
 
       def signup_params
         params.permit(:name, :email, :password, :password_confirmation)

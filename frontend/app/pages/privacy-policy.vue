@@ -66,10 +66,12 @@ useSeoMeta({
         <h2>第6条（外部サービスへの取扱いの委託）</h2>
         <p>本サービスの運営に必要な範囲で、情報の取扱いを外部事業者へ委託することがあります。主に次のクラウドサービスを利用します。</p>
         <ul>
-          <li><a href="https://vercel.com/legal/privacy-notice" target="_blank" rel="noopener noreferrer">Vercel</a>：フロントエンドの配信およびアクセス処理</li>
+          <li><a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify</a>：フロントエンドの配信およびアクセス処理</li>
           <li><a href="https://fly.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Fly.io</a>：バックエンドアプリケーションおよびAPIの運用</li>
           <li><a href="https://neon.com/security" target="_blank" rel="noopener noreferrer">Neon</a>：データベースの運用</li>
           <li><a href="https://stripe.com/jp/privacy" target="_blank" rel="noopener noreferrer">Stripe</a>：決済処理、不正利用の防止、返金および異議申立てへの対応</li>
+          <li><a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub</a>：暗号化したバックアップの非公開保管</li>
+          <li><a href="https://sentry.io/privacy/" target="_blank" rel="noopener noreferrer">Sentry</a>：運用処理の状態監視および障害通知</li>
         </ul>
         <p>委託先の選定、契約およびサービス設定等を通じて、取り扱う情報の内容に応じた必要かつ適切な監督を行います。</p>
       </section>
@@ -134,6 +136,6 @@ useSeoMeta({
       </section>
     </article>
 
-    <p class="legal-revised">制定日：2026年8月24日／最終改定日：2026年10月8日</p>
+    <p class="legal-revised">制定日：2026年8月24日／最終改定日：2026年10月21日</p>
   </div>
 </template>

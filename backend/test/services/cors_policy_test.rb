@@ -54,6 +54,11 @@ class CorsPolicyTest < ActiveSupport::TestCase
     assert_nil headers["access-control-allow-origin"]
   end
 
+  test "allowed origins can read the retry time on limited responses" do
+    _status, headers, = middleware(status: 429).call(Rack::MockRequest.env_for("/api/v1/auth/login", "HTTP_ORIGIN" => SITE))
+    assert_includes headers.fetch("access-control-expose-headers").downcase.split(/,\s*/), "retry-after"
+  end
+
   private
 
   def middleware(status: 200)
@@ -62,7 +67,8 @@ class CorsPolicyTest < ActiveSupport::TestCase
     Rack::Cors.new(app) do
       allow do
         origins(*origins)
-        resource "/api/v1/*", headers: CorsPolicy::HEADERS, methods: CorsPolicy::METHODS, credentials: false, max_age: 300
+        resource "/api/v1/*", headers: CorsPolicy::HEADERS, methods: CorsPolicy::METHODS,
+          expose: ["Retry-After"], credentials: false, max_age: 300
       end
     end
   end

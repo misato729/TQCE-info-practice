@@ -56,6 +56,27 @@ test('HTTP 4xx is reachable while server and network failures are failed', async
   assert.equal(network.status.value, 'failed')
 })
 
+test('rate-limited actions preserve the session and expose the server retry advice without retrying', async () => {
+  let calls = 0
+  const client = createClient(async () => {
+    calls += 1
+    return new Response(JSON.stringify({ error: { code: 'rate_limit_exceeded', message: 'Please wait before retrying' } }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': '30' },
+    })
+  })
+  await assert.rejects(client.api('/answer', { method: 'POST', headers: { Authorization: 'Bearer current-token' } }), (error: any) => {
+    assert.equal(error.data.error.code, 'rate_limit_exceeded')
+    assert.equal(error.data.error.message, 'Please wait before retrying')
+    assert.equal(error.response.headers.get('Retry-After'), '30')
+    return true
+  })
+  assert.equal(calls, 1)
+  assert.equal(client.token.value, 'current-token')
+  assert.equal(client.logoutCalls(), 0)
+  assert.equal(client.status.value, 'connected')
+})
+
 test('navigation cancellation does not report a connection failure', async () => {
   const controller = new AbortController()
   const client = createClient(async (_input, options) => {

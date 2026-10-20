@@ -1,3 +1,5 @@
+require "ipaddr"
+
 class ApplicationController < ActionController::API
   before_action :authenticate_backend_screen
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
@@ -5,6 +7,28 @@ class ApplicationController < ActionController::API
   attr_reader :current_user
 
   private
+
+  def throttle_request!(scope, subject: rate_limit_client_address)
+    result = ApiRateLimiter.call(scope: scope, subject: subject)
+    return if result.allowed
+
+    response.headers["Retry-After"] = result.retry_after.to_s
+    response.headers["Cache-Control"] = "no-store"
+    render_error(:rate_limit_exceeded, "操作が集中しています。しばらく待ってからお試しください", :too_many_requests)
+  rescue ApiRateLimiter::Unavailable
+    Rails.logger.error("API rate limiter unavailable")
+    response.headers["Retry-After"] = "60"
+    response.headers["Cache-Control"] = "no-store"
+    render_error(:rate_limiter_unavailable, "一時的に操作できません。しばらく待ってからお試しください", :service_unavailable)
+  end
+
+  def rate_limit_client_address
+    address = request.get_header("REMOTE_ADDR")
+    address = request.get_header("HTTP_FLY_CLIENT_IP").presence || address if ENV["FLY_APP_NAME"].present?
+    IPAddr.new(address.to_s).native.to_s
+  rescue IPAddr::Error
+    "unknown"
+  end
 
   def render_not_found
     render_error(:not_found, "対象が見つかりません", :not_found)

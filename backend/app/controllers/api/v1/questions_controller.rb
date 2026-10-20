@@ -1,6 +1,7 @@
 module Api
   module V1
     class QuestionsController < ApplicationController
+      before_action :throttle_answers, only: :answer
       before_action :authenticate_optional_user!
       before_action :set_question, only: %i[show answer]
       before_action :authorize_question_access!, only: %i[show answer]
@@ -53,6 +54,10 @@ module Api
       end
 
       private
+
+      def throttle_answers
+        throttle_request!(:answer)
+      end
 
       def set_question
         @question = Question.published.includes(:question_choices).find(params[:id])

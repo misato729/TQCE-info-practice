@@ -20,6 +20,7 @@
 | `verification_access_grants` | 購入とは独立した、最長7日の運用確認用アクセス資格 |
 | `stripe_webhook_events` | 処理済みStripe Event IDを保持する冪等性記録 |
 | `question_seed_states` | seedの前回内容と公開状態、管理画面での削除を保持する同期記録 |
+| `api_rate_limit_buckets` | API操作回数の一時的な共有カウンター |
 
 ### 総点検中のseed同期記録
 
@@ -153,6 +154,12 @@ erDiagram
         datetime processed_at
         datetime created_at
         datetime updated_at
+    }
+
+    api_rate_limit_buckets {
+        varchar key PK
+        bigint request_count
+        datetime expires_at
     }
 ```
 
@@ -469,6 +476,21 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 - 未取消かつ `expires_at > 現在時刻` の場合だけ有効。APIリクエストごとに判定し、トークンへ固定しない。
 - 購入資格の返金・異議申立て処理とは独立させる。検証用資格の失効を理由に、購入由来の有効な資格や履歴・お気に入りを削除しない。
 - 運用コマンドで既存の一般ユーザーに付与し、再実行で既存資格や期限を無断で上書きしない。付与・取消の公開APIは設けない。
+
+### 3.10 api_rate_limit_buckets
+
+登録・ログイン・回答・Checkoutの回数制限を、同じDBを使う複数プロセス・マシンで共有する。追加の公開APIは設けない。2026年10月21日時点ではローカル実装で、本番マイグレーションは未実施。
+
+| カラム | 型 | NULL | 制約・説明 |
+|---|---|---:|---|
+| `key` | VARCHAR(64) | NO | 主キー。操作種別・対象・固定時間窓から作るHMAC-SHA256 |
+| `request_count` | BIGINT | NO | 同じ窓内の試行回数。CHECKで1以上を保証 |
+| `expires_at` | DATETIME | NO | 窓の終了時刻。インデックスあり |
+
+- IP、ユーザーID、メール、トークンの平文やリクエスト本文は保存しない。`secret_key_base` をHMACの鍵とし、全マシンで同じ鍵を使用する。秘密鍵の変更時は新しいカウンターになる。
+- PostgreSQLの `INSERT ... ON CONFLICT ... DO UPDATE` で回数を原子的に加算する。上限超過の試行も数える。ユーザー・問題・決済への外部キーや作成日時は持たない。
+- 制限対象のリクエストごとに、失効行を最大100件削除する。以後リクエストがなければ失効行は残るが、期限後の制限判定には使わない。厳密な期限時刻の物理削除や大量通信への防御を保証する方式ではない。
+- 制限の対象・時間窓・上限・障害時の応答は `API設計.md` に定義する。初期上限と通常操作への影響は公開前に実環境で再確認する。
 
 ## 4. 固定値
 
