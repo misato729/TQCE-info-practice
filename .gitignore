@@ -22,3 +22,6 @@ backend/config/master.key
 .env
 .env.*
 !.env.example
+
+# Private operations repository and local working records
+/operations/private/

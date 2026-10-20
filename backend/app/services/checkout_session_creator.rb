@@ -54,9 +54,17 @@ class CheckoutSessionCreator
   def create_stripe_session
     session = client.v1.checkout.sessions.create(
       {
-        payment_method_types: ["card"],
+        ui_mode: "hosted_page",
         mode: "payment",
         locale: "ja",
+        billing_address_collection: "auto",
+        phone_number_collection: { enabled: false },
+        automatic_tax: { enabled: false },
+        allow_promotion_codes: false,
+        allowed_payment_method_types: ["card"],
+        submit_type: "auto",
+        integration_identifier: "hosted_web_0001",
+        origin_context: "web",
         line_items: [{ price: ENV.fetch("STRIPE_PRICE_ID"), quantity: 1 }],
         client_reference_id: user.id.to_s,
         customer_email: user.email,

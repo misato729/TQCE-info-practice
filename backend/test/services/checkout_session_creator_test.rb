@@ -51,9 +51,18 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
 
       assert_equal "cs_test_123", result.session_id
       assert_equal "price_test", @prices.retrieved_id
+      assert_equal "hosted_page", @sessions.params.fetch(:ui_mode)
       assert_equal "payment", @sessions.params.fetch(:mode)
       assert_equal "ja", @sessions.params.fetch(:locale)
-      assert_equal ["card"], @sessions.params.fetch(:payment_method_types)
+      assert_equal "auto", @sessions.params.fetch(:billing_address_collection)
+      assert_equal false, @sessions.params.dig(:phone_number_collection, :enabled)
+      assert_equal false, @sessions.params.dig(:automatic_tax, :enabled)
+      assert_equal false, @sessions.params.fetch(:allow_promotion_codes)
+      assert_equal ["card"], @sessions.params.fetch(:allowed_payment_method_types)
+      assert_equal "auto", @sessions.params.fetch(:submit_type)
+      assert_equal "hosted_web_0001", @sessions.params.fetch(:integration_identifier)
+      assert_equal "web", @sessions.params.fetch(:origin_context)
+      assert_not @sessions.params.key?(:payment_method_collection)
       assert_equal "required", @sessions.params.dig(:consent_collection, :terms_of_service)
       assert_includes @sessions.params.dig(:custom_text, :submit, :message), "模擬試験6以降の利用資格"
       assert_equal @user.id.to_s, @sessions.params.fetch(:client_reference_id)

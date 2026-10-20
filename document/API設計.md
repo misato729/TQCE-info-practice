@@ -544,6 +544,7 @@ PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作�
 ```
 
 * Stripe Checkout Sessionは `mode = payment`、数量1、初期対応の決済手段はカードとして作成する
+* [Stripe SDK 20の定義](https://github.com/stripe/stripe-ruby/blob/v20.0.0/lib/stripe/params/checkout/session_create_params.rb)に合わせ、ホスト型の `ui_mode = hosted_page` と `allowed_payment_method_types = ["card"]` を指定する。請求先住所は自動判定、電話番号収集・自動税計算・プロモーションコードは無効とし、既存Price・購入者照合情報・同意・冪等性キーを維持する。買い切りのため、subscription専用の `payment_method_collection` は送信しない
 * Checkoutは日本語表示とし、Stripe Dashboardへ登録した利用規約への同意を必須にする。支払確定ボタン付近にも、500円の買い切り、自動更新なし及び提供開始後の利用者都合による返金条件を表示する
 * 金額は500円、通貨は `jpy` とし、Stripe上のPriceの有効状態・一回払い・金額・通貨・`livemode` とサーバーの期待値が一致しない場合はSessionを作成しない
 * ログインユーザーIDをStripeの `client_reference_id` または `metadata` に設定し、ローカルの決済記録と照合する
