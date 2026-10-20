@@ -1,5 +1,0 @@
-[build.environment]
-  # Legacy Basic Auth variables may still exist in Netlify.
-  # Remove these narrow exceptions after deleting the unused variables there.
-  # All other environment variables and secret scanning remain enabled.
-  SECRETS_SCAN_OMIT_KEYS = "NUXT_BASIC_AUTH_USER,NUXT_BASIC_AUTH_PASSWORD"

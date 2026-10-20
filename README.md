@@ -120,7 +120,7 @@ Netlifyの管理画面で次の環境変数を設定します。`NUXT_PUBLIC_API
 
 Docker用の `NUXT_API_BASE_INTERNAL=http://backend:3000` はNetlifyへ設定しません。DB接続情報・Stripeの秘密鍵もNetlifyへ移さず、Fly.io側で管理します。フロントエンドでは `NUXT_BASIC_AUTH_USER` / `NUXT_BASIC_AUTH_PASSWORD` を使用しないため、Netlifyでは不要です。既存のローカル `.env` やFly.ioの設定は、バックエンドの互換用設定として利用される場合があるため、この変更では削除しません。
 
-Netlifyに残っている旧Basic認証変数を原因とするビルド失敗を避けるため、`frontend/netlify.toml` の既存の検査除外はこの2変数だけ維持します。Netlifyで未使用の2変数を削除した後に、この除外設定も撤去してください。他の環境変数の検査は有効なままです。
+2026年10月20日に、ユーザーからNetlifyの旧Basic認証2変数を削除したとの報告を受け、`SECRETS_SCAN_OMIT_KEYS` と、その設定だけを持っていた `frontend/netlify.toml` を撤去しました。リポジトリ側で秘密情報の検査を除外する設定は設けません。Netlifyのビルド設定は管理画面の設定を維持します。
 
 公開前はNetlifyのPrivate設定によるログイン制限を維持します。閲覧できるNetlifyアカウントで画面を確認し、動作確認のためだけにPublicへ変更しません。
 

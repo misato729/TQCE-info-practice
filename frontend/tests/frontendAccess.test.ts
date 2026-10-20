@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import test from 'node:test'
 
 const globals = globalThis as any
@@ -10,6 +10,12 @@ test('frontend access does not require Basic authentication', () => {
   assert.equal(existsSync(new URL('../server/middleware/basic-auth.ts', import.meta.url)), false)
   assert.equal(Object.hasOwn(config.runtimeConfig, 'basicAuthUser'), false)
   assert.equal(Object.hasOwn(config.runtimeConfig, 'basicAuthPassword'), false)
+})
+
+test('Netlify does not omit environment keys or paths from secret scanning', () => {
+  const path = new URL('../netlify.toml', import.meta.url)
+  const source = existsSync(path) ? readFileSync(path, 'utf8') : ''
+  assert.doesNotMatch(source, /^\s*SECRETS_SCAN_OMIT_(?:KEYS|PATHS)\s*=/m)
 })
 
 test('removing Basic authentication preserves rendering and indexing rules', () => {
