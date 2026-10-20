@@ -764,7 +764,7 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | 環境 | 許可例 |
 | --- | --- |
 | 開発 | `http://localhost:3000` |
-| 本番 | Netlifyで公開するフロントエンドURL。移行先は `https://luminous-piroshki-d94b2b.netlify.app` |
+| 本番 | Netlifyで公開するフロントエンドURL。現在は `https://johokyonin-lab.netlify.app` |
 
 * 本番は `CORS_ORIGINS` で明示したHTTPSオリジンの完全一致だけを許可する。localhost及びVercelの自動許可はしない。未設定時は許可せず、不正値・ワイルドカード・パス・認証情報・末尾の `/` を含む値は起動時に拒否する
 * 開発だけが `http://localhost:3000` と `http://127.0.0.1:3000` を既定で許可する。プレビューは必要な個別オリジンだけを明示する

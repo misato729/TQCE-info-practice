@@ -73,6 +73,18 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
     end
   end
 
+  test "変更後の本番ドメインへCheckoutの成功と取消の両方で戻る" do
+    with_payment_env do
+      with_env("FRONTEND_URL" => "https://johokyonin-lab.netlify.app") do
+        CheckoutSessionCreator.new(user: @user, client: @client).call
+
+        assert PaidMembership.valid_frontend_origin?("production")
+        assert_equal "https://johokyonin-lab.netlify.app/premium/complete", @sessions.params.fetch(:success_url)
+        assert_equal "https://johokyonin-lab.netlify.app/premium?canceled=1", @sessions.params.fetch(:cancel_url)
+      end
+    end
+  end
+
   test "販売設定が無効ならStripeへ接続しない" do
     with_env("PAID_MEMBERSHIP_ENABLED" => "false") do
       assert_raises(CheckoutSessionCreator::ConfigurationError) do

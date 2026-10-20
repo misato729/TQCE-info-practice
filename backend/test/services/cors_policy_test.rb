@@ -2,7 +2,7 @@ require "test_helper"
 require_relative "../../lib/cors_policy"
 
 class CorsPolicyTest < ActiveSupport::TestCase
-  SITE = "https://luminous-piroshki-d94b2b.netlify.app"
+  SITE = "https://johokyonin-lab.netlify.app"
 
   test "production allows only explicit origins and fails closed when unset" do
     assert_empty CorsPolicy.origins(environment: "production", configured: "")
@@ -22,7 +22,7 @@ class CorsPolicyTest < ActiveSupport::TestCase
   end
 
   test "previews require explicit names" do
-    preview = "https://deploy-preview-1--luminous-piroshki-d94b2b.netlify.app"
+    preview = "https://deploy-preview-1--johokyonin-lab.netlify.app"
     assert_equal [SITE, preview], CorsPolicy.origins(environment: "production", configured: "#{SITE},#{preview}")
   end
 
@@ -36,7 +36,7 @@ class CorsPolicyTest < ActiveSupport::TestCase
       assert_nil headers["access-control-allow-credentials"]
     end
 
-    ["http://localhost:3000", "https://tqce-info-practice.vercel.app", "https://another.vercel.app", "#{SITE}.attacker.invalid", "null"].each do |origin|
+    ["http://localhost:3000", "https://luminous-piroshki-d94b2b.netlify.app", "https://tqce-info-practice.vercel.app", "https://another.vercel.app", "#{SITE}.attacker.invalid", "null"].each do |origin|
       _status, headers, = cors.call(preflight(origin: origin))
       assert_nil headers["access-control-allow-origin"], origin
     end

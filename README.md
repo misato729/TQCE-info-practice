@@ -43,7 +43,7 @@ Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTE
 
 有料会員は500円（税込）の買い切りです。模擬試験1〜5は無料、模擬試験6以降は有効な有料会員または管理者だけが利用できます。販売開始フラグの初期値は `false` です。
 
-1. Stripeで「模擬試験6以降の利用資格（買い切り）」など提供内容が分かる名称のProductと、日本円500円の一回払い用Priceを作成します。Stripe Dashboardの公開情報に、本番サイトの利用規約URLとプライバシーポリシーURLも登録します。Checkoutでは利用規約への同意を必須にするため、URL未設定時はSessionを作成できません。
+1. Stripeで「模擬試験6以降の利用資格（買い切り）」など提供内容が分かる名称のProductと、日本円500円の一回払い用Priceを作成します。Stripe Dashboardの公開情報には、サイトURL `https://johokyonin-lab.netlify.app/`、利用規約URL `https://johokyonin-lab.netlify.app/terms`、プライバシーポリシーURL `https://johokyonin-lab.netlify.app/privacy-policy` を登録します。Checkoutでは利用規約への同意を必須にするため、URL未設定時はSessionを作成できません。ドメインを変更してもDashboardの登録値は自動更新されないため、販売前に確認してください。
 2. StripeのWebhook送信先を `https://<backend-host>/api/v1/webhooks/stripe` とし、次のイベントを登録します。
    - `checkout.session.completed`
    - `checkout.session.expired`
@@ -101,7 +101,7 @@ Basic認証の廃止によってレンダリング方式やキャッシュ方針
 
 ## フロントエンドのデプロイ（Netlify）
 
-フロントエンドはNetlify、バックエンドはFly.io、DBはNeonを使用します。Netlifyの移行先URLは https://luminous-piroshki-d94b2b.netlify.app/ です。ビルド・デプロイの成功報告と、実際の画面・API疎通の完了は区別します。移行時の確認状況と切替・切戻しの手順は [Netlify移行確認記録](document/Netlify移行確認_2026-10-19.md) を参照してください。
+フロントエンドはNetlify、バックエンドはFly.io、DBはNeonを使用します。現在のフロントエンドURLは https://johokyonin-lab.netlify.app/ です（2026年10月20日にNetlifyのサイト名を変更）。ビルド・デプロイの成功報告と、実際の画面・API疎通の完了は区別します。移行時の確認状況とドメイン変更・切替・切戻しの手順は [Netlify移行確認記録](document/Netlify移行確認_2026-10-19.md) を参照してください。
 
 | 設定 | 値 |
 | --- | --- |
@@ -124,7 +124,7 @@ Docker用の `NUXT_API_BASE_INTERNAL=http://backend:3000` はNetlifyへ設定し
 
 公開前はNetlifyのPrivate設定によるログイン制限を維持します。閲覧できるNetlifyアカウントで画面を確認し、動作確認のためだけにPublicへ変更しません。
 
-Railsの本番 `CORS_ORIGINS` は `https://luminous-piroshki-d94b2b.netlify.app` のみにします。開発環境だけがlocalhost/127.0.0.1:3000を既定で許可し、本番では開発用URLやVercelの正規表現を自動許可しません。本番の追加オリジンはHTTPSの完全一致で、パス・認証情報・末尾の `/` を付けずカンマ区切りにします。未設定ならクロスオリジンを許可せず、不正値は起動時に拒否します。プレビューが必要な場合も対象URLを個別に追加し、検証後に削除します。
+Railsの本番 `CORS_ORIGINS` は `https://johokyonin-lab.netlify.app` のみにします。開発環境だけがlocalhost/127.0.0.1:3000を既定で許可し、本番では開発用URLやVercelの正規表現を自動許可しません。本番の追加オリジンはHTTPSの完全一致で、パス・認証情報・末尾の `/` を付けずカンマ区切りにします。未設定ならクロスオリジンを許可せず、不正値は起動時に拒否します。プレビューが必要な場合も対象URLを個別に追加し、検証後に削除します。
 
 CORSはブラウザ向けの制御で、APIへの直接アクセスを防ぐ認証ではありません。既存のBearer認証・管理者及び有料資格の検査は維持します。実際の反映・拒否確認は[公開前運用確認](document/公開前運用確認_2026-10-20.md)に記録します。
 
@@ -160,7 +160,7 @@ fly launch --no-deploy
 ```sh
 fly secrets set SECRET_KEY_BASE=<secret>
 fly secrets set DATABASE_URL=<neon-production-database-url>
-fly secrets set CORS_ORIGINS=https://luminous-piroshki-d94b2b.netlify.app
+fly secrets set CORS_ORIGINS=https://johokyonin-lab.netlify.app
 ```
 
 有料会員を販売する場合は、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。実値はコマンド履歴や共有ログへ残さない方法で設定してください。
@@ -171,7 +171,7 @@ fly secrets set STRIPE_LIVEMODE=true
 fly secrets set STRIPE_SECRET_KEY=<stripe-secret-key>
 fly secrets set STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
 fly secrets set STRIPE_PRICE_ID=<stripe-price-id>
-fly secrets set FRONTEND_URL=https://luminous-piroshki-d94b2b.netlify.app
+fly secrets set FRONTEND_URL=https://johokyonin-lab.netlify.app
 ```
 
 `NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_ADDRESS`、`NUXT_PUBLIC_SELLER_PHONE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定します。これらは秘密情報ではなく、公開販売設定APIを通じて特定商取引法に基づく表記へ表示されます。
