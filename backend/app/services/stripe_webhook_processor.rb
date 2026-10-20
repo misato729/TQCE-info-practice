@@ -117,13 +117,7 @@ class StripeWebhookProcessor
     charge_id ||= payment.stripe_charge_id
     raise EventMismatchError, "返金対象のChargeを確認できません" if charge_id.blank?
 
-    charge = client.v1.charges.retrieve(charge_id)
-    charge_payment_intent_id = stripe_id(charge.payment_intent)
-    valid = charge.currency == payment.currency &&
-      charge.amount == payment.amount &&
-      charge.amount_refunded.between?(0, payment.amount) &&
-      (payment.stripe_payment_intent_id.blank? || charge_payment_intent_id == payment.stripe_payment_intent_id)
-    raise EventMismatchError, "返金対象の決済情報が一致しません" unless valid
+    charge = verified_refund_charge(payment, charge_id)
     return if charge.amount_refunded.zero?
 
     attributes = {
@@ -195,11 +189,60 @@ class StripeWebhookProcessor
     )
     return unless payment
 
+    charge_id = stripe_id(refund.charge) || payment.stripe_charge_id
+    raise EventMismatchError, "返金対象のChargeを確認できません" if charge_id.blank?
+
+    # A refund can initially succeed and later fail; use the current charge state.
+    charge = verified_refund_charge(payment, charge_id)
+    disputed = payment.status == "disputed" || payment.stripe_dispute_id.present? || charge.disputed
+    fully_refunded = charge.amount_refunded == payment.amount
+    status = if disputed
+      "disputed"
+    elsif fully_refunded
+      "refunded"
+    elsif charge.amount_refunded.positive?
+      "partially_refunded"
+    else
+      "paid"
+    end
     payment.update!(
-      stripe_charge_id: stripe_id(refund.charge) || payment.stripe_charge_id,
+      stripe_charge_id: charge.id,
+      refunded_amount: charge.amount_refunded,
+      refunded_at: fully_refunded ? payment.refunded_at || Time.current : nil,
+      status: status,
       last_refund_failure_reason: refund.failure_reason,
       last_refund_failed_at: failed_at,
     )
+
+    if disputed
+      revoke_membership(payment, "dispute")
+    elsif fully_refunded
+      revoke_membership(payment, "refund")
+    else
+      restore_refund_revoked_membership(payment)
+    end
+  end
+
+  def verified_refund_charge(payment, charge_id)
+    charge = client.v1.charges.retrieve(charge_id)
+    charge_payment_intent_id = stripe_id(charge.payment_intent)
+    valid = charge.currency == payment.currency &&
+      charge.amount == payment.amount &&
+      charge.amount_refunded.between?(0, payment.amount) &&
+      (payment.stripe_payment_intent_id.blank? || charge_payment_intent_id == payment.stripe_payment_intent_id)
+    raise EventMismatchError, "返金対象の決済情報が一致しません" unless valid
+
+    charge
+  end
+
+  def restore_refund_revoked_membership(payment)
+    return unless payment.user
+
+    membership = Membership.lock.find_by(user_id: payment.user_id)
+    return unless membership&.source_payment_id == payment.id &&
+      membership.status == "revoked" && membership.revocation_reason == "refund"
+
+    membership.update!(status: "active", revoked_at: nil, revocation_reason: nil)
   end
 
   def find_payment(payment_intent_id:, charge_id:)

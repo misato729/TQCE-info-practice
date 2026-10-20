@@ -171,12 +171,142 @@ class StripeWebhookProcessorTest < ActiveSupport::TestCase
     )
     failed_event = stripe_event("evt_refund_failed", "refund.failed", refund)
 
-    StripeWebhookProcessor.new(event: failed_event).call
+    StripeWebhookProcessor.new(event: failed_event, client: refund_client(refund_charge(amount_refunded: 0))).call
 
     assert_equal "paid", @payment.reload.status
     assert_equal "expired_or_canceled_card", @payment.last_refund_failure_reason
     assert_in_delta failed_event.created, @payment.last_refund_failed_at.to_i, 1
     assert_equal "active", @user.reload.membership.status
+  end
+
+  test "成立後に返金が失敗した場合は最新の返金額を照合し元の購入資格を戻す" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    @user.membership.update!(status: "revoked", revoked_at: Time.current, revocation_reason: "refund")
+    activated_at = @user.membership.activated_at
+    event = failed_refund_event
+
+    StripeWebhookProcessor.new(event: event, client: refund_client(refund_charge(amount_refunded: 0))).call
+
+    assert_equal "paid", @payment.reload.status
+    assert_equal 0, @payment.refunded_amount
+    assert_nil @payment.refunded_at
+    assert_equal "active", @user.reload.membership.status
+    assert_equal activated_at, @user.membership.activated_at
+    assert_nil @user.membership.revoked_at
+    assert_nil @user.membership.revocation_reason
+    assert_no_difference -> { StripeWebhookEvent.count } do
+      assert_equal :duplicate, StripeWebhookProcessor.new(event: event).call
+    end
+  end
+
+  test "失敗した返金以外に全額返金が成立している場合は資格を戻さない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    @user.membership.update!(status: "revoked", revoked_at: Time.current, revocation_reason: "refund")
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 500))).call
+
+    assert_equal "refunded", @payment.reload.status
+    assert_equal 500, @payment.refunded_amount
+    assert_equal "revoked", @user.reload.membership.status
+  end
+
+  test "返金失敗時も紛争により失効した資格は自動で戻さない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    StripeWebhookProcessor.new(event: stripe_event("evt_dispute", "charge.dispute.created", dispute_object)).call
+    @payment.update!(refunded_amount: 500, refunded_at: Time.current)
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 0))).call
+
+    assert_equal "disputed", @payment.reload.status
+    assert_equal 0, @payment.refunded_amount
+    assert_equal "revoked", @user.reload.membership.status
+    assert_equal "dispute", @user.membership.revocation_reason
+  end
+
+  test "返金失敗後に部分返金が残る場合は成立した返金額だけを記録する" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    @user.membership.update!(status: "revoked", revoked_at: Time.current, revocation_reason: "refund")
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 200))).call
+
+    assert_equal "partially_refunded", @payment.reload.status
+    assert_equal 200, @payment.refunded_amount
+    assert_nil @payment.refunded_at
+    assert_equal "active", @user.reload.membership.status
+  end
+
+  test "返金済み状態でも紛争履歴がある資格は返金失敗だけで戻さない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    StripeWebhookProcessor.new(event: stripe_event("evt_dispute", "charge.dispute.created", dispute_object)).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    @user.membership.update!(revocation_reason: "refund")
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 0))).call
+
+    assert_equal "disputed", @payment.reload.status
+    assert_equal "du_test_123", @payment.stripe_dispute_id
+    assert_equal "revoked", @user.reload.membership.status
+    assert_equal "dispute", @user.membership.revocation_reason
+  end
+
+  test "Stripeに未反映の紛争がある場合も返金失敗だけで資格を戻さない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    @user.membership.update!(status: "revoked", revoked_at: Time.current, revocation_reason: "refund")
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 0, disputed: true))).call
+
+    assert_equal "disputed", @payment.reload.status
+    assert_equal 0, @payment.refunded_amount
+    assert_equal "revoked", @user.reload.membership.status
+  end
+
+  test "古い決済の返金失敗は別の決済へ切り替わった資格を変更しない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    @payment.update!(status: "refunded", refunded_amount: 500, refunded_at: Time.current)
+    other = @user.payments.create!(stripe_checkout_session_id: "cs_other", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
+    @user.membership.update!(source_payment: other, status: "revoked", revoked_at: Time.current, revocation_reason: "refund")
+
+    StripeWebhookProcessor.new(event: failed_refund_event, client: refund_client(refund_charge(amount_refunded: 0))).call
+
+    assert_equal "paid", @payment.reload.status
+    assert_equal other.id, @user.reload.membership.source_payment_id
+    assert_equal "revoked", @user.membership.status
+  end
+
+  test "返金失敗のCharge照合が一致しなければ記録も資格も変更しない" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    event = failed_refund_event
+    charge = refund_charge(amount_refunded: 0, payment_intent: "pi_other")
+
+    assert_raises(StripeWebhookProcessor::EventMismatchError) do
+      StripeWebhookProcessor.new(event: event, client: refund_client(charge)).call
+    end
+
+    assert_equal "paid", @payment.reload.status
+    assert_nil @payment.last_refund_failed_at
+    assert_equal "active", @user.reload.membership.status
+    assert_not StripeWebhookEvent.exists?(stripe_event_id: event.id)
+  end
+
+  test "返金失敗の照合通信が失敗しても処理済みにせず再試行できる" do
+    StripeWebhookProcessor.new(event: checkout_event("evt_checkout")).call
+    event = failed_refund_event
+    charges = Object.new
+    charges.define_singleton_method(:retrieve) { |_id| raise Stripe::APIConnectionError, "connection failed" }
+    client = TestObject.new(v1: TestObject.new(charges: charges))
+
+    assert_raises(Stripe::APIConnectionError) do
+      StripeWebhookProcessor.new(event: event, client: client).call
+    end
+
+    assert_nil @payment.reload.last_refund_failed_at
+    assert_not StripeWebhookEvent.exists?(stripe_event_id: event.id)
+    assert_equal :processed, StripeWebhookProcessor.new(event: event, client: refund_client(refund_charge(amount_refunded: 0))).call
+    assert @payment.reload.last_refund_failed_at
   end
 
   test "返金が決済完了通知より先に届いた場合は処理を確定せず再送を待つ" do
@@ -232,6 +362,24 @@ class StripeWebhookProcessorTest < ActiveSupport::TestCase
   end
 
   private
+
+  def failed_refund_event
+    stripe_event("evt_refund_failed", "refund.failed", TestObject.new(
+      status: "failed", payment_intent: "pi_test_123", charge: "ch_test_123",
+      failure_reason: "expired_or_canceled_card",
+    ))
+  end
+
+  def refund_charge(amount_refunded:, disputed: false, payment_intent: "pi_test_123")
+    TestObject.new(id: "ch_test_123", currency: "jpy", amount: 500,
+      amount_refunded: amount_refunded, payment_intent: payment_intent, disputed: disputed)
+  end
+
+  def refund_client(charge)
+    charges = Object.new
+    charges.define_singleton_method(:retrieve) { |_id| charge }
+    TestObject.new(v1: TestObject.new(charges: charges))
+  end
 
   def checkout_event(id, amount_total: 500)
     session = TestObject.new(

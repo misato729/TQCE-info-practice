@@ -547,7 +547,7 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | `checkout.session.completed` | `payment_status = paid`、商品、金額、通貨、ユーザー及びCheckout Session IDを照合し、決済を `paid`、有料会員資格を `active` にする |
 | `checkout.session.expired` | 未完了の決済を `expired` にする |
 | `refund.created`, `refund.updated` | Refundの状態を確認し、成立済みの返金額を反映する。全額返金が成立した場合は決済を `refunded`、資格を `revoked` にする |
-| `refund.failed` | 対応する決済へ最新の返金失敗理由と通知日時を記録し、運営者が確認できるようにする |
+| `refund.failed` | 失敗理由と通知日時を記録し、Stripeの現在のChargeを照合して成立済み返金額と決済状態を更新する。同じ購入の返金だけを理由に失効した資格は、全額返金・異議申立てが残っていない場合に限り元へ戻す。別購入や異議申立てによる失効資格は戻さない |
 | `charge.dispute.created` | 決済を `disputed`、資格を `revoked` にして利用を停止する |
 | `charge.dispute.closed` | 対応する決済へStripe上の終了結果と通知日時を記録する。資金回復後の資格再開は自動化せず、運営者がStripeの状態を確認して行う |
 
