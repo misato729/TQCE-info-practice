@@ -5,7 +5,7 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      (1..15).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..15).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @question_20_entries = @entries.select { |entry| entry.fetch(:attributes).fetch(:question_number) == 20 }
     synchronize_question_20

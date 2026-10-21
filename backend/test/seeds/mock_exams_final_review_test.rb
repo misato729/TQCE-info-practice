@@ -11,7 +11,7 @@ class MockExamsFinalReviewTest < ActionDispatch::IntegrationTest
 
   setup do
     # These are the actual current seeds, not historical comparison projections.
-    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     @entries = @all.select { |entry| DATA.fetch("previous_entries").key?(key(entry)) }
     @questions = @all.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end

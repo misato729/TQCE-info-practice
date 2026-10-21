@@ -8,7 +8,7 @@ class MockExamsQuestion11RevisionTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      ANSWERS.each_key { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      ANSWERS.each_key { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| entry.fetch(:attributes).fetch(:question_number) == 11 }
     @questions = @entries.to_h { |entry| [entry.fetch(:exam_number), entry.fetch(:attributes)] }
   end

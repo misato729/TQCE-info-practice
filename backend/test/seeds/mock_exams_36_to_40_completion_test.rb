@@ -26,7 +26,7 @@ class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
 
   setup do
     # Collect only these five sets. Saving is limited to the database/API tests.
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     @new_entries = @entries.select { |entry| (11..20).cover?(entry[:attributes][:question_number]) }
     @questions = @new_entries.to_h { |entry| [key(entry), entry[:attributes]] }
   end
@@ -170,7 +170,7 @@ class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
   test "必須空欄全消去セル不足及び未知第五ラベルをseed収集時に拒否する" do
     @new_entries.select { |entry| fill_choice?(entry[:attributes]) }.each do |entry|
       id = key(entry)
-      path = Rails.root.join("db/seeds/mock_exam_#{entry[:exam_number]}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry[:exam_number]}.rb")
       source = File.read(path)
       insertion = "questions.each do |question|\n"
       assert_includes source, insertion, id
@@ -202,6 +202,9 @@ class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
       assert_equal EXAMS, visible.map { |exam| exam["exam_number"] }
       visible.each { |exam| assert_equal (1..20).to_a, exam.fetch("question_numbers"); assert_equal 20, exam.fetch("published_question_count") }
       Question.where(exam_number: EXAMS).order(:exam_number, :question_number).each do |question|
+        # Content/authorization coverage is not a load test. Limits themselves
+        # are covered separately; keep counters local to each question here.
+        ApiRateLimitBucket.delete_all
         get api_v1_question_path(question), headers: headers
         assert_response :success
         assert_equal question.content_blocks, response.parsed_body.dig("data", "content_blocks")

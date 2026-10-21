@@ -9,7 +9,7 @@ class MockExams26To30HistoryTest < ActiveSupport::TestCase
   APPROVED = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_26_to_30_approved_history_drafts.json"))).freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -107,7 +107,7 @@ class MockExams26To30HistoryTest < ActiveSupport::TestCase
   end
 
   test "既存五十問と承認十問の本文選択肢に完全重複がない" do
-    previous = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    previous = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     assert_equal 50, previous.size
     fingerprints = (previous + @entries).map do |entry|

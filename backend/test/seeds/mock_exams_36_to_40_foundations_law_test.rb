@@ -9,7 +9,7 @@ class MockExams36To40FoundationsLawTest < ActionDispatch::IntegrationTest
 
   setup do
     # Preserve the originally approved 25-question scenario when later questions are added.
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .map { |entry| entry.merge(publication_status: "draft") }
       .select { |entry| entry.fetch(:attributes).fetch(:question_number) <= 5 }
   end

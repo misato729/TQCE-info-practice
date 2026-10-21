@@ -5,7 +5,7 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      (16..20).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (16..20).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| entry.fetch(:attributes).fetch(:question_number) == 20 }
     synchronize_question_20
   end
@@ -142,7 +142,7 @@ class MockExams16To20Question20Test < ActionDispatch::IntegrationTest
 
   test "既存十五問及び追加五問内に完全重複はない" do
     existing = QuestionSeedSync.collect do
-      (1..15).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..15).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| entry.fetch(:attributes).fetch(:question_number) == 20 }
     all_texts = (existing + @entries).map { |entry| entry.fetch(:attributes).fetch(:content_blocks).to_json.gsub(/[\s　]/, "") }
     assert_equal 20, all_texts.size

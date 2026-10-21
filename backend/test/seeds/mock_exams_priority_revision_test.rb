@@ -14,7 +14,7 @@ class MockExamsPriorityRevisionTest < ActionDispatch::IntegrationTest
   RELATED = %w[1-3 2-3 1-4 2-4 3-4 1-5 3-5 2-7 1-10 6-13 15-13 9-14 1-13 2-13 3-13 5-13 3-16 2-17 1-19 3-19].freeze
 
   setup do
-    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .map { |entry| ImprovementRevision20261017.historical_entry(entry) }
     @entries = @all.select { |entry| DATA.fetch("previous_entries").key?(key(entry)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }

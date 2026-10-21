@@ -7,7 +7,7 @@ class MockExamsImprovementRevisionTest < ActionDispatch::IntegrationTest
   LABELS = %w[ア イ ウ エ].freeze
 
   setup do
-    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .map { |entry| FinalReview20261018.historical_entry(entry) }
     @entries = @all.select { |entry| DATA.fetch("previous_entries").key?(key(entry)) }
   end

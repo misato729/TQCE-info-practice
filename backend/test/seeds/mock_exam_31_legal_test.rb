@@ -10,7 +10,7 @@ class MockExam31LegalTest < ActionDispatch::IntegrationTest
   ANSWERS = %w[ア ウ イ].freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { load Rails.root.join("db/seeds/mock_exam_31.rb") }
+    @entries = QuestionSeedSync.collect { load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_31.rb") }
       .select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
       .map { |entry| entry.merge(publication_status: "draft") } # Historical three-question draft test, independent of the completed set.
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
@@ -151,7 +151,7 @@ class MockExam31LegalTest < ActionDispatch::IntegrationTest
   end
 
   test "二つの条文穴埋めの必須空欄全消去セル不足条番号欠落を投入前に拒否する" do
-    path = Rails.root.join("db/seeds/mock_exam_31.rb")
+    path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_31.rb")
     source = File.read(path)
     insertion = "questions.each do |question|\n"
     assert_includes source, insertion

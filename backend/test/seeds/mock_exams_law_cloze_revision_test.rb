@@ -14,7 +14,7 @@ class MockExamsLawClozeRevisionTest < ActionDispatch::IntegrationTest
 
   setup do
     @all_entries = QuestionSeedSync.collect do
-      (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..25).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @entries = @all_entries.select { |entry| ANSWERS.key?(key(entry)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }

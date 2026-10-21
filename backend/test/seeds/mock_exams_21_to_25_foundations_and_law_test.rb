@@ -20,7 +20,7 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     # Preserve the approved partial-stage behavior independently of the new
     # completed-set publication tests.
@@ -147,7 +147,7 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
     @added_entries.select { |entry| cloze?(entry[:attributes]) }.each do |entry|
       exam, number = entry.values_at(:exam_number, :attributes)
       number = number[:question_number]
-      path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(path)
       mutations = [
         "questions.find { |question| question[:question_number] == #{number} }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②③④][}][}]/, \"語句\") if block[:type] == \"fill_in_quote\" }\n",
@@ -191,7 +191,7 @@ class MockExams21To25FoundationsAndLawTest < ActionDispatch::IntegrationTest
 
   test "二回の再実行で追加及び既存問題のID内容履歴お気に入り同期状態を維持する" do
     save_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "再実行検証", email: "foundations-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 1], [21, 3], [21, 6]].each do |exam, number|
       question = Question.find_by!(exam_number: exam, question_number: number)

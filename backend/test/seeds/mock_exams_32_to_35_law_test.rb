@@ -11,7 +11,7 @@ class MockExams32To35LawTest < ActionDispatch::IntegrationTest
   EXPECTED_ANSWERS = { 32 => %w[イ エ ア], 33 => %w[エ エ イ], 34 => %w[エ ウ エ], 35 => %w[イ ア エ] }.freeze
 
   setup do
-    @all = QuestionSeedSync.collect { (1..35).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all = QuestionSeedSync.collect { (1..35).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     @entries = @all.select { |entry| (31..35).cover?(entry[:exam_number]) }
     @added = @entries.select { |entry| EXAMS.include?(entry[:exam_number]) && (3..5).cover?(entry[:attributes][:question_number]) }
     @data = @added.to_h { |entry| [key(entry), entry[:attributes]] }

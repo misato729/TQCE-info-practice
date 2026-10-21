@@ -622,6 +622,6 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
   end
 
   def load_completed_seeds
-    (11..15).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+    (11..15).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
   end
 end

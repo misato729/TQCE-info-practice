@@ -18,7 +18,7 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
 
   setup do
     @entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     # Project the completed seeds onto the previously approved partial stage;
     # keep its draft/admin/reseed tests without changing the question content.
@@ -157,7 +157,7 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
   test "本文と表の必須空欄欠落及び選択肢セル不足をseed収集時に拒否する" do
     %w[21-11 22-11 23-11 24-11 25-11 24-15].each do |key|
       exam, number = key.split("-").map(&:to_i)
-      path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(path)
       mutations = [
         "questions.find { |question| question[:question_number] == #{number} }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②③][}][}]/, '語句') if block[:type] == 'fill_in_quote'; block[:rows] = block[:rows].map { |row| row.map { |cell| cell.gsub(/【[①②③]】/, '語句') } } if block[:type] == 'table' }\n",
@@ -231,7 +231,7 @@ class MockExams21To25GuidancePsychologyReportTest < ActionDispatch::IntegrationT
 
   test "二回の再実行で既存問題と追加問題のID内容履歴お気に入りを維持する" do
     save_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "追加問題検証", email: "guidance-21-25-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 11], [21, 1], [24, 11], [24, 15]].each do |exam, number|
       question = Question.find_by!(exam_number: exam, question_number: number)

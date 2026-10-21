@@ -10,7 +10,7 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
   APPROVED = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_26_to_30_approved_algorithm_statistics_drafts.json"))).freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @added = @entries.select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     @questions = @added.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
@@ -68,7 +68,7 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
   end
 
   test "既存五十問と新規十問の本文及び選択肢に完全重複がない" do
-    existing = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    existing = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     assert_equal 50, existing.size
     fingerprints = (existing + @added).map do |entry|
@@ -85,7 +85,7 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
       assert_equal %w[① ②], question[:content_blocks].first[:text].scan(/\{\{([①②])\}\}/).flatten.uniq
       assert_equal %w[① ②], code(exam).scan(/【([①②])】/).flatten.uniq
       question[:choices].each { |choice| assert_equal "fill_in_choice", choice[:content_blocks].first[:type]; assert_equal 2, choice_cells(choice).size }
-      path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(path)
       mutations = [
         "questions.find { |question| question[:question_number] == 19 }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②][}][}]/, '語句') if block[:type] == 'fill_in_text'; block[:code] = block[:code].gsub(/【[①②]】/, '語句') if block[:type] == 'code' }\n",
@@ -393,7 +393,7 @@ class MockExams26To30AlgorithmStatisticsTest < ActionDispatch::IntegrationTest
 
   test "二回再同期で既存と新規のID内容履歴お気に入りseed状態を保持する" do
     save_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "アルゴリズム統計再同期確認", email: "mock26-information-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 19], [26, 3], [26, 19], [28, 20], [30, 20]].each do |exam, number|
       record = Question.find_by!(exam_number: exam, question_number: number)

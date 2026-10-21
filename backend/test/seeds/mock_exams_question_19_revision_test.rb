@@ -6,7 +6,7 @@ class MockExamsQuestion19RevisionTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      (1..20).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..20).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @targets = @entries.select do |entry|
       ANSWERS.key?(entry[:exam_number]) && entry[:attributes][:question_number] == 19
@@ -277,7 +277,7 @@ class MockExamsQuestion19RevisionTest < ActionDispatch::IntegrationTest
   end
 
   test "seed全体の検査はコード穴埋めを許容し番号の欠落とセル数不一致を拒否する" do
-    with_seed_entries(@entries) { load Rails.root.join("db/seeds.rb") }
+    with_seed_entries(@entries) { load Rails.root.join("test/support/legacy_question_catalog_validation.rb") }
     ["code", "prompt", "cells"].each do |part|
       entries = @entries.deep_dup
       question = entries.find { |entry| entry[:exam_number] == 2 && entry[:attributes][:question_number] == 19 }[:attributes]
@@ -292,7 +292,7 @@ class MockExamsQuestion19RevisionTest < ActionDispatch::IntegrationTest
       end
       assert_no_difference ["Question.count", "QuestionChoice.count"] do
         with_seed_entries(entries) do
-          error = assert_raises(RuntimeError) { load Rails.root.join("db/seeds.rb") }
+          error = assert_raises(RuntimeError) { load Rails.root.join("test/support/legacy_question_catalog_validation.rb") }
           assert_includes error.message, "模擬試験2 問19"
         end
       end

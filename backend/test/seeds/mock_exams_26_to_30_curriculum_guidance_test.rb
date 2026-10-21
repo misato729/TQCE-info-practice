@@ -25,7 +25,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
 
   setup do
     @partial_entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @entries = @partial_entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
@@ -207,7 +207,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
 
   test "必須空欄の全消去と選択肢セル不足を三十問すべて投入前に拒否する" do
     @entries.each do |entry|
-      path = Rails.root.join("db/seeds/mock_exam_#{entry[:exam_number]}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry[:exam_number]}.rb")
       source = File.read(path)
       number = entry[:attributes][:question_number]
       mutations = [
@@ -269,7 +269,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
 
   test "二回再同期でID本文四択公開状態seed状態既存履歴お気に入りを変えない" do
     save_partial_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "指導要領再同期確認", email: "mock26-curriculum-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 1], [26, 3], [26, 6], [30, 11]].each do |exam, number|
       record = Question.find_by!(exam_number: exam, question_number: number)
@@ -299,7 +299,7 @@ class MockExams26To30CurriculumGuidanceTest < ActionDispatch::IntegrationTest
   end
 
   test "今回追加した三十問を除く既存五百十五問の変更前hashを全件維持する" do
-    entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     previous = APPROVED.fetch("existing_515_payload_digests")
     assert_equal 515, previous.size
     # Keep the original comparison keys and hashes fixed; later approved

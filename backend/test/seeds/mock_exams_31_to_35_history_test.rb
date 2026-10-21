@@ -9,7 +9,7 @@ class MockExams31To35HistoryTest < ActionDispatch::IntegrationTest
   APPROVED = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_31_to_35_approved_history_drafts.json"))).freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
       .map { |entry| entry.merge(publication_status: "draft") } # Preserve the historical partial-set contract; current publication is checked separately.
     # Keep the original ten-question approval snapshot independent of later
@@ -103,7 +103,7 @@ class MockExams31To35HistoryTest < ActionDispatch::IntegrationTest
   end
 
   test "既出六十問との題材重複は許容し本文四択の完全同一だけを機械的に拒否する" do
-    previous = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    previous = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     assert_equal 60, previous.size
     old_fingerprints = previous.map { |entry| fingerprint(entry) }

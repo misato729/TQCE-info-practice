@@ -1,12 +1,12 @@
 require "uri"
 
-# Admin and seed writes share validation, locking and history invalidation.
+# Database-backed question edits share validation, locking and history invalidation.
 class QuestionWriter
   LABELS = %w[ア イ ウ エ].freeze
 
   def self.transaction(&block)
     Question.transaction do
-      # Serialize question writes (including creation and seed tombstones).
+      # Serialize question creation, updates and deletion.
       Question.connection.execute("SELECT pg_advisory_xact_lock(71514345)")
       block.call
     end
@@ -18,10 +18,6 @@ class QuestionWriter
       before = QuestionPayload.from_record(question) if question.persisted?
       attributes = attributes.deep_symbolize_keys
       choices = attributes.fetch(:choices).map { |choice| choice.merge(content_blocks: choice.fetch(:content_blocks).as_json) }
-      if question.persisted? && QuestionSeedState.exists?(exam_number: question.exam_number, question_number: question.question_number) &&
-          (attributes[:exam_number].to_i != question.exam_number || attributes[:question_number].to_i != question.question_number)
-        invalid!(question, "seed管理中の試験ナンバー・問番号は変更できません")
-      end
       question.assign_attributes(attributes.except(:choices))
       validate_choices!(question, choices)
       if question.publication_status == "published"
@@ -51,8 +47,6 @@ class QuestionWriter
   def self.destroy!(question)
     transaction do
       question.lock!
-      state = QuestionSeedState.find_or_initialize_by(exam_number: question.exam_number, question_number: question.question_number)
-      state.update!(deleted: true)
       question.destroy!
     end
   end

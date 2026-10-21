@@ -26,7 +26,7 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
 
   setup do
     @partial_entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| entry.fetch(:attributes).fetch(:question_number) <= 10 && !((32..35).cover?(entry[:exam_number]) && (3..5).cover?(entry[:attributes][:question_number])) }
       .map { |entry| entry.merge(publication_status: "draft") } # Keep the approved 38-question draft scenario, not later additions.
     @entries = @partial_entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
@@ -218,7 +218,7 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
 
   test "二十五問の必須空欄全消去セル不足ラベル増加未知ラベルを投入前に拒否する" do
     @entries.each do |entry|
-      path = Rails.root.join("db/seeds/mock_exam_#{entry[:exam_number]}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry[:exam_number]}.rb")
       source = File.read(path)
       target = "questions.find { |question| question[:question_number] == #{entry[:attributes][:question_number]} }"
       insertion = "questions.each do |question|\n"
@@ -319,7 +319,7 @@ class MockExams31To35CurriculumTest < ActionDispatch::IntegrationTest
   test "追加二十五問以外の既存六百十三問の承認前payloadを固定hashで保持する" do
     previous = APPROVED.fetch("existing_613_payload_digests")
     assert_equal 613, previous.size
-    entries = QuestionSeedSync.collect { (1..35).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    entries = QuestionSeedSync.collect { (1..35).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| entry[:exam_number] < 31 || (entry[:attributes][:question_number] <= 10 && !((32..35).cover?(entry[:exam_number]) && (3..5).cover?(entry[:attributes][:question_number]))) }
     unchanged = entries.select { |entry| previous.key?(key(entry)) }
     assert_equal previous.keys.sort, unchanged.map { |entry| key(entry) }.sort

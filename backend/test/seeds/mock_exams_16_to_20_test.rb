@@ -255,7 +255,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "問6から問10に既存十五セットと同じ抜粋と空欄の実質重複はない" do
     entries = QuestionSeedSync.collect do
-      (1..15).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..15).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     existing_signatures = entries.select { |entry| (6..10).cover?(entry.fetch(:attributes).fetch(:question_number)) }.map do |entry|
       attributes = entry.fetch(:attributes)
@@ -354,7 +354,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   test "模試20の必須穴埋めは空欄なしの試験抜粋枠と混同せず空欄ゼロを拒否する" do
-    seed_path = Rails.root.join("db/seeds/mock_exam_20.rb")
+    seed_path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_20.rb")
     source = File.read(seed_path)
     marker = "questions.each do |question|\n"
     assert_includes source, marker
@@ -431,7 +431,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   test "問11から問15に既存十五セット及び追加二十五問内で完全重複はない" do
     entries = QuestionSeedSync.collect do
-      (1..15).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..15).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     existing = entries.select { |entry| (11..15).cover?(entry.fetch(:attributes).fetch(:question_number)) }.map do |entry|
       normalized(entry.fetch(:attributes).fetch(:content_blocks).to_json)
@@ -564,7 +564,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
   end
 
   test "メインseedは完成済み千問を公開し再実行できる" do
-    load Rails.root.join("db/seeds.rb")
+    load Rails.root.join("test/support/legacy_question_catalog_validation.rb")
     assert_equal 1000, Question.count
     assert_equal 4000, QuestionChoice.count
     assert_equal 1000, QuestionChoice.where(is_correct: true).count
@@ -597,7 +597,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
       assert_equal expected_numbers, Question.where(exam_number: exam).order(:question_number).pluck(:question_number)
     end
     assert_no_difference ["Question.count", "QuestionChoice.count", "AnswerHistory.count", "QuestionSeedState.count"] do
-      load Rails.root.join("db/seeds.rb")
+      load Rails.root.join("test/support/legacy_question_catalog_validation.rb")
     end
   end
 
@@ -617,7 +617,7 @@ class MockExams16To20Test < ActionDispatch::IntegrationTest
 
   def load_partial_seeds
     entries = QuestionSeedSync.collect do
-      EXAM_NUMBERS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAM_NUMBERS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     QuestionWriter.transaction { entries.each { |entry| QuestionSeedSync.call(**entry) } }
   end

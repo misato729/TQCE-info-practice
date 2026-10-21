@@ -21,7 +21,7 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -160,7 +160,7 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
     @entries.select { |entry| cloze?(entry[:attributes]) }.each do |entry|
       exam = entry.fetch(:exam_number)
       number = entry[:attributes][:question_number]
-      path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(path)
       mutations = [
         "questions.find { |question| question[:question_number] == #{number} }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②③④][}][}]/, \"語句\") if block[:type] == \"fill_in_quote\" }\n",
@@ -219,7 +219,7 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
 
   test "再同期二回でID本文選択肢公開状態seed状態既存履歴お気に入りを変えない" do
     save_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "法令再同期確認", email: "mock26-law-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 1], [26, 3]].each do |exam, number|
       record = Question.find_by!(exam_number: exam, question_number: number)
@@ -252,7 +252,7 @@ class MockExams26To30LawTest < ActionDispatch::IntegrationTest
 
   test "既存五百問の旧照合値を保ち承認済み改稿七問は原典検査へ委譲する" do
     existing = QuestionSeedSync.collect do
-      (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..25).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     assert_equal 500, existing.size
     digest_input = existing.map do |entry|

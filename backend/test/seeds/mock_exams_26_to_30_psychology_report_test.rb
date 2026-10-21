@@ -18,7 +18,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.select { |entry| PARTIAL_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @added = @entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @added.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
@@ -93,7 +93,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   end
 
   test "新規二十問以外の既存五百四十五問と問三から十一の固定内容を維持する" do
-    entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    entries = QuestionSeedSync.collect { (1..30).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     previous = APPROVED.fetch("existing_545_payload_digests")
     assert_equal 545, previous.size
     # Later additions are checked independently. Retain exactly the historical
@@ -188,7 +188,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
   end
 
   test "必須空欄の全消去とセル不足を模試二十八の投入前に拒否する" do
-    path = Rails.root.join("db/seeds/mock_exam_28.rb")
+    path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_28.rb")
     source = File.read(path)
     mutations = [
       "questions.find { |question| question[:question_number] == 15 }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②③][}][}]/, '語句') if block[:type] == 'fill_in_quote' }\n",
@@ -269,7 +269,7 @@ class MockExams26To30PsychologyReportTest < ActionDispatch::IntegrationTest
 
   test "再同期二回で既存及び追加問題のID内容履歴お気に入り公開状態を変えない" do
     save_entries
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     user = User.create!(name: "心理答申再同期確認", email: "mock26-psychology-reseed@example.com", password: "password123", password_confirmation: "password123")
     [[1, 12], [26, 3], [26, 12], [28, 15], [30, 14]].each do |exam, number|
       record = Question.find_by!(exam_number: exam, question_number: number)

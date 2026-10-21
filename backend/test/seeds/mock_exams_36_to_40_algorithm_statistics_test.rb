@@ -7,7 +7,7 @@ class MockExams36To40AlgorithmStatisticsTest < ActiveSupport::TestCase
 
   setup do
     @questions = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end.to_h { |entry| [[entry[:exam_number], entry[:attributes][:question_number]], entry[:attributes]] }
   end
 

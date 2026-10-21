@@ -8,7 +8,7 @@ class MockExams26To30PublicationTest < ActionDispatch::IntegrationTest
 
   setup do
     @entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
   end
 
@@ -42,7 +42,7 @@ class MockExams26To30PublicationTest < ActionDispatch::IntegrationTest
 
   test "完成seedから必要な問を欠落させるとDB書込み前に拒否する" do
     EXAMS.each do |exam|
-      path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(path)
       assert_includes source, "unless questions.map"
       [1, 2, 16, 17, 18].each do |number|
@@ -111,6 +111,9 @@ class MockExams26To30PublicationTest < ActionDispatch::IntegrationTest
 
     @entries.each do |entry|
       record = Question.find_by!(exam_number: entry[:exam_number], question_number: entry[:attributes][:question_number])
+      # Verify every choice, not request volume. Keep real limiter behavior but
+      # reset this isolated test's temporary counters for each question.
+      ApiRateLimitBucket.delete_all
       get next_api_v1_questions_path, params: { exam_number: record.exam_number, after_question_number: record.question_number - 1 }, headers: paid
       assert_response :success
       assert_equal [record.exam_number, record.question_number], response.parsed_body.fetch("data").values_at("exam_number", "question_number"), key(entry)
@@ -150,7 +153,7 @@ class MockExams26To30PublicationTest < ActionDispatch::IntegrationTest
     previous = @entries.select { |entry| PREVIOUS_DRAFT_NUMBERS.include?(entry[:attributes][:question_number]) }
       .map { |entry| entry.merge(publication_status: "draft") }
     save_entries(previous)
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     assert_equal 75, Question.where(exam_number: EXAMS, publication_status: "draft").count
     user = User.create!(name: "公開切替保持確認", email: "mock26-publication-preserve@example.com", password: "password123", password_confirmation: "password123")
     [[1, 1], [26, 3], [26, 19], [30, 20]].each do |exam, number|
@@ -204,6 +207,9 @@ class MockExams26To30PublicationTest < ActionDispatch::IntegrationTest
     hidden.update!(publication_status: "private")
     removed = Question.find_by!(exam_number: 28, question_number: 1)
     QuestionWriter.destroy!(removed)
+    # Historical catalog tests recreate the retired deletion bookkeeping.
+    # The current application writer deliberately does not update seed state.
+    QuestionSeedState.find_by!(exam_number: 28, question_number: 1).update!(deleted: true)
     managed = snapshot
     2.times do
       save_entries(@entries)

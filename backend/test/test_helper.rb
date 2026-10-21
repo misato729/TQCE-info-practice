@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+require_relative "support/legacy_question_catalog"
 
 class TestObject
   def initialize(**attributes)

@@ -14,7 +14,7 @@ class MockExams36To40CurriculumTest < ActionDispatch::IntegrationTest
   }.freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .map { |entry| entry.merge(publication_status: "draft") }
       .select { |entry| (6..10).cover?(entry.fetch(:attributes).fetch(:question_number)) }
   end
@@ -105,7 +105,7 @@ class MockExams36To40CurriculumTest < ActionDispatch::IntegrationTest
 
   test "必須空欄全消去セル不足未知ラベルをseed投入前に拒否する" do
     @entries.each do |entry|
-      path = Rails.root.join("db/seeds/mock_exam_#{entry[:exam_number]}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry[:exam_number]}.rb")
       source = File.read(path)
       target = "questions.find { |question| question[:question_number] == #{entry[:attributes][:question_number]} }"
       insertion = "questions.each do |question|\n"

@@ -26,7 +26,7 @@ class MockExamsSelfContainedTextTest < ActionDispatch::IntegrationTest
 
   setup do
     entries = QuestionSeedSync.collect do
-      (1..20).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..20).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @entries = entries.select { |entry| EXPECTED_ANSWERS.key?(key_for(entry)) }
     @questions = @entries.to_h { |entry| [key_for(entry), entry.fetch(:attributes)] }

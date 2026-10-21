@@ -29,7 +29,7 @@ class MockExams31To35CompletionTest < ActionDispatch::IntegrationTest
 
   setup do
     @all_entries = QuestionSeedSync.collect do
-      (1..35).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..35).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     # This file retains the earlier 688-question/88-target approval scenario.
     # Newly approved legal questions and current complete publication are

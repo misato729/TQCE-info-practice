@@ -15,7 +15,7 @@ class MockExams36To40CompletionSourcesTest < ActiveSupport::TestCase
   }.freeze
 
   setup do
-    @questions = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @questions = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| SOURCES.fetch("locations").key?("#{entry.fetch(:exam_number)}-#{entry.fetch(:attributes).fetch(:question_number)}") }
       .to_h { |entry| ["#{entry.fetch(:exam_number)}-#{entry.fetch(:attributes).fetch(:question_number)}", entry.fetch(:attributes)] }
   end

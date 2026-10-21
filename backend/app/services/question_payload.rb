@@ -11,14 +11,6 @@ class QuestionPayload
     )
   end
 
-  def self.from_seed(exam_number, attributes)
-    attributes = attributes.deep_stringify_keys
-    attributes.slice(*FIELDS).merge("exam_number" => exam_number, "choices" => attributes.fetch("choices").each_with_index.map do |choice, index|
-      { "choice_label" => choice.fetch("label"), "content_blocks" => choice.fetch("content_blocks"),
-        "is_correct" => choice.fetch("correct", false), "display_order" => index + 1 }
-    end)
-  end
-
   def self.digest(payload)
     Digest::SHA256.hexdigest(JSON.generate(canonical(payload)))
   end

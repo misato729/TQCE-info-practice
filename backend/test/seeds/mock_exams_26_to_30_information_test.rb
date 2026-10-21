@@ -17,7 +17,7 @@ class MockExams26To30InformationTest < ActiveSupport::TestCase
   SOURCES = JSON.parse(File.read(Rails.root.join("test/fixtures/mock_exams_26_to_30_information_sources.json"))).freeze
 
   setup do
-    @all_entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all_entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     @entries = @all_entries.select { |entry| NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
   end
@@ -185,7 +185,7 @@ class MockExams26To30InformationTest < ActiveSupport::TestCase
   end
 
   test "既存七十五問と新規十五問の本文四択に完全重複がない" do
-    previous = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    previous = QuestionSeedSync.collect { (1..25).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .select { |entry| NUMBERS.include?(entry[:attributes][:question_number]) }
     assert_equal 75, previous.size
     fingerprints = (previous + @entries).map do |entry|
@@ -197,7 +197,7 @@ class MockExams26To30InformationTest < ActiveSupport::TestCase
 
   test "十三問の全実空欄除去又は一列不足はDB保存前にseedで拒否する" do
     @entries.reject { |entry| COUNT_KEYS.include?(key(entry)) }.each do |entry|
-      path = Rails.root.join("db/seeds/mock_exam_#{entry[:exam_number]}.rb")
+      path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry[:exam_number]}.rb")
       source, number = File.read(path), entry[:attributes][:question_number]
       mutations = [
         "questions.find { |question| question[:question_number] == #{number} }[:content_blocks].each { |block| block[:text] = block[:text].gsub(/[{][{][①②③][}][}]/, '語句') if block[:type] == 'fill_in_quote' }\n",

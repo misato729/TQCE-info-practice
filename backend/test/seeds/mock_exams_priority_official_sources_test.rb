@@ -15,7 +15,7 @@ class MockExamsPriorityOfficialSourcesTest < ActiveSupport::TestCase
   BLANKS = %w[① ② ③ ④ ⑤ ⑥].freeze
 
   setup do
-    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @all = QuestionSeedSync.collect { (1..50).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
       .map { |entry| ImprovementRevision20261017.historical_entry(entry) }
     @questions = @all.to_h { |entry| ["#{entry[:exam_number]}-#{entry[:attributes][:question_number]}", entry[:attributes]] }
   end

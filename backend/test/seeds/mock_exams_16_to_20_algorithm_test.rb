@@ -6,7 +6,7 @@ class MockExams16To20AlgorithmTest < ActiveSupport::TestCase
 
   setup do
     entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @questions = entries.select { |entry| entry.fetch(:attributes).fetch(:question_number) == 19 }
       .to_h { |entry| [entry.fetch(:exam_number), entry.fetch(:attributes)] }

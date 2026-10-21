@@ -1,3 +1,24 @@
+# Frozen historical catalog support. This is required only by test_helper and
+# is excluded from production images. It is not an application import path.
+unless defined?(Rails) && Rails.env.test?
+  raise "Historical question catalog support is available only in the test environment"
+end
+
+class QuestionSeedState < ApplicationRecord
+  validates :exam_number, uniqueness: { scope: :question_number }
+end
+
+class QuestionPayload
+  # Preserve the exact historical payload shape used by approval digests.
+  def self.from_seed(exam_number, attributes)
+    attributes = attributes.deep_stringify_keys
+    attributes.slice(*FIELDS).merge("exam_number" => exam_number, "choices" => attributes.fetch("choices").each_with_index.map do |choice, index|
+      { "choice_label" => choice.fetch("label"), "content_blocks" => choice.fetch("content_blocks"),
+        "is_correct" => choice.fetch("correct", false), "display_order" => index + 1 }
+    end)
+  end
+end
+
 class QuestionSeedSync
   class Conflict < StandardError; end
 
@@ -39,7 +60,7 @@ class QuestionSeedSync
       QuestionWriter.validate_publication!(preview, payload.fetch("choices").map { |c| c.symbolize_keys }) if publication_status == "published"
       digest = QuestionPayload.digest(payload)
       if state.new_record? && question.persisted?
-        baseline = JSON.parse(File.read(Rails.root.join("db/seeds/legacy_digests_20260907.json")))
+        baseline = JSON.parse(File.read(Rails.root.join("test/fixtures/approved_question_catalog/legacy_digests_20260907.json")))
         state.seed_digest = baseline["#{exam_number}-#{key[:question_number]}"]
         state.seed_publication_status = exam_number <= 10 ? "published" : "draft" if state.seed_digest
       end

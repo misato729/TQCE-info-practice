@@ -18,7 +18,7 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
   }.freeze
 
   setup do
-    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") } }
+    @entries = QuestionSeedSync.collect { EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") } }
     @questions = @entries.to_h { |entry| [key(entry), entry.fetch(:attributes)] }
     @approved_sections = APPROVED.flat_map { |document| document.fetch("sections").to_a }.to_h
   end
@@ -235,6 +235,9 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
     end
     records = Question.where(exam_number: EXAMS).order(:exam_number, :question_number)
     records.each do |question|
+      # Content/authorization coverage is not a load test. Limits themselves
+      # are covered separately; keep counters local to each question here.
+      ApiRateLimitBucket.delete_all
       get api_v1_question_path(question), headers: paid
       assert_response :success
       assert_equal question.content_blocks, response.parsed_body.dig("data", "content_blocks")
@@ -397,7 +400,7 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
   end
 
   def assert_invalid_seed(entry, message)
-    path = Rails.root.join("db/seeds/mock_exam_#{entry.fetch(:exam_number)}.rb")
+    path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{entry.fetch(:exam_number)}.rb")
     source = File.read(path)
     insertion = "questions.each do |question|\n"
     assert_includes source, insertion, message

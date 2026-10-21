@@ -10,7 +10,7 @@ class MockExams16To20InformationTest < ActiveSupport::TestCase
 
   setup do
     entries = QuestionSeedSync.collect do
-      EXAMS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAMS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     @questions = entries.select { |entry| (16..18).cover?(entry.fetch(:attributes).fetch(:question_number)) }
       .to_h { |entry| ["#{entry.fetch(:exam_number)}-#{entry.fetch(:attributes).fetch(:question_number)}", entry.fetch(:attributes)] }

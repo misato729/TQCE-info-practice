@@ -202,7 +202,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
   test "seed収集時にも必須空欄の欠落と選択肢セルの不一致を拒否する" do
     marker = "questions.each do |question|\n"
     EXAM_NUMBERS.each do |exam|
-      seed_path = Rails.root.join("db/seeds/mock_exam_#{exam}.rb")
+      seed_path = Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb")
       source = File.read(seed_path)
       assert_includes source, marker
       QUESTION_NUMBERS.each do |number|
@@ -229,7 +229,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
 
   test "既存二十セットと同じ抜粋及び空欄の組合せを繰り返さない" do
     entries = QuestionSeedSync.collect do
-      (1..20).each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      (1..20).each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     existing = entries.select { |entry| QUESTION_NUMBERS.include?(entry.fetch(:attributes).fetch(:question_number)) }.map do |entry|
       attributes = entry.fetch(:attributes)
@@ -310,7 +310,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
   end
 
   test "seedを二回再実行しても件数とIDと内容と同期状態及び既存問題の履歴を変えない" do
-    load Rails.root.join("db/seeds/mock_exam_1.rb")
+    load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_1.rb")
     existing_questions = Question.where(exam_number: 1)
     existing = existing_questions.order(:question_number).first!
     user = User.create!(name: "seed保護検証", email: "mock-21-25-reseed@example.com", password: "password123", password_confirmation: "password123")
@@ -339,6 +339,9 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
     hidden.update!(publication_status: "private")
     removed = partial_questions.find_by!(exam_number: 23, question_number: 8)
     QuestionWriter.destroy!(removed)
+    # Historical catalog tests recreate the retired deletion bookkeeping.
+    # The current application writer deliberately does not update seed state.
+    QuestionSeedState.find_by!(exam_number: 23, question_number: 8).update!(deleted: true)
     before = persistence_snapshot(partial_questions)
 
     2.times do
@@ -361,7 +364,7 @@ class MockExams21To25Test < ActionDispatch::IntegrationTest
 
   def load_partial_seeds
     entries = QuestionSeedSync.collect do
-      EXAM_NUMBERS.each { |exam| load Rails.root.join("db/seeds/mock_exam_#{exam}.rb") }
+      EXAM_NUMBERS.each { |exam| load Rails.root.join("test/fixtures/approved_question_catalog/mock_exam_#{exam}.rb") }
     end
     # Retain coverage of the historical partial/draft stage. Completed-set
     # publication is covered by MockExams21To25InformationTest.
