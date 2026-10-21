@@ -11,6 +11,12 @@
 - データベース: PostgreSQL 16
 - 開発環境: Docker Compose
 
+## 全体アーキテクチャ（完成予定）
+
+公開・運用準備完了時の構成を示します。現在の本番反映状況や残件は [公開前運用確認](document/公開前運用確認_2026-10-20.md) を参照してください。
+
+![情報教認ラボの全体アーキテクチャ（完成予定）](document/images/architecture.jpeg)
+
 ## 開発環境の起動
 
 このプロジェクトは Nuxt、Rails API、PostgreSQL を Docker Compose で起動する構成です。
