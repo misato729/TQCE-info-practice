@@ -196,10 +196,10 @@ fly secrets set DATABASE_URL=<neon-production-database-url>
 fly secrets set CORS_ORIGINS=https://johokyonin-lab.netlify.app
 ```
 
-プレミアム会員を販売する場合は、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。実値はコマンド履歴や共有ログへ残さない方法で設定してください。
+プレミアム会員の販売準備では、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。準備・デプロイ・検証中は販売停止を維持し、実値はコマンド履歴や共有ログへ残さない方法で設定してください。
 
 ```sh
-fly secrets set PAID_MEMBERSHIP_ENABLED=true
+fly secrets set PAID_MEMBERSHIP_ENABLED=false
 fly secrets set STRIPE_LIVEMODE=true
 fly secrets set STRIPE_SECRET_KEY=<stripe-secret-key>
 fly secrets set STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
@@ -208,6 +208,8 @@ fly secrets set FRONTEND_URL=https://johokyonin-lab.netlify.app
 ```
 
 `NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_ADDRESS`、`NUXT_PUBLIC_SELLER_PHONE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定します。これらは秘密情報ではなく、公開販売設定APIを通じて特定商取引法に基づく表記へ表示されます。
+
+販売の有効化は初期設定やデプロイに含めません。[販売開始条件](document/運用手順.md#stripeの販売開始条件)とIssue #6〜#9の公開前確認を完了し、運営者が別途承認した後にだけ `PAID_MEMBERSHIP_ENABLED` を `true` に切り替えます。`operations:audit` の終了コード0だけを販売開始の根拠にしないでください。
 
 バックエンドのルート画面に Basic 認証をかける場合は、以下も設定します。
 
