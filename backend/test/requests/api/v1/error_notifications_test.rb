@@ -1,5 +1,6 @@
 require "test_helper"
 require_relative "../../../support/method_replacement"
+require "stringio"
 
 class Api::V1::ErrorNotificationsTest < ActionDispatch::IntegrationTest
   include MethodReplacement
@@ -37,5 +38,53 @@ class Api::V1::ErrorNotificationsTest < ActionDispatch::IntegrationTest
     assert_equal %i[controller exception_class status], calls.first.keys.sort
     assert_not_includes calls.to_json, "private"
     assert_not_includes calls.to_json, "must-not-send"
+  end
+
+  test "a real notifier transport failure preserves the webhook failure response and retryability" do
+    attempts = 0
+    output = StringIO.new
+    notifier = ApiErrorNotifier.new(environment: {
+      "ERROR_NOTIFICATIONS_ENABLED" => "true",
+      "SENTRY_ERROR_DSN" => "https://#{'a' * 32}@o123.ingest.us.sentry.io/456",
+      "ERROR_NOTIFICATION_ENVIRONMENT" => "verification",
+    }, http_factory: ->(*) { attempts += 1; raise Net::ReadTimeout, "private-transport-details" },
+      gate: ApiErrorNotifier::Gate.new)
+
+    with_env("ERROR_NOTIFICATIONS_ENABLED" => "true", "STRIPE_WEBHOOK_SECRET" => "whsec_fake") do
+      with_method_replacement(Rails, :logger, ActiveSupport::Logger.new(output)) do
+        with_method_replacement(ApiErrorNotifier, :new, ->(*) { notifier }) do
+          with_method_replacement(Stripe::Webhook, :construct_event, TestObject.new(id: "evt_test")) do
+            with_method_replacement(StripeWebhookProcessor, :new, ->(**) { raise StripeWebhookProcessor::PaymentNotReadyError }) do
+              assert_no_difference ["StripeWebhookEvent.count", "Payment.count", "Membership.count"] do
+                post "/api/v1/webhooks/stripe", params: "{}",
+                  headers: { "Content-Type" => "application/json", "Stripe-Signature" => "test-only-signature" }
+              end
+            end
+          end
+        end
+      end
+    end
+
+    assert_response :internal_server_error
+    assert_equal "webhook_processing_failed", response.parsed_body.dig("error", "code")
+    assert_equal 1, attempts
+    assert_includes output.string, "API error notification delivery failed"
+    assert_not_includes output.string, "private-transport-details"
+  end
+
+  test "an unexpected notification subscriber failure does not turn a successful API response into an error" do
+    output = StringIO.new
+    with_env("ERROR_NOTIFICATIONS_ENABLED" => "true") do
+      with_method_replacement(Rails, :logger, ActiveSupport::Logger.new(output)) do
+        with_method_replacement(ApiErrorNotifier, :call, ->(**) { raise StandardError, "private-notification-details" }) do
+          get "/api/v1/health"
+        end
+      end
+    end
+
+    assert_response :ok
+    assert_equal "ok", response.parsed_body.fetch("status")
+    assert_includes output.string, "API error notification subscriber failed"
+    assert_not_includes output.string, "private-notification-details"
   end
 end

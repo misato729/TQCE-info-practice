@@ -10,4 +10,18 @@ class RestoreDrillTest < ActiveSupport::TestCase
   ensure
     Rails.env = original_environment
   end
+
+  test "refuses an enabled sales flag before creating disposable databases" do
+    with_env("PAID_MEMBERSHIP_ENABLED" => "true", "ERROR_NOTIFICATIONS_ENABLED" => "false") do
+      error = assert_raises(Operations::RestoreDrill::Error) { Operations::RestoreDrill.new.call }
+      assert_equal "Restore drill requires sales and error notifications disabled", error.message
+    end
+  end
+
+  test "refuses enabled error notifications before creating disposable databases" do
+    with_env("PAID_MEMBERSHIP_ENABLED" => "false", "ERROR_NOTIFICATIONS_ENABLED" => "true") do
+      error = assert_raises(Operations::RestoreDrill::Error) { Operations::RestoreDrill.new.call }
+      assert_equal "Restore drill requires sales and error notifications disabled", error.message
+    end
+  end
 end

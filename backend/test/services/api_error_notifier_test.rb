@@ -118,9 +118,41 @@ class ApiErrorNotifierTest < ActiveSupport::TestCase
   end
 
   test "non-success HTTP responses are not reported as delivered or followed" do
-    @http.code = "302"
-    assert_equal :failed, notify
-    assert_equal 1, @http.requests.length
+    %w[302 400 401 403 429 500 503].each do |code|
+      @http.code = code
+      notifier = ApiErrorNotifier.new(environment: @environment,
+        http_factory: ->(*) { @http }, gate: ApiErrorNotifier::Gate.new)
+      assert_equal :failed, notifier.call(controller: "Api::V1::AuthController", status: 500)
+    end
+    assert_equal 7, @http.requests.length
+    assert_equal 0, @http.max_retries
+  end
+
+  test "delivery timeouts and TLS or DNS failures keep exception details out of logs" do
+    failures = [Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout,
+      OpenSSL::SSL::SSLError, SocketError]
+    output = StringIO.new
+    failures.each do |failure|
+      @http.failure = failure.new("private-transport-details")
+      notifier = ApiErrorNotifier.new(environment: @environment,
+        http_factory: ->(*) { @http }, gate: ApiErrorNotifier::Gate.new)
+      with_method_replacement(Rails, :logger, ActiveSupport::Logger.new(output)) do
+        assert_equal :failed, notifier.call(controller: "Api::V1::AuthController", status: 500)
+      end
+    end
+    assert_equal failures.length, @http.requests.length
+    assert_equal failures.length, output.string.scan("API error notification delivery failed").length
+    assert_not_includes output.string, "private-transport-details"
+    assert_not_includes output.string, @environment.fetch("SENTRY_ERROR_DSN")
+  end
+
+  test "concurrent requests only reserve one delivery per environment and category" do
+    gate = ApiErrorNotifier::Gate.new
+    results = Array.new(8) { Thread.new { gate.allow?(["verification", :api], now: 100) } }.map(&:value)
+    assert_equal 1, results.count(true)
+    assert_equal 7, results.count(false)
+    assert gate.allow?(["production", :api], now: 100)
+    assert gate.allow?(["verification", :stripe_webhook], now: 100)
   end
 
   private

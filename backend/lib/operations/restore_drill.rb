@@ -1,4 +1,5 @@
 require "digest"
+require "action_dispatch/testing/integration"
 require "open3"
 require "pg"
 require "tmpdir"
@@ -12,6 +13,10 @@ module Operations
       original = ActiveRecord::Base.connection_db_config.configuration_hash
       unless Rails.env.test? && LOCAL_HOSTS.include?(original[:host])
         raise Error, "Restore drill requires the local test environment"
+      end
+      if ActiveModel::Type::Boolean.new.cast(ENV.fetch("PAID_MEMBERSHIP_ENABLED", "false")) ||
+          ENV["ERROR_NOTIFICATIONS_ENABLED"] == "true"
+        raise Error, "Restore drill requires sales and error notifications disabled"
       end
 
       config = original.except(:url)
@@ -29,7 +34,8 @@ module Operations
       started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       connect(config, source)
       ActiveRecord::Migration.suppress_messages { load Rails.root.join("db/schema.rb") }
-      create_synthetic_records
+      password = SecureRandom.hex(24)
+      create_synthetic_records(password: password)
       expected = fingerprint
       expected_constraints = constraints
       expected_indexes = indexes
@@ -49,10 +55,16 @@ module Operations
       raise Error, "Restored indexes do not match" unless indexes == expected_indexes
       raise Error, "Restored sequences do not match" unless sequences == expected_sequences
       verify_relationships!
+      application_checks = verify_application_reads!(password: password)
+      without_counters = ->(records) { records.except("api_rate_limit_buckets") }
+      unless without_counters.call(fingerprint) == without_counters.call(expected)
+        raise Error, "Application read checks changed restored records"
+      end
       {
         status: "ok", data: "synthetic_only", tables: expected.length,
         row_counts: expected.transform_values { |value| value.fetch(:count) },
         constraints: expected_constraints.length, indexes: expected_indexes.length, sequences: expected_sequences.length,
+        application_checks: application_checks,
         elapsed_seconds: (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(2),
       }
     ensure
@@ -132,8 +144,7 @@ module Operations
       end
     end
 
-    def create_synthetic_records
-      password = SecureRandom.hex(24)
+    def create_synthetic_records(password:)
       user = User.create!(name: "Restore drill", email: "restore@example.invalid", password: password)
       User.create!(name: "Restore admin", email: "restore-admin@example.invalid", password: password, role: "admin")
       question = Question.create!(
@@ -167,6 +178,55 @@ module Operations
       raise Error, "Verification grant failed" unless user.verification_access_grant.active?
       raise Error, "Admin role failed" unless User.find_by!(email: "restore-admin@example.invalid").role == "admin"
       raise Error, "Webhook record failed" unless StripeWebhookEvent.sole.event_type == "checkout.session.completed"
+    end
+
+    def verify_application_reads!(password:)
+      session = ActionDispatch::Integration::Session.new(Rails.application)
+      session.host! "localhost"
+      health = request_json(session, :get, "/api/v1/health")
+      raise Error, "Restored health check failed" unless health.fetch("status") == "ok"
+      config = request_json(session, :get, "/api/v1/payments/config")
+      raise Error, "Restored sales-off check failed" unless config.dig("data", "enabled") == false
+
+      login = request_json(session, :post, "/api/v1/auth/login",
+        params: { email: "restore@example.invalid", password: password }, as: :json)
+      token = login.dig("data", "access_token")
+      raise Error, "Restored login check failed" unless token.present?
+      headers = { "Authorization" => "Bearer #{token}" }
+      user = request_json(session, :get, "/api/v1/me", headers: headers)
+      raise Error, "Restored entitlement check failed" unless user.dig("data", "paid_content_access") == true
+
+      question = request_json(session, :get, "/api/v1/questions/next", params: { exam_number: 6 }, headers: headers).fetch("data")
+      unless question.fetch("exam_number") == 6 && question.fetch("choices").length == 4 &&
+          !question.key?("explanation_blocks") && question.fetch("choices").none? { |choice| choice.key?("is_correct") }
+        raise Error, "Restored question check failed"
+      end
+      histories = request_json(session, :get, "/api/v1/answer_histories", headers: headers).fetch("data")
+      favorites = request_json(session, :get, "/api/v1/favorites", headers: headers).fetch("data")
+      unless histories.length == 1 && histories.first.dig("question", "id") == question.fetch("id") &&
+          favorites.length == 1 && favorites.first.dig("question", "id") == question.fetch("id")
+        raise Error, "Restored history or favorites check failed"
+      end
+      request_json(session, :get, "/api/v1/admin/questions", status: 403, headers: headers)
+      request_json(session, :get, "/api/v1/admin/questions", status: 401)
+
+      admin = request_json(session, :post, "/api/v1/auth/login",
+        params: { email: "restore-admin@example.invalid", password: password }, as: :json)
+      unless admin.dig("data", "user", "role") == "admin" && admin.dig("data", "access_token").present?
+        raise Error, "Restored admin login check failed"
+      end
+      questions = request_json(session, :get, "/api/v1/admin/questions",
+        headers: { "Authorization" => "Bearer #{admin.dig('data', 'access_token')}" }).fetch("data")
+      raise Error, "Restored admin read check failed" unless questions.length == 1 && questions.first.fetch("id") == question.fetch("id")
+
+      11
+    end
+
+    def request_json(session, method, path, status: 200, **options)
+      session.public_send(method, path, **options)
+      raise Error, "Restored application check failed: #{method.upcase} #{path}" unless session.response.status == status
+
+      JSON.parse(session.response.body)
     end
   end
 end

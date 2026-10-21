@@ -38,6 +38,7 @@ if [[ ! "$container_directory" =~ ^/tmp/tqce-restore-tools\.[[:alnum:]]+$ ]]; th
   exit 1
 fi
 docker cp "$host_directory/." "$backend:$container_directory/"
-docker exec --workdir /app "$backend" env RAILS_ENV=test \
+docker exec --workdir /app "$backend" env -u DATABASE_URL -u TEST_DATABASE_URL \
+  RAILS_ENV=test DB_HOST=db PAID_MEMBERSHIP_ENABLED=false ERROR_NOTIFICATIONS_ENABLED=false \
   "PATH=$container_directory:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
   bin/rails operations:restore_drill
