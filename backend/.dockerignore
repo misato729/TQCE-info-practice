@@ -1,4 +1,8 @@
 .bundle
+.env
+.env.*
+config/master.key
+config/credentials/*.key
 log/*
 tmp/*
 vendor/bundle
