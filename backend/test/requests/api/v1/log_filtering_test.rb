@@ -7,6 +7,8 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
       "password" => "test-only-password",
       "password_confirmation" => "test-only-confirmation",
       "current_password" => "test-only-current-password",
+      "email" => "private-person@example.invalid",
+      "name" => "Private person",
       "credentials" => [{
         "access_token" => "test-only-access-token",
         "refresh_token" => "test-only-refresh-token",
@@ -14,13 +16,15 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
         "api_key" => "test-only-api-key",
         "sentry_error_dsn" => "test-only-notification-destination",
         "Authorization" => "Bearer test-only-authorization",
+        "email" => "nested-person@example.invalid",
+        "name" => "Nested person",
       }],
       "exam_number" => 1,
     }
     original = parameters.deep_dup
     filtered = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters).filter(parameters)
 
-    %w[password password_confirmation current_password].each do |key|
+    %w[password password_confirmation current_password email name].each do |key|
       assert_equal "[FILTERED]", filtered.fetch(key)
     end
     filtered.fetch("credentials").first.each_value do |value|
@@ -46,17 +50,21 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
   test "request paths redact sensitive query values while preserving other parameters" do
     request = ActionDispatch::TestRequest.create(
       "PATH_INFO" => "/api/v1/health",
-      "QUERY_STRING" => "access_token=test-only-query-token&password=test-only-query-password&exam_number=1",
+      "QUERY_STRING" => "access_token=test-only-query-token&password=test-only-query-password&email=private-person%40example.invalid&name=Private+person&exam_number=1",
     )
 
     assert_includes request.filtered_path, "access_token=[FILTERED]"
     assert_includes request.filtered_path, "password=[FILTERED]"
+    assert_includes request.filtered_path, "email=[FILTERED]"
+    assert_includes request.filtered_path, "name=[FILTERED]"
     assert_includes request.filtered_path, "exam_number=1"
     refute_includes request.filtered_path, "test-only-query-token"
     refute_includes request.filtered_path, "test-only-query-password"
+    refute_includes request.filtered_path, "private-person"
+    refute_includes request.filtered_path, "Private"
   end
 
-  test "signup and failed login logs redact passwords while authentication still works" do
+  test "signup and login logs redact personal data and credentials while authentication still works" do
     password = "test-only-log-password-123"
     confirmation = "test-only-log-confirmation-456"
     log_output = StringIO.new
@@ -82,6 +90,8 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
     assert_response :created
     token = response.parsed_body.dig("data", "access_token")
     assert token.present?
+    assert_equal "ログ保護テスト", response.parsed_body.dig("data", "user", "name")
+    assert_equal "log-filter@example.invalid", response.parsed_body.dig("data", "user", "email")
 
     post "/api/v1/auth/login", params: {
       email: "log-filter@example.invalid", password: confirmation,
@@ -95,7 +105,8 @@ class Api::V1::LogFilteringTest < ActionDispatch::IntegrationTest
 
     assert_includes log_output.string, "Parameters:"
     assert_includes log_output.string, "[FILTERED]"
-    assert_includes log_output.string, "log-filter@example.invalid"
+    refute_includes log_output.string, "log-filter@example.invalid"
+    refute_includes log_output.string, "ログ保護テスト"
     refute_includes log_output.string, password
     refute_includes log_output.string, confirmation
     refute_includes log_output.string, token

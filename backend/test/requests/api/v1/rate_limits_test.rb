@@ -4,6 +4,40 @@ require_relative "../../../support/method_replacement"
 class Api::V1::RateLimitsTest < ActionDispatch::IntegrationTest
   include MethodReplacement
 
+  test "a small group on one IP can log in, answer and read their own history" do
+    question = Question.create!(exam_number: 1, question_number: 1,
+      major_category_code: "teacher_education", category_code: "education_system",
+      publication_status: "published", content_blocks: [{ type: "text", text: "Shared IP test" }],
+      explanation_blocks: [{ type: "text", text: "Explanation" }])
+    choices = %w[ア イ ウ エ].map.with_index do |label, index|
+      question.question_choices.create!(choice_label: label, display_order: index + 1,
+        is_correct: index.zero?, content_blocks: [{ type: "text", text: "Choice #{label}" }])
+    end
+
+    with_env("FLY_APP_NAME" => "test-app") do
+      3.times do |index|
+        user = User.create!(name: "Shared IP user #{index}", email: "shared-ip-#{index}@example.invalid", password: "password123")
+        post "/api/v1/auth/login", params: { email: user.email, password: "password123" },
+          headers: { "Fly-Client-IP" => "192.0.2.50" }, as: :json
+        assert_response :ok
+        headers = { "Fly-Client-IP" => "192.0.2.50", "Authorization" => "Bearer #{response.parsed_body.dig('data', 'access_token')}" }
+
+        post answer_api_v1_question_path(question), params: { selected_choice_id: choices.first.id }, headers: headers, as: :json
+        assert_response :ok
+        assert response.parsed_body.dig("data", "is_correct")
+
+        get api_v1_answer_histories_path, headers: headers
+        assert_response :ok
+        assert_equal 1, response.parsed_body.fetch("data").size
+        assert_equal user.id, AnswerHistory.find(response.parsed_body.dig("data", 0, "id")).user_id
+        get "/api/v1/health", headers: { "Fly-Client-IP" => "192.0.2.50" }
+        assert_response :ok
+      end
+    end
+
+    assert_equal [3, 3], ApiRateLimitBucket.order(:request_count).pluck(:request_count)
+  end
+
   test "login throttling returns the standard error and a bounded retry time" do
     ApiRateLimiter::RULES.fetch(:login).fetch(:limit).times do
       post "/api/v1/auth/login", params: { email: "qa@example.invalid", password: "invalid-password" }, as: :json
