@@ -18,7 +18,9 @@ module Api
         rescue CheckoutSessionCreator::SessionInProgressError
           render_error(:checkout_session_in_progress, "未完了の決済があります", :conflict)
         rescue CheckoutSessionCreator::ConfigurationError
-          render_error(:payment_unavailable, "現在、決済を開始できません", :service_unavailable)
+          sales_off = !ActiveModel::Type::Boolean.new.cast(ENV.fetch("PAID_MEMBERSHIP_ENABLED", "false"))
+          render_error(:payment_unavailable, "現在、決済を開始できません", :service_unavailable,
+            expected_unavailability: sales_off)
         rescue Stripe::StripeError
           Rails.logger.error("Stripe Checkout Session creation failed")
           render_error(:payment_provider_error, "決済サービスへ接続できませんでした", :bad_gateway)

@@ -87,7 +87,9 @@ Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTE
 4. Stripeのテストモードで、購入、Webhook再送、全額返金、異議申立て、重複購入防止を確認します。
 5. 利用規約、プライバシーポリシー、特定商取引法に基づく表記の実情報を確認した後、`PAID_MEMBERSHIP_ENABLED=true` にします。
 
-販売事業者情報には、実際の氏名または登記上の名称、現に活動する正確な住所、確実に連絡できる電話番号及び問い合わせ先を設定してください。サイト名や未登記の屋号だけを販売事業者名として使用しないでください。
+販売事業者情報には、実際の氏名または登記上の名称と問い合わせ先を設定してください。サイト名や未登記の屋号だけを販売事業者名として使用しないでください。住所・電話番号を公開する初期方式は `SELLER_CONTACT_DISCLOSURE_MODE=public` で、実際の住所・電話番号も必須です。
+
+個人情報保護のため請求時の開示方式を採用する場合は、`SELLER_CONTACT_DISCLOSURE_MODE=on_request` とします。この方式では住所・電話番号の公開用環境変数は不要で、既存の値が残っていても公開APIは空文字列を返します。購入前の請求にも十分な時間的余裕をもって、実情報を遅滞なく無料でメール回答できる体制を確認した後にだけ `SELLER_CONTACT_DISCLOSURE_READY=true` とします。文言を掲載するだけでは条件を満たしません。氏名・問い合わせ先は必須のままで、販売開始フラグも独立して無効を維持します。根拠と運用は [消費者庁の案内](https://www.no-trouble.caa.go.jp/what/mailorder/) と [運用手順](document/運用手順.md#所在地電話番号の請求時開示) を参照してください。
 
 ローカルでは `STRIPE_LIVEMODE=false` を使用します。本番では本番用のキー、Price、Webhook署名シークレットにそろえて `STRIPE_LIVEMODE=true` とし、テスト環境の値と混在させないでください。カード番号等はStripe Checkoutが取り扱い、本アプリのDBには保存しません。
 
@@ -153,7 +155,11 @@ Netlifyの管理画面で次の環境変数を設定します。`NUXT_PUBLIC_API
 
 Docker用の `NUXT_API_BASE_INTERNAL=http://backend:3000` はNetlifyへ設定しません。DB接続情報・Stripeの秘密鍵もNetlifyへ移さず、Fly.io側で管理します。フロントエンドでは `NUXT_BASIC_AUTH_USER` / `NUXT_BASIC_AUTH_PASSWORD` を使用しないため、Netlifyでは不要です。既存のローカル `.env` やFly.ioの設定は、バックエンドの互換用設定として利用される場合があるため、この変更では削除しません。
 
-2026年10月20日に、ユーザーからNetlifyの旧Basic認証2変数を削除したとの報告を受け、`SECRETS_SCAN_OMIT_KEYS` と、その設定だけを持っていた `frontend/netlify.toml` を撤去しました。リポジトリ側で秘密情報の検査を除外する設定は設けません。Netlifyのビルド設定は管理画面の設定を維持します。
+2026年10月20日に、ユーザーからNetlifyの旧Basic認証2変数を削除したとの報告を受け、`SECRETS_SCAN_OMIT_KEYS` と、その設定だけを持っていた `frontend/netlify.toml` を撤去しました。リポジトリ側で秘密情報の検査を除外する設定は設けません。Base directory・Build command・Publish directoryは管理画面の設定を維持します。
+
+2026年10月21日、`frontend/netlify.toml` を不要なビルドを省く設定だけで再追加しました。`frontend/scripts/netlify-ignore-build.mjs` がNetlifyの比較対象コミット間を確認し、バックエンド・資料・フロントのテストだけの変更ならビルドを省きます。画面・公開画像・依存関係・ビルド設定の変更や、比較できない場合はビルドを続行します。依存関係のインストール前にも動くよう、Node.jsの標準機能とGitだけを使います。この設定はローカル準備であり、Netlifyへは未反映です。
+
+作業中はローカルで変更と検証をまとめ、途中のpush・デプロイを行いません。最後に承認を得て反映する際、フロントの配信内容が変わらないpushには、最新コミットのメッセージに `[skip netlify]` を付ける方法も使えます。後日の通常ビルドには、省いたコミットの変更も含まれます。手動実行やBuild hookは別に扱い、これだけで全てのビルドや利用料金が止まるとは考えないでください。Privateや秘密情報の検査は変更しません。公式仕様は [Ignore builds](https://docs.netlify.com/build/configure-builds/ignore-builds/) と [Skip a deploy](https://docs.netlify.com/deploy/manage-deploys/manage-deploys-overview/#skip-a-deploy) を参照してください。
 
 公開前はNetlifyのPrivate設定によるログイン制限を維持します。閲覧できるNetlifyアカウントで画面を確認し、動作確認のためだけにPublicへ変更しません。
 
@@ -207,7 +213,7 @@ fly secrets set STRIPE_PRICE_ID=<stripe-price-id>
 fly secrets set FRONTEND_URL=https://johokyonin-lab.netlify.app
 ```
 
-`NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_ADDRESS`、`NUXT_PUBLIC_SELLER_PHONE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定します。これらは秘密情報ではなく、公開販売設定APIを通じて特定商取引法に基づく表記へ表示されます。
+`NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定し、公開販売設定APIを通じて特定商取引法に基づく表記へ表示します。これらの実値を公開リポジトリやIssueへ重複して記録しません。`SELLER_CONTACT_DISCLOSURE_MODE=public` の場合は住所・電話番号も公開用設定へ登録します。`on_request` の場合は住所・電話番号の実値を公開用設定やNetlifyへ登録せず、開示体制の確認設定だけを追加します。この方式の実装はローカル準備であり、本番への反映・設定変更は別途承認が必要です。
 
 販売の有効化は初期設定やデプロイに含めません。[販売開始条件](document/運用手順.md#stripeの販売開始条件)とIssue #6〜#9の公開前確認を完了し、運営者が別途承認した後にだけ `PAID_MEMBERSHIP_ENABLED` を `true` に切り替えます。`operations:audit` の終了コード0だけを販売開始の根拠にしないでください。
 

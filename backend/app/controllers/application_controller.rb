@@ -34,10 +34,16 @@ class ApplicationController < ActionController::API
     render_error(:not_found, "対象が見つかりません", :not_found)
   end
 
-  def render_error(code, message, status, details: nil)
+  def render_error(code, message, status, details: nil, expected_unavailability: false)
+    @expected_unavailability = expected_unavailability == true && status == :service_unavailable
     error = { code: code, message: message }
     error[:details] = details if details.present?
     render json: { error: error }, status: status
+  end
+
+  def append_info_to_payload(payload)
+    super
+    payload[:expected_unavailability] = @expected_unavailability == true
   end
 
   def authenticate_optional_user!

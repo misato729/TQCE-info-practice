@@ -87,4 +87,65 @@ class Api::V1::ErrorNotificationsTest < ActionDispatch::IntegrationTest
     assert_includes output.string, "API error notification subscriber failed"
     assert_not_includes output.string, "private-notification-details"
   end
+
+  test "only explicit sales-off and missing-webhook configuration mark a 503 as expected" do
+    user = User.create!(name: "Notification test", email: "expected-503@example.invalid", password: "password123")
+    calls = []
+    with_env("ERROR_NOTIFICATIONS_ENABLED" => "true", "PAID_MEMBERSHIP_ENABLED" => "false", "STRIPE_WEBHOOK_SECRET" => nil) do
+      with_method_replacement(ApiErrorNotifier, :call, ->(**attributes) { calls << attributes; :ignored }) do
+        with_method_replacement(PaidMembership, :stripe_client, -> { flunk "Sales-off checks must not contact Stripe" }) do
+          post "/api/v1/payments/checkout_sessions", headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" }, as: :json
+          assert_response :service_unavailable
+          assert_equal "payment_unavailable", response.parsed_body.dig("error", "code")
+          post "/api/v1/webhooks/stripe", params: "{}", headers: { "Content-Type" => "application/json" }
+          assert_response :service_unavailable
+          assert_equal "webhook_unavailable", response.parsed_body.dig("error", "code")
+        end
+      end
+    end
+    assert_equal 2, calls.length
+    assert calls.all? { |attributes| attributes[:expected_unavailability] == true && attributes[:status] == 503 }
+    assert_empty Payment.all
+  end
+
+  test "checkout rate-limit storage failures still reach the real error notifier" do
+    user = User.create!(name: "Notification test", email: "unexpected-503@example.invalid", password: "password123")
+    attempts = 0
+    notifier = ApiErrorNotifier.new(environment: {
+      "ERROR_NOTIFICATIONS_ENABLED" => "true",
+      "SENTRY_ERROR_DSN" => "https://#{'a' * 32}@o123.ingest.us.sentry.io/456",
+      "ERROR_NOTIFICATION_ENVIRONMENT" => "verification",
+    }, http_factory: ->(*) { attempts += 1; raise Net::ReadTimeout, "test-only-transport-error" },
+      gate: ApiErrorNotifier::Gate.new)
+    with_env("ERROR_NOTIFICATIONS_ENABLED" => "true") do
+      with_method_replacement(ApiErrorNotifier, :new, ->(*) { notifier }) do
+        with_method_replacement(ApiRateLimiter, :call, ->(**) { raise ApiRateLimiter::Unavailable }) do
+          assert_no_difference "Payment.count" do
+            post "/api/v1/payments/checkout_sessions", headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" }, as: :json
+          end
+        end
+      end
+    end
+    assert_response :service_unavailable
+    assert_equal "rate_limiter_unavailable", response.parsed_body.dig("error", "code")
+    assert_equal 1, attempts
+  end
+
+  test "configuration failures with sales requested are not marked as an intentional shutdown" do
+    user = User.create!(name: "Configuration test", email: "configuration-503@example.invalid", password: "password123")
+    calls = []
+    creator = TestObject.new
+    creator.define_singleton_method(:call) { raise CheckoutSessionCreator::ConfigurationError }
+    with_env("ERROR_NOTIFICATIONS_ENABLED" => "true", "PAID_MEMBERSHIP_ENABLED" => "true") do
+      with_method_replacement(ApiErrorNotifier, :call, ->(**attributes) { calls << attributes; :sent }) do
+        with_method_replacement(CheckoutSessionCreator, :new, ->(**) { creator }) do
+          post "/api/v1/payments/checkout_sessions", headers: { "Authorization" => "Bearer #{AuthToken.issue(user)}" }, as: :json
+        end
+      end
+    end
+    assert_response :service_unavailable
+    assert_equal 1, calls.length
+    assert_equal 503, calls.first.fetch(:status)
+    refute calls.first.key?(:expected_unavailability)
+  end
 end

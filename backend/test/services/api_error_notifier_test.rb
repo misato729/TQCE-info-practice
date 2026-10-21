@@ -49,9 +49,22 @@ class ApiErrorNotifierTest < ActiveSupport::TestCase
   end
 
   test "intentional sales-off or unconfigured webhook responses are not incidents" do
-    assert_equal :ignored, notify(controller: "Api::V1::Payments::CheckoutSessionsController", status: 503)
-    assert_equal :ignored, notify(controller: "Api::V1::Webhooks::StripeController", status: 503)
+    assert_equal :ignored, notify(controller: "Api::V1::Payments::CheckoutSessionsController", status: 503, expected_unavailability: true)
+    assert_equal :ignored, notify(controller: "Api::V1::Webhooks::StripeController", status: 503, expected_unavailability: true)
     assert_empty @http.requests
+  end
+
+  test "unexpected checkout service unavailability is reported as an API failure" do
+    assert_equal :sent, notify(controller: "Api::V1::Payments::CheckoutSessionsController", status: 503)
+    payload = JSON.parse(@http.requests.sole.body.lines.fetch(2))
+    assert_equal "TQCE API server failure", payload.fetch("message")
+    assert_equal %w[environment event_id level message timestamp], payload.keys.sort
+  end
+
+  test "the expected-unavailability marker cannot hide other controllers or a different status" do
+    assert_equal :sent, notify(status: 503, expected_unavailability: true)
+    assert_equal :sent, notify(controller: "Api::V1::Webhooks::StripeController", status: 500, expected_unavailability: true)
+    assert_equal 2, @http.requests.length
   end
 
   test "the event contains only the five explicitly allowed fields and fixed messages" do

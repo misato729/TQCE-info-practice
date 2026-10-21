@@ -38,6 +38,62 @@ class Api::V1::RateLimitsTest < ActionDispatch::IntegrationTest
     assert_equal [3, 3], ApiRateLimitBucket.order(:request_count).pluck(:request_count)
   end
 
+  test "shared-IP learners can use the answer quota without mixing histories and recover after the window" do
+    question = Question.create!(exam_number: 1, question_number: 1,
+      major_category_code: "teacher_education", category_code: "education_system",
+      publication_status: "published", content_blocks: [{ type: "text", text: "Shared IP quota test" }],
+      explanation_blocks: [{ type: "text", text: "Explanation" }])
+    choice = question.question_choices.create!(choice_label: "ア", display_order: 1,
+      is_correct: true, content_blocks: [{ type: "text", text: "Choice" }])
+    %w[イ ウ エ].each.with_index(2) do |label, order|
+      question.question_choices.create!(choice_label: label, display_order: order,
+        is_correct: false, content_blocks: [{ type: "text", text: "Choice" }])
+    end
+    users = 10.times.map { |index| User.create!(name: "Learner #{index}", email: "quota-#{index}@example.invalid", password: "password123") }
+    tokens = []
+
+    with_env("FLY_APP_NAME" => "test-app") do
+      travel_to Time.utc(2026, 10, 21, 0, 0, 10) do
+        users.each do |user|
+          post "/api/v1/auth/login", params: { email: user.email, password: "password123" },
+            headers: { "Fly-Client-IP" => "192.0.2.60" }, as: :json
+          assert_response :ok
+          tokens << response.parsed_body.dig("data", "access_token")
+        end
+        120.times do |index|
+          post answer_api_v1_question_path(question), params: { selected_choice_id: choice.id },
+            headers: { "Fly-Client-IP" => "192.0.2.60", "Authorization" => "Bearer #{tokens[index % 10]}" }, as: :json
+          assert_response :ok
+        end
+        tokens.each_with_index do |token, index|
+          get api_v1_answer_histories_path,
+            headers: { "Fly-Client-IP" => "192.0.2.60", "Authorization" => "Bearer #{token}" }
+          assert_response :ok
+          assert_equal 12, response.parsed_body.fetch("data").size
+          assert_equal 12, users[index].answer_histories.count
+          assert_equal users[index].answer_histories.pluck(:id).sort, response.parsed_body.fetch("data").map { |item| item.fetch("id") }.sort
+        end
+        assert_no_difference "AnswerHistory.count" do
+          post answer_api_v1_question_path(question), params: { selected_choice_id: choice.id },
+            headers: { "Fly-Client-IP" => "192.0.2.60", "Authorization" => "Bearer #{tokens.first}" }, as: :json
+        end
+        assert_response :too_many_requests
+        assert_equal "50", response.headers.fetch("Retry-After")
+        get "/api/v1/health", headers: { "Fly-Client-IP" => "192.0.2.60" }
+        assert_response :ok
+        post answer_api_v1_question_path(question), params: { selected_choice_id: choice.id },
+          headers: { "Fly-Client-IP" => "192.0.2.61", "Authorization" => "Bearer #{tokens.first}" }, as: :json
+        assert_response :ok
+      end
+      travel_to Time.utc(2026, 10, 21, 0, 1, 0) do
+        post answer_api_v1_question_path(question), params: { selected_choice_id: choice.id },
+          headers: { "Fly-Client-IP" => "192.0.2.60", "Authorization" => "Bearer #{tokens.first}" }, as: :json
+        assert_response :ok
+      end
+    end
+    assert_equal 122, AnswerHistory.count
+  end
+
   test "login throttling returns the standard error and a bounded retry time" do
     ApiRateLimiter::RULES.fetch(:login).fetch(:limit).times do
       post "/api/v1/auth/login", params: { email: "qa@example.invalid", password: "invalid-password" }, as: :json

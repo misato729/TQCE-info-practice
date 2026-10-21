@@ -1,13 +1,7 @@
 <script setup lang="ts">
-type Seller = {
-  name: string
-  representative: string
-  address: string
-  phone: string
-  email: string
-}
+import { isSellerInformationComplete, type SellerInformation } from '~/utils/sellerInformation'
 
-type PaymentConfig = { seller?: Seller }
+type PaymentConfig = { seller?: SellerInformation }
 type ApiResponse<T> = { data: T }
 
 const { $api: api } = useNuxtApp()
@@ -21,8 +15,11 @@ const seller = computed(() => ({
   address: paymentConfigResponse.value?.data.seller?.address || '',
   phone: paymentConfigResponse.value?.data.seller?.phone || '',
   email: paymentConfigResponse.value?.data.seller?.email || '',
+  contact_disclosure_mode: paymentConfigResponse.value?.data.seller?.contact_disclosure_mode ?? 'public',
+  contact_disclosure_ready: paymentConfigResponse.value?.data.seller?.contact_disclosure_ready === true,
 }))
-const sellerConfigured = computed(() => Object.values(seller.value).every(Boolean))
+const requestDisclosure = computed(() => seller.value.contact_disclosure_mode === 'on_request')
+const sellerConfigured = computed(() => isSellerInformationComplete(seller.value))
 
 useSeoMeta({
   title: '特定商取引法に基づく表記｜高等学校（情報）教員資格認定試験',
@@ -38,16 +35,17 @@ useSeoMeta({
     </header>
 
     <div v-if="!sellerConfigured" class="legal-warning" role="status">
-      現在は販売準備中です。販売開始前に、実際の販売事業者情報を掲載します。
+      現在は販売準備中です。販売者情報と必要な対応体制を確認しています。
     </div>
 
     <article class="legal-document disclosure-table">
       <dl>
         <div><dt>販売事業者</dt><dd>{{ seller.name || '販売開始前に掲載' }}</dd></div>
         <div><dt>運営責任者</dt><dd>{{ seller.representative || '販売開始前に掲載' }}</dd></div>
-        <div><dt>所在地</dt><dd>{{ seller.address || '販売開始前に掲載' }}</dd></div>
-        <div><dt>電話番号</dt><dd>{{ seller.phone || '販売開始前に掲載' }}</dd></div>
+        <div><dt>所在地</dt><dd>{{ requestDisclosure ? '請求があった場合に遅滞なく開示します。' : (seller.address || '販売開始前に掲載') }}</dd></div>
+        <div><dt>電話番号</dt><dd>{{ requestDisclosure ? '請求があった場合に遅滞なく開示します。' : (seller.phone || '販売開始前に掲載') }}</dd></div>
         <div><dt>問い合わせ先</dt><dd><a v-if="seller.email" :href="`mailto:${seller.email}`">{{ seller.email }}</a><span v-else>販売開始前に掲載</span></dd></div>
+        <div v-if="requestDisclosure"><dt>開示の請求方法</dt><dd>上記の問い合わせ先へ、所在地・電話番号の開示を希望する旨をメールでご連絡ください。購入前の請求にも、申込みの意思決定に先立って十分な時間的余裕をもって、電子メールで遅滞なく開示します。開示に費用はかかりません。</dd></div>
         <div><dt>販売価格</dt><dd>500円（税込）</dd></div>
         <div><dt>販売価格以外の負担</dt><dd>インターネット接続に必要な通信料は利用者の負担となります。</dd></div>
         <div><dt>支払方法</dt><dd>クレジットカード（Stripe Checkout）</dd></div>
@@ -59,7 +57,7 @@ useSeoMeta({
       </dl>
     </article>
 
-    <p class="legal-revised">最終更新日：2026年10月8日</p>
+    <p class="legal-revised">最終更新日：2026年10月21日</p>
   </div>
 </template>
 

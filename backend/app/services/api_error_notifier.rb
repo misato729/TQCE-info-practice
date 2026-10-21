@@ -39,12 +39,16 @@ class ApiErrorNotifier
     @gate = gate
   end
 
-  def call(controller:, status:, exception_class: nil)
+  def call(controller:, status:, exception_class: nil, expected_unavailability: false)
     return :disabled unless @environment["ERROR_NOTIFICATIONS_ENABLED"] == "true"
     return :ignored unless controller.to_s.start_with?("Api::V1::")
 
     status ||= ActionDispatch::ExceptionWrapper.status_code_for_exception(exception_class) if exception_class
     return :ignored unless status.to_i >= 500
+    if status.to_i == 503 && expected_unavailability == true &&
+        %w[Api::V1::Webhooks::StripeController Api::V1::Payments::CheckoutSessionsController].include?(controller)
+      return :ignored
+    end
     category = category_for(controller, status.to_i)
     return :ignored unless category
 
@@ -83,11 +87,13 @@ class ApiErrorNotifier
   private
 
   def category_for(controller, status)
+    return :api if status == 503
+
     case controller
     when "Api::V1::Webhooks::StripeController"
-      :stripe_webhook unless status == 503
+      :stripe_webhook
     when "Api::V1::Payments::CheckoutSessionsController"
-      :stripe_api unless status == 503
+      :stripe_api
     else
       :api
     end

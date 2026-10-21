@@ -27,3 +27,15 @@ test('terms disclose temporary request limits without enabling sales', () => {
   assert.match(page, /500円（税込）の買い切り/)
   assert.match(page, /最終改定日：2026年10月21日/)
 })
+
+test('on-request seller contacts explain how to request disclosure before purchase', () => {
+  const page = source('commercial-disclosure')
+  assert.match(page, /請求があった場合に遅滞なく開示します。/)
+  assert.match(page, /開示の請求方法/)
+  assert.match(page, /購入前の請求にも/)
+  assert.match(page, /申込みの意思決定に先立って十分な時間的余裕/)
+  assert.match(page, /電子メールで遅滞なく開示/)
+  assert.match(page, /開示に費用はかかりません/)
+  assert.match(page, /isSellerInformationComplete\(seller.value\)/)
+  assert.match(page, /最終更新日：2026年10月21日/)
+})

@@ -3,7 +3,10 @@ module Api
     module Webhooks
       class StripeController < ApplicationController
         def create
-          return render_error(:webhook_unavailable, "Webhook設定が完了していません", :service_unavailable) if webhook_secret.blank?
+          if webhook_secret.blank?
+            return render_error(:webhook_unavailable, "Webhook設定が完了していません", :service_unavailable,
+              expected_unavailability: true)
+          end
 
           event = ::Stripe::Webhook.construct_event(
             request.raw_post,
