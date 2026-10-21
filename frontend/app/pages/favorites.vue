@@ -120,7 +120,7 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
 
     <div v-if="!isLoggedIn" class="empty-state">
       <h2>ログインが必要です</h2>
-      <p>お気に入りは有料会員向けの機能です。</p>
+      <p>お気に入りはプレミアム会員向けの機能です。</p>
       <NuxtLink class="primary-link" to="/login?redirect=/favorites">ログインへ</NuxtLink>
     </div>
 
@@ -136,9 +136,9 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
 
     <div v-else-if="!canUseFavorites" class="empty-state">
       <UIcon class="empty-icon" name="i-lucide-lock-keyhole" />
-      <h2>有料会員向けの機能です</h2>
+      <h2>プレミアム会員向けの機能です</h2>
       <p>お気に入りに登録した問題をまとめて確認できます。</p>
-      <NuxtLink class="primary-link" to="/premium">有料会員について</NuxtLink>
+      <NuxtLink class="primary-link" to="/premium">プレミアム会員について</NuxtLink>
     </div>
 
     <div v-else-if="loading" class="empty-state" aria-live="polite">
@@ -189,9 +189,9 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
           <template v-if="item.locked">
             <div class="locked-content">
               <UIcon name="i-lucide-lock-keyhole" />
-              <div><strong>有料会員向けの問題です</strong><p>問題文と分類は、資格が有効になった後に表示されます。</p></div>
+              <div><strong>プレミアム会員向けの問題です</strong><p>問題文と分類は、資格が有効になった後に表示されます。</p></div>
             </div>
-            <NuxtLink class="primary-link premium-link" to="/premium">有料会員について確認する</NuxtLink>
+            <NuxtLink class="primary-link premium-link" to="/premium">プレミアム会員について確認する</NuxtLink>
           </template>
 
           <NuxtLink v-else class="favorite-card-link" :to="`/practice/${item.question.exam_number}/${item.question.question_number}`">

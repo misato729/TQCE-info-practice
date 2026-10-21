@@ -16,7 +16,7 @@ const handleLogout = async () => {
 
 const membershipLabel = computed(() => {
   if (user.value?.role === 'admin') return '管理者（全問題利用可）'
-  if (user.value?.membership.status === 'active') return '有料会員'
+  if (user.value?.membership.status === 'active') return 'プレミアム会員'
   if (user.value?.verification_access) return '検証用（有料機能利用可）'
   if (user.value?.membership.status === 'revoked') return '無料会員（有料資格は失効）'
   return '無料会員'
@@ -63,9 +63,9 @@ const deleteAccount = async () => {
         <div v-if="user?.verification_access && user?.membership.status !== 'active'"><span>検証用資格の期限</span><strong>{{ new Date(user.verification_access.expires_at).toLocaleString('ja-JP') }}</strong></div>
       </section>
       <section v-if="!user?.paid_content_access" class="content-panel membership-action">
-        <h2>有料会員</h2>
+        <h2>プレミアム会員</h2>
         <p>500円の買い切りで、模擬試験6以降を利用できます。</p>
-        <NuxtLink class="primary-link" to="/premium">有料会員の詳細を見る</NuxtLink>
+        <NuxtLink class="primary-link" to="/premium">プレミアム会員の詳細を見る</NuxtLink>
       </section>
       <section class="content-panel account-actions">
         <h2>ログイン状態</h2>
@@ -76,14 +76,14 @@ const deleteAccount = async () => {
       </section>
       <section class="content-panel danger-zone">
         <h2>アカウント削除</h2>
-        <p>アカウントを削除すると、解答履歴、お気に入り、有料会員資格も削除されます。有料会員資格は同じメールアドレスで再登録しても復元されず、削除による自動返金は行われません。</p>
+        <p>アカウントを削除すると、解答履歴、お気に入り、プレミアム会員資格も削除されます。プレミアム会員資格は同じメールアドレスで再登録しても復元されず、削除による自動返金は行われません。</p>
         <button v-if="!deleteFormOpen" type="button" @click="deleteFormOpen = true">アカウントを削除</button>
         <form v-else class="delete-form" @submit.prevent="deleteAccount">
           <div class="field">
             <label for="current-password">現在のパスワード</label>
             <input id="current-password" v-model="currentPassword" type="password" autocomplete="current-password" required>
           </div>
-          <label class="delete-confirmation"><input v-model="deleteConfirmed" type="checkbox"><span>削除後にデータと有料会員資格を復元できないことを確認しました。</span></label>
+          <label class="delete-confirmation"><input v-model="deleteConfirmed" type="checkbox"><span>削除後にデータとプレミアム会員資格を復元できないことを確認しました。</span></label>
           <p v-if="deleteError" class="form-error" role="alert">{{ deleteError }}</p>
           <div class="delete-actions">
             <button type="button" @click="deleteFormOpen = false">キャンセル</button>

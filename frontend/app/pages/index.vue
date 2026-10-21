@@ -20,7 +20,7 @@ useSeoMeta({
 })
 
 const updates = [
-  { date: '2026.10.08', text: '買い切りの有料会員機能とStripe Checkoutに対応しました。' },
+  { date: '2026.10.08', text: '買い切りのプレミアム会員機能とStripe Checkoutに対応しました。' },
   { date: '2026.08.20', text: '問題演習サイトの画面構成を更新しました。' },
   { date: '2026.08.10', text: '試験概要に出題範囲の解説を追加しました。' },
 ]
@@ -186,7 +186,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           <p><strong>全{{ EXAM_CATALOG.length }}回</strong><span>各20問</span></p>
           <NuxtLink v-if="!hasFullAccess" class="premium-info-link" to="/premium">
             <UIcon name="i-lucide-lock-keyhole" />
-            模擬試験6以降は有料会員向けです
+            模擬試験6以降はプレミアム会員向けです
           </NuxtLink>
         </div>
         <div class="exam-grid">
@@ -195,7 +195,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
             :key="exam.exam_number"
             class="exam-card"
             :to="examTarget(exam.exam_number)"
-            :aria-label="examIsLocked(exam.exam_number) ? `模擬試験${exam.exam_number}は有料会員向けです` : `模擬試験${exam.exam_number}を始める`"
+            :aria-label="examIsLocked(exam.exam_number) ? `模擬試験${exam.exam_number}はプレミアム会員向けです` : `模擬試験${exam.exam_number}を始める`"
           >
             <strong>{{ exam.exam_number }}</strong>
             <UIcon v-if="examIsLocked(exam.exam_number)" name="i-lucide-lock-keyhole" aria-hidden="true" />
@@ -327,13 +327,13 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
         <article>
           <UIcon name="i-lucide-user-check" />
           <h3>模擬試験1〜5は無料</h3>
-          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴の保存にはログインが必要です。お気に入りは有料会員向けです。</p>
+          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴の保存にはログインが必要です。お気に入りはプレミアム会員向けです。</p>
         </article>
         <article>
           <UIcon name="i-lucide-badge-check" />
           <h3>500円の買い切り</h3>
-          <p>有料会員は模擬試験6以降も利用できます。月額料金や自動更新はありません。</p>
-          <NuxtLink class="text-link" to="/premium">有料会員について</NuxtLink>
+          <p>プレミアム会員は模擬試験6以降も利用できます。月額料金や自動更新はありません。</p>
+          <NuxtLink class="text-link" to="/premium">プレミアム会員について</NuxtLink>
         </article>
         <article>
           <UIcon name="i-lucide-book-open" />

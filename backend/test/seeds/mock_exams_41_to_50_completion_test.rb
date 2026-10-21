@@ -219,7 +219,7 @@ class MockExams41To50CompletionTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "有料会員が全二百問を取得回答でき回答前は解答を秘匿し再seedもID履歴を保つ" do
+  test "プレミアム会員が全二百問を取得回答でき回答前は解答を秘匿し再seedもID履歴を保つ" do
     save_entries
     assert_equal 200, Question.where(exam_number: EXAMS, publication_status: "published").count
     user, paid = user_headers("paid", paid: true)

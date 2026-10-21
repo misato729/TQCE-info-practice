@@ -108,6 +108,7 @@ class Api::V1::FavoritesTest < ActionDispatch::IntegrationTest
       get api_v1_favorites_path, headers: @headers
       assert_response :forbidden
       assert_equal "paid_membership_required", response.parsed_body.dig("error", "code")
+      assert_equal "お気に入りの利用にはプレミアム会員資格が必要です", response.parsed_body.dig("error", "message")
       [@free_question, @premium_question].each do |question|
         put api_v1_question_favorite_path(question), headers: @headers
         assert_response :forbidden

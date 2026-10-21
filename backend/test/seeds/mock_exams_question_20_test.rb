@@ -41,7 +41,7 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "有料会員が十五問を取得し回答後だけに正答解説出典を返す" do
+  test "プレミアム会員が十五問を取得し回答後だけに正答解説出典を返す" do
     headers = paid_user_headers("question20-paid@example.com")
     questions.each do |question|
       get next_api_v1_questions_path, params: { exam_number: question.exam_number, after_question_number: 19 }, headers: headers
@@ -70,7 +70,7 @@ class MockExamsQuestion20Test < ActionDispatch::IntegrationTest
   end
 
   def paid_user_headers(email)
-    user = User.create!(name: "有料会員", email: email, password: "password123", password_confirmation: "password123")
+    user = User.create!(name: "プレミアム会員", email: email, password: "password123", password_confirmation: "password123")
     payment = Payment.create!(user: user, stripe_checkout_session_id: "cs_#{user.id}", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
     Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
     { "Authorization" => "Bearer #{AuthToken.issue(user)}" }

@@ -69,7 +69,7 @@ class ApplicationController < ActionController::API
     return true if current_user&.paid_content_access?
 
     if current_user
-      render_error(:paid_membership_required, "この模擬試験の利用には有料会員資格が必要です", :forbidden)
+      render_error(:paid_membership_required, "この模擬試験の利用にはプレミアム会員資格が必要です", :forbidden)
     else
       render_error(:unauthorized, "この模擬試験を利用するにはログインが必要です", :unauthorized)
     end

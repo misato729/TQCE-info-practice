@@ -26,7 +26,7 @@ const sellerConfigured = computed(() => Object.values(seller.value).every(Boolea
 
 useSeoMeta({
   title: '特定商取引法に基づく表記｜高等学校（情報）教員資格認定試験',
-  description: '有料会員の販売条件と販売事業者情報を表示します。',
+  description: 'プレミアム会員の販売条件と販売事業者情報を表示します。',
 })
 </script>
 
@@ -34,7 +34,7 @@ useSeoMeta({
   <div class="page-wrap legal-page">
     <header class="page-intro">
       <h1>特定商取引法に基づく表記</h1>
-      <p>有料会員の購入条件と販売事業者情報です。</p>
+      <p>プレミアム会員の購入条件と販売事業者情報です。</p>
     </header>
 
     <div v-if="!sellerConfigured" class="legal-warning" role="status">

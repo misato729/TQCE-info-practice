@@ -18,8 +18,8 @@ type PaymentConfig = {
 type ApiResponse<T> = { data: T }
 
 useSeoMeta({
-  title: '有料会員｜高等学校（情報）教員資格認定試験',
-  description: '模擬試験6以降を利用できる買い切りの有料会員についてご案内します。',
+  title: 'プレミアム会員｜高等学校（情報）教員資格認定試験',
+  description: '模擬試験6以降を利用できる買い切りのプレミアム会員についてご案内します。',
 })
 
 const route = useRoute()
@@ -70,7 +70,7 @@ const startCheckout = async () => {
     }
     else if (code === 'membership_already_active') {
       await ensureCurrentUser(true)
-      errorMessage.value = '有料会員資格はすでに有効です。'
+      errorMessage.value = 'プレミアム会員資格はすでに有効です。'
     }
     else if (code === 'checkout_session_in_progress') {
       errorMessage.value = '未完了の決済があります。Stripeの決済画面をご確認ください。'
@@ -89,7 +89,7 @@ const startCheckout = async () => {
   <div class="page-wrap premium-page">
     <header class="page-intro premium-intro">
       <span class="premium-kicker">ONE-TIME PURCHASE</span>
-      <h1>有料会員</h1>
+      <h1>プレミアム会員</h1>
       <p>500円（税込）の買い切りで、公開中および今後追加される模擬試験6以降を利用できます。月額料金や自動更新はありません。</p>
     </header>
 
@@ -119,7 +119,7 @@ const startCheckout = async () => {
         <div class="active-state">
           <UIcon name="i-lucide-badge-check" />
           <div>
-            <h2>{{ isAdmin ? '管理者権限で全問題を利用できます' : isVerificationAccount ? '検証用資格で全問題を利用できます' : '有料会員資格は有効です' }}</h2>
+            <h2>{{ isAdmin ? '管理者権限で全問題を利用できます' : isVerificationAccount ? '検証用資格で全問題を利用できます' : 'プレミアム会員資格は有効です' }}</h2>
             <p>模擬試験6以降を利用できます。購入手続きは必要ありません。</p>
           </div>
         </div>

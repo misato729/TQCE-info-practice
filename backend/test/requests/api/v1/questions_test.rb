@@ -144,6 +144,7 @@ class Api::V1::QuestionsTest < ActionDispatch::IntegrationTest
     get api_v1_question_path(premium_question), headers: headers
     assert_response :forbidden
     assert_equal "paid_membership_required", response.parsed_body.dig("error", "code")
+    assert_equal "この模擬試験の利用にはプレミアム会員資格が必要です", response.parsed_body.dig("error", "message")
 
     post answer_api_v1_question_path(premium_question),
       params: { selected_choice_id: premium_question.question_choices.first.id },
@@ -152,7 +153,7 @@ class Api::V1::QuestionsTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
-  test "有料会員は模擬試験6以降を取得できる" do
+  test "プレミアム会員は模擬試験6以降を取得できる" do
     premium_question = create_question(exam_number: 6)
     user = create_user("paid@example.com")
     payment = create_paid_payment(user)

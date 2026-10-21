@@ -160,9 +160,9 @@ const historyLink = (history: HistoryItem) => ({
             </div>
             <div class="history-question">
               <span>模擬試験 {{ history.question.exam_number }}・問{{ history.question.question_number }}</span>
-              <strong>この履歴の本文・正誤・解説は有料会員向けです。</strong>
+              <strong>この履歴の本文・正誤・解説はプレミアム会員向けです。</strong>
             </div>
-            <NuxtLink class="primary-link" to="/premium">有料会員について確認する</NuxtLink>
+            <NuxtLink class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>
           </div>
         </article>
       </div>

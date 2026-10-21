@@ -30,7 +30,7 @@ export const useDemoFavorites = () => {
   }
 
   const toggleFavorite = async (question: FavoriteQuestion) => {
-    if (!canUseFavorites.value) throw new Error('お気に入りの利用には有料会員資格が必要です。')
+    if (!canUseFavorites.value) throw new Error('お気に入りの利用にはプレミアム会員資格が必要です。')
     const owner = user.value
     const token = accessToken.value
     const adding = !isFavorite(question.id)

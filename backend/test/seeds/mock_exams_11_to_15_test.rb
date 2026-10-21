@@ -521,7 +521,7 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
     end
   end
 
-  test "公開した全百問を有料会員が採点でき回答後に解説と出典を返す" do
+  test "公開した全百問をプレミアム会員が採点でき回答後に解説と出典を返す" do
     headers = paid_user_headers("exams-11-15-answer@example.com")
     completed_questions.each do |question|
       answer = question.question_choices.find_by!(is_correct: true)
@@ -539,7 +539,7 @@ class MockExams11To15Test < ActionDispatch::IntegrationTest
   end
 
   def paid_user_headers(email)
-    user = User.create!(name: "有料会員", email: email, password: "password123", password_confirmation: "password123")
+    user = User.create!(name: "プレミアム会員", email: email, password: "password123", password_confirmation: "password123")
     payment = Payment.create!(user: user, stripe_checkout_session_id: "cs_#{user.id}", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
     Membership.create!(user: user, source_payment: payment, status: "active", activated_at: Time.current)
     { "Authorization" => "Bearer #{AuthToken.issue(user)}" }

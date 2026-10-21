@@ -12,7 +12,7 @@ class CheckoutSessionCreator
   end
 
   def call
-    raise ConfigurationError, "有料会員の販売設定が完了していません" unless PaidMembership.enabled?
+    raise ConfigurationError, "プレミアム会員の販売設定が完了していません" unless PaidMembership.enabled?
 
     User.transaction do
       user.lock!

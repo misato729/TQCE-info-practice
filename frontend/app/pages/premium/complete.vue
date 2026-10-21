@@ -35,7 +35,7 @@ onBeforeUnmount(() => { stopped = true })
     <div v-if="!isLoggedIn" class="completion-card">
       <UIcon class="state-icon" name="i-lucide-log-in" />
       <h1>ログインして決済結果を確認してください</h1>
-      <p>購入時に使用したアカウントでログインすると、有料会員資格の反映を確認できます。</p>
+      <p>購入時に使用したアカウントでログインすると、プレミアム会員資格の反映を確認できます。</p>
       <NuxtLink class="primary-link" to="/login?redirect=/premium/complete">ログイン</NuxtLink>
     </div>
 
@@ -47,7 +47,7 @@ onBeforeUnmount(() => { stopped = true })
 
     <div v-else-if="state === 'complete'" class="completion-card success-card" aria-live="polite">
       <UIcon class="state-icon" name="i-lucide-circle-check-big" />
-      <h1>有料会員になりました</h1>
+      <h1>プレミアム会員になりました</h1>
       <p>500円の買い切り購入が確認できました。模擬試験6以降を利用できます。</p>
       <NuxtLink class="primary-link" to="/practice/6/1">模擬試験6へ進む</NuxtLink>
     </div>

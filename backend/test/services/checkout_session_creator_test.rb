@@ -96,9 +96,10 @@ class CheckoutSessionCreatorTest < ActiveSupport::TestCase
 
   test "販売設定が無効ならStripeへ接続しない" do
     with_env("PAID_MEMBERSHIP_ENABLED" => "false") do
-      assert_raises(CheckoutSessionCreator::ConfigurationError) do
+      error = assert_raises(CheckoutSessionCreator::ConfigurationError) do
         CheckoutSessionCreator.new(user: @user, client: @client).call
       end
+      assert_equal "プレミアム会員の販売設定が完了していません", error.message
     end
     assert_nil @prices.retrieved_id
   end

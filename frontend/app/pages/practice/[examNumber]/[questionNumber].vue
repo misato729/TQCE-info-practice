@@ -321,7 +321,7 @@ const submitAnswer = async () => {
       return
     }
     if (error?.data?.error?.code === 'paid_membership_required') {
-      answerError.value = '有料会員資格を確認できません。有料会員ページをご確認ください。'
+      answerError.value = 'プレミアム会員資格を確認できません。プレミアム会員ページをご確認ください。'
       return
     }
     answerError.value = '回答を送信できませんでした。通信状況を確認して、もう一度お試しください。'
@@ -446,12 +446,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 
     <div v-else-if="paywallRequired" class="state-panel paywall-panel">
       <UIcon name="i-lucide-lock-keyhole" />
-      <h1>模擬試験{{ examNumber }}は有料会員向けです</h1>
-      <p v-if="paywallNeedsLogin">模擬試験6以降を利用するには、ログインして有料会員資格を確認してください。</p>
+      <h1>模擬試験{{ examNumber }}はプレミアム会員向けです</h1>
+      <p v-if="paywallNeedsLogin">模擬試験6以降を利用するには、ログインしてプレミアム会員資格を確認してください。</p>
       <p v-else>500円の買い切りで、公開中および今後追加される模擬試験6以降を利用できます。</p>
       <div class="state-actions">
         <NuxtLink v-if="paywallNeedsLogin" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }">ログイン</NuxtLink>
-        <NuxtLink class="primary-link" to="/premium">有料会員について確認する</NuxtLink>
+        <NuxtLink class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>
       </div>
     </div>
 
@@ -611,9 +611,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
               <UIcon name="i-lucide-star" />
             </span>
             <h2 id="favorite-modal-title">お気に入り機能について</h2>
-            <p>お気に入り登録は、有料会員向けの機能です。</p>
+            <p>お気に入り登録は、プレミアム会員向けの機能です。</p>
             <div class="favorite-modal-actions">
-              <NuxtLink class="primary-link" to="/premium" @click="closeFavoriteModal">有料会員について</NuxtLink>
+              <NuxtLink class="primary-link" to="/premium" @click="closeFavoriteModal">プレミアム会員について</NuxtLink>
               <NuxtLink v-if="!isLoggedIn" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">ログインへ</NuxtLink>
             </div>
           </section>

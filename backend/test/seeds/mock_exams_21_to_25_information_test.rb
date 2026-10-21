@@ -155,7 +155,7 @@ class MockExams21To25InformationTest < ActionDispatch::IntegrationTest
     assert_equal [2,-2], observations.map { |x,y| y - (8 + 3*x) }
   end
 
-  test "有料会員は追加二十五問を取得採点でき無料側には内容を渡さない" do
+  test "プレミアム会員は追加二十五問を取得採点でき無料側には内容を渡さない" do
     synchronize
     user = User.create!(name: "追加問題検査", email: "completed-21-25@example.com", password: "password123", password_confirmation: "password123")
     paid = {"Authorization" => "Bearer #{AuthToken.issue(user)}"}

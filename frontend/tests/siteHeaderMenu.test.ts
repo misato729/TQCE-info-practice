@@ -14,6 +14,17 @@ const menuFor = (loggedIn: boolean, user: { paid_content_access: boolean, role: 
   }) as Array<{ label: string, to: string, icon: string }>
 )
 
+test('membership menu uses the premium label without changing its destination', () => {
+  for (const [loggedIn, user] of [
+    [false, null],
+    [true, { paid_content_access: false, role: 'user' }],
+    [true, { paid_content_access: true, role: 'user' }],
+  ] as const) {
+    const membership = menuFor(loggedIn, user).find(item => item.to === '/premium')
+    assert.equal(membership?.label, 'プレミアム会員')
+  }
+})
+
 test('anonymous users have a login link in the mobile menu', () => {
   const items = menuFor(false, null)
   const login = items.filter(item => item.to === '/login')

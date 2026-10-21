@@ -6,7 +6,7 @@ class Api::V1::FavoritePayloadTest < ActionDispatch::IntegrationTest
     @headers = { "Authorization" => "Bearer #{AuthToken.issue(@user)}" }
   end
 
-  test "有料会員のログインとmeへ全件の公開問題の位置だけを同梱する" do
+  test "プレミアム会員のログインとmeへ全件の公開問題の位置だけを同梱する" do
     payment = Payment.create!(user: @user, stripe_checkout_session_id: "cs_payload", stripe_price_id: "price_test", status: "paid", paid_at: Time.current)
     Membership.create!(user: @user, source_payment: payment, status: "active", activated_at: Time.current)
     questions = (0..100).map { |index| question(index) }

@@ -190,7 +190,7 @@ class MockExams36To40CompletionTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "有料会員と管理者は百問を取得回答でき回答前秘匿を保ち無料利用者を拒否する" do
+  test "プレミアム会員と管理者は百問を取得回答でき回答前秘匿を保ち無料利用者を拒否する" do
     save_entries(@entries)
     assert_equal 100, Question.where(exam_number: EXAMS, publication_status: "published").count
     paid, admin, free = user_headers("paid", paid: true), user_headers("admin", admin: true), user_headers("free")

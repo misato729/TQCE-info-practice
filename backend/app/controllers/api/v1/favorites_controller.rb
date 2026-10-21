@@ -46,7 +46,7 @@ module Api
       def authorize_favorites!
         return if current_user.paid_content_access?
 
-        render_error(:paid_membership_required, "お気に入りの利用には有料会員資格が必要です", :forbidden)
+        render_error(:paid_membership_required, "お気に入りの利用にはプレミアム会員資格が必要です", :forbidden)
       end
 
       def positive_integer_param(name, default:, maximum: nil)
