@@ -348,7 +348,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 <style scoped>
 .home-main { min-width: 0; background: #f8faf9; }
 .practice-launcher {
-  scroll-margin-top: calc(var(--header-height) + 20px);
+  scroll-margin-top: calc(var(--site-navigation-height, var(--header-height)) + 20px);
   padding: 52px clamp(28px, 6vw, 86px) 58px;
   border-top: 1px solid #d4dfde;
   background: #eef4f3;

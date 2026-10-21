@@ -84,6 +84,23 @@ test('login hydrates all sidebar favorites without fetching a favorites endpoint
   assert.equal(sidebar.isFavoriteAt(2, 3), false)
 })
 
+test('logout clears authentication and paid favorites without an API request', async () => {
+  const calls: string[] = []
+  const paid = { ...user, paid_content_access: true, favorite_questions: [{ id: 17, exam_number: 2, question_number: 3 }] }
+  const { auth } = createAuth(null, async (path) => {
+    calls.push(path)
+    return { data: { access_token: 'test-session', user: paid } }
+  })
+  await auth.login({ email: user.email, password: 'test-only' })
+  auth.logout()
+  assert.equal(auth.accessToken.value, null)
+  assert.equal(auth.user.value, null)
+  assert.equal(auth.isLoggedIn.value, false)
+  assert.deepEqual(auth.authHeaders.value, {})
+  assert.deepEqual(useDemoFavorites().favoriteIds.value, [])
+  assert.deepEqual(calls, ['/api/v1/auth/login'])
+})
+
 test('initial user request hydrates favorites once and mutations only send PUT or DELETE', async () => {
   const calls: Array<[string, string | undefined]> = []
   const question = { id: 23, exam_number: 3, question_number: 8 }

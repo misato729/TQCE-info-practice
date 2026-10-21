@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const menuOpen = ref(false)
-const { isLoggedIn, user, ensureCurrentUser } = useAuth()
+const { isLoggedIn, user, ensureCurrentUser, logout } = useAuth()
 
 const menuItems = computed(() => [
   { label: 'ホーム', to: '/', icon: 'i-lucide-house' },
@@ -19,7 +19,7 @@ const menuItems = computed(() => [
           ? [{ label: '管理画面', to: '/admin/questions', icon: 'i-lucide-shield-check' }]
           : []),
       ]
-    : []),
+    : [{ label: 'ログイン', to: '/login', icon: 'i-lucide-log-in' }]),
 ])
 
 watch(() => route.fullPath, () => { menuOpen.value = false })
@@ -34,6 +34,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
 const openMenu = () => {
   menuOpen.value = true
   if (isLoggedIn.value && !user.value) void ensureCurrentUser()
+}
+
+const handleLogout = async () => {
+  menuOpen.value = false
+  logout()
+  await navigateTo('/')
 }
 </script>
 
@@ -69,6 +75,7 @@ const openMenu = () => {
         </button>
       </div>
     </div>
+    <slot />
   </header>
 
   <Transition name="fade">
@@ -95,13 +102,17 @@ const openMenu = () => {
           v-for="item in menuItems"
           :key="item.to"
           :to="item.to"
-          :class="{ active: route.path + route.hash === item.to }"
+          :class="{ active: route.path + route.hash === item.to, 'mobile-login-link': item.to === '/login' }"
           @click="menuOpen = false"
         >
           <UIcon :name="item.icon" />
           <span>{{ item.label }}</span>
           <UIcon class="chevron" name="i-lucide-chevron-right" />
         </NuxtLink>
+        <button v-if="isLoggedIn" class="logout-button" type="button" @click="handleLogout">
+          <UIcon name="i-lucide-log-out" />
+          <span>ログアウト</span>
+        </button>
       </nav>
     </aside>
   </Transition>
@@ -135,6 +146,8 @@ const openMenu = () => {
   z-index: 50;
   width: min(360px, 88vw);
   padding: 22px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   background: #f8fbfb;
   box-shadow: -18px 0 50px rgba(18, 42, 48, .2);
 }
@@ -142,20 +155,27 @@ const openMenu = () => {
 .drawer-head strong { font-size: 20px; }
 .drawer-head button { width: 40px; height: 40px; border-radius: 6px; background: #e6eeee; color: var(--ink); font-size: 22px; }
 nav { display: grid; gap: 4px; padding-top: 18px; }
-nav a {
+nav a, .logout-button {
+  width: 100%;
   min-height: 52px;
   display: grid;
   grid-template-columns: 24px 1fr 20px;
   align-items: center;
   gap: 12px;
   padding: 0 12px;
+  border: 0;
   border-radius: 6px;
+  background: transparent;
   color: #263840;
   font-weight: 700;
   text-decoration: none;
+  text-align: left;
+  cursor: pointer;
 }
-nav a:hover, nav a.active { background: #dff2f2; color: var(--teal-dark); }
+nav a:hover, nav a.active, .logout-button:hover { background: #dff2f2; color: var(--teal-dark); }
+.logout-button { margin-top: 8px; border-top: 1px solid var(--line); border-radius: 0; }
 .chevron { color: #7d9097; }
+nav a.mobile-login-link { display: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .fade-enter-active, .fade-leave-active, .slide-enter-active, .slide-leave-active { transition: opacity 180ms ease, transform 220ms ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
@@ -167,6 +187,7 @@ nav a:hover, nav a.active { background: #dff2f2; color: var(--teal-dark); }
   .brand-tagline { font-size: 11px; }
   .brand-tagline span { display: inline; white-space: normal; }
   .account-label, .login-link { display: none; }
+  nav a.mobile-login-link { display: grid; }
   .header-actions { gap: 10px; }
 }
 @media (max-width: 420px) {

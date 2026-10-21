@@ -3,6 +3,8 @@ import { EXAM_CATALOG, FREE_EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/
 
 const route = useRoute()
 const openExam = ref<number | null>(null)
+const mobileOpen = ref(false)
+const mobileToggle = ref<HTMLButtonElement | null>(null)
 const { user, accessToken, ensureCurrentUser } = useAuth()
 const { isFavoriteAt } = useDemoFavorites()
 const accessStatus = ref<'ready' | 'pending' | 'error'>(
@@ -58,6 +60,15 @@ const toggleExam = (exam: number) => {
   openExam.value = openExam.value === exam ? null : exam
 }
 
+const closeMobileList = () => { mobileOpen.value = false }
+const closeMobileOnEscape = () => {
+  if (!mobileOpen.value) return
+  closeMobileList()
+  mobileToggle.value?.focus()
+}
+
+watch(() => route.fullPath, closeMobileList)
+
 const isCurrentQuestion = (exam: number, question: number) => {
   return route.path === `/practice/${exam}/${question}`
 }
@@ -68,69 +79,95 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 </script>
 
 <template>
-  <aside class="exam-sidebar" aria-label="模擬試験一覧">
+  <aside
+    class="exam-sidebar"
+    :class="{ 'mobile-open': mobileOpen }"
+    aria-label="模擬試験一覧"
+    @keydown.esc="closeMobileOnEscape"
+  >
     <div class="sidebar-heading">
       <UIcon name="i-lucide-files" />
       <span>試験セット</span>
     </div>
 
-    <div v-if="isLoading" class="sidebar-loading" role="status" aria-live="polite">
-      <UIcon class="loading-spinner" name="i-lucide-loader-circle" />
-      <span>試験セットを読み込んでいます</span>
-    </div>
+    <button
+      ref="mobileToggle"
+      class="mobile-exam-toggle"
+      type="button"
+      :aria-expanded="mobileOpen"
+      aria-controls="exam-sidebar-content"
+      :title="mobileOpen ? '試験セットを閉じる' : '試験セットを開く'"
+      @click="mobileOpen = !mobileOpen"
+    >
+      <UIcon name="i-lucide-files" />
+      <span>試験セット</span>
+      <UIcon :name="mobileOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" />
+    </button>
 
-    <div v-else-if="hasAccessError" class="sidebar-loading sidebar-error" role="alert">
-      <UIcon name="i-lucide-circle-alert" />
-      <span>利用資格を確認できません</span>
-      <button type="button" @click="resolveAccess">再確認</button>
-    </div>
+    <div id="exam-sidebar-content" class="sidebar-content">
+      <div v-if="isLoading" class="sidebar-loading" role="status" aria-live="polite">
+        <UIcon class="loading-spinner" name="i-lucide-loader-circle" />
+        <span>試験セットを読み込んでいます</span>
+      </div>
 
-    <template v-else>
-      <section v-for="exam in exams" :key="exam.exam_number" class="exam-group">
-        <div
-          class="exam-row"
-          :class="{ current: route.path.startsWith(`/practice/${exam.exam_number}/`) }"
+      <div v-else-if="hasAccessError" class="sidebar-loading sidebar-error" role="alert">
+        <UIcon name="i-lucide-circle-alert" />
+        <span>利用資格を確認できません</span>
+        <button type="button" @click="resolveAccess">再確認</button>
+      </div>
+
+      <div v-else class="exam-groups">
+        <section
+          v-for="exam in exams"
+          :key="exam.exam_number"
+          class="exam-group"
         >
-          <NuxtLink class="exam-link" :to="examTarget(exam)">
-            模擬試験 {{ exam.exam_number }}
-          </NuxtLink>
-          <button
-            type="button"
-            :aria-expanded="openExam === exam.exam_number"
-            :aria-controls="`exam-${exam.exam_number}-questions`"
-            :title="openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く`"
-            @click="toggleExam(exam.exam_number)"
+          <div
+            class="exam-row"
+            :class="{ current: route.path.startsWith(`/practice/${exam.exam_number}/`) }"
           >
-            <UIcon
-              :name="openExam === exam.exam_number ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-            />
-            <span class="sr-only">
-              {{ openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く` }}
-            </span>
-          </button>
-        </div>
-
-        <Transition name="questions">
-          <nav
-            v-if="openExam === exam.exam_number"
-            :id="`exam-${exam.exam_number}-questions`"
-            class="question-list"
-            :aria-label="`模擬試験${exam.exam_number}の問題一覧`"
-          >
-            <NuxtLink
-              v-for="question in exam.question_numbers"
-              :key="question"
-              :to="examTarget(exam, question)"
-              :class="{ active: isCurrentQuestion(exam.exam_number, question), favorite: isFavoriteAt(exam.exam_number, question) }"
-              :aria-label="`問${question}${isFavoriteAt(exam.exam_number, question) ? '（お気に入り）' : ''}`"
-              :title="isFavoriteAt(exam.exam_number, question) ? 'お気に入り' : undefined"
-            >
-              問{{ question }}
+            <NuxtLink class="exam-link" :to="examTarget(exam)" @click="closeMobileList">
+              模擬試験 {{ exam.exam_number }}
             </NuxtLink>
-          </nav>
-        </Transition>
-      </section>
-    </template>
+            <button
+              type="button"
+              :aria-expanded="openExam === exam.exam_number"
+              :aria-controls="`exam-${exam.exam_number}-questions`"
+              :title="openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く`"
+              @click="toggleExam(exam.exam_number)"
+            >
+              <UIcon
+                :name="openExam === exam.exam_number ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+              />
+              <span class="sr-only">
+                {{ openExam === exam.exam_number ? `模擬試験${exam.exam_number}を閉じる` : `模擬試験${exam.exam_number}を開く` }}
+              </span>
+            </button>
+          </div>
+
+          <Transition name="questions">
+            <nav
+              v-if="openExam === exam.exam_number"
+              :id="`exam-${exam.exam_number}-questions`"
+              class="question-list"
+              :aria-label="`模擬試験${exam.exam_number}の問題一覧`"
+            >
+              <NuxtLink
+                v-for="question in exam.question_numbers"
+                :key="question"
+                :to="examTarget(exam, question)"
+                :class="{ active: isCurrentQuestion(exam.exam_number, question), favorite: isFavoriteAt(exam.exam_number, question) }"
+                :aria-label="`問${question}${isFavoriteAt(exam.exam_number, question) ? '（お気に入り）' : ''}`"
+                :title="isFavoriteAt(exam.exam_number, question) ? 'お気に入り' : undefined"
+                @click="closeMobileList"
+              >
+                問{{ question }}
+              </NuxtLink>
+            </nav>
+          </Transition>
+        </section>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -153,6 +190,8 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   font-size: 13px;
   font-weight: 800;
 }
+
+.mobile-exam-toggle { display: none; }
 
 .sidebar-loading {
   min-height: 120px;
@@ -299,8 +338,9 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 
 @media (min-width: 761px) {
   .exam-sidebar {
-    position: sticky;
-    top: var(--header-height);
+    position: absolute;
+    top: 100%;
+    left: 0;
     height: calc(100vh - var(--header-height));
     overflow-y: auto;
   }
@@ -308,30 +348,95 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 
 @media (max-width: 760px) {
   .exam-sidebar {
+    position: relative;
     width: 100%;
     min-height: auto;
-    max-height: 240px;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    padding: 14px;
+    padding: 0;
     border-right: 0;
     border-bottom: 1px solid #cdd9dc;
   }
 
   .sidebar-heading {
-    min-height: 32px;
+    display: none;
   }
+
+  .mobile-exam-toggle {
+    width: 100%;
+    height: var(--exam-toggle-height);
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) 20px;
+    align-items: center;
+    gap: 9px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--teal-dark);
+    font-size: 14px;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mobile-exam-toggle:hover { background: #d8e5e5; }
+  .mobile-exam-toggle > :first-child,
+  .mobile-exam-toggle > :last-child { width: 20px; height: 20px; }
+
+  .sidebar-content {
+    --exam-row-height: 56px;
+    --exam-grid-gap: 8px;
+    display: none;
+    position: absolute;
+    inset: 100% 0 auto;
+    max-height: min(calc(var(--exam-row-height) * 3 + var(--exam-grid-gap) * 2 + 25px), calc(100vh - var(--site-navigation-height) - 12px));
+    max-height: min(calc(var(--exam-row-height) * 3 + var(--exam-grid-gap) * 2 + 25px), calc(100dvh - var(--site-navigation-height) - 12px));
+    padding: 12px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    overscroll-behavior-y: contain;
+    border-bottom: 1px solid #cdd9dc;
+    background: #e3e9e9;
+    box-shadow: 0 10px 16px rgba(18, 42, 48, .12);
+  }
+
+  .mobile-open .sidebar-content { display: block; }
+
+  .exam-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: var(--exam-grid-gap);
+  }
+
+  .exam-group + .exam-group { margin-top: 0; }
+  .exam-group { min-width: 0; }
 
   .sidebar-loading {
     min-height: 76px;
   }
 
   .exam-row {
-    min-height: 54px;
+    height: var(--exam-row-height);
+    min-height: var(--exam-row-height);
+    gap: 4px;
+    padding: 5px 6px;
   }
 
+  .exam-link { font-size: 13px; }
+
+  .exam-row button {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  /* Keep both exam controls in place while questions span the row. */
   .question-list {
+    width: calc(200% + var(--exam-grid-gap));
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .exam-group:nth-child(even) .question-list {
+    margin-left: calc(-100% - var(--exam-grid-gap));
   }
 }
 </style>
