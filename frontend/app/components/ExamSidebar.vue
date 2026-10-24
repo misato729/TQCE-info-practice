@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/examCatalog'
+import { EXAM_CATALOG, FREE_EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/examCatalog'
+import { hasFullExamAccess } from '~/utils/examConfig'
 
 const route = useRoute()
 const openExam = ref<number | null>(null)
 const mobileOpen = ref(false)
 const mobileToggle = ref<HTMLButtonElement | null>(null)
 const { isFavoriteAt } = useFavorites()
-// The configured 50 × 20 navigation is identical before and after hydration.
-// Publication and paid access are enforced when the question API is used.
-const exams = EXAM_CATALOG
+const { user } = useAuth()
+// Share the application's existing membership lookup; listing sets never
+// fetches questions. Static/anonymous HTML starts with the free catalog.
+const exams = computed(() => hasFullExamAccess(user.value) ? EXAM_CATALOG : FREE_EXAM_CATALOG)
+
+watch(exams, (visible) => {
+  if (!visible.some(exam => exam.exam_number === openExam.value)) openExam.value = null
+})
 
 const toggleExam = (exam: number) => {
   openExam.value = openExam.value === exam ? null : exam
