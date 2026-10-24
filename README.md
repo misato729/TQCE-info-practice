@@ -87,6 +87,12 @@ npm run db:validate
 
 `node scripts/check-template.mjs` はリポジトリルートから設定と合成fixtureを検査します。`content/questions.json` の40問は自動テスト用の架空データであり、本番問題の編集元ではありません。E2E専用の無料設定は `APP_ENV=test` と `TQCE_E2E_FREE_MODE=true` が両方そろう場合だけ有効となり、本番では有効になりません。
 
+## 依存ライブラリの更新
+
+Dependabotは毎週月曜09:00（日本時間）に更新PRを提案します。npmの通常更新はminor・patchを対象にし、Nuxt/Nitro/H3やTypeScript/Vueのメジャー更新は関連ライブラリをまとめて検証します。`allow.update-types` を使用するため、セキュリティ更新の提案はこの制限の対象外です。PRの自動マージやデプロイは行いません。
+
+以前失敗したPRの原因と今回の対応は [Dependabot更新方針](document/Dependabot更新方針_2026-10-25.md) を参照してください。CIはAPI・認証・入力検証・型・ビルド・PC/SPのブラウザ操作を確認し、すべて成功してから更新を判断します。
+
 ## 認証・DB運用
 
 Better Authの `/api/auth/sign-up/email`、`sign-in/email`、`sign-out`、`get-session` を使用します。セッション期限は24時間、CookieはHttpOnly・SameSite=Lax、本番はSecure、Domain指定なしです。一般画面・管理画面は同じセッションを共有します。旧Bearerトークンは使用しません。
