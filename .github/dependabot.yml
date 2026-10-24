@@ -14,8 +14,15 @@ updates:
     commit-message:
       prefix: "build"
       include: "scope"
+    # Framework/compiler major upgrades need a coordinated migration.
+    # allow.update-types limits version updates only; security updates remain enabled.
+    allow:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
-      # Keep related framework/UI changes together; major updates stay separate.
+      # Keep compatible framework/UI updates together.
       nuxt-ui:
         applies-to: "version-updates"
         patterns:
