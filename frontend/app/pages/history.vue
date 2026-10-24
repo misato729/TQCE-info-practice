@@ -34,17 +34,21 @@ type ApiResponse = {
 }
 
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, authHeaders } = useAuth()
+const { isLoggedIn, authHeaders, sessionVersion } = useAuth()
 const histories = ref<HistoryItem[]>([])
 const meta = ref<HistoryMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
 const loading = ref(false)
 const loadError = ref('')
+let loadVersion = 0
 
 const loadHistories = async () => {
+  const version = ++loadVersion
+  const session = sessionVersion.value
   if (!isLoggedIn.value) {
     histories.value = []
     loadError.value = ''
+    loading.value = false
     return
   }
 
@@ -55,21 +59,23 @@ const loadHistories = async () => {
       headers: authHeaders.value,
       query: { page: page.value, per_page: 20 },
     })
+    if (version !== loadVersion || session !== sessionVersion.value || !isLoggedIn.value) return
     histories.value = response.data
     meta.value = response.meta
   }
   catch (error: any) {
+    if (version !== loadVersion || session !== sessionVersion.value) return
     if (error?.statusCode === 401 || error?.status === 401) {
       return
     }
     loadError.value = '解答履歴を読み込めませんでした。もう一度お試しください。'
   }
   finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
 
-watch([isLoggedIn, page], loadHistories, { immediate: true })
+watch([isLoggedIn, page, sessionVersion], loadHistories, { immediate: true })
 
 const formatAnsweredAt = (value: string) => new Intl.DateTimeFormat('ja-JP', {
   dateStyle: 'medium',

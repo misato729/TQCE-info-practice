@@ -13,6 +13,7 @@ test('E2E requires an explicit local test maintenance database and separate port
     { ...valid, E2E_PORT: '3100' }, { ...valid, E2E_PORT: '3318.5' }, { ...valid, E2E_PORT: '70000' },
   ]) assert.throws(() => e2eSettings(env))
   assert.equal(e2eSettings(valid).origin, 'http://127.0.0.1:3318')
+  assert.equal(e2eSettings({ E2E_DATABASE_URL: 'postgresql://synthetic:synthetic@nuxt-db/isolated_test' }).maintenance.hostname, 'nuxt-db')
   const first = e2eDatabase(e2eSettings(valid))
   const second = e2eDatabase(e2eSettings(valid))
   assert.match(first.name, /^exam_e2e_[a-f0-9]{24}_test$/)
@@ -40,7 +41,8 @@ test('E2E child environment overrides credentials, app URLs and external effects
   assert.equal(env.PAID_MEMBERSHIP_ENABLED, 'false')
   assert.equal(env.ERROR_NOTIFICATIONS_ENABLED, 'false')
   assert.match(env.BETTER_AUTH_SECRET, /^[a-f0-9]{96}$/)
-  for (const key of ['PGHOST', 'DB_NAME', 'PGPASSWORD', 'POSTGRES_PASSWORD', 'STRIPE_SECRET_KEY', 'SENTRY_ERROR_DSN', 'NODE_OPTIONS', 'MIGRATIONS_DIR', 'NUXT_PUBLIC_UNEXPECTED', 'NITRO_PRESET']) assert.equal(env[key], undefined)
+  assert.equal(env.NODE_OPTIONS, '--max-old-space-size=1024')
+  for (const key of ['PGHOST', 'DB_NAME', 'PGPASSWORD', 'POSTGRES_PASSWORD', 'STRIPE_SECRET_KEY', 'SENTRY_ERROR_DSN', 'MIGRATIONS_DIR', 'NUXT_PUBLIC_UNEXPECTED', 'NITRO_PRESET']) assert.equal(env[key], undefined)
 })
 
 test('E2E build output is confined to a generated directory and leaves normal builds unchanged', () => {

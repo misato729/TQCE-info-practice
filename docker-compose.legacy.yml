@@ -1,0 +1,25 @@
+# Opt-in recovery only. Run as a separate project; see README.md.
+# Do not combine this file with docker-compose.yml.
+name: tqce-info-practice-legacy
+
+services:
+  db:
+    image: postgres:16-alpine
+    env_file: .env
+    restart: "no"
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    mem_limit: 256m
+    cpus: 0.5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
+    external: true
+    name: ${LEGACY_POSTGRES_VOLUME:-tqce-info-practice_postgres_data}

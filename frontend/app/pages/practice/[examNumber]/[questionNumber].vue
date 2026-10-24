@@ -68,7 +68,7 @@ type SourceReference = {
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, user, authHeaders } = useAuth()
+const { isLoggedIn, user, authHeaders, sessionVersion } = useAuth()
 const { canUseFavorites, isFavorite, setFavorite, toggleFavorite } = useFavorites()
 const updatingFavorite = ref(false)
 
@@ -163,16 +163,26 @@ const requestQuery = computed(() => ({
   exam_number: validPosition.value ? examNumber.value : 0,
   after_question_number: validPosition.value ? questionNumber.value - 1 : -1,
 }))
+// HttpOnly credentials do not change authHeaders. Re-fetch when the native
+// identity or its application entitlement changes, including another tab.
+const questionSession = computed(() => JSON.stringify([
+  // An anonymous paywall also returns 401. Repeated anonymous generations
+  // must not trigger another identical denied request indefinitely.
+  user.value ? sessionVersion.value : null,
+  user.value?.id ?? null, user.value?.paid_content_access ?? false,
+]))
 
 const {
   data: questionResponse,
   status,
   error: questionError,
   refresh,
+  clear,
 } = await useFetch<ApiResponse<Question>>('/api/v1/questions/next', {
   $fetch: api,
   query: requestQuery,
   headers: authHeaders,
+  watch: [questionSession],
   server: false,
   // 画面遷移をAPIの応答待ちで止めず、起動待ち中も読み込み表示を出す。
   lazy: true,
@@ -193,6 +203,7 @@ const completed = ref(false)
 const favoriteModalOpen = ref(false)
 const favoriteModalCloseButton = ref<HTMLButtonElement | null>(null)
 const restoredHistoryId = ref<number | null>(null)
+let answerGeneration = 0
 
 const majorCategoryLabel = computed(() => (
   MAJOR_CATEGORIES.find(item => item.value === question.value?.major_category_code)?.label
@@ -265,15 +276,22 @@ watch(
     route.query.order,
     route.query.seed,
     practiceScope.value,
+    questionSession.value,
   ],
   () => {
+    answerGeneration += 1
     selectedChoiceId.value = null
     answerResult.value = null
     answerError.value = ''
     completed.value = false
     restoredHistoryId.value = null
+    submitting.value = false
   },
+  { flush: 'sync' },
 )
+// Do not retain a previous account's question/error while the replacement
+// request is pending. Nuxt also cancels the previous in-flight useFetch result.
+watch(questionSession, () => { clear() }, { flush: 'sync' })
 
 watch(question, (loaded) => {
   if (loaded && typeof loaded.is_favorite === 'boolean') setFavorite(loaded, loaded.is_favorite)
@@ -292,21 +310,24 @@ const choiceState = (choice: Choice) => {
 const submitAnswer = async () => {
   if (!question.value || selectedChoiceId.value === null || submitting.value) return
 
+  const generation = answerGeneration
+  const questionId = question.value.id
   submitting.value = true
   answerError.value = ''
 
   try {
     const response = await api<ApiResponse<AnswerResult>>(
-      `/api/v1/questions/${question.value.id}/answer`,
+      `/api/v1/questions/${questionId}/answer`,
       {
         method: 'POST',
         headers: authHeaders.value,
         body: { selected_choice_id: selectedChoiceId.value },
       },
     )
-    answerResult.value = response.data
+    if (generation === answerGeneration && question.value?.id === questionId) answerResult.value = response.data
   }
   catch (error: any) {
+    if (generation !== answerGeneration) return
     if (error?.statusCode === 401 || error?.status === 401) {
       answerError.value = 'ログインの有効期限が切れました。もう一度ログインしてください。'
       return
@@ -318,7 +339,7 @@ const submitAnswer = async () => {
     answerError.value = '回答を送信できませんでした。通信状況を確認して、もう一度お試しください。'
   }
   finally {
-    submitting.value = false
+    if (generation === answerGeneration) submitting.value = false
   }
 }
 
@@ -328,16 +349,20 @@ const answerHistoryId = computed(() => {
 })
 
 const restoreAnswerHistory = async () => {
-  if (!question.value || !isLoggedIn.value || !answerHistoryId.value) return
+  if (status.value !== 'success' || !question.value || !isLoggedIn.value || !answerHistoryId.value) return
   if (restoredHistoryId.value === answerHistoryId.value) return
 
+  const generation = answerGeneration
+  const questionId = question.value.id
+  const historyId = answerHistoryId.value
   try {
     const response = await api<ApiResponse<AnswerHistoryDetail>>(
-      `/api/v1/answer_histories/${answerHistoryId.value}`,
+      `/api/v1/answer_histories/${historyId}`,
       {
         headers: authHeaders.value,
       },
     )
+    if (generation !== answerGeneration || question.value?.id !== questionId || answerHistoryId.value !== historyId) return
     const history = response.data
     if (history.question.id !== question.value.id) {
       answerError.value = 'この解答履歴は表示中の問題と一致しません。'
@@ -357,12 +382,13 @@ const restoreAnswerHistory = async () => {
     restoredHistoryId.value = history.id
   }
   catch (error: any) {
+    if (generation !== answerGeneration) return
     if (error?.statusCode !== 401 && error?.status !== 401) answerError.value = '解答履歴を読み込めませんでした。'
   }
 }
 
 watch(
-  [question, answerHistoryId, isLoggedIn],
+  [question, answerHistoryId, isLoggedIn, status, questionSession],
   restoreAnswerHistory,
   { immediate: true },
 )
@@ -437,7 +463,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
       <UIcon name="i-lucide-lock-keyhole" />
       <h1>模擬試験{{ examNumber }}はプレミアム会員向けです</h1>
       <p v-if="paywallNeedsLogin">模擬試験{{ FREE_EXAM_MAX + 1 }}以降を利用するには、ログインしてプレミアム会員資格を確認してください。</p>
-      <p v-else>{{ PRICE_LABEL }}の買い切りで、模擬試験{{ FREE_EXAM_MAX + 1 }}以降の公開問題を利用できます。</p>
+      <p v-else>{{ PRICE_LABEL }}の買い切りで、公開中および今後追加される模擬試験{{ FREE_EXAM_MAX + 1 }}以降を利用できます。</p>
       <div class="state-actions">
         <NuxtLink v-if="paywallNeedsLogin" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }">ログイン</NuxtLink>
         <NuxtLink class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>

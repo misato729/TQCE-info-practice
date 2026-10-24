@@ -1,60 +1,14 @@
 <script setup lang="ts">
-import { EXAM_CATALOG, FREE_EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/examCatalog'
+import { EXAM_CATALOG, type ExamCatalogEntry } from '~/utils/examCatalog'
 
 const route = useRoute()
 const openExam = ref<number | null>(null)
 const mobileOpen = ref(false)
 const mobileToggle = ref<HTMLButtonElement | null>(null)
-const { user, authResolved, ensureCurrentUser } = useAuth()
 const { isFavoriteAt } = useFavorites()
-const accessStatus = ref<'ready' | 'pending' | 'error'>(
-  authResolved.value ? 'ready' : 'pending',
-)
-let resolvingAccess = false
-
-const exams = computed(() => (
-  hasFullExamAccess(user.value) ? EXAM_CATALOG : FREE_EXAM_CATALOG
-))
-const isLoading = computed(() => accessStatus.value === 'pending')
-const hasAccessError = computed(() => accessStatus.value === 'error')
-
-const resolveAccess = async () => {
-  if (resolvingAccess) return
-
-  if (authResolved.value && !user.value) {
-    accessStatus.value = 'ready'
-    return
-  }
-
-  if (user.value) {
-    accessStatus.value = 'ready'
-    return
-  }
-
-  resolvingAccess = true
-  accessStatus.value = 'pending'
-
-  const currentUser = await ensureCurrentUser()
-  resolvingAccess = false
-
-  if (currentUser) {
-    accessStatus.value = 'ready'
-  }
-  else if (!authResolved.value) {
-    accessStatus.value = 'error'
-  }
-  else {
-    accessStatus.value = 'ready'
-  }
-}
-
-onMounted(() => { void resolveAccess() })
-
-watch(authResolved, () => { void resolveAccess() })
-watch(user, (currentUser) => {
-  if (!currentUser) return
-  accessStatus.value = 'ready'
-})
+// The configured 50 × 20 navigation is identical before and after hydration.
+// Publication and paid access are enforced when the question API is used.
+const exams = EXAM_CATALOG
 
 const toggleExam = (exam: number) => {
   openExam.value = openExam.value === exam ? null : exam
@@ -105,18 +59,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
     </button>
 
     <div id="exam-sidebar-content" class="sidebar-content">
-      <div v-if="isLoading" class="sidebar-loading" role="status" aria-live="polite">
-        <UIcon class="loading-spinner" name="i-lucide-loader-circle" />
-        <span>試験セットを読み込んでいます</span>
-      </div>
-
-      <div v-else-if="hasAccessError" class="sidebar-loading sidebar-error" role="alert">
-        <UIcon name="i-lucide-circle-alert" />
-        <span>利用資格を確認できません</span>
-        <button type="button" @click="resolveAccess">再確認</button>
-      </div>
-
-      <div v-else class="exam-groups">
+      <div class="exam-groups">
         <section
           v-for="exam in exams"
           :key="exam.exam_number"
@@ -192,42 +135,6 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 }
 
 .mobile-exam-toggle { display: none; }
-
-.sidebar-loading {
-  min-height: 120px;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 10px;
-  color: #53676e;
-  font-size: 13px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.loading-spinner {
-  width: 28px;
-  height: 28px;
-  color: var(--teal-dark);
-  animation: sidebar-spin 1s linear infinite;
-}
-
-.sidebar-error :deep(svg) { width: 25px; height: 25px; color: #b54a3b; }
-.sidebar-error button {
-  min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid #aebfc3;
-  border-radius: 5px;
-  background: #fff;
-  color: var(--teal-dark);
-  font-weight: 800;
-  cursor: pointer;
-}
-.sidebar-error button:hover { background: #f2f7f7; }
-
-@keyframes sidebar-spin {
-  to { transform: rotate(360deg); }
-}
 
 .exam-group + .exam-group {
   margin-top: 10px;
@@ -409,10 +316,6 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
 
   .exam-group + .exam-group { margin-top: 0; }
   .exam-group { min-width: 0; }
-
-  .sidebar-loading {
-    min-height: 76px;
-  }
 
   .exam-row {
     height: var(--exam-row-height);

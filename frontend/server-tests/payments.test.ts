@@ -151,6 +151,7 @@ dbTest('Checkout creates a fixed one-time Price with consent, origin, metadata a
   assert.deepEqual(params.allowed_payment_method_types, ['card'])
   assert.deepEqual(params.line_items, [{ price: 'price_synthetic', quantity: 1 }])
   assert.equal(params.consent_collection.terms_of_service, 'required')
+  assert.equal(params.custom_text.submit.message, `「模擬試験${settings.freeExamMax + 1}以降の利用資格」を500円（税込）で買い切る契約です。月額課金や自動更新はありません。決済完了後に利用資格を提供し、提供開始後の利用者都合による返金は原則として受け付けません。`)
   assert.equal(params.metadata.user_id, String(f.user.id))
   assert.deepEqual(params.metadata, params.payment_intent_data.metadata)
   assert.equal(params.success_url, 'https://example.invalid/premium/complete')

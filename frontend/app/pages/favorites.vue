@@ -111,7 +111,8 @@ const majorCategoryLabel = (code?: string) => (
 
 onMounted(() => { void resolveAccess() })
 watch(isLoggedIn, () => { void resolveAccess() })
-watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate: true })
+// A replacement session can belong to the same user; retry a discarded lookup.
+watch([() => user.value?.id, canUseFavorites, page, sessionVersion], loadFavorites, { immediate: true })
 </script>
 
 <template>
@@ -120,7 +121,7 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
 
     <div v-if="!isLoggedIn" class="empty-state">
       <h2>ログインが必要です</h2>
-      <p>お気に入りを表示するにはログインしてください。</p>
+      <p>{{ PAYMENTS_ENABLED ? 'お気に入りはプレミアム会員向けの機能です。' : 'お気に入りを表示するにはログインしてください。' }}</p>
       <NuxtLink class="primary-link" to="/login?redirect=/favorites">ログインへ</NuxtLink>
     </div>
 

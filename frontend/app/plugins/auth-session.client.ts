@@ -4,12 +4,15 @@ export default defineNuxtPlugin({
   setup(nuxtApp) {
     // Mount the library subscription so its cross-tab and focus refreshes run.
     const session = nuxtApp.$authClient.useSession()
-    const { user, sessionVersion, authMutationPending, clearCurrentUser, ensureCurrentUser } = useAuth()
+    const { user, authResolved, sessionVersion, authMutationPending, clearCurrentUser, ensureCurrentUser } = useAuth()
+    const hydrationReady = ref(!(nuxtApp.isHydrating && nuxtApp.payload.serverRendered))
+    // Subscribe during setup, but keep the first client tree equal to SSR HTML.
+    if (!hydrationReady.value) onNuxtReady(() => { hydrationReady.value = true })
     let observed = false
     let previousKey: string | null = null
 
-    watch([session, authMutationPending], ([current, mutations]) => {
-      if (mutations || current.isPending || current.isRefetching || (current.error && current.error.status !== 401)) return
+    watch([session, authMutationPending, hydrationReady], ([current, mutations, ready]) => {
+      if (!ready || mutations || current.isPending || current.isRefetching || (current.error && current.error.status !== 401)) return
       const identity = current.data?.user?.id
       const nextKey = identity == null ? null : JSON.stringify([identity, current.data?.session?.id])
       if (observed && nextKey === previousKey) return
@@ -21,7 +24,8 @@ export default defineNuxtPlugin({
       if (initial) {
         // The first native snapshot must not invalidate the application's
         // initial /me lookup that route guards may already be awaiting.
-        if (!sameUser) void ensureCurrentUser(true)
+        const knownAnonymous = identity == null && authResolved.value && user.value == null
+        if (!sameUser && !knownAnonymous) void ensureCurrentUser(true)
         return
       }
       // Hide another account's data before the asynchronous application fetch.

@@ -58,7 +58,18 @@ docker compose up -d --build
 - 管理ログイン: http://localhost:3000/admin/login
 - 新DB: localhost:5433 / `tqce_nuxt_development`
 
-Nuxtの画面とAPIは同じサービスで起動します。Composeは旧Railsの `DATABASE_URL` を引き継がず、新しい `nuxt-db` と `nuxt_postgres_data` を使用します。旧DBは `legacy` profileと元の `postgres_data` volumeに残します。新DBへの問題取込みと管理者作成は明示操作です。起動・マイグレーション・`db:seed` では問題を投入しません。
+Nuxtの画面とAPIは同じサービスで起動します。通常のComposeには `frontend` と `nuxt-db` だけを定義し、旧Railsの `DATABASE_URL` を引き継がず、新しい `nuxt_postgres_data` を使用します。新DBへの問題取込みと管理者作成は明示操作です。起動・マイグレーション・`db:seed` では問題を投入しません。
+
+旧DBの保存ボリュームは削除せず、通常の起動対象から分離しています。`legacy` profileを同じプロジェクトに置くだけでは、既存の旧コンテナがDocker Desktopの一括起動で立ち上がるため、移行前の停止済み `db` / `backend` コンテナも取り除きます。既存環境でまだ残っている場合は、`docker ps -a` で対象を確認してその停止済みコンテナだけを `docker rm` してください。`-v` は付けません。保存ボリュームと旧Railsのコードは残ります。
+
+旧DBが必要な場合だけ、別プロジェクトで明示起動します。`.env` に通常用の `COMPOSE_PROJECT_NAME` があっても分離されるよう、`-p` を省略しないでください。次のコマンドは切戻し等の必要時だけ実行し、普段は実行しません。
+
+```sh
+docker compose -p tqce-info-practice-legacy -f docker-compose.legacy.yml up -d db
+docker compose -p tqce-info-practice-legacy -f docker-compose.legacy.yml down
+```
+
+この設定は既存の `tqce-info-practice_postgres_data` をexternal volumeとして使用し、未作成なら起動を拒否します。元のプロジェクト名が異なる場合は、実在する旧ボリューム名を `LEGACY_POSTGRES_VOLUME` に設定してください。旧設定を通常のComposeに `-f` で重ねないでください。
 
 停止は `docker compose down` です。データ保全のため移行中に `down -v` やvolume削除を実行しないでください。PC負荷を抑えるため、テスト・型検査・ビルドを同時実行せず、コンテナのCPU・メモリを制限して順番に実行します。
 
@@ -161,5 +172,6 @@ fly deploy --config fly.toml
 ├── document/              # 仕様・作問資料・運用記録
 ├── operations/            # 公開可能な運用案内。private/はGit管理外
 ├── fly.toml               # Node/Nitro APIの本番構成
-└── docker-compose.yml
+├── docker-compose.yml     # 通常用: Nuxt/Nitro + 新DB
+└── docker-compose.legacy.yml # 必要時だけ別プロジェクトで旧DBを起動
 ```

@@ -219,6 +219,26 @@ test('paid gates and expired or tampered database sessions preserve API status b
   } finally { setConfigurationForTesting(original) }
 })
 
+test('invalid supplied sessions cannot silently submit anonymous answers and are expired by the library', integration, async () => {
+  const session = await account()
+  const question = await request('/questions/next?exam_number=1&after_question_number=0')
+  const item = question.body.data
+  const expired = () => query("UPDATE auth_sessions SET expires_at=NOW()-interval '1 second' WHERE user_id=$1", [session.user.id])
+  const cookies = [session.cookie.replace(/session_token=([^;]+)/, 'session_token=$1tampered'), session.cookie]
+  for (const [index, cookie] of cookies.entries()) {
+    if (index === 1) await expired()
+    const rejected = await request(`/questions/${item.id}/answer`, { method: 'POST', cookie, body: { selected_choice_id: item.choices[0].id } })
+    assert.equal(rejected.status, 401)
+    assert.equal(rejected.body.error.code, 'unauthorized')
+    assert.ok(rejected.cookies.some(value => /session_token=;/.test(value) && /max-age=0/i.test(value)))
+    assert.equal((await query('SELECT count(*)::integer AS total FROM answer_histories WHERE user_id=$1', [session.user.id]))[0]!.total, 0)
+  }
+  // Unrelated cookies are not credentials for this application's session.
+  const anonymous = await request(`/questions/${item.id}/answer`, { method: 'POST', cookie: 'unrelated=present', body: { selected_choice_id: item.choices[0].id } })
+  assert.equal(anonymous.status, 200)
+  assert.equal(anonymous.body.data.answer_history_id, null)
+})
+
 test('logout revokes the server session so a copied cookie cannot be reused', integration, async () => {
   const session = await account()
   assert.equal((await request('/api/auth/sign-out', { method: 'POST', cookie: session.cookie, body: {} })).status, 200)

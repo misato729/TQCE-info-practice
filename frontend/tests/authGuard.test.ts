@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
+import { stripTypeScriptTypes } from 'node:module'
 import ts from 'typescript'
 import { ref } from 'vue'
 
@@ -10,6 +11,13 @@ globals.navigateTo = (target: unknown) => target
 const { default: guard } = await import('../app/middleware/auth.ts')
 const { default: sessionGuard } = await import('../app/middleware/session.global.ts')
 const { default: adminGuard } = await import('../app/middleware/admin.ts')
+
+async function clientSessionGuard() {
+  const source = readFileSync(new URL('../app/middleware/session.global.ts', import.meta.url), 'utf8')
+    .replaceAll('import.meta.client', 'true').replaceAll('import.meta.server', 'false').replaceAll('import.meta.prerender', 'false')
+  const compiled = stripTypeScriptTypes(source)
+  return (await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'))).default
+}
 
 test('anonymous users return to the complete original URL after the session check', async () => {
   let checks = 0
@@ -36,6 +44,44 @@ test('initial public navigation hydrates the server session without requiring lo
   globals.useAuth = () => ({ ensureCurrentUser: async () => { checks += 1; return null } })
   assert.equal(await (sessionGuard as any)(), undefined)
   assert.equal(checks, 1)
+})
+
+test('initial client SSR navigation defers personalization until Nuxt is ready', async () => {
+  const readyCallbacks: (() => void)[] = []
+  const app = { isHydrating: true, payload: { serverRendered: true } }
+  let checks = 0
+  globals.useNuxtApp = () => app
+  globals.onNuxtReady = (callback: () => void) => { readyCallbacks.push(callback) }
+  globals.useAuth = () => ({ ensureCurrentUser: async () => { checks += 1; return { id: 1 } } })
+  const clientGuard = await clientSessionGuard()
+  assert.equal(await clientGuard(), undefined)
+  assert.equal(checks, 0)
+  assert.equal(readyCallbacks.length, 1)
+  app.isHydrating = false
+  readyCallbacks[0]!()
+  assert.equal(checks, 1)
+})
+
+test('initial CSR and subsequent client navigation still await the application session', async () => {
+  const clientGuard = await clientSessionGuard()
+  for (const app of [
+    { isHydrating: true, payload: { serverRendered: false } },
+    { isHydrating: false, payload: { serverRendered: true } },
+  ]) {
+    let resolve!: (value: unknown) => void
+    let finished = false
+    let checks = 0
+    globals.useNuxtApp = () => app
+    globals.onNuxtReady = () => { assert.fail('Session resolution must not be deferred for this navigation') }
+    globals.useAuth = () => ({ ensureCurrentUser: () => { checks += 1; return new Promise(done => { resolve = done }) } })
+    const navigation = clientGuard().then(() => { finished = true })
+    await Promise.resolve()
+    assert.equal(checks, 1)
+    assert.equal(finished, false)
+    resolve({ id: 1 })
+    await navigation
+    assert.equal(finished, true)
+  }
 })
 
 test('admin guard resolves identity before checking role', async () => {

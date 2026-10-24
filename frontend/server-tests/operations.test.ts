@@ -83,6 +83,7 @@ test('restore drills reject remote DBs and enabled sales/notifications before co
   assert.throws(() => restoreDrillConnection({ PGHOST: 'db', PAID_MEMBERSHIP_ENABLED: 'true' }, 'test'), OperationError)
   assert.throws(() => restoreDrillConnection({ PGHOST: 'db', ERROR_NOTIFICATIONS_ENABLED: '1' }, 'test'), OperationError)
   assert.deepEqual(restoreDrillConnection({ DATABASE_URL: 'postgres://local:password@127.0.0.1:55432/ignored' }, 'test'), { host: '127.0.0.1', port: 55432, user: 'local', password: 'password' })
+  assert.deepEqual(restoreDrillConnection({ PGHOST: 'nuxt-db', PGPORT: '5432', PGUSER: 'local' }, 'test'), { host: 'nuxt-db', port: 5432, user: 'local', password: '' })
 })
 
 test('restore comparison tolerates only redundant enum varchar/text casts and preserves literals and other checks', () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
-const siteName = SITE.name
+const siteName = `${SITE.exam_name}　予想問題演習サイト`
 const defaultDescription = SITE.description
 const noIndexPatterns = [
   /^\/practice(?:\/|$)/,

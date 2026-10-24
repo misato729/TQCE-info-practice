@@ -67,7 +67,7 @@ test('baseline validates every CHECK and partial unique index, preserving litera
 /** Schema names are generated here; no application schema or DB is reused. */
 async function isolated(run: (db: Database, databaseUrl: string, raw: pg.Client) => Promise<void>) {
   const url = new URL(testUrl!)
-  if (!['localhost', '127.0.0.1', '[::1]', 'db'].includes(url.hostname) || !url.pathname.toLowerCase().includes('test')) throw new Error('Migration tests require an explicit local test database')
+  if (!['localhost', '127.0.0.1', '[::1]', 'db', 'nuxt-db'].includes(url.hostname) || !url.pathname.toLowerCase().includes('test')) throw new Error('Migration tests require an explicit local test database')
   const schema = `prisma_migration_test_${randomUUID().replaceAll('-', '')}`
   const admin = new pg.Client({ connectionString: url.toString() })
   const raw = new pg.Client({ connectionString: url.toString(), options: `-c search_path=${schema} -c timezone=UTC` })

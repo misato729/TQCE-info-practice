@@ -29,7 +29,7 @@ test('navigation closes the mobile list without adding API calls', () => {
   assert.equal(sidebar.match(/@click="closeMobileList"/g)?.length, 2)
   assert.match(sidebar, /@keydown.esc="closeMobileOnEscape"/)
   assert.match(sidebar, /mobileToggle.value\?\.focus\(\)/)
-  assert.doesNotMatch(sidebar, /\b(?:useFetch|useApi|\$fetch)\s*\(/)
+  assert.doesNotMatch(sidebar, /\b(?:useFetch|useApi|\$fetch|ensureCurrentUser)\s*\(/)
 })
 
 test('home anchor leaves room for both mobile header rows', () => {
@@ -40,7 +40,7 @@ test('home anchor leaves room for both mobile header rows', () => {
 test('mobile exam grid shows two columns and reserves three compact rows', () => {
   const mobileStyles = sidebar.split('@media (max-width: 760px)')[1]
   assert.ok(mobileStyles)
-  assert.match(sidebar, /v-else class="exam-groups"/)
+  assert.match(sidebar, /<div class="exam-groups">/)
   assert.match(mobileStyles, /\.exam-groups\s*\{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/)
   assert.match(mobileStyles, /--exam-row-height: 56px/)
   assert.match(mobileStyles, /var\(--exam-row-height\) \* 3 \+ var\(--exam-grid-gap\) \* 2 \+ 25px/)

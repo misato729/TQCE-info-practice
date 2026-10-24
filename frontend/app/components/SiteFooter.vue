@@ -1,6 +1,11 @@
 <script setup lang="ts">
 defineProps<{ admin?: boolean }>()
 const { apiStatus } = useApiStatus()
+const mounted = ref(false)
+onMounted(() => { mounted.value = true })
+// A prerendered page starts idle even if route middleware has already finished
+// an API request before hydration. Update both the text and class after mount.
+const displayedApiStatus = computed(() => mounted.value ? apiStatus.value : 'idle')
 </script>
 
 <template>
@@ -19,11 +24,11 @@ const { apiStatus } = useApiStatus()
           <NuxtLink to="/commercial-disclosure">特定商取引法に基づく表記</NuxtLink>
         </nav>
       </div>
-      <div class="api-status" :class="apiStatus" role="status" aria-live="polite">
+      <div class="api-status" :class="displayedApiStatus" role="status" aria-live="polite">
         <span class="status-dot" aria-hidden="true" />
-        <span v-if="apiStatus === 'idle'">API接続は利用時に確認</span>
-        <span v-else-if="apiStatus === 'checking'">API接続を確認中</span>
-        <span v-else-if="apiStatus === 'failed'">APIに接続できません</span>
+        <span v-if="displayedApiStatus === 'idle'">API接続は利用時に確認</span>
+        <span v-else-if="displayedApiStatus === 'checking'">API接続を確認中</span>
+        <span v-else-if="displayedApiStatus === 'failed'">APIに接続できません</span>
         <span v-else>API接続：正常</span>
       </div>
     </div>

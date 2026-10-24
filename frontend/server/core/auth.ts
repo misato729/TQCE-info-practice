@@ -1,7 +1,8 @@
 import { fromNodeHeaders } from 'better-auth/node'
-import type { H3Event } from 'h3'
+import { getSessionCookie } from 'better-auth/cookies'
+import { appendResponseHeader, type H3Event } from 'h3'
 import { getDatabase, record, type Database } from './db.ts'
-import { paymentsEnabled } from './config.ts'
+import { configuration, paymentsEnabled } from './config.ts'
 import { fail } from './errors.ts'
 import { createAuth, getAuth } from './better-auth.ts'
 import type { AuthUser } from '../../shared/types/auth.ts'
@@ -14,13 +15,22 @@ const iso = (value: Date | string) => new Date(value).toISOString()
 
 export async function authenticate(event: H3Event, required = false, db?: Database): Promise<User | null> {
   const auth = db ? createAuth(db) : getAuth()
-  const session = await auth.api.getSession({ headers: fromNodeHeaders(event.node.req.headers),
+  const headers = fromNodeHeaders(event.node.req.headers)
+  const suppliedSession = getSessionCookie(headers, { cookiePrefix: `${configuration.site.id}-auth` })
+  const session = await auth.api.getSession({ headers,
     query: { disableCookieCache: true, disableRefresh: true } })
   const id = session ? Number(session.user.id) : NaN
   // Session authentication is delegated to Better Auth. Application permissions
   // always use the current DB row, including a role change after sign-in.
   const user = Number.isSafeInteger(id) && id > 0 ? record(await (db ?? getDatabase()).user.findUnique({ where: { id } })) as User | null : null
-  if (!user && required) fail(401, 'unauthorized', 'ログインが必要です')
+  if (!user && suppliedSession) {
+    // Invalid/expired credentials must not silently turn a signed-in answer into
+    // anonymous practice. Let Better Auth clear its own cookies as well, so a
+    // subsequent anonymous retry cannot keep presenting the invalid credential.
+    const signedOut = await auth.api.signOut({ headers, returnHeaders: true })
+    for (const cookie of signedOut.headers.getSetCookie()) appendResponseHeader(event, 'Set-Cookie', cookie)
+  }
+  if (!user && (required || suppliedSession)) fail(401, 'unauthorized', 'ログインが必要です')
   if (user && !['user', 'admin'].includes(user.role)) fail(401, 'unauthorized', 'ログインが必要です')
   return user || null
 }

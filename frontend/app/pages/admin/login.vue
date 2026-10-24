@@ -97,7 +97,8 @@ const submit = async (event: { data: typeof state }) => {
 .admin-login-form { display: grid; gap: 17px; margin-top: 26px; }
 .admin-login-input { position: relative; }
 .admin-login-input :deep(svg) { position: absolute; top: 50%; left: 12px; width: 17px; height: 17px; color: #71858e; transform: translateY(-50%); }
-.admin-login-input input { padding-left: 39px; }
+/* The input now lives inside FormTextField; keep its leading-icon clearance. */
+.admin-login-card :deep(.admin-login-input input) { padding-left: 39px; }
 .admin-login-button { width: 100%; margin-top: 3px; }
 .admin-login-help { margin: 24px 0 0; padding-top: 20px; border-top: 1px solid var(--admin-line); color: #80939b; font-size: 11px; line-height: 1.7; text-align: center; }
 .spin { animation: admin-spin 1s linear infinite; }

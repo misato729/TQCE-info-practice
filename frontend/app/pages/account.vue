@@ -75,7 +75,7 @@ const deleteAccount = async () => {
       </section>
       <section class="content-panel danger-zone">
         <h2>アカウント削除</h2>
-        <p>アカウントを削除すると、解答履歴とお気に入りを復元できなくなります。<template v-if="PAYMENTS_ENABLED">プレミアム会員資格も削除され、再登録による復元や自動返金は行われません。</template></p>
+        <p>アカウントを削除すると、解答履歴、お気に入り<template v-if="PAYMENTS_ENABLED">、プレミアム会員資格</template>も削除されます。<template v-if="PAYMENTS_ENABLED">プレミアム会員資格は同じメールアドレスで再登録しても復元されず、削除による自動返金は行われません。</template></p>
         <button v-if="!deleteFormOpen" type="button" @click="deleteFormOpen = true">アカウントを削除</button>
         <UForm v-else ref="accountForm" :schema="deleteAccountFormSchema" :state="deleteState" class="delete-form" novalidate @error="focusFormError" @submit="deleteAccount">
           <FormTextField id="current-password" v-model="deleteState.current_password" name="current_password" label="現在のパスワード" type="password" autocomplete="current-password" />

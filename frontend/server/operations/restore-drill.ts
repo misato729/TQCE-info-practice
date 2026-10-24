@@ -15,7 +15,7 @@ import { nextQuestion, listHistory, listFavorites, listAdminQuestions } from '..
 import { publicPaymentConfiguration, settingEnabled } from '../services/payment-settings.ts'
 import { digest, OperationError } from './content.ts'
 
-const LOCAL_HOSTS = ['db', 'localhost', '127.0.0.1', '::1']
+const LOCAL_HOSTS = ['db', 'nuxt-db', 'localhost', '127.0.0.1', '::1']
 const identifier = (value: string) => '"' + value.replaceAll('"', '""') + '"'
 type LocalConnection = { host: string, port: number, user: string, password: string }
 

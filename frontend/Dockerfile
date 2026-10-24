@@ -1,7 +1,8 @@
 FROM node:24-alpine AS base
 RUN apk add --no-cache openssl postgresql16-client git
 WORKDIR /workspace/frontend
-ENV NODE_OPTIONS=--max-old-space-size=768
+ENV NODE_OPTIONS=--max-old-space-size=768 \
+    RAYON_NUM_THREADS=2 UV_THREADPOOL_SIZE=2 GOMAXPROCS=2
 COPY frontend/package*.json ./
 COPY config/ /workspace/config/
 COPY content/ /workspace/content/

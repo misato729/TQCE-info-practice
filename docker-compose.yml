@@ -59,25 +59,6 @@ services:
       timeout: 5s
       retries: 20
 
-  # Migration source only. Keep its original volume and data intact.
-  db:
-    profiles: [legacy]
-    image: postgres:16-alpine
-    env_file: .env
-    ports:
-      - "127.0.0.1:5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
 volumes:
   nuxt_frontend_node_modules:
   nuxt_postgres_data:
-  postgres_data:
-  # Historical dependency volume is retained; no cleanup/reset is performed.
-  backend_bundle:
-  frontend_node_modules:

@@ -6,7 +6,7 @@ export function e2eSettings(env = process.env) {
   try {
     maintenance = new URL(env.E2E_DATABASE_URL || '')
     if (!['postgres:', 'postgresql:'].includes(maintenance.protocol) ||
-      !['localhost', '127.0.0.1', '[::1]', 'db'].includes(maintenance.hostname) ||
+      !['localhost', '127.0.0.1', '[::1]', 'db', 'nuxt-db'].includes(maintenance.hostname) ||
       !/^\/[a-z][a-z0-9_]{0,48}_test$/.test(maintenance.pathname) ||
       maintenance.search || maintenance.hash) throw new Error()
   } catch {
@@ -36,6 +36,8 @@ export function e2eServerEnvironment(settings, databaseUrl, inherited = process.
   return {
     ...env,
     APP_ENV: 'test', TQCE_E2E_FREE_MODE: 'true', NODE_ENV: 'production', DATABASE_URL: databaseUrl,
+    // Replace inherited Node flags with a bounded heap for local browser tests.
+    NODE_OPTIONS: '--max-old-space-size=1024',
     BETTER_AUTH_SECRET: randomBytes(48).toString('hex'),
     BETTER_AUTH_URL: settings.origin, FRONTEND_URL: settings.origin, CORS_ORIGINS: settings.origin,
     NUXT_PUBLIC_API_BASE: '', NUXT_API_BASE_INTERNAL: '',
