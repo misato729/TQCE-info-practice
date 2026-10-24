@@ -13,6 +13,7 @@ const result = spawnSync('git', [
   '.', ':(exclude)tests/**',
   '../netlify.toml', '../package.json', '../package-lock.json',
   '../.npmrc', '../.nvmrc', '../.node-version',
+  '../config', '../content', '../scripts',
 ], { cwd: fileURLToPath(new URL('../', import.meta.url)), stdio: 'ignore' })
 
 // Netlify uses 0 to skip and 1 to continue; Git errors must also continue.

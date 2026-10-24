@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { ofetch } from 'ofetch'
+import { readFileSync } from 'node:fs'
+import ts from 'typescript'
 import { computed, ref } from 'vue'
 import { useApiStatus } from '../app/composables/useApiStatus.ts'
 
@@ -18,12 +20,13 @@ const createClient = (fetch: typeof globalThis.fetch) => {
     if (!states.has(key)) states.set(key, ref(init()))
     return states.get(key)
   }
-  const token = ref<string | null>('current-token')
-  let logoutCalls = 0
-  globals.useAuth = () => ({ accessToken: token, logout: () => { token.value = null; logoutCalls += 1 } })
+  const user = ref<{ id: number } | null>({ id: 1 })
+  const sessionVersion = ref(0)
+  let clearCalls = 0
+  globals.useAuth = () => ({ user, sessionVersion, clearCurrentUser: () => { user.value = null; sessionVersion.value += 1; clearCalls += 1 } })
   globals.$fetch = ofetch.create({}, { fetch })
   const result = (setupApi as any)({ runWithContext: (fn: () => unknown) => fn() })
-  return { api: result.provide.api, status: useApiStatus().apiStatus, token, logoutCalls: () => logoutCalls }
+  return { api: result.provide.api, status: useApiStatus().apiStatus, user, sessionVersion, clearCalls: () => clearCalls }
 }
 
 test('API state starts idle and counts simultaneous requests', async () => {
@@ -65,15 +68,15 @@ test('rate-limited actions preserve the session and expose the server retry advi
       headers: { 'Content-Type': 'application/json', 'Retry-After': '30' },
     })
   })
-  await assert.rejects(client.api('/answer', { method: 'POST', headers: { Authorization: 'Bearer current-token' } }), (error: any) => {
+  await assert.rejects(client.api('/api/v1/questions/1/answer', { method: 'POST' }), (error: any) => {
     assert.equal(error.data.error.code, 'rate_limit_exceeded')
     assert.equal(error.data.error.message, 'Please wait before retrying')
     assert.equal(error.response.headers.get('Retry-After'), '30')
     return true
   })
   assert.equal(calls, 1)
-  assert.equal(client.token.value, 'current-token')
-  assert.equal(client.logoutCalls(), 0)
+  assert.deepEqual(client.user.value, { id: 1 })
+  assert.equal(client.clearCalls(), 0)
   assert.equal(client.status.value, 'connected')
 })
 
@@ -89,14 +92,65 @@ test('navigation cancellation does not report a connection failure', async () =>
   assert.equal(client.status.value, 'connected')
 })
 
-test('only a 401 for the current authenticated request clears the session', async () => {
-  const client = createClient(async () => new Response('{}', { status: 401 }))
-  await assert.rejects(client.api('/auth/login', { retry: 0 }))
-  assert.equal(client.logoutCalls(), 0)
-  await assert.rejects(client.api('/stale', { headers: { Authorization: 'Bearer old-token' }, retry: 0 }))
-  assert.equal(client.logoutCalls(), 0)
-  await assert.rejects(client.api('/me', { headers: { Authorization: 'Bearer current-token' }, retry: 0 }))
-  assert.equal(client.logoutCalls(), 1)
-  assert.equal(client.token.value, null)
+test('an application 401 clears local identity without issuing a sign-out request', async () => {
+  let calls = 0
+  const client = createClient(async () => { calls += 1; return new Response('{}', { status: 401 }) })
+  await assert.rejects(client.api('/api/auth/sign-in/email', { retry: 0 }))
+  assert.equal(client.clearCalls(), 0)
+  await assert.rejects(client.api('/api/v1/me', { retry: 0 }))
+  assert.equal(client.clearCalls(), 1)
+  assert.equal(client.user.value, null)
+  assert.equal(calls, 2)
   assert.equal(client.status.value, 'connected')
+})
+
+test('a stale application 401 cannot clear a replacement session', async () => {
+  let resolve!: (response: Response) => void
+  const client = createClient(async () => new Promise<Response>(done => { resolve = done }))
+  const request = client.api('/api/v1/favorites', { retry: 0 })
+  await new Promise(done => setTimeout(done, 0))
+  client.sessionVersion.value += 1
+  client.user.value = { id: 2 }
+  resolve(new Response('{}', { status: 401 }))
+  await assert.rejects(request)
+  assert.deepEqual(client.user.value, { id: 2 })
+  assert.equal(client.clearCalls(), 0)
+})
+
+test('application requests include cookies without a JavaScript authorization token', async () => {
+  let credentials: RequestCredentials | undefined
+  let authorization: string | null = null
+  const client = createClient(async (_input, options) => {
+    credentials = options?.credentials
+    authorization = new Headers(options?.headers).get('Authorization')
+    return new Response('{}', { status: 200 })
+  })
+  await client.api('/api/v1/me')
+  assert.equal(credentials, 'include')
+  assert.equal(authorization, null)
+})
+
+
+test('SSR forwards the incoming HttpOnly session cookie with each request-scoped API client', async () => {
+  const source = readFileSync(new URL('../app/plugins/api.ts', import.meta.url), 'utf8')
+    .replaceAll('import.meta.server', 'true').replaceAll('import.meta.client', 'false')
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ESNext } }).outputText
+  const { default: setupServerApi } = await import('data:text/javascript;base64,' + Buffer.from(compiled).toString('base64'))
+  const requests: { cookie: string | null, target: string }[] = []
+  globals.useRuntimeConfig = () => ({ apiBaseInternal: 'http://internal.example.invalid', public: { apiBase: 'https://public.example.invalid' } })
+  const fetcher = async (input: RequestInfo | URL, options?: RequestInit) => {
+    requests.push({ cookie: new Headers(options?.headers).get('cookie'), target: String(input) })
+    return new Response('{}', { status: 200 })
+  }
+  globals.useRequestHeaders = () => ({ cookie: 'session-first' })
+  createClient(fetcher)
+  const first = setupServerApi({}).provide.api
+  globals.useRequestHeaders = () => ({ cookie: 'session-second' })
+  createClient(fetcher)
+  const second = setupServerApi({}).provide.api
+  await first('/api/v1/me'); await second('/api/v1/me')
+  assert.deepEqual(requests, [
+    { cookie: 'session-first', target: 'http://internal.example.invalid/api/v1/me' },
+    { cookie: 'session-second', target: 'http://internal.example.invalid/api/v1/me' },
+  ])
 })

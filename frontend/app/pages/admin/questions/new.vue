@@ -1,19 +1,23 @@
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui'
+import { apiFormErrors, questionFormFields } from '~/utils/apiFormErrors'
 import type { AdminQuestion, AdminQuestionInput, ApiResponse } from '~/types/adminQuestion'
 import { createEmptyQuestion } from '~/types/adminQuestion'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
 const { $api: api } = useNuxtApp()
-const { authHeaders, logout } = useAuth()
+const { authHeaders, clearCurrentUser } = useAuth()
 const initialValue = createEmptyQuestion()
 const submitting = ref(false)
 const errorMessage = ref('')
+const fieldErrors = ref<FormError[]>([])
 
 const submit = async (question: AdminQuestionInput) => {
   if (submitting.value) return
   submitting.value = true
   errorMessage.value = ''
+  fieldErrors.value = []
 
   try {
     const response = await api<ApiResponse<AdminQuestion>>('/api/v1/admin/questions', {
@@ -26,10 +30,11 @@ const submit = async (question: AdminQuestionInput) => {
   catch (error: any) {
     const code = error?.statusCode ?? error?.status
     if (code === 401 || code === 403) {
-      logout()
+      if (code === 403) clearCurrentUser()
       await navigateTo({ path: '/login', query: { redirect: '/admin/questions/new' } })
       return
     }
+    fieldErrors.value = apiFormErrors(error, questionFormFields)
     errorMessage.value = error?.data?.error?.message ?? '問題を保存できませんでした。入力内容を確認してください。'
   }
   finally {
@@ -44,6 +49,6 @@ const submit = async (question: AdminQuestionInput) => {
       <div><p class="admin-page-eyebrow">SC-102</p><h1>問題を作成</h1><p>問題文、選択肢、解答解説を入力し、新しい問題を登録します。</p></div>
       <NuxtLink class="admin-secondary-button" to="/admin/questions"><UIcon name="i-lucide-arrow-left" />一覧に戻る</NuxtLink>
     </header>
-    <AdminQuestionForm :initial-value="initialValue" submit-label="問題を保存" :submitting="submitting" :error-message="errorMessage" @submit="submit" />
+    <AdminQuestionForm :initial-value="initialValue" submit-label="問題を保存" :submitting="submitting" :error-message="errorMessage" :field-errors="fieldErrors" @submit="submit" />
   </div>
 </template>

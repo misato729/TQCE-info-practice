@@ -1,3 +1,5 @@
+import { EXAM_CONFIG } from './examConfig.ts'
+
 export type MasterDataItem<T extends string = string> = {
   value: T
   label: string
@@ -8,29 +10,12 @@ export const USER_ROLES = [
   { value: 'admin', label: '管理者' },
 ] as const satisfies readonly MasterDataItem[]
 
-export const MAJOR_CATEGORIES = [
-  { value: 'teacher_education', label: '教職教養' },
-  { value: 'information', label: '情報科特有' },
-] as const satisfies readonly MasterDataItem[]
-
-export const CATEGORIES = [
-  { value: 'education_foundations', label: '1.1 教育基礎総論', majorCategoryValue: 'teacher_education' },
-  { value: 'teaching_profession', label: '1.2 教職概論', majorCategoryValue: 'teacher_education' },
-  { value: 'education_system', label: '1.3 教育制度総論', majorCategoryValue: 'teacher_education' },
-  { value: 'educational_psychology', label: '1.4 教育心理学', majorCategoryValue: 'teacher_education' },
-  { value: 'special_support_education', label: '1.5 特別支援教育', majorCategoryValue: 'teacher_education' },
-  { value: 'curriculum_organization', label: '1.6 教育課程編成論', majorCategoryValue: 'teacher_education' },
-  { value: 'moral_education', label: '2.0 道徳教育論', majorCategoryValue: 'teacher_education' },
-  { value: 'integrated_inquiry', label: '2.1 総合的な学習・探究論', majorCategoryValue: 'teacher_education' },
-  { value: 'special_activities', label: '2.2 特別活動論', majorCategoryValue: 'teacher_education' },
-  { value: 'education_methods', label: '2.3 教育方法・技術論', majorCategoryValue: 'teacher_education' },
-  { value: 'ict_in_education', label: '2.4 教育におけるICT活用', majorCategoryValue: 'teacher_education' },
-  { value: 'student_guidance_career', label: '2.5 生徒指導・進路指導論', majorCategoryValue: 'teacher_education' },
-  { value: 'educational_counseling', label: '2.6 生徒理解と教育相談', majorCategoryValue: 'teacher_education' },
-  { value: 'career_education', label: '2.7 生徒指導・進路指導論', majorCategoryValue: 'teacher_education' },
-  { value: 'information_specialized', label: '3.1 情報科専門科目', majorCategoryValue: 'information' },
-  { value: 'information_education', label: '3.2 情報科教育法', majorCategoryValue: 'information' },
-] as const
+export const MAJOR_CATEGORIES = EXAM_CONFIG.categories.major
+export const CATEGORIES = EXAM_CONFIG.categories.minor.map(item => ({
+  value: item.value,
+  label: item.label,
+  majorCategoryValue: item.major_category_value,
+}))
 
 export const PUBLICATION_STATUSES = [
   { value: 'draft', label: '下書き' },
@@ -69,9 +54,6 @@ export const MEDALS = [
   { value: 'silver', label: '銀メダル' },
   { value: 'gold', label: '金メダル' },
 ] as const satisfies readonly MasterDataItem[]
-
-export const MOCK_EXAM_QUESTION_COUNT = 20
-export const MOCK_EXAM_PASSING_SCORE = 12
 
 export const getMasterDataLabel = <T extends string>(
   items: readonly MasterDataItem<T>[],

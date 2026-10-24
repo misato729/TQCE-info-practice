@@ -8,6 +8,12 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/pnpm-debug.log*
+frontend/generated/prisma/
+frontend/.e2e-build/
+frontend/playwright-report/
+frontend/test-results/
+frontend/blob-report/
+frontend/.netlify/
 
 # Backend
 backend/.bundle/

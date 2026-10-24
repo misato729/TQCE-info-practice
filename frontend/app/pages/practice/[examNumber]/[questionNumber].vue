@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EXAM_CATALOG } from '~/utils/examCatalog'
+import { EXAM_CATALOG, QUESTIONS_PER_EXAM, FREE_EXAM_MAX } from '~/utils/examCatalog'
 import {
   createPracticeSequence,
   shufflePracticeSequence,
@@ -68,12 +68,12 @@ type SourceReference = {
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, user, authHeaders, logout } = useAuth()
-const { canUseFavorites, isFavorite, setFavorite, toggleFavorite } = useDemoFavorites()
+const { isLoggedIn, user, authHeaders } = useAuth()
+const { canUseFavorites, isFavorite, setFavorite, toggleFavorite } = useFavorites()
 const updatingFavorite = ref(false)
 
 const allExamNumbers = EXAM_CATALOG.map(exam => exam.exam_number)
-const allQuestionNumbers = Object.freeze(Array.from({ length: 20 }, (_, index) => index + 1))
+const allQuestionNumbers = Object.freeze(Array.from({ length: QUESTIONS_PER_EXAM }, (_, index) => index + 1))
 
 const parseNumberSelection = (value: unknown, allowedNumbers: readonly number[]) => {
   const serialized = Array.isArray(value) ? value.join(',') : typeof value === 'string' ? value : ''
@@ -226,7 +226,7 @@ const questionErrorStatus = computed(() => {
 })
 const questionErrorCode = computed(() => (questionError.value as any)?.data?.error?.code)
 const paywallRequired = computed(() => (
-  examNumber.value > 5
+  PAYMENTS_ENABLED && examNumber.value > FREE_EXAM_MAX
   && (questionErrorStatus.value === 401 || questionErrorCode.value === 'paid_membership_required')
 ))
 const paywallNeedsLogin = computed(() => questionErrorStatus.value === 401)
@@ -251,12 +251,8 @@ const completionMessage = computed(() => {
   if (hasConditionSelection.value) {
     return `${selectedPracticeExamNumbers.value.length}模試、全${practiceSequence.value.length}問の演習が完了しました。`
   }
-  if (practiceScope.value === 'teacher_education') {
-    return `模擬試験 ${examNumber.value} の教職教養を解き終えました。`
-  }
-  if (practiceScope.value === 'information') {
-    return `模擬試験 ${examNumber.value} の情報科特有を解き終えました。`
-  }
+  if (practiceScope.value === 'teacher_education') return `模擬試験 ${examNumber.value} の教職教養を解き終えました。`
+  if (practiceScope.value === 'information') return `模擬試験 ${examNumber.value} の情報科特有を解き終えました。`
   return `模擬試験 ${examNumber.value} の公開問題をすべて解き終えました。`
 })
 
@@ -282,10 +278,6 @@ watch(
 watch(question, (loaded) => {
   if (loaded && typeof loaded.is_favorite === 'boolean') setFavorite(loaded, loaded.is_favorite)
 }, { immediate: true })
-
-watch(questionErrorStatus, (errorStatus) => {
-  if (errorStatus === 401 && isLoggedIn.value) logout()
-})
 
 const choiceState = (choice: Choice) => {
   if (!answerResult.value) return { selected: selectedChoiceId.value === choice.id }
@@ -316,7 +308,6 @@ const submitAnswer = async () => {
   }
   catch (error: any) {
     if (error?.statusCode === 401 || error?.status === 401) {
-      logout()
       answerError.value = 'ログインの有効期限が切れました。もう一度ログインしてください。'
       return
     }
@@ -366,8 +357,7 @@ const restoreAnswerHistory = async () => {
     restoredHistoryId.value = history.id
   }
   catch (error: any) {
-    if (error?.statusCode === 401 || error?.status === 401) logout()
-    else answerError.value = '解答履歴を読み込めませんでした。'
+    if (error?.statusCode !== 401 && error?.status !== 401) answerError.value = '解答履歴を読み込めませんでした。'
   }
 }
 
@@ -421,7 +411,6 @@ const handleFavoriteClick = async () => {
     await toggleFavorite(question.value)
   }
   catch (error: any) {
-    if ((error?.statusCode ?? error?.status) === 401) logout()
     answerError.value = error?.data?.error?.message ?? 'お気に入りを更新できませんでした。'
   }
   finally {
@@ -447,8 +436,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
     <div v-else-if="paywallRequired" class="state-panel paywall-panel">
       <UIcon name="i-lucide-lock-keyhole" />
       <h1>模擬試験{{ examNumber }}はプレミアム会員向けです</h1>
-      <p v-if="paywallNeedsLogin">模擬試験6以降を利用するには、ログインしてプレミアム会員資格を確認してください。</p>
-      <p v-else>500円の買い切りで、公開中および今後追加される模擬試験6以降を利用できます。</p>
+      <p v-if="paywallNeedsLogin">模擬試験{{ FREE_EXAM_MAX + 1 }}以降を利用するには、ログインしてプレミアム会員資格を確認してください。</p>
+      <p v-else>{{ PRICE_LABEL }}の買い切りで、模擬試験{{ FREE_EXAM_MAX + 1 }}以降の公開問題を利用できます。</p>
       <div class="state-actions">
         <NuxtLink v-if="paywallNeedsLogin" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }">ログイン</NuxtLink>
         <NuxtLink class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>
@@ -611,9 +600,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
               <UIcon name="i-lucide-star" />
             </span>
             <h2 id="favorite-modal-title">お気に入り機能について</h2>
-            <p>お気に入り登録は、プレミアム会員向けの機能です。</p>
+            <p>{{ PAYMENTS_ENABLED ? 'お気に入り登録は、プレミアム会員向けの機能です。' : 'お気に入り登録にはログインが必要です。' }}</p>
             <div class="favorite-modal-actions">
-              <NuxtLink class="primary-link" to="/premium" @click="closeFavoriteModal">プレミアム会員について</NuxtLink>
+              <NuxtLink v-if="PAYMENTS_ENABLED" class="primary-link" to="/premium" @click="closeFavoriteModal">プレミアム会員について</NuxtLink>
               <NuxtLink v-if="!isLoggedIn" class="secondary-link" :to="{ path: '/login', query: { redirect: route.fullPath } }" @click="closeFavoriteModal">ログインへ</NuxtLink>
             </div>
           </section>
@@ -658,7 +647,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .choices label.selected { border-color: var(--teal); background: #eaf6f5; }
 .choices label.correct { border-color: var(--teal); background: #eaf6f5; }
 .choices label.incorrect { border-color: var(--coral); background: #fff4f1; }
-.choice-label { color: var(--teal-dark); font-weight: 900; }
+.choice-label { min-width: 0; overflow-wrap: anywhere; color: var(--teal-dark); font-weight: 900; }
 .choice-content { min-width: 0; line-height: 1.65; }
 .choice-mark { width: 22px; height: 22px; margin-top: 1px; }
 .correct-mark { color: var(--teal); }

@@ -1,2 +1,71 @@
 [build]
+  base = "frontend"
+  command = "NUXT_STATIC_FRONTEND=true NUXT_PUBLIC_API_BASE= npm run generate"
+  publish = ".output/public"
   ignore = "node ./scripts/netlify-ignore-build.mjs"
+
+[build.environment]
+  NODE_VERSION = "24"
+  NUXT_STATIC_FRONTEND = "true"
+  NUXT_API_ONLY = "false"
+  NUXT_PUBLIC_API_BASE = ""
+
+# Both business and Better Auth requests keep the browser's Netlify origin.
+# Cookies have no Domain attribute and remain first-party HttpOnly cookies.
+[[redirects]]
+  from = "/api/*"
+  to = "https://tqce-info-practice.fly.dev/api/:splat"
+  status = 200
+  force = true
+
+# Generated pages take priority; dynamic practice and admin paths use Nuxt.
+[[redirects]]
+  from = "/*"
+  to = "/200.html"
+  status = 200
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/practice/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/history"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/favorites"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/account"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/premium/complete"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/signup"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

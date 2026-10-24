@@ -24,13 +24,13 @@ useSeoMeta({
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, user, authHeaders, ensureCurrentUser, logout } = useAuth()
+const { isLoggedIn, user, authHeaders, ensureCurrentUser } = useAuth()
 const agreed = ref(false)
 const submitting = ref(false)
 const errorMessage = ref('')
 
 onMounted(() => {
-  if (isLoggedIn.value) void ensureCurrentUser()
+  void ensureCurrentUser()
 })
 
 const { data: paymentConfigResponse, status: configStatus } = await useFetch<ApiResponse<PaymentConfig>>(
@@ -65,7 +65,6 @@ const startCheckout = async () => {
     const status = error?.statusCode ?? error?.status
     const code = error?.data?.error?.code
     if (status === 401) {
-      logout()
       errorMessage.value = 'ログインの有効期限が切れました。もう一度ログインしてください。'
     }
     else if (code === 'membership_already_active') {

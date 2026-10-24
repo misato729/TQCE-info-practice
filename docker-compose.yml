@@ -1,44 +1,71 @@
+name: ${COMPOSE_PROJECT_NAME:-tqce-info-practice}
+
 services:
   frontend:
     build:
-      context: ./frontend
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    env_file:
-      - .env
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: development
+    env_file: .env
     environment:
-      NUXT_API_BASE_INTERNAL: http://backend:3000
+      # Override the legacy Rails URL without logging or rewriting .env values.
+      DATABASE_URL: ''
+      DB_HOST: nuxt-db
+      PGHOST: nuxt-db
+      PGPORT: 5432
+      DB_NAME: ${DB_NAME:-tqce_nuxt_development}
+      PGDATABASE: ${DB_NAME:-tqce_nuxt_development}
+      NUXT_PUBLIC_API_BASE: ''
+      NUXT_API_BASE_INTERNAL: ''
+      BETTER_AUTH_URL: http://localhost:${FRONTEND_PORT:-3000}
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-3000}
+      CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-3000},http://127.0.0.1:${FRONTEND_PORT:-3000}
     ports:
-      - "3000:3000"
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+      - "127.0.0.1:${API_PORT:-3001}:3000"
     volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
+      - ./frontend:/workspace/frontend
+      - ./config:/workspace/config:ro
+      - ./content:/workspace/content:ro
+      - ./scripts:/workspace/scripts:ro
+      - nuxt_frontend_node_modules:/workspace/frontend/node_modules
+    mem_limit: 1536m
+    cpus: 1.25
     depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-    command: bash -lc "bundle install && rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
-    env_file:
-      - .env
-    environment:
-      RAILS_ENV: development
-      DB_HOST: db
-    ports:
-      - "3001:3000"
-    volumes:
-      - ./backend:/app
-      - backend_bundle:/usr/local/bundle
-    depends_on:
-      db:
+      nuxt-db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 120s
+      retries: 18
 
-  db:
+  nuxt-db:
     image: postgres:16-alpine
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME:-tqce_nuxt_development}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a local development database password in .env}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    volumes:
+      - nuxt_postgres_data:/var/lib/postgresql/data
+    mem_limit: 256m
+    cpus: 0.5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  # Migration source only. Keep its original volume and data intact.
+  db:
+    profiles: [legacy]
+    image: postgres:16-alpine
+    env_file: .env
+    ports:
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -48,6 +75,9 @@ services:
       retries: 10
 
 volumes:
-  frontend_node_modules:
-  backend_bundle:
+  nuxt_frontend_node_modules:
+  nuxt_postgres_data:
   postgres_data:
+  # Historical dependency volume is retained; no cleanup/reset is performed.
+  backend_bundle:
+  frontend_node_modules:

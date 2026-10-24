@@ -1,15 +1,44 @@
+import { fileURLToPath } from 'node:url'
+import { SITE, themeVariables } from './app/utils/examConfig.ts'
+import { e2eBuildConfiguration } from './scripts/e2e-build.mjs'
+
+const staticFrontend = process.env.NUXT_STATIC_FRONTEND === 'true'
+const apiOnly = !staticFrontend && process.env.NUXT_API_ONLY === 'true'
+const e2e = e2eBuildConfiguration()
+const testFreeMode = process.env.APP_ENV === 'test' && process.env.TQCE_E2E_FREE_MODE === 'true'
+
 export default defineNuxtConfig({
+  ...e2e,
   compatibilityDate: '2024-07-03',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
+  ui: { fonts: false, colorMode: false },
   modules: ['@nuxt/ui'],
+  // Netlify serves generated public pages only. It never bundles the Fly API,
+  // database clients, readiness plugin, or authentication secrets.
+  ...(staticFrontend ? { serverDir: fileURLToPath(new URL('./.static-server', import.meta.url)) } : {}),
+  nitro: {
+    ...e2e.nitro,
+    ...(apiOnly ? { noPublicDir: true } : {}),
+    ...(staticFrontend ? { preset: 'static', prerender: { ignore: ['/api'] } } : {}),
+  },
+  vite: {
+    // Match the explicitly isolated browser-test fixture in browser and server.
+    // Production builds can never activate the free E2E configuration.
+    define: {
+      'process.env.APP_ENV': JSON.stringify(process.env.APP_ENV || process.env.NODE_ENV || 'development'),
+      'process.env.TQCE_E2E_FREE_MODE': JSON.stringify(testFreeMode ? 'true' : 'false'),
+    },
+    // Nitro resolves shared modules after the intermediate SSR build.
+    build: { rolldownOptions: { makeAbsoluteExternalsRelative: false } },
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
-      link: [{ rel: 'icon', type: 'image/png', href: '/images/logo-symbol.png' }],
+      link: [{ rel: 'icon', href: SITE.logo_path }],
+      style: [{ innerHTML: themeVariables() }],
     },
   },
   routeRules: {
-    // User-specific application screens do not benefit from server rendering.
     '/practice/**': { ssr: false, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
     '/history': { ssr: false, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
     '/favorites': { ssr: false, headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
@@ -22,7 +51,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiBaseInternal: '',
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001',
+      apiBase: staticFrontend ? '' : (process.env.NUXT_PUBLIC_API_BASE || ''),
     },
   },
 })

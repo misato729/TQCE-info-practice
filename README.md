@@ -6,69 +6,89 @@
 
 ## 技術構成
 
-- フロントエンド: Nuxt 4
-- バックエンド: Ruby on Rails 7 API
-- データベース: PostgreSQL 16
-- 開発環境: Docker Compose
+Nuxt 4の画面とNitro/H3のAPIをTypeScriptで実装します。DB操作・認証・マイグレーションはライブラリへ委ねます。
 
-## 全体アーキテクチャ（完成予定）
+| ライブラリ・基盤 | 用途 |
+| --- | --- |
+| Nuxt 4 / Vue 3 | ページ、ルーティング、表示更新 |
+| Nitro / H3 | Node.js上のAPI、HTTP処理、ファイルベースのAPIルーティング |
+| TypeScript | 画面・サーバー・共通型 |
+| Nuxt UI / Tailwind CSS / Lucide | フォーム、入力エラー、スタイル、アイコン |
+| Zod | フロントエンドとAPIで共有する入力・問題・設定の検証 |
+| Prisma / `@prisma/adapter-pg` / `pg` | PostgreSQLへのDB操作 |
+| Prisma Migrate | バージョン管理したスキーマ変更 |
+| Better Auth | パスワードハッシュ、Cookieセッション、登録・ログイン・ログアウト |
+| rate-limiter-flexible | PostgreSQLで共有する操作回数制限。認証の入口はBetter Auth標準機能 |
+| Stripe公式SDK | Checkoutと署名付きWebhook |
+| Sentry公式Node SDK | 許可した固定項目だけのAPI障害通知。初期状態は送信無効 |
+| Node.js組込みテスト / Playwright | 単体・API・ブラウザ操作の検証 |
+| PostgreSQL 16 / Docker Compose | DBとローカル開発環境 |
 
-公開・運用準備完了時の構成を示します。現在の本番反映状況や残件は [公開前運用確認](document/公開前運用確認_2026-10-20.md) を参照してください。
+正確なバージョンは `frontend/package-lock.json`、依存一覧は `frontend/package.json` を参照してください。`backend/` のRailsコードは旧構成の参照・切戻し資料として残しており、通常の起動・ビルド・デプロイでは使用しません。
 
-![情報教認ラボの全体アーキテクチャ（完成予定）](document/images/architecture.jpeg)
+## アーキテクチャ
 
-### 構成の考え方
-
-個人開発での継続運用を前提に、画面をNuxt、採点・認証・権限判定・決済処理をRails APIに分け、ホスティングとDBにはマネージドサービスを利用する構成とする。アプリの変更や障害の調査を役割ごとに分けやすくし、基盤の構築・保守に使う作業を抑えることを狙う。
-
-現在の問題演習では、Netlifyが配信したJavaScriptをブラウザが実行し、ブラウザからFly.ioのRails APIを直接呼ぶ。NetlifyがAPI通信を中継する構成ではない。トップや試験概要はNetlifyでSSRするが、本文はフロントエンドのコードにあるため、HTML生成時にRails APIへ問い合わせる必要はない。
-
-### メリット
-
-- **画面の用途に応じた表示方法を選べる**: トップや試験概要はSSRで本文を含むHTMLを返し、検索エンジンが内容を読み取りやすくする。問題演習や履歴などはCSRとし、ブラウザで操作・表示更新を行う。Nuxtのルート単位の設定で、この使い分けを管理できる。
-- **画面と業務処理の役割を分けられる**: 採点、回答履歴の保存、プレミアム会員・管理者の権限判定、決済状態の反映をRails側に集約する。ブラウザの表示制御だけに権限判定を任せず、画面の変更と業務処理の変更を分けて検討できる。
-- **障害の調査・切り戻しを分けやすい**: 画面配信、API、DBのどこで問題が起きているかを切り分けられる。APIとの互換性を確認したうえで、Netlifyの配信版だけを前の版へ戻すなど、対象を絞った対応を選べる。
-- **基盤管理の負担を抑えられる**: Netlify、Fly.io、Neonの管理機能を利用し、OSやDB基盤を自分で構築・保守する作業を減らせる。アプリの更新や監視、バックアップ・復元確認まで不要になるわけではない。
-- **不要なAPI通信を避けられる**: 未ログインでトップや試験概要を読むだけならRails APIを呼ばず、問題取得・回答など必要な操作で通信する。これはAPI呼び出しの設計による効果であり、NuxtやSSRを採用しただけで得られる効果ではない。
-
-### デメリット・トレードオフ
-
-- **管理対象と互換性の確認が増える**: フロントエンド、API、DBが分かれるため、環境変数、ログ、デプロイ結果をそれぞれ管理する必要がある。API形式やDBを変更するときは、新旧の配信版との互換性と切り戻しの可否も確認する。
-- **別オリジン間の認証・通信設計が必要になる**: CORS、HTTPS、認証トークンの扱い、XSS対策、API側の認可を考慮する必要がある。CORSやNetlifyの閲覧制限だけではFly.ioのAPIを保護できず、フロントエンドとAPIを分けただけで安全になるわけではない。
-- **問題演習の初回表示に待ち時間がある**: CSRの画面はJavaScriptの読込み・実行とAPI応答を待って問題を表示する。停止・スリープを許容する運用では、APIやDBの起動待ちが加わる場合もある。読込み・失敗・再試行の表示を用意し、実環境で応答を確認する必要がある。
-- **外部サービスの条件と運用を継続して確認する必要がある**: 利用上限、料金、障害、仕様変更の影響を受けるため、この構成だけで無料運用や可用性は保証されない。監視、バックアップ・復元、秘密情報の管理、費用の確認は運営者の責任として残る。
-
-小規模なサイトでは、Railsで画面も配信する一体型の方が管理対象を減らせる場合がある。また、VueだけのSPAでも、同じAPIの呼び出し方ならFly.ioへの要求回数が増えるわけではない。本構成は唯一の正解ではなく、画面ごとの表示方法、役割の分離、個人での運用負担を比較した選択肢として位置付ける。
-
-参考: [Nuxtのレンダリング方式](https://learn.nuxt.com/en/concepts/rendering-modes)、[RailsのAPI専用アプリケーション](https://guides.rubyonrails.org/api_app.html)
-
-## 開発環境の起動
-
-このプロジェクトは Nuxt、Rails API、PostgreSQL を Docker Compose で起動する構成です。
-ローカルブラウザで http://localhost:3000 を開くには、Docker Desktop を起動したうえでコンテナを立ち上げておく必要があります。
-
-通常は、プロジェクトルートから以下を実行します。
-
-```sh
-docker compose up
+```mermaid
+flowchart LR
+    B[ブラウザ] -->|画面・静的ファイル| N[Netlify: Nuxt生成物]
+    B -->|同一オリジン /api/* とCookie| N
+    N -->|APIプロキシ| F[Fly.io: Node.js / Nitro / H3]
+    F --> A[Better Auth / 業務処理]
+    A --> P[Prisma]
+    P --> D[(PostgreSQL)]
+    A -->|Checkout・Webhook| S[Stripe]
 ```
 
-初回起動時、または Dockerfile、Gemfile、package.json を変更した後は、以下を実行します。
+Netlifyは公開ページのHTMLとJavaScriptをビルド時に生成して配信します。動的な演習・履歴・管理画面はブラウザで描画し、`/api/*` は既存Fly.io APIへ転送します。認証CookieはNetlifyのオリジンに保存され、JavaScriptから読み出しません。Fly.ioは `NUXT_API_ONLY=true` によりAPI以外を404にし、NetlifyのPrivateを迂回する画面配信を行いません。
+
+DB認可は各APIで現在のユーザー・権限・有料資格を確認します。無料範囲・50セット×20問・分類・500円の料金は `config/exam.json` が正本です。画面名や最新の「利用にあたって」、問題と選択肢の内容は移行で変更しません。
+
+旧Rails構成の画像は [旧アーキテクチャ図](document/images/architecture.jpeg) として保存しています。移行時のデータ保全と検証・反映結果は [テンプレート移行記録](document/テンプレート移行_2026-10-24.md)、過去の公開準備の実施記録は [公開前運用確認](document/公開前運用確認_2026-10-20.md) を参照してください。
+
+## 開発環境
+
+Node.js 24とDocker Composeを使用します。`.env.example` を参考に、Git管理外の `.env` へDBパスワードと64文字以上の独立したランダムな `BETTER_AUTH_SECRET` を設定します。既存 `.env` の値は一括上書きしません。認証情報をコマンド引数・ログ・Issueへ記載しないでください。
 
 ```sh
-docker compose up --build
+docker compose up -d --build
 ```
 
-起動後、以下の URL にアクセスできます。
+- 画面・API: http://localhost:3000
+- API確認用の同一サービス別ポート: http://localhost:3001/api/v1/health
+- 管理ログイン: http://localhost:3000/admin/login
+- 新DB: localhost:5433 / `tqce_nuxt_development`
 
-- Frontend: http://localhost:3000
-- Backend health check: http://localhost:3001/api/v1/health
-- Admin login: http://localhost:3000/admin/login
-- Admin questions: http://localhost:3000/admin/questions
+Nuxtの画面とAPIは同じサービスで起動します。Composeは旧Railsの `DATABASE_URL` を引き継がず、新しい `nuxt-db` と `nuxt_postgres_data` を使用します。旧DBは `legacy` profileと元の `postgres_data` volumeに残します。新DBへの問題取込みと管理者作成は明示操作です。起動・マイグレーション・`db:seed` では問題を投入しません。
 
-管理画面は `role = admin` のユーザーのみ利用できます。一般画面で管理者としてログイン済みの場合は、同じ認証セッションを使って管理画面へ遷移できます。
+停止は `docker compose down` です。データ保全のため移行中に `down -v` やvolume削除を実行しないでください。PC負荷を抑えるため、テスト・型検査・ビルドを同時実行せず、コンテナのCPU・メモリを制限して順番に実行します。
 
-Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTERNAL=http://backend:3000` を使用します。ブラウザは従来どおり `NUXT_PUBLIC_API_BASE` を使用します。内部URLは非公開のruntime configで扱い、本番で未設定の場合は公開APIのURLへ接続します。Composeの設定変更後は `docker compose up -d frontend` でコンテナを再作成してください。Railsの開発用Host許可には `backend` のみ追加しています。
+## 開発時の確認
+
+`frontend/` で実行します。サーバーテスト・E2Eには通常環境と分離したテストDBを使用してください。
+
+```sh
+npm test
+npm run test:server
+npm run typecheck
+npm run test:e2e
+npm run db:validate
+```
+
+`node scripts/check-template.mjs` はリポジトリルートから設定と合成fixtureを検査します。`content/questions.json` の40問は自動テスト用の架空データであり、本番問題の編集元ではありません。E2E専用の無料設定は `APP_ENV=test` と `TQCE_E2E_FREE_MODE=true` が両方そろう場合だけ有効となり、本番では有効になりません。
+
+## 認証・DB運用
+
+Better Authの `/api/auth/sign-up/email`、`sign-in/email`、`sign-out`、`get-session` を使用します。セッション期限は24時間、CookieはHttpOnly・SameSite=Lax、本番はSecure、Domain指定なしです。一般画面・管理画面は同じセッションを共有します。旧Bearerトークンは使用しません。
+
+Prismaスキーマは `frontend/prisma/schema.prisma`、適用履歴は `frontend/prisma/migrations/` です。DB変更はマイグレーションとして追加し、適用済みファイルを編集しません。
+
+```sh
+docker compose exec -T frontend npm run db:migrate
+```
+
+管理者は `ADMIN_EMAIL`、`ADMIN_PASSWORD`、`ADMIN_NAME` を実行環境へ安全に渡して `npm run admin:create` で作成します。既存ユーザーの権限やパスワードは上書きしません。購入資格とは独立した最長7日の検証用資格は `npm run operations -- verification_access:grant` / `verification_access:revoke`、読み取り専用点検は `npm run operations -- operations:audit` です。各コマンドの変数と移送手順は [運用手順](document/運用手順.md) を参照してください。
+
+今回の切替では問題・選択肢のID・内容・正答・公開状態・日時を保全し、ユーザー・履歴等は移行しない方針が承認されています。通常運用でのユーザー削除や問題の再作成を許可するルールではありません。完全バックアップと問題だけのアーカイブを区別してください。
 
 ## Stripeプレミアム会員の設定
 
@@ -93,209 +113,53 @@ Docker Composeでは、Nuxtのサーバー側認証確認に `NUXT_API_BASE_INTE
 
 ローカルでは `STRIPE_LIVEMODE=false` を使用します。本番では本番用のキー、Price、Webhook署名シークレットにそろえて `STRIPE_LIVEMODE=true` とし、テスト環境の値と混在させないでください。カード番号等はStripe Checkoutが取り扱い、本アプリのDBには保存しません。
 
-## 本番確認用の期限付き資格
+## 公開前のアクセス制限・通知
 
-販売開始条件、読み取り専用の運用点検、バックアップ・隔離復元、Webhook再送、監視・障害時の手順は [運用手順](document/運用手順.md) を参照してください。`bin/rails operations:audit` は設定不足の項目名と決済の集計だけを出し、DBやStripeを変更しません。手順やテストの準備と、本番の定期実行・通知・復元確認は区別します。
+Netlifyの本番・プレビュー・各デプロイURLはPrivateを維持します。フロントエンドにBasic認証は設けません。Fly.io APIは別の公開口であるため、管理者・会員・有料資格の認可、Origin検査、JSON検査、操作回数制限を維持します。販売開始・Private解除・Sentry送信有効化は今回の移行に含めません。
 
-バックアップの実装と詳細な運用記録は専用の非公開リポジトリで管理します。暗号化保管・隔離復元と整合性確認、日次用の手動実行と通知を確認済みです。定期起動の継続、試用終了後の無料プランでの継続、復旧目標の確認は残っています。[資料の管理方針](operations/README.md) と [確認結果・残件](document/公開前運用確認_2026-10-20.md) を参照してください。
+Sentryは公式SDKを使用し、自動収集を無効にした独立クライアントへ固定した障害情報だけを渡します。利用者・リクエスト・例外本文・接続情報は送りません。`ERROR_NOTIFICATIONS_ENABLED=false` を初期値とし、既存のバックアップ通知とは区別します。
 
-購入済みのプレミアム会員資格と区別するため、運用確認には `verification_access_grants` を使います。決済記録やStripe IDを作らず、最長7日で失効します。アカウント画面には検証用であることと期限を表示し、一般会員を管理者へ昇格させません。販売開始フラグやStripe設定は変更しません。
+バックアップの実装と秘密情報を含む運用記録は専用の非公開リポジトリで管理します。[資料の管理方針](operations/README.md) と [運用手順](document/運用手順.md) を参照してください。新DBへ切り替える場合は、バックアップの接続先と権限も新DBについて確認します。
 
-対象と付与理由を確認して、バックエンドで次を実行します。既存の資格は上書きしません。日時・メールアドレス・運用者は実行時に対象へ置き換え、パスワードをコマンド引数やログへ記載しないでください。
+## 本番デプロイ
 
-```sh
-USER_EMAIL='<確認用ユーザー>' REASON='Netlify移行の承認済み動作確認' GRANTED_BY='<承認した運用者>' EXPIRES_AT='<付与から7日以内のISO 8601日時>' bin/rails verification_access:grant
-USER_EMAIL='<確認用ユーザー>' bin/rails verification_access:revoke
-```
+既存のURL・Netlifyプロジェクト・Fly.ioアプリを使用します。
 
-期限切れ・取消後は同じログイントークンでも有料問題・お気に入りAPIを拒否します。履歴・お気に入りは削除しません。付与・取消用の公開APIはありません。これは購入・Webhook・返金の実決済試験の代わりにはなりません。
-
-## 公開前のアクセス制限
-
-一般利用者の閲覧制限にはNetlifyのProject visibilityを `Private` にして使用します。フロントエンドのBasic認証は廃止し、ローカルでもBasic認証の入力は不要です。会員ログイン、管理者権限、有料コンテンツの利用資格の確認は別の仕組みとして維持します。NetlifyのPrivate設定はFly.ioのAPIを保護しないため、API側の認証・認可も維持します。
-
-この変更をデプロイする前に、本番・プレビュー・各デプロイURLがPrivateの対象であることを確認してください。旧Vercelなど他の配信先ではNetlifyのPrivate設定は適用されません。旧環境の自動デプロイを止め、Basic認証が残る最後の成功デプロイを切戻し用に保持し、保護のない新コードを旧環境へ配信しないでください。NetlifyをPublicへ切り替える判断は別途行います。
-
-HTTP確認、ユーザーの目視確認、エージェントの実操作確認は区別して記録します。
-
-## Nuxtのレンダリング方針
-
-`frontend/nuxt.config.ts` の `routeRules` で、ページの性質に応じてレンダリング方式を分けます。
-
-- トップ、試験概要、利用規約、プライバシーポリシーなどの公開ページはSSRし、初期HTMLに本文とSEOメタ情報を含めます。
-- 問題演習、解答履歴、お気に入り、アカウント、決済結果確認、管理画面はユーザー固有データを扱うためCSRにします。これらのルートには `noindex, nofollow` も設定します。
-- プレミアム会員案内と特定商取引法に基づく表記は公開本文をSSRし、販売状態や販売者情報だけをクライアントからRails APIで確認します。
-
-Basic認証の廃止によってレンダリング方式やキャッシュ方針は変更しません。公開ページのSSRとユーザー固有画面のCSR・noindexを維持し、SSG/prerenderへの変更はこの作業には含めません。
-
-共通レイアウトはRailsの `/api/v1/health` と `/api/v1/exams` を呼びません。試験サイドバーは `frontend/app/utils/examCatalog.ts` の固定カタログを使い、未ログインユーザー及び無料会員には模擬試験1〜5、プレミアム会員及び管理者には全公開分を表示します。問題の公開・非公開を変更するときは、固定カタログの試験番号と問番号も同じ変更内で更新してください。
-
-未ログインでトップページなどの静的な内容を見るだけならRails APIへ接続しません。ログイン状態のCookieがある場合だけ、初回表示時に `/api/v1/me` を1回呼んでプレミアム会員資格を確認します。フッターはAPIをまだ利用していない間は「API接続は利用時に確認」と表示します。問題取得、回答、履歴、決済など必要な操作では従来どおりRails APIを使用し、有料コンテンツの認可もRails側で行います。
-
-お気に入りはプレミアム会員と管理者向けです。サイドバーの黄色表示には、既存のログイン・ユーザー情報レスポンスに含まれる `favorite_questions`（公開中の問題ID・模試番号・問番号のみ）を使います。開閉・ページ移動や登録解除後の確認用通信は追加せず、共有状態を更新します。無料会員には空配列を返し、既存データは削除せず保持します。別端末で変更した状態は再読み込み・再ログイン時に同期します。
-
-## フロントエンドのデプロイ（Netlify）
-
-フロントエンドはNetlify、バックエンドはFly.io、DBはNeonを使用します。現在のフロントエンドURLは https://johokyonin-lab.netlify.app/ です（2026年10月20日にNetlifyのサイト名を変更）。ビルド・デプロイの成功報告と、実際の画面・API疎通の完了は区別します。移行時の確認状況とドメイン変更・切替・切戻しの手順は [Netlify移行確認記録](document/Netlify移行確認_2026-10-19.md) を参照してください。
-
-| 設定 | 値 |
+| 配信先 | 設定 |
 | --- | --- |
-| デプロイ対象ブランチ | `main` |
-| Base directory | `frontend` |
-| Build command | `npm run build` |
-| Publish directory | `dist`（Base directoryからの相対パス） |
-| Functions directory | 初期値の `netlify/functions` から変更不要。Nuxt/Nitroが必要なFunctionsを自動生成する |
-| Node.js | `NODE_VERSION=22`（ローカルDockerと同じメジャーバージョン） |
+| Netlify | `frontend/netlify.toml`。Node.js 24、`NUXT_STATIC_FRONTEND=true NUXT_PUBLIC_API_BASE= npm run generate`、公開先 `.output/public` |
+| Fly.io | ルート `fly.toml` と `frontend/Dockerfile`。Node/Nitro、API専用、release時 `npm run db:migrate` |
+| PostgreSQL | Fly secretsの `DATABASE_URL`。Netlifyには渡さない |
+| Better Auth | Fly secretsの `BETTER_AUTH_SECRET`。`BETTER_AUTH_URL` はNetlifyのHTTPSオリジン |
 
-Netlifyの管理画面で次の環境変数を設定します。`NUXT_PUBLIC_API_BASE` はBuildsとFunctionsの両方のスコープで利用できるようにし、秘密値をIssue・ログ・リポジトリへ保存しません。
+NetlifyのAPI転送先は `https://tqce-info-practice.fly.dev/api/:splat` です。ブラウザ側の `NUXT_PUBLIC_API_BASE` は空にし、絶対URLへの直接アクセスへ戻しません。DB接続情報、認証秘密鍵、Stripe秘密鍵はFly.ioで管理します。
 
-| 変数 | 設定内容 |
-| --- | --- |
-| `NUXT_PUBLIC_API_BASE` | `https://tqce-info-practice.fly.dev`（`/api/v1`は付けない） |
+ローカル検証・ビルド・データ照合とFly.io API切替を完了してから、最後のmainへのpushでNetlifyを1回だけ反映します。途中のプレビューや手動再ビルドを重ねません。反映後は配信コミット、Private、APIプロキシ、ログイン・演習・管理操作を確認します。
 
-Docker用の `NUXT_API_BASE_INTERNAL=http://backend:3000` はNetlifyへ設定しません。DB接続情報・Stripeの秘密鍵もNetlifyへ移さず、Fly.io側で管理します。フロントエンドでは `NUXT_BASIC_AUTH_USER` / `NUXT_BASIC_AUTH_PASSWORD` を使用しないため、Netlifyでは不要です。既存のローカル `.env` やFly.ioの設定は、バックエンドの互換用設定として利用される場合があるため、この変更では削除しません。
-
-2026年10月20日に、ユーザーからNetlifyの旧Basic認証2変数を削除したとの報告を受け、`SECRETS_SCAN_OMIT_KEYS` と、その設定だけを持っていた `frontend/netlify.toml` を撤去しました。リポジトリ側で秘密情報の検査を除外する設定は設けません。Base directory・Build command・Publish directoryは管理画面の設定を維持します。
-
-2026年10月21日、`frontend/netlify.toml` を不要なビルドを省く設定だけで再追加しました。`frontend/scripts/netlify-ignore-build.mjs` がNetlifyの比較対象コミット間を確認し、バックエンド・資料・フロントのテストだけの変更ならビルドを省きます。画面・公開画像・依存関係・ビルド設定の変更や、比較できない場合はビルドを続行します。依存関係のインストール前にも動くよう、Node.jsの標準機能とGitだけを使います。この設定はローカル準備であり、Netlifyへは未反映です。
-
-作業中はローカルで変更と検証をまとめ、途中のpush・デプロイを行いません。最後に承認を得て反映する際、フロントの配信内容が変わらないpushには、最新コミットのメッセージに `[skip netlify]` を付ける方法も使えます。後日の通常ビルドには、省いたコミットの変更も含まれます。手動実行やBuild hookは別に扱い、これだけで全てのビルドや利用料金が止まるとは考えないでください。Privateや秘密情報の検査は変更しません。公式仕様は [Ignore builds](https://docs.netlify.com/build/configure-builds/ignore-builds/) と [Skip a deploy](https://docs.netlify.com/deploy/manage-deploys/manage-deploys-overview/#skip-a-deploy) を参照してください。
-
-公開前はNetlifyのPrivate設定によるログイン制限を維持します。閲覧できるNetlifyアカウントで画面を確認し、動作確認のためだけにPublicへ変更しません。
-
-Railsの本番 `CORS_ORIGINS` は `https://johokyonin-lab.netlify.app` のみにします。開発環境だけがlocalhost/127.0.0.1:3000を既定で許可し、本番では開発用URLやVercelの正規表現を自動許可しません。本番の追加オリジンはHTTPSの完全一致で、パス・認証情報・末尾の `/` を付けずカンマ区切りにします。未設定ならクロスオリジンを許可せず、不正値は起動時に拒否します。プレビューが必要な場合も対象URLを個別に追加し、検証後に削除します。
-
-CORSはブラウザ向けの制御で、APIへの直接アクセスを防ぐ認証ではありません。既存のBearer認証・管理者及び有料資格の検査は維持します。実際の反映・拒否確認は[公開前運用確認](document/公開前運用確認_2026-10-20.md)に記録します。
-
-`Cannot find module @rollup/rollup-linux-x64-gnu` などでインストールが失敗した場合は、成功時のNode/npm・インストール設定・キャッシュ条件とlockfileを照合します。ビルド前に失敗している場合、ビルドコマンドへの `npm install` の追加だけでは対処できません。成功時の対処が未確認のまま、lockfileの全再生成や依存バージョンの更新を実施しないでください。
-
-## 停止
+Fly.ioへのデプロイはリポジトリルートから行います。
 
 ```sh
-docker compose down
+fly deploy --config fly.toml
 ```
 
-データベースの内容も削除したい場合は、以下を実行します。
-
-```sh
-docker compose down -v
-```
-
-## バックエンドのデプロイ
-
-バックエンドは Fly.io にデプロイします。Fly.io の設定は `backend/fly.toml` に置いています。
-
-初回は Fly.io にログインしたうえで、バックエンドディレクトリからアプリを作成します。
-
-```sh
-cd backend
-fly launch --no-deploy
-```
-
-`backend/fly.toml` の `app` 名と Fly.io 側のアプリ名が異なる場合は、どちらかに合わせてください。
-
-本番で必要な環境変数は Fly.io の secrets に設定します。DB は Neon を使う想定です。
-
-```sh
-fly secrets set SECRET_KEY_BASE=<secret>
-fly secrets set DATABASE_URL=<neon-production-database-url>
-fly secrets set CORS_ORIGINS=https://johokyonin-lab.netlify.app
-```
-
-プレミアム会員の販売準備では、Stripeと公開事業者情報もFly.ioのsecretsへ設定します。準備・デプロイ・検証中は販売停止を維持し、実値はコマンド履歴や共有ログへ残さない方法で設定してください。
-
-```sh
-fly secrets set PAID_MEMBERSHIP_ENABLED=false
-fly secrets set STRIPE_LIVEMODE=true
-fly secrets set STRIPE_SECRET_KEY=<stripe-secret-key>
-fly secrets set STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
-fly secrets set STRIPE_PRICE_ID=<stripe-price-id>
-fly secrets set FRONTEND_URL=https://johokyonin-lab.netlify.app
-```
-
-`NUXT_PUBLIC_SELLER_NAME`、`NUXT_PUBLIC_SELLER_REPRESENTATIVE`、`NUXT_PUBLIC_SELLER_EMAIL` はFly.ioへ実情報を設定し、公開販売設定APIを通じて特定商取引法に基づく表記へ表示します。これらの実値を公開リポジトリやIssueへ重複して記録しません。`SELLER_CONTACT_DISCLOSURE_MODE=public` の場合は住所・電話番号も公開用設定へ登録します。`on_request` の場合は住所・電話番号の実値を公開用設定やNetlifyへ登録せず、開示体制の確認設定だけを追加します。この方式の実装はローカル準備であり、本番への反映・設定変更は別途承認が必要です。
-
-販売の有効化は初期設定やデプロイに含めません。[販売開始条件](document/運用手順.md#stripeの販売開始条件)とIssue #6〜#9の公開前確認を完了し、運営者が別途承認した後にだけ `PAID_MEMBERSHIP_ENABLED` を `true` に切り替えます。`operations:audit` の終了コード0だけを販売開始の根拠にしないでください。
-
-バックエンドのルート画面に Basic 認証をかける場合は、以下も設定します。
-
-```sh
-fly secrets set BACKEND_BASIC_AUTH_USER=<user>
-fly secrets set BACKEND_BASIC_AUTH_PASSWORD=<password>
-```
-
-デプロイは以下で実行します。
-
-```sh
-fly deploy
-```
-
-2026年10月21日の問題完成扱い・seed廃止の承認により、実行用の問題seedを廃止しました。`backend/fly.toml` の `release_command` はDBの準備だけを行います。
-
-```sh
-bin/rails db:prepare
-```
-
-通常のデプロイやpushでは問題を投入・同期しません。既存DBを正本として管理画面で作成・編集します。`db/seeds.rb` は何もしない入口だけを残しており、未初期化DBの `db:prepare` や手動の `db:seed` からも問題は追加されません。新規環境への投入は、管理画面又は明示的な問題アーカイブ取込みで行います。
-
-`release_command` が失敗した場合は新しいリリースへ切り替わりません。以前のseed投入のために延長した `release_command_timeout = '15m'` は、DB準備の上限として維持します。待機時間を使い切るのが正常という意味ではなく、問題1,000問の再同期は行いません。
-
-管理画面の保存は `QuestionWriter` を通し、問題文・選択肢・正答・解説・出典・分類・問題番号の変更時には、その問題の古い回答履歴を同じトランザクション内で削除します。公開状態だけの変更では履歴を残します。通常の改稿で問題ID・選択肢ID・お気に入りを作り直しません。
-
-作成途中の模擬試験は、承認済みの問題だけを `draft`（下書き）で登録します。下書きは管理画面で確認できますが、一般向けの模擬試験一覧や問題取得APIには表示されません。全20問がそろい、セット全体の検証が完了した後に公開へ切り替えます。
-
-### DB正本の問題運用
-
-- 本番DBの問題を正本とします。管理者認可、4択・正答1件、公開時の本文・出典・空欄・20問登録検査は維持します。削除した問題はデプロイで復活しません。
-- seed管理による番号変更制限と削除記録を撤去しました。管理APIでは通常の範囲・重複・公開時検査を満たせば番号を変更できます。公開対象の構成を変える際は `frontend/app/utils/examCatalog.ts` と表示資料も確認してください。
-- `QuestionSeedSync`、`QuestionSeedState` 及び承認済みの旧50セットはテスト専用に移し、実行用seedから外しました。`backend/test/fixtures/approved_question_catalog/` は凍結した回帰検査資料であり、現在のDBや新規問題の編集元ではありません。原典fixture・承認記録・固定ハッシュは保持します。本番イメージには `test/` を同梱しません。
-- `question_seed_states` は旧版とのローリング更新互換性のため、未使用の履歴表として残します。旧版の稼働・切戻し期間が終わる前に削除せず、物理削除は別途承認後のマイグレーションで行います。
-- 問題だけの書き出し・空DBへの取込みは [運用手順](document/運用手順.md#問題データの編集と新規環境への移送) を参照してください。既存DBへの上書き同期は提供しません。ユーザー・履歴・お気に入り等を含む完全バックアップと混同しないでください。
-- 本番の最終内容照合、既存の暗号化バックアップの有効性確認、デプロイ結果確認は切替前後に別途行います。このコード変更だけでは本番切替済みとは扱いません。
-
-デプロイ後、Netlify側の `NUXT_PUBLIC_API_BASE` にはFly.ioのバックエンドURLを設定します。
-
-```text
-https://tqce-info-practice.fly.dev
-```
-
-### release_command が失敗する場合
-
-`release_command failed` は、処理の異常終了だけでなく、完了待ちのタイムアウトでも発生します。まず該当リリース用マシンのログで、起動時刻、終了時刻、終了コードを確認してください。マシンIDが分かる場合は、そのマシンに絞ってログを取得できます。
-
-```sh
-fly logs -a tqce-info-practice --machine <machine-id> --no-tail
-```
-
-待ち時間を超えた後に終了コード0が記録されている場合は、デプロイが失敗扱いでもDB準備が完了している可能性があります。アプリのデプロイ結果とDBの状態は別に確認してください。先の処理が実行中のまま、別のデプロイを重ねないでください。
-
-処理時間超過には `release_command_timeout` を使用します。まだ時間が足りない場合は、DB接続・ロック待ちやマイグレーションの所要時間も調べ、無制限に待つ設定や検証の省略で回避しないでください。再デプロイ時に `--release-command-timeout` が明示されている場合は、その値も確認してください。seed廃止後の通常デプロイで問題投入処理を追加し直さないでください。
-
-認証情報の未設定やDB接続エラーが記録されている場合は、以下で必要なsecretsの名前が存在するか確認します。値や接続文字列をログへ出力しないでください。
-
-```sh
-fly secrets list -a tqce-info-practice
-```
-
-ログの詳細は以下で確認します。
-
-```sh
-fly logs -a tqce-info-practice
-```
-
-DB が Neon の場合、`DATABASE_URL` は本番用の接続文字列を設定します。接続文字列のパスワードやクエリ文字列にシェル特殊文字が含まれる場合は、値全体をシングルクォートで囲んで設定してください。
-
-```sh
-fly secrets set DATABASE_URL='<neon-production-database-url>' -a tqce-info-practice
-```
+`backend/fly.toml` は旧Rails用です。新しいDB接続・秘密鍵は事前に安全な手段で設定し、旧DBの接続情報とバックアップは切戻し用に保管します。`release_command` 失敗時はDB状態とリリース状態を個別に確認し、実行中の処理へ別のデプロイを重ねません。スキーマ準備に問題の自動投入を追加しないでください。
 
 ## ディレクトリ構成
 
 ```text
 .
-├── frontend/   # Nuxt 4 app
-│   ├── app/    # Nuxt 4 のアプリケーションコード
-│   └── nuxt.config.ts
-├── backend/    # Rails API
+├── config/exam.json       # 情報教認の名称・試験構成・分類・料金
+├── content/               # 合成テストfixture。実問題の正本はDB
+├── frontend/
+│   ├── app/               # Nuxt/Vue画面
+│   ├── server/            # Nitro API・業務処理・運用CLI
+│   ├── shared/            # 共通型・Zod検証
+│   ├── prisma/            # Prismaスキーマとマイグレーション
+│   ├── server-tests/      # 隔離DBでのサーバーテスト
+│   └── e2e/               # Playwrightブラウザテスト
+├── backend/               # 旧Rails構成の参照・切戻し資料
+├── document/              # 仕様・作問資料・運用記録
+├── operations/            # 公開可能な運用案内。private/はGit管理外
+├── fly.toml               # Node/Nitro APIの本番構成
 └── docker-compose.yml
 ```

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFormField } from '@nuxt/ui/composables'
 import type { ContentBlock, ContentBlockType } from '~/types/adminQuestion'
 import { createAdminContentBlock, FILL_IN_CHOICE_COLUMN_COUNTS, FILL_IN_CHOICE_LABELS, getAdminContentBlockOptions, resizeFillInChoiceCells } from '~/utils/adminContentBlocks'
 
@@ -8,6 +9,7 @@ const props = defineProps<{
 
 const blocks = defineModel<ContentBlock[]>({ required: true })
 const selectedType = ref<ContentBlockType>('text')
+const { id: formFieldId, ariaAttrs, emitFormInput, emitFormBlur, emitFormChange } = useFormField()
 const editorId = useId()
 const fieldId = (field: string, blockIndex: number, cellIndex?: number) => `${editorId}-${field}-${blockIndex}${cellIndex === undefined ? '' : `-${cellIndex}`}`
 const retainedChoiceCells = new WeakMap<ContentBlock, string[]>()
@@ -87,7 +89,7 @@ const removeCodeItem = (block: ContentBlock, index: number) => {
 </script>
 
 <template>
-  <div class="block-editor">
+  <div :id="formFieldId" v-bind="ariaAttrs" class="block-editor" role="group" :aria-label="({ question: '問題文', explanation: '解答解説', choice: '選択肢' })[context]" tabindex="-1" @input="emitFormInput" @focusout="emitFormBlur" @change="emitFormChange">
     <article v-for="(block, index) in blocks" :key="`${block.type}-${index}`" class="block-card">
       <header class="block-card-head">
         <div><span class="drag-handle"><UIcon name="i-lucide-grip-vertical" /></span><strong>{{ index + 1 }}. {{ blockLabel(block.type) }}</strong></div>

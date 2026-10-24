@@ -1,35 +1,51 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import { runInNewContext } from 'node:vm'
+import { readFileSync } from 'node:fs'
 
-const source = readFileSync(new URL('../app/composables/useAuth.ts', import.meta.url), 'utf8')
-const cookieSource = source.match(/useCookie<string \| null>\('tqce-access-token', \{[\s\S]*?\n  \}\)/)?.[0]
-assert.ok(cookieSource)
+const globals = globalThis as any
+globals.defineNuxtPlugin = (plugin: any) => typeof plugin === 'function' ? plugin : plugin.setup
+globals.useRequestURL = () => new URL('https://exam.example.invalid')
+const { default: setupClient } = await import('../app/plugins/auth-client.ts')
 
-const cookieOptions = (production: boolean) => {
-  const expression = cookieSource
-    .replace('useCookie<string | null>', 'useCookie')
-    .replace('import.meta.env?.PROD', String(production))
-  return runInNewContext(expression, {
-    useCookie: (name: string, options: Record<string, unknown>) => ({ name, ...options }),
-  }) as { name: string, maxAge: number, sameSite: string, secure: boolean, domain?: string, default: () => null }
-}
-
-test('production authentication cookie is secure, same-site and host-only', () => {
-  const options = cookieOptions(true)
-  assert.equal(options.name, 'tqce-access-token')
-  assert.equal(options.secure, true)
-  assert.equal(options.sameSite, 'lax')
-  assert.equal(options.maxAge, 60 * 60 * 24)
-  assert.equal(options.domain, undefined)
-  assert.equal(options.default(), null)
+test('Better Auth Vue client uses native endpoints and credentialed requests', async () => {
+  const original = globalThis.fetch
+  const calls: { path: string, credentials: string | undefined, body: unknown }[] = []
+  try {
+    globalThis.fetch = async (input, options) => {
+      calls.push({ path: String(input), credentials: options?.credentials, body: JSON.parse(String(options?.body || '{}')) })
+      return new Response(JSON.stringify({ user: { id: '1', name: 'Test' }, success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    const client = (setupClient as any)().provide.authClient
+    await client.signIn.email({ email: 'test@example.invalid', password: 'test-password' })
+    await client.signUp.email({ name: 'Test', email: 'test@example.invalid', password: 'test-password' })
+    await client.signOut()
+    assert.deepEqual(calls.map(call => new URL(call.path).pathname), ['/api/auth/sign-in/email', '/api/auth/sign-up/email', '/api/auth/sign-out'])
+    assert.equal(calls.every(call => call.credentials === 'include'), true)
+    assert.deepEqual(calls[0]!.body, { email: 'test@example.invalid', password: 'test-password' })
+  } finally { globalThis.fetch = original }
 })
 
-test('local development keeps the same lifetime and scope without requiring HTTPS', () => {
-  const options = cookieOptions(false)
-  assert.equal(options.secure, false)
-  assert.equal(options.sameSite, 'lax')
-  assert.equal(options.maxAge, 60 * 60 * 24)
-  assert.equal(options.domain, undefined)
+test('request-scoped auth clients do not inherit another SSR request origin', async () => {
+  const original = globalThis.fetch
+  const calls: string[] = []
+  try {
+    globalThis.fetch = async input => {
+      calls.push(String(input))
+      return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+    globals.useRequestURL = () => new URL('https://first.example.invalid')
+    const first = (setupClient as any)().provide.authClient
+    globals.useRequestURL = () => new URL('https://second.example.invalid')
+    const second = (setupClient as any)().provide.authClient
+    await first.signOut(); await second.signOut()
+    assert.deepEqual(calls.map(call => new URL(call).origin), ['https://first.example.invalid', 'https://second.example.invalid'])
+  } finally { globalThis.fetch = original }
+})
+
+test('browser auth state does not serialize credentials or favorites into readable cookies', () => {
+  const source = readFileSync(new URL('../app/composables/useAuth.ts', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /useCookie|localStorage|sessionStorage|document\.cookie|Authorization|access_token/)
+  assert.match(source, /isLoggedIn = computed\(\(\) => user\.value !== null\)/)
+  const api = readFileSync(new URL('../app/plugins/api.ts', import.meta.url), 'utf8')
+  assert.match(api, /headers: import\.meta\.server \? useRequestHeaders\(\['cookie'\]\)/)
 })

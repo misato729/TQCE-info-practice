@@ -34,7 +34,7 @@ type ApiResponse = {
 }
 
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, authHeaders, logout } = useAuth()
+const { isLoggedIn, authHeaders } = useAuth()
 const histories = ref<HistoryItem[]>([])
 const meta = ref<HistoryMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
@@ -60,7 +60,6 @@ const loadHistories = async () => {
   }
   catch (error: any) {
     if (error?.statusCode === 401 || error?.status === 401) {
-      logout()
       return
     }
     loadError.value = '解答履歴を読み込めませんでした。もう一度お試しください。'
@@ -162,7 +161,7 @@ const historyLink = (history: HistoryItem) => ({
               <span>模擬試験 {{ history.question.exam_number }}・問{{ history.question.question_number }}</span>
               <strong>この履歴の本文・正誤・解説はプレミアム会員向けです。</strong>
             </div>
-            <NuxtLink class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>
+            <NuxtLink v-if="PAYMENTS_ENABLED" class="primary-link" to="/premium">プレミアム会員について確認する</NuxtLink>
           </div>
         </article>
       </div>

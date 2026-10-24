@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { loginFormSchema } from '../../../shared/schemas/auth.ts'
+import { apiFormErrors, focusFormError } from '~/utils/apiFormErrors'
 definePageMeta({ layout: false, middleware: 'admin-guest' })
 
 const route = useRoute()
 const { login, logout, user } = useAuth()
-const email = ref('')
-const password = ref('')
+const state = reactive({ email: '', password: '' })
+const authForm = useTemplateRef('authForm')
 const submitting = ref(false)
 const errorMessage = ref('')
+watch(state, () => { errorMessage.value = '' })
 
 const redirectPath = computed(() => {
   const redirect = safeRedirectPath(route.query.redirect, '/admin/questions')
@@ -15,16 +18,17 @@ const redirectPath = computed(() => {
 
 const nonAdminSession = computed(() => user.value && user.value.role !== 'admin')
 
-const submit = async () => {
+const submit = async (event: { data: typeof state }) => {
+  Object.assign(state, event.data)
   if (submitting.value) return
 
   submitting.value = true
   errorMessage.value = ''
 
   try {
-    const loggedInUser = await login({ email: email.value, password: password.value })
+    const loggedInUser = await login({ email: state.email, password: state.password })
     if (loggedInUser.role !== 'admin') {
-      logout()
+      await logout()
       errorMessage.value = 'このアカウントには管理者権限がありません。'
       return
     }
@@ -32,6 +36,7 @@ const submit = async () => {
     await navigateTo(redirectPath.value)
   }
   catch (error: any) {
+    authForm.value?.setErrors(apiFormErrors(error, { name: 'ユーザー名', email: 'メールアドレス', password: 'パスワード', password_confirmation: '確認用パスワード' }))
     errorMessage.value = error?.data?.error?.message ?? 'ログインできませんでした。もう一度お試しください。'
   }
   finally {
@@ -45,7 +50,7 @@ const submit = async () => {
     <header class="admin-login-header">
       <NuxtLink class="admin-brand" to="/admin/login" aria-label="管理画面ログイン">
         <span class="admin-brand-mark"><UIcon name="i-lucide-shield-check" /></span>
-        <span><strong>TQCE</strong><small>管理画面</small></span>
+        <span><strong>{{ SITE.short_name }}</strong><small>管理画面</small></span>
       </NuxtLink>
       <NuxtLink class="admin-site-link" to="/"><UIcon name="i-lucide-arrow-left" />一般画面に戻る</NuxtLink>
     </header>
@@ -62,21 +67,15 @@ const submit = async () => {
           <span>現在のアカウントは管理画面を利用できません。管理者アカウントでログインし直してください。</span>
         </p>
 
-        <form class="admin-login-form" @submit.prevent="submit">
-          <div class="admin-field">
-            <label for="admin-email">メールアドレス</label>
-            <div class="admin-login-input"><UIcon name="i-lucide-mail" /><input id="admin-email" v-model="email" autocomplete="email" type="email" required placeholder="admin@example.com"></div>
-          </div>
-          <div class="admin-field">
-            <label for="admin-password">パスワード</label>
-            <div class="admin-login-input"><UIcon name="i-lucide-key-round" /><input id="admin-password" v-model="password" autocomplete="current-password" type="password" minlength="8" required></div>
-          </div>
+        <UForm ref="authForm" :schema="loginFormSchema" :state="state" class="admin-login-form" novalidate @error="focusFormError" @submit="submit">
+          <FormTextField id="admin-email" v-model="state.email" admin name="email" label="メールアドレス" autocomplete="email" type="email" icon="i-lucide-mail" placeholder="admin@example.com" />
+          <FormTextField id="admin-password" v-model="state.password" admin name="password" label="パスワード" autocomplete="current-password" type="password" icon="i-lucide-key-round" />
           <p v-if="errorMessage" class="admin-inline-error" role="alert">{{ errorMessage }}</p>
           <button class="admin-primary-button admin-login-button" type="submit" :disabled="submitting">
             <UIcon :name="submitting ? 'i-lucide-loader-circle' : 'i-lucide-log-in'" :class="{ spin: submitting }" />
             {{ submitting ? 'ログイン中です' : '管理画面にログイン' }}
           </button>
-        </form>
+        </UForm>
 
         <p class="admin-login-help">一般画面で管理者としてログイン済みの場合、再ログインは不要です。</p>
       </section>

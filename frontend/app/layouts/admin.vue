@@ -11,7 +11,7 @@ const navigationItems = [
 watch(() => route.fullPath, () => { navigationOpen.value = false })
 
 const signOut = async () => {
-  logout()
+  await logout()
   await navigateTo('/admin/login')
 }
 </script>
@@ -24,7 +24,7 @@ const signOut = async () => {
       </button>
       <NuxtLink class="admin-brand" to="/admin/questions">
         <span class="admin-brand-mark"><UIcon name="i-lucide-shield-check" /></span>
-        <span><strong>TQCE</strong><small>管理画面</small></span>
+        <span><strong>{{ SITE.short_name }}</strong><small>管理画面</small></span>
       </NuxtLink>
       <div class="admin-topbar-actions">
         <NuxtLink class="admin-site-link" to="/" target="_blank">

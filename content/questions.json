@@ -1,0 +1,2645 @@
+{
+  "schema_version": 1,
+  "questions": [
+    {
+      "exam_number": 1,
+      "question_number": 1,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-1 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 2,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-2 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 3,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-3 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 4,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-4 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 5,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-5 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 6,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-6 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 7,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-7 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 8,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-8 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 9,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-9 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 10,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-10 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 11,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-11 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 12,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-12 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 13,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-13 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 14,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-14 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 15,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-15 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 16,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-16 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 17,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-17 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 18,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-18 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 19,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-19 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 1,
+      "question_number": 20,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 1-20 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 1,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-1 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 2,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-2 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 3,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-3 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 4,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-4 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 5,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-5 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 6,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-6 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 7,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-7 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 8,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-8 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 9,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-9 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 10,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-10 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 11,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-11 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 12,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-12 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 13,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-13 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 14,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-14 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 15,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-15 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 16,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-16 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 17,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-17 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 18,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-18 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 19,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-19 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "exam_number": 2,
+      "question_number": 20,
+      "major_category_code": "teacher_education",
+      "category_code": "education_foundations",
+      "publication_status": "published",
+      "content_blocks": [
+        {
+          "type": "text",
+          "text": "自動検証専用の合成問題 2-20 です。実際の試験問題ではありません。"
+        }
+      ],
+      "explanation_blocks": [
+        {
+          "type": "text",
+          "text": "これは表示・認証・採点の自動検証に使う合成データです。"
+        }
+      ],
+      "source_text": "自動検証用の合成データ | https://example.com/test-fixture",
+      "choices": [
+        {
+          "choice_label": "ア",
+          "display_order": 1,
+          "is_correct": true,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ア"
+            }
+          ]
+        },
+        {
+          "choice_label": "イ",
+          "display_order": 2,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 イ"
+            }
+          ]
+        },
+        {
+          "choice_label": "ウ",
+          "display_order": 3,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 ウ"
+            }
+          ]
+        },
+        {
+          "choice_label": "エ",
+          "display_order": 4,
+          "is_correct": false,
+          "content_blocks": [
+            {
+              "type": "text",
+              "text": "検証用の選択肢 エ"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

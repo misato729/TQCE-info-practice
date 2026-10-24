@@ -25,8 +25,8 @@ type FavoriteMeta = {
 type ApiResponse = { data: FavoriteItem[], meta: FavoriteMeta }
 
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, user, accessToken, authHeaders, logout, ensureCurrentUser } = useAuth()
-const { canUseFavorites, isFavorite, setFavorite, toggleFavorite, disableFavorites } = useDemoFavorites()
+const { isLoggedIn, user, sessionVersion, authHeaders, ensureCurrentUser } = useAuth()
+const { canUseFavorites, isFavorite, setFavorite, toggleFavorite, disableFavorites } = useFavorites()
 const favorites = ref<FavoriteItem[]>([])
 const meta = ref<FavoriteMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
@@ -52,7 +52,7 @@ const resolveAccess = async () => {
 
 const loadFavorites = async () => {
   const version = ++loadVersion
-  const token = accessToken.value
+  const session = sessionVersion.value
   if (!canUseFavorites.value) {
     favorites.value = []
     loading.value = false
@@ -66,7 +66,7 @@ const loadFavorites = async () => {
       headers: authHeaders.value,
       query: { page: page.value, per_page: 20 },
     })
-    if (version !== loadVersion || token !== accessToken.value || !canUseFavorites.value) return
+    if (version !== loadVersion || session !== sessionVersion.value || !canUseFavorites.value) return
     if (response.data.length === 0 && page.value > 1) {
       page.value -= 1
       return
@@ -76,8 +76,8 @@ const loadFavorites = async () => {
     response.data.forEach(item => setFavorite(item.question, true))
   }
   catch (error: any) {
-    if (version !== loadVersion || token !== accessToken.value) return
-    if ((error?.statusCode ?? error?.status) === 401) logout()
+    if (version !== loadVersion || session !== sessionVersion.value) return
+    if ((error?.statusCode ?? error?.status) === 401) return
     else if (error?.data?.error?.code === 'paid_membership_required') disableFavorites()
     else {
       favorites.value = []
@@ -97,7 +97,7 @@ const toggleFromList = async (item: FavoriteItem) => {
     meta.value.total_count += added ? 1 : -1
   }
   catch (error: any) {
-    if ((error?.statusCode ?? error?.status) === 401) logout()
+    if ((error?.statusCode ?? error?.status) === 401) return
     else loadError.value = 'お気に入りを更新できませんでした。もう一度お試しください。'
   }
   finally {
@@ -120,7 +120,7 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
 
     <div v-if="!isLoggedIn" class="empty-state">
       <h2>ログインが必要です</h2>
-      <p>お気に入りはプレミアム会員向けの機能です。</p>
+      <p>お気に入りを表示するにはログインしてください。</p>
       <NuxtLink class="primary-link" to="/login?redirect=/favorites">ログインへ</NuxtLink>
     </div>
 
@@ -134,7 +134,7 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
       <button class="primary-link" type="button" @click="resolveAccess">再確認</button>
     </div>
 
-    <div v-else-if="!canUseFavorites" class="empty-state">
+    <div v-else-if="PAYMENTS_ENABLED && !canUseFavorites" class="empty-state">
       <UIcon class="empty-icon" name="i-lucide-lock-keyhole" />
       <h2>プレミアム会員向けの機能です</h2>
       <p>お気に入りに登録した問題をまとめて確認できます。</p>
@@ -191,7 +191,7 @@ watch([() => user.value?.id, canUseFavorites, page], loadFavorites, { immediate:
               <UIcon name="i-lucide-lock-keyhole" />
               <div><strong>プレミアム会員向けの問題です</strong><p>問題文と分類は、資格が有効になった後に表示されます。</p></div>
             </div>
-            <NuxtLink class="primary-link premium-link" to="/premium">プレミアム会員について確認する</NuxtLink>
+            <NuxtLink v-if="PAYMENTS_ENABLED" class="primary-link premium-link" to="/premium">プレミアム会員について確認する</NuxtLink>
           </template>
 
           <NuxtLink v-else class="favorite-card-link" :to="`/practice/${item.question.exam_number}/${item.question.question_number}`">

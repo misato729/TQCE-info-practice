@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui'
+import { apiFormErrors, questionFormFields } from '~/utils/apiFormErrors'
 import type { AdminQuestion, AdminQuestionInput, ApiResponse } from '~/types/adminQuestion'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { authHeaders, logout } = useAuth()
+const { authHeaders, clearCurrentUser } = useAuth()
 const questionId = computed(() => Number(route.params.questionId))
 const submitting = ref(false)
 const errorMessage = ref('')
+const fieldErrors = ref<FormError[]>([])
 const successMessage = ref(route.query.created === '1' ? '問題を作成しました。' : '')
 
 const {
@@ -33,6 +36,7 @@ const submit = async (input: AdminQuestionInput) => {
   if (submitting.value) return
   submitting.value = true
   errorMessage.value = ''
+  fieldErrors.value = []
   successMessage.value = ''
 
   try {
@@ -48,10 +52,11 @@ const submit = async (input: AdminQuestionInput) => {
   catch (requestError: any) {
     const code = requestError?.statusCode ?? requestError?.status
     if (code === 401 || code === 403) {
-      logout()
+      if (code === 403) clearCurrentUser()
       await navigateTo({ path: '/login', query: { redirect: route.fullPath } })
       return
     }
+    fieldErrors.value = apiFormErrors(requestError, questionFormFields)
     errorMessage.value = requestError?.data?.error?.message ?? '編集内容を保存できませんでした。入力内容を確認してください。'
   }
   finally {
@@ -71,7 +76,7 @@ const submit = async (input: AdminQuestionInput) => {
 
     <div v-if="status === 'pending'" class="admin-panel admin-loading"><div><UIcon name="i-lucide-loader-circle" /><span>問題を読み込んでいます</span></div></div>
     <div v-else-if="error || !questionInput" class="admin-panel admin-empty"><div><UIcon name="i-lucide-circle-alert" /><h2>問題を表示できません</h2><p>問題が削除されたか、通信に失敗した可能性があります。</p><button class="admin-secondary-button" type="button" @click="() => refresh()">再読み込み</button></div></div>
-    <AdminQuestionForm v-else :initial-value="questionInput" submit-label="編集内容を保存" :submitting="submitting" :error-message="errorMessage" @submit="submit" />
+    <AdminQuestionForm v-else :initial-value="questionInput" submit-label="編集内容を保存" :submitting="submitting" :error-message="errorMessage" :field-errors="fieldErrors" @submit="submit" />
   </div>
 </template>
 

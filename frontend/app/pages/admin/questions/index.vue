@@ -4,7 +4,7 @@ import type { AdminQuestion, AdminQuestionSummary, ApiResponse, PaginatedApiResp
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
 const { $api: api } = useNuxtApp()
-const { authHeaders, logout } = useAuth()
+const { authHeaders, clearCurrentUser } = useAuth()
 
 const filters = reactive({
   exam_number: '',
@@ -70,7 +70,7 @@ const clearFilters = () => {
 
 const statusLabel = (value: string) => getMasterDataLabel(PUBLICATION_STATUSES, value as 'draft' | 'published' | 'private')
 const statusClass = (value: string) => `status-${value}`
-const majorCategoryLabel = (value: string) => getMasterDataLabel(MAJOR_CATEGORIES, value as 'teacher_education' | 'information')
+const majorCategoryLabel = (value: string) => getMasterDataLabel(MAJOR_CATEGORIES, value)
 
 const formatDate = (value: string) => new Intl.DateTimeFormat('ja-JP', {
   year: 'numeric',
@@ -83,7 +83,7 @@ const formatDate = (value: string) => new Intl.DateTimeFormat('ja-JP', {
 const handleUnauthorized = async (requestError: any) => {
   const code = requestError?.statusCode ?? requestError?.status
   if (code !== 401 && code !== 403) return false
-  logout()
+  if (code === 403) clearCurrentUser()
   await navigateTo({ path: '/login', query: { redirect: '/admin/questions' } })
   return true
 }

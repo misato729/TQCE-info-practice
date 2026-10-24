@@ -1,6 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { isLoggedIn, ensureCurrentUser } = useAuth()
-  if (!isLoggedIn.value) return
+  const { ensureCurrentUser } = useAuth()
 
   const currentUser = await ensureCurrentUser()
   if (currentUser?.role !== 'admin') return

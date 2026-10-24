@@ -1,3 +1,6 @@
+import { EXAM_CONFIG, type ExamConfiguration } from '../utils/examConfig.ts'
+import type { QuestionInput } from '../../shared/schemas/content.ts'
+
 export type ContentBlockType =
   | 'text'
   | 'quote'
@@ -36,7 +39,7 @@ export type AdminQuestionInput = {
   category_code: string
   explanation_blocks: ContentBlock[]
   source_text: string
-  publication_status: string
+  publication_status: QuestionInput['publication_status']
   choices: AdminChoice[]
 }
 
@@ -53,7 +56,7 @@ export type AdminQuestionSummary = {
   summary: string
   major_category_code: string
   category_code: string
-  publication_status: string
+  publication_status: QuestionInput['publication_status']
   updated_at: string
 }
 
@@ -69,16 +72,16 @@ export type PaginatedApiResponse<T> = {
   }
 }
 
-export const createEmptyQuestion = (): AdminQuestionInput => ({
+export const createEmptyQuestion = (config: ExamConfiguration = EXAM_CONFIG): AdminQuestionInput => ({
   exam_number: 1,
   question_number: 1,
   content_blocks: [{ type: 'text', text: '' }],
-  major_category_code: 'teacher_education',
-  category_code: 'education_foundations',
+  major_category_code: config.categories.minor[0]!.major_category_value,
+  category_code: config.categories.minor[0]!.value,
   explanation_blocks: [{ type: 'text', text: '' }],
   source_text: '',
   publication_status: 'draft',
-  choices: ['ア', 'イ', 'ウ', 'エ'].map((label, index) => ({
+  choices: config.exam.choice_labels.map((label, index) => ({
     choice_label: label,
     content_blocks: [{ type: 'text', text: '' }],
     is_correct: index === 0,

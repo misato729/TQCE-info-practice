@@ -1,11 +1,12 @@
+import { canUseFavoriteFeature, PAYMENTS_ENABLED } from '../utils/examConfig.ts'
 import type { FavoriteQuestion } from './useAuth'
 
 type FavoriteResponse = { data: { question: FavoriteQuestion } }
 
-export const useDemoFavorites = () => {
+export const useFavorites = () => {
   const { $api: api } = useNuxtApp()
-  const { user, accessToken, isLoggedIn, authHeaders } = useAuth()
-  const canUseFavorites = computed(() => isLoggedIn.value && user.value?.paid_content_access === true)
+  const { user, sessionVersion, isLoggedIn, authHeaders } = useAuth()
+  const canUseFavorites = computed(() => canUseFavoriteFeature(isLoggedIn.value, user.value))
   const favorites = computed(() => canUseFavorites.value ? user.value?.favorite_questions ?? [] : [])
   const favoriteIds = computed(() => favorites.value.map(question => question.id))
 
@@ -30,9 +31,9 @@ export const useDemoFavorites = () => {
   }
 
   const toggleFavorite = async (question: FavoriteQuestion) => {
-    if (!canUseFavorites.value) throw new Error('お気に入りの利用にはプレミアム会員資格が必要です。')
+    if (!canUseFavorites.value) throw new Error(PAYMENTS_ENABLED ? 'お気に入りの利用にはプレミアム会員資格が必要です。' : 'お気に入りの利用にはログインが必要です。')
     const owner = user.value
-    const token = accessToken.value
+    const version = sessionVersion.value
     const adding = !isFavorite(question.id)
 
     try {
@@ -40,13 +41,13 @@ export const useDemoFavorites = () => {
         method: adding ? 'PUT' : 'DELETE',
         headers: authHeaders.value,
       })
-      if (user.value?.id === owner?.id && accessToken.value === token) {
+      if (user.value?.id === owner?.id && sessionVersion.value === version) {
         setFavorite(response?.data.question ?? question, adding)
       }
       return adding
     }
     catch (error: any) {
-      if (accessToken.value === token && error?.data?.error?.code === 'paid_membership_required') disableFavorites()
+      if (sessionVersion.value === version && error?.data?.error?.code === 'paid_membership_required') disableFavorites()
       throw error
     }
   }

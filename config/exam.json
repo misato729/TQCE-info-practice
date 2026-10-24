@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "site": {
+    "id": "tqce-info-practice",
+    "name": "情報教認ラボ",
+    "short_name": "TQCE",
+    "exam_name": "高等学校（情報）教員資格認定試験",
+    "description": "高等学校（情報）教員資格認定試験の予想問題を、解説と根拠資料付きで演習できる学習サイトです。",
+    "tagline": "本サイトについて",
+    "logo_path": "/images/logo-symbol.png",
+    "primary_color": "#087f83",
+    "contact_email": "",
+    "overview": [
+      {
+        "title": "本サイトの対象",
+        "body": "高等学校（情報）教員資格認定試験 科目（Ⅰ）の予想問題を、解説と根拠資料付きで演習できます。"
+      },
+      {
+        "title": "出題構成",
+        "body": "教職教養と情報科特有の知識を扱い、全50セット、各20問、ア・イ・ウ・エの4択で演習します。詳細は試験概要をご覧ください。"
+      }
+    ]
+  },
+  "exam": {
+    "set_count": 50,
+    "questions_per_exam": 20,
+    "choice_labels": [
+      "ア",
+      "イ",
+      "ウ",
+      "エ"
+    ]
+  },
+  "categories": {
+    "major": [
+      {
+        "value": "teacher_education",
+        "label": "教職教養"
+      },
+      {
+        "value": "information",
+        "label": "情報科特有"
+      }
+    ],
+    "minor": [
+      {
+        "value": "education_foundations",
+        "label": "1.1 教育基礎総論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "teaching_profession",
+        "label": "1.2 教職概論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "education_system",
+        "label": "1.3 教育制度総論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "educational_psychology",
+        "label": "1.4 教育心理学",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "special_support_education",
+        "label": "1.5 特別支援教育",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "curriculum_organization",
+        "label": "1.6 教育課程編成論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "moral_education",
+        "label": "2.0 道徳教育論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "integrated_inquiry",
+        "label": "2.1 総合的な学習・探究論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "special_activities",
+        "label": "2.2 特別活動論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "education_methods",
+        "label": "2.3 教育方法・技術論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "ict_in_education",
+        "label": "2.4 教育におけるICT活用",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "student_guidance_career",
+        "label": "2.5 生徒指導・進路指導論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "educational_counseling",
+        "label": "2.6 生徒理解と教育相談",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "career_education",
+        "label": "2.7 生徒指導・進路指導論",
+        "major_category_value": "teacher_education"
+      },
+      {
+        "value": "information_specialized",
+        "label": "3.1 情報科専門科目",
+        "major_category_value": "information"
+      },
+      {
+        "value": "information_education",
+        "label": "3.2 情報科教育法",
+        "major_category_value": "information"
+      }
+    ]
+  },
+  "payments": {
+    "enabled": true,
+    "free_exam_count": 5,
+    "amount": 500,
+    "currency": "jpy"
+  }
+}

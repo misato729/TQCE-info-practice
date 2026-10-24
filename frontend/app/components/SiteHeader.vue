@@ -33,12 +33,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
 
 const openMenu = () => {
   menuOpen.value = true
-  if (isLoggedIn.value && !user.value) void ensureCurrentUser()
+  void ensureCurrentUser()
 }
 
 const handleLogout = async () => {
   menuOpen.value = false
-  logout()
+  await logout()
   await navigateTo('/')
 }
 </script>

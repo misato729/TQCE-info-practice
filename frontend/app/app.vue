@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
-const siteName = '高等学校（情報）教員資格認定試験　予想問題演習サイト'
-const defaultDescription = '高等学校（情報）教員資格認定試験の予想問題を、解説と根拠資料付きで演習できる学習サイトです。'
+const siteName = SITE.name
+const defaultDescription = SITE.description
 const noIndexPatterns = [
   /^\/practice(?:\/|$)/,
   /^\/(?:history|favorites|account)(?:\/|$)/,

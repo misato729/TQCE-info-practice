@@ -2,13 +2,13 @@
 
 ## 設計方針
 
-* Rails APIからNuxtフロントエンドへJSON形式でデータを提供する
-* APIのベースパスは `/api/v1` とする
-* JSONのキーはRails側に合わせて `snake_case` とする
+* NuxtのNitro/H3 APIからブラウザへJSON形式でデータを提供する。Node.js 24 / TypeScriptで実装し、URLの振り分けは `frontend/server/api/` のファイルベースルーティングを使用する
+* 業務APIのベースパスは `/api/v1`、Better Authのベースパスは `/api/auth` とする
+* 業務APIのJSONキーは既存契約の `snake_case` を維持する。Better Auth標準APIはライブラリの形式を使用する
 * 日時はISO 8601形式のUTCで返す
     * 例: `2026-06-25T03:00:00Z`
 * 一覧APIはページネーションに対応する
-* 分野、公開状態などの固定値はDBから取得せず、フロントエンドとバックエンドの `utils` で管理する
+* 分野・試験構成・料金は `config/exam.json` を正本とし、共有設定とZodスキーマを画面・APIで使用する
 * 問題は1問ずつ取得し、演習セッションや演習完了処理は設けない
 * 問題は `exam_number` ごとに20問を配置し、各問を `question_number` で並べる
 * 未ログインユーザーも模擬試験1〜5には回答できるが、回答履歴は保存しない
@@ -19,35 +19,26 @@
 
 ## 認証方式
 
-初期実装ではBearerトークン方式を採用する。
+Better Authのメール・パスワード認証とDB保存型のCookieセッションを使用する。旧 `/api/v1/auth/signup`、`/api/v1/auth/login` とBearerトークンは使用しない。
 
-```http
-Authorization: Bearer <access_token>
-```
+* CookieはHttpOnly・SameSite=Lax・Path=/、Domain指定なし。本番HTTPSではSecureとする。Cookie名は `site.id` を含む独立した接頭辞を使用する
+* セッション期限は24時間。Cookieキャッシュ・自動セッション更新は無効とし、毎回Better Authと現在のDBユーザーを確認する
+* パスワードハッシュの生成・検証、登録・ログイン・ログアウト、セッション失効はBetter Authへ委ねる
+* 管理APIはDBの現在の `role = admin` を確認する。有料資格も各APIでDBを確認し、セッション内へ固定しない
+* 一般画面と管理画面は同じCookieセッションを共有する。ログアウトは `/api/auth/sign-out` でサーバー側のセッションも破棄する
+* Netlifyの `/api/*` はFly.ioの同名APIへ転送し、ブラウザは同一オリジンへアクセスする。秘密鍵とDB接続情報はFly.io側だけに保持する
+* 変更系業務APIには許可したOriginとJSONを要求する。認証APIにはBetter AuthのOrigin/CSRF検査も適用する。Stripe Webhookは未加工本文の署名で認証する
+* 公開するBetter Auth APIは登録・ログイン・ログアウト・セッション取得の4種類だけ。パスワード再設定・SNSログイン・メール変更等は今回の対象外
 
-* 会員登録またはログイン成功時にアクセストークンを発行する
-* アクセストークンにはユーザーID、権限、有効期限を含め、改ざんを検知できる形式で署名する
-* 有効期限は24時間を初期値とする
-* リフレッシュトークンとパスワード再設定は初期実装では設けない
-* ログアウトはフロントエンド側でアクセストークンを破棄して行う
-* 管理APIではトークンの `role = admin` を確認する
-* 有料コンテンツの利用可否はトークン内へ固定せず、リクエストごとにDBのプレミアム会員資格を確認する
-* 一般画面と管理画面は、フロントエンドに保持した同一のアクセストークンを使用する
-* 管理ログインでも一般ログインと同じ `POST /api/v1/auth/login` を使用し、レスポンスの `user.role` が `admin` であることを確認する
-* 本番環境ではHTTPSを必須とする
-* Nuxtのサーバー側ユーザー確認は、設定済みなら非公開の `NUXT_API_BASE_INTERNAL` を接続先に使う。未設定なら公開APIのURLを使う。ブラウザの接続先とBearer認証・管理者権限の検査は変更しない。
-
-Bearerトークン方式は、NetlifyとFly.ioでフロントエンドとバックエンドのドメインが分かれる構成を想定して採用する。
-
-公開前のサイト閲覧制限はNetlifyのPrivate設定で行い、フロントエンドのBasic認証は使用しない。これはAPIのBearer認証とは別の制限であり、会員ログイン・管理者権限・プレミアム会員の認可は変更しない。Fly.ioのAPIへNetlifyのPrivate設定は適用されないため、API側の検査を省略しない。
+公開前のサイト閲覧制限はNetlifyのPrivate設定を維持する。Fly.ioはAPI専用モードで画面と静的アセットを配信せず、API自体の管理者・会員・有料認可は別途必ず実施する。
 
 ### 任意認証
 
 試験一覧、問題取得及び問題回答APIは認証を任意とする。
 
-* Authorizationヘッダーがない場合は、模擬試験1〜5だけを利用でき、回答履歴を保存しない
-* 有効なAuthorizationヘッダーがある場合は、DBのプレミアム会員資格と管理者権限に応じて利用範囲を判定し、回答時は履歴を保存する
-* Authorizationヘッダーがあるにもかかわらずトークンが不正または期限切れの場合は、匿名扱いにせず `401 Unauthorized` を返す
+* 有効なCookieセッションがない場合は、模擬試験1〜5だけを利用でき、回答履歴を保存しない
+* 有効なCookieセッションがある場合は、DBのプレミアム会員資格と管理者権限に応じて利用範囲を判定し、回答時は履歴を保存する
+* Cookieセッションが不正又は期限切れの場合は未ログインとして扱う。任意認証APIの無料範囲だけ利用でき、認証必須APIは `401 Unauthorized` を返す
 
 ## 共通仕様
 
@@ -137,7 +128,7 @@ Accept: application/json
 | HTTPステータス | `code`例 | 使用場面 |
 | --- | --- | --- |
 | `400 Bad Request` | `bad_request` | JSON形式不正、パラメータ形式不正 |
-| `401 Unauthorized` | `unauthorized` | 未ログイン、トークン不正・期限切れ |
+| `401 Unauthorized` | `unauthorized` | 未ログイン、セッション不正・期限切れ |
 | `403 Forbidden` | `forbidden`, `paid_membership_required` | 管理者権限不足、他ユーザーのデータへのアクセス、プレミアム会員資格不足 |
 | `404 Not Found` | `not_found` | 対象が存在しない、非公開問題への一般アクセス |
 | `409 Conflict` | `membership_already_active`, `checkout_session_in_progress` | プレミアム会員の重複購入、未完了又は完了確認中の決済が存在する |
@@ -149,12 +140,12 @@ Accept: application/json
 
 ### 操作回数の制限
 
-PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作を数える。追加APIやRedisは使用しない。2026年10月21日、所有者は個人学習を中心とし、学校等の共有IPからの一斉利用は想定しないと確認した。この想定で以下の初期値を維持し、実利用で支障が見られた場合に見直す。共有IPの利用禁止や、全利用条件で制限に達しないことの保証ではない。
+認証の入口はBetter Authの標準レート制限、保存先と業務APIはrate-limiter-flexibleのPostgreSQL共有ストアを使用し、成功・失敗を問わず次の操作を数える。追加APIやRedisは使用しない。2026年10月21日、所有者は個人学習を中心とし、学校等の共有IPからの一斉利用は想定しないと確認した。この想定で以下の初期値を維持し、実利用で支障が見られた場合に見直す。共有IPの利用禁止や、全利用条件で制限に達しないことの保証ではない。
 
 | 対象 | 単位 | 固定時間窓の上限 |
 | --- | --- | --- |
-| `POST /api/v1/auth/signup` | IP | 15分10回 |
-| `POST /api/v1/auth/login` | IP | 5分30回 |
+| `POST /api/auth/sign-up/email` | IP | 15分10回 |
+| `POST /api/auth/sign-in/email` | IP | 5分30回 |
 | `POST /api/v1/questions/:id/answer` | IP | 1分120回 |
 | `POST /api/v1/payments/checkout_sessions` | IP、ログインユーザーそれぞれ | 5分20回、5分10回 |
 
@@ -177,8 +168,10 @@ PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作�
 
 | メソッド | パス | 認証 | 概要 |
 | --- | --- | --- | --- |
-| POST | `/api/v1/auth/signup` | 不要 | 会員登録し、アクセストークンを発行する |
-| POST | `/api/v1/auth/login` | 不要 | 一般画面または管理画面からログインし、アクセストークンを発行する |
+| POST | `/api/auth/sign-up/email` | 不要 | Better Authで会員登録・セッション発行 |
+| POST | `/api/auth/sign-in/email` | 不要 | 一般・管理画面共通のログイン |
+| POST | `/api/auth/sign-out` | Cookie | サーバー側セッションの破棄 |
+| GET | `/api/auth/get-session` | 任意 | Better Authのセッション取得 |
 | GET | `/api/v1/me` | 必要 | ログインユーザー情報を取得する |
 | DELETE | `/api/v1/me` | 必要 | ログインユーザーのアカウントを物理削除する |
 
@@ -226,60 +219,15 @@ PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作�
 
 ## 認証・アカウントAPI
 
-### 会員登録
+### 会員登録・ログイン・ログアウト
 
-`POST /api/v1/auth/signup`
+Better Authクライアントを使用する。会員登録は `POST /api/auth/sign-up/email` へ `name`、`email`、`password`、ログインは `POST /api/auth/sign-in/email` へ `email`、`password` をJSONで渡す。パスワード確認欄は画面の共通Zodスキーマで一致を検証し、APIへは送らない。
 
-リクエスト:
+レスポンスとエラーはBetter Auth標準形式（エラーは `code` / `message`）とする。業務APIの `{ data: ... }` / `{ error: ... }` 形式で包まない。成功後は `/api/v1/me` でアプリ用の権限・有料資格・お気に入り情報を取得する。クライアントがCookie値を読み取り、Bearerヘッダーへ変換する処理は設けない。
 
-```json
-{
-  "name": "学習ユーザー",
-  "email": "user@example.com",
-  "password": "password123",
-  "password_confirmation": "password123"
-}
-```
+`POST /api/auth/sign-out` はセッションを破棄する。`GET /api/auth/get-session` は未ログインの場合 `null`、ログイン中はBetter Authのセッション・ユーザーを返す。認証機能を許可リストで限定しており、他のBetter Authパスは404とする。
 
-レスポンス `201 Created`:
-
-```json
-{
-  "data": {
-    "access_token": "token",
-    "token_type": "Bearer",
-    "expires_in": 86400,
-    "user": {
-      "id": 1,
-      "name": "学習ユーザー",
-      "email": "user@example.com",
-      "role": "user",
-      "paid_content_access": false,
-      "favorite_questions": [],
-      "membership": {
-        "status": "free",
-        "purchased_at": null,
-        "expires_at": null
-      }
-    }
-  }
-}
-```
-
-### ログイン
-
-`POST /api/v1/auth/login`
-
-リクエスト:
-
-```json
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-レスポンスは会員登録と同じ形式とする。認証失敗時は `401 Unauthorized` を返す。
+認証エラー・入力エラーは共通フォーム部品へ割り当てて表示する。429は `Retry-After` と固定メッセージを返す。ライブラリやDBの内部例外は利用者へ返さない。
 
 ### ログインユーザー取得
 
@@ -310,11 +258,11 @@ PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作�
 
 * `membership.status = free` は有効な `memberships` レコードがない場合にAPIが返す表示用の状態とする
 * `paid_content_access` は、プレミアム会員、管理者又は有効な検証用資格がある場合に `true` とする。検証用資格は決済による購入資格とは独立させる
-* `verification_access` は検証用資格が有効な場合だけ `{ "expires_at": "ISO 8601日時" }`、それ以外は `null` とする。付与理由・付与者は一般APIへ返さない。ログイン・会員登録・ユーザー情報取得の共通ユーザー形式へ追加する
+* `verification_access` は検証用資格が有効な場合だけ `{ "expires_at": "ISO 8601日時" }`、それ以外は `null` とする。付与理由・付与者は一般APIへ返さない。`/api/v1/me` のアプリ用ユーザー形式へ追加する
 * 検証用資格だけを持つ一般会員の `membership.status` は `free`、`membership.purchased_at` は `null` のままとし、購入済みと偽らない。管理画面は引き続き `role = admin` のみ許可する
-* 検証用資格の期限切れ・取消は各APIリクエストで判定し、同じトークンでも以後は有料問題・お気に入りを拒否する。付与・取消のHTTPエンドポイントは追加しない
+* 検証用資格の期限切れ・取消は各APIリクエストで判定し、同じセッションでも以後は有料問題・お気に入りを拒否する。付与・取消のHTTPエンドポイントは追加しない
 * `favorite_questions` は本人が登録した公開中の問題の位置一覧とする。各項目は `id`、`exam_number`、`question_number` のみで、本文・解説・選択肢を含めない。試験ナンバー・問番号順に全件を返し、一覧ページのページ分割とは独立させる
-* ログイン・会員登録・ユーザー情報取得は同じユーザー形式を返す。無料会員には `favorite_questions: []` を返し、お気に入りテーブルを照会しない
+* アプリ用ユーザー情報は `/api/v1/me` で取得する。無料会員には `favorite_questions: []` を返し、お気に入りテーブルを照会しない
 * サイドバーは同梱した一覧を共有状態として参照する。色付け専用のAPI、開閉・画面移動時の再取得、登録解除後の確認用GETは追加しない。通常の再読み込み・再ログイン時に同期する
 
 ### アカウント削除
@@ -358,7 +306,7 @@ PostgreSQLの共有カウンターで、成功・失敗を問わず次の操作�
 
 公開中の問題がある試験ナンバーを、現在のユーザーの利用可否とともに返す。利用不可の試験でも問題本文、選択肢、正答及び解説は返さない。
 
-一般画面の試験サイドバーは、静的ページの表示だけでRailsを起動しないよう、フロントエンドの固定カタログを使用する。このAPIは公開状態を動的に確認する用途のために維持するが、共通レイアウトからは呼び出さない。プレミアム会員資格の表示判定はログインユーザー取得APIで行い、実際の問題取得・回答時の認可は各APIで必ず再判定する。
+一般画面の試験サイドバーは、静的ページの表示だけでFly.io APIを起動しないよう、フロントエンドの固定カタログを使用する。このAPIは公開状態を動的に確認する用途のために維持するが、共通レイアウトからは呼び出さない。プレミアム会員資格の表示判定はログインユーザー取得APIで行い、実際の問題取得・回答時の認可は各APIで必ず再判定する。
 
 ```json
 {
@@ -784,34 +732,31 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 | 小分類 | `education_foundations`, `teaching_profession`, `education_system`, `educational_psychology`, `special_support_education`, `curriculum_organization`, `moral_education`, `integrated_inquiry`, `special_activities`, `education_methods`, `ict_in_education`, `student_guidance_career`, `educational_counseling`, `career_education`, `information_specialized`, `information_education` |
 | 公開状態 | `draft`, `published`, `private` |
 
-## CORS
+## CORS・Origin検査
 
-許可するオリジンは環境変数で管理する。
+ブラウザの本番通信はNetlifyの同一オリジン `/api/*` を使用する。Fly.io側は明示したオリジンだけを許可する。
 
 | 環境 | 許可例 |
 | --- | --- |
-| 開発 | `http://localhost:3000` |
-| 本番 | Netlifyで公開するフロントエンドURL。現在は `https://johokyonin-lab.netlify.app` |
+| 開発 | `http://localhost:3000`、`http://127.0.0.1:3000` |
+| 本番 | `https://johokyonin-lab.netlify.app` |
 
-* 本番は `CORS_ORIGINS` で明示したHTTPSオリジンの完全一致だけを許可する。localhost及びVercelの自動許可はしない。未設定時は許可せず、不正値・ワイルドカード・パス・認証情報・末尾の `/` を含む値は起動時に拒否する
-* 開発だけが `http://localhost:3000` と `http://127.0.0.1:3000` を既定で許可する。プレビューは必要な個別オリジンだけを明示する
-* 対象パスは `/api/v1/*`、許可メソッドは `GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD`、許可ヘッダーは `Authorization, Content-Type` とする
-* Cookie認証をCORSで許可しない（`credentials: false`）。Bearerヘッダーを使用する。プリフライトの最大保持は300秒とする
-* 許可オリジンのAPIエラーレスポンスにもCORSヘッダーを付け、`Retry-After` をブラウザから参照できるよう公開する。許可外には付けない。CORSはAPIの認証・認可の代替ではない
-* 実環境の反映・許可外拒否の確認結果は `document/公開前運用確認_2026-10-20.md` に記録する
+* `CORS_ORIGINS` は完全一致。ワイルドカード、パス、認証情報、末尾の `/` を含む値は拒否し、本番ではHTTPSを必須とする
+* `/api/v1/*` と `/api/auth/*` で許可Originへ `Access-Control-Allow-Credentials: true` を返す。許可メソッドは `GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD`、ヘッダーは `Authorization, Content-Type` とする
+* 許可Origin以外のプリフライトは403。変更系リクエストはOriginの欠落・許可外・`Sec-Fetch-Site: cross-site` を拒否する。本文があればJSON形式を必須とする
+* Stripe WebhookはOrigin検査の例外とし、未加工本文とStripe署名で認証する。CORSだけをアクセス制限やCSRF対策とみなさない
+* APIは `Cache-Control: no-store`、`X-Content-Type-Options: nosniff` を付ける。認証Cookieの値やDB接続情報をログへ残さない
 
 ## セキュリティ・実装上の注意
 
-* パスワードは `bcrypt` などでハッシュ化し、平文保存しない
-* アクセストークン、パスワード、Authorizationヘッダーをログへ出力しない
-    * Railsの共通設定で `password`、`token`、`secret`、`api_key`、`authorization`、`cookie`、`dsn`、`email`、`name` を含むキーを、大文字・小文字を区別せずフィルタリングする。確認用・現在のパスワード、氏名・メール、入れ子の値、ログ用リクエスト環境の認証・Cookieヘッダーも対象とする。2026年10月21日、氏名・メール除外のローカル検証と本番設定への反映を読み取りで確認した。過去の保存済みログの点検完了を意味しない
-    * フィルターを通さない生の本文・ヘッダー・レスポンス・環境変数を独自にログへ出力しない。設定変更前に保存されたログは遡って保護されない
+* パスワードハッシュの実装はBetter Authへ委ね、平文・セッションCookie・秘密値を保存ログやAPIへ出力しない
+* ログは固定した障害区分・HTTP状態などに制限し、生の本文・ヘッダー・レスポンス・環境変数・利用者情報・DB例外を出力しない。旧Railsのフィルター設定を新Nodeコードの保証とみなさない
 * 公開問題取得時は `question_choices.is_correct`、解答解説、根拠資料を返さない
 * 回答判定は必ずサーバー側で行う
 * 一般ユーザーは自分の回答履歴とお気に入りだけ取得できる
 * 模擬試験6以降の利用権限は、試験一覧、問題取得、回答、回答履歴及びお気に入りの各APIでサーバー側が確認する
 * 管理APIはすべて管理者権限を確認する
-* 問題の更新は `QuestionWriter` の保存処理を使用する。本文・選択肢・正答・解説・出典・分類・問題番号の変更時は、その問題の古い回答履歴を同一トランザクション内で削除する。公開状態だけの変更では削除しない。通常の改稿で問題ID・選択肢ID・お気に入りを保持する
+* 問題の更新は `frontend/server/services/learning-writer.ts` の保存処理を使用する。本文・選択肢・正答・解説・出典・分類・問題番号の変更時は、その問題の古い回答履歴を同一トランザクション内で削除する。公開状態だけの変更では削除しない。通常の改稿で問題ID・選択肢ID・お気に入りを保持する
 * 選択肢はア・イ・ウ・エ各1件・正答1件を保存前後で保証する。重複ID、他の問題のID、IDとラベルの不一致を拒否する
 * 公開時は本文・解説・選択肢の実内容、出典のHTTPSリンク形式、空欄ラベルと全選択肢のセル数を検査する。draftでは内容が未完成でも保存できるが、選択肢の構造は維持する。不正な入力は `422` の `validation_error` とする
 * 管理APIで `published` として作成・更新する際は、保存対象を含めて同じ試験ナンバーに問1〜20が各1件登録されていることも検査する。不足する場合は `422` の `validation_error` と不足問番号を返し、変更や履歴削除を行わない。この検査は登録件数の確認であり、20問を同時公開する操作ではない。個別の非公開化・削除は引き続き可能とする
@@ -820,15 +765,15 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 * 管理画面のルートガードと管理APIの両方で権限を確認し、フロントエンドの画面制御だけに依存しない
 * コンテンツブロックでは許可したキーと文字列だけを受け付け、任意のHTMLやスクリプトを保存・描画しない
 * 会員登録、ログイン、回答及びCheckout Session作成APIには上記の共有レート制限を設ける
-* APIの障害通知は初期状態で無効。個別承認後に有効化する場合も、固定の障害名・時刻・ランダムID・検証／本番の環境名・重大度だけを送信する。リクエスト、例外の本文、利用者情報、認証情報、DB・Stripeの識別子は送らない。設定と制限は `document/運用手順.md` を参照する
-    * 通知対象から除く503は、Checkoutの販売停止又はWebhook未設定として明示した予定どおりの応答だけとする。レート制限の保存先障害など、同じコントローラーの想定外の503は一般API障害として扱う。販売開始を要求した状態での決済設定不足も通知対象とする。分類用の内部情報はAPIレスポンスにも外部通知にも含めない。この503分類の修正は2026年10月21日のローカル検証までで、本番には未反映
+* APIの障害通知は初期状態で無効。個別承認後に有効化する場合も、Sentry公式SDKの独立クライアントで、固定の障害名・時刻・ランダムID・検証／本番の環境名・重大度・固定カテゴリタグだけを送信する。リクエスト、例外の本文、利用者情報、認証情報、DB・Stripeの識別子は送らない。設定と制限は `document/運用手順.md` を参照する
+    * 通知対象から除く503は、Checkoutの販売停止又はWebhook未設定として明示した予定どおりの応答だけとする。レート制限の保存先障害など、同じコントローラーの想定外の503は一般API障害として扱う。販売開始を要求した状態での決済設定不足も通知対象とする。分類用の内部情報はAPIレスポンスにも外部通知にも含めない。本番反映結果はテンプレート移行記録で別途確認する
 * アカウント削除と問題削除はトランザクションで実行する
 * Stripeのシークレットキー、Webhook署名シークレット及びPrice IDは環境変数で管理し、ログやAPIレスポンスへ出力しない
 * Webhookは未加工の本文で署名検証し、Stripe Event ID及びCheckout Session IDの一意制約とDBトランザクションで冪等に処理する
 
 ### DB正本の問題編集運用（2026年10月21日承認）
 
-* 実行用seedと自動同期を廃止し、本番DBを正本として管理APIで編集する。`QuestionWriter` の同期記録への依存を撤去する。旧同期表はローリング更新互換性のため残すが、新版アプリは参照・更新しない
+* 実行用seedと自動同期を廃止し、本番DBを正本として管理APIで編集する。`frontend/server/services/learning-writer.ts` とPrismaのトランザクションで保存する。旧同期表は旧DB側の履歴としてのみ保持し、新版アプリは使用しない
 * 管理者認可、4択・正答1件、公開時検査、同一トランザクションでの回答履歴削除・ロールバックを維持する。既存エンドポイント・レスポンス及び一般APIへの正答非公開の契約は変更しない
 * 問題アーカイブの書き出し・空DBへの取込みは運営者が明示的に実行するCLIのみとし、公開API・管理APIへ転送機能を追加しない。ユーザー情報を含む完全バックアップと区別する。手順は `document/運用手順.md` を参照する
 * 旧問題カタログ、原典fixture、承認記録及び固定ハッシュはテスト専用に保持する。ローカル実装・検証の完了を、本番の最終内容照合又はデプロイ済みと同一視しない
@@ -837,7 +782,7 @@ Bearerトークンは使用しない。未加工のリクエスト本文、`Stri
 
 | 環境変数 | 用途 | 公開範囲 |
 | --- | --- | --- |
-| `STRIPE_SECRET_KEY` | RailsからStripe APIを呼び出すシークレットキー | バックエンドのみ |
+| `STRIPE_SECRET_KEY` | Node.jsのStripe公式SDKから使用するシークレットキー | バックエンドのみ |
 | `STRIPE_WEBHOOK_SECRET` | Stripe Webhookの署名検証 | バックエンドのみ |
 | `STRIPE_PRICE_ID` | 500円の買い切り商品に対応するPrice ID | バックエンドのみ |
 | `FRONTEND_URL` | Checkoutの成功・中止時の戻り先を組み立てる許可済みURL | バックエンドのみ |

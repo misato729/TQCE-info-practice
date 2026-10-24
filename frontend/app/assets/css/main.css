@@ -306,3 +306,11 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   .admin-panel-body { padding-right: 15px; padding-left: 15px; }
   .admin-form-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Nuxt UI manages validation, field associations and input events. */
+.form-field-error { margin-top: 6px; color: #a23b2a; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.admin-layout .form-field-error { color: #ffb4a7; }
+.admin-field [data-slot="label"] { color: #dbe5e7; font-size: 13px; font-weight: 800; }
+.field input[aria-invalid="true"] { border-color: #a23b2a; }
+.admin-field input[aria-invalid="true"] { border-color: #e68b7d; }
+.admin-field [role="combobox"] { width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid var(--admin-line-strong); border-radius: 5px; background: #10191e; color: var(--admin-text); }

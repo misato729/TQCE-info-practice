@@ -5,15 +5,15 @@ const route = useRoute()
 const openExam = ref<number | null>(null)
 const mobileOpen = ref(false)
 const mobileToggle = ref<HTMLButtonElement | null>(null)
-const { user, accessToken, ensureCurrentUser } = useAuth()
-const { isFavoriteAt } = useDemoFavorites()
+const { user, authResolved, ensureCurrentUser } = useAuth()
+const { isFavoriteAt } = useFavorites()
 const accessStatus = ref<'ready' | 'pending' | 'error'>(
-  accessToken.value && !user.value ? 'pending' : 'ready',
+  authResolved.value ? 'ready' : 'pending',
 )
 let resolvingAccess = false
 
 const exams = computed(() => (
-  user.value?.paid_content_access ? EXAM_CATALOG : FREE_EXAM_CATALOG
+  hasFullExamAccess(user.value) ? EXAM_CATALOG : FREE_EXAM_CATALOG
 ))
 const isLoading = computed(() => accessStatus.value === 'pending')
 const hasAccessError = computed(() => accessStatus.value === 'error')
@@ -21,7 +21,7 @@ const hasAccessError = computed(() => accessStatus.value === 'error')
 const resolveAccess = async () => {
   if (resolvingAccess) return
 
-  if (!accessToken.value) {
+  if (authResolved.value && !user.value) {
     accessStatus.value = 'ready'
     return
   }
@@ -40,7 +40,7 @@ const resolveAccess = async () => {
   if (currentUser) {
     accessStatus.value = 'ready'
   }
-  else if (accessToken.value) {
+  else if (!authResolved.value) {
     accessStatus.value = 'error'
   }
   else {
@@ -50,7 +50,7 @@ const resolveAccess = async () => {
 
 onMounted(() => { void resolveAccess() })
 
-watch(accessToken, () => { void resolveAccess() })
+watch(authResolved, () => { void resolveAccess() })
 watch(user, (currentUser) => {
   if (!currentUser) return
   accessStatus.value = 'ready'

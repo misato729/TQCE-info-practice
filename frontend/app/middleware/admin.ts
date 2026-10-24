@@ -1,9 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { isLoggedIn, ensureCurrentUser } = useAuth()
-
-  if (!isLoggedIn.value) {
-    return navigateTo({ path: '/admin/login', query: { redirect: to.fullPath } })
-  }
+  const { ensureCurrentUser } = useAuth()
 
   const currentUser = await ensureCurrentUser()
   if (!currentUser) {

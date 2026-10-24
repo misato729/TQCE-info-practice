@@ -50,7 +50,8 @@ test('backend, documentation and frontend-test-only changes skip Netlify builds'
 })
 
 for (const path of ['frontend/app/app.vue', 'frontend/public/logo.png', 'frontend/package-lock.json',
-  'frontend/nuxt.config.ts', 'frontend/netlify.toml', 'netlify.toml', 'package.json', '.npmrc']) {
+  'frontend/nuxt.config.ts', 'frontend/netlify.toml', 'netlify.toml', 'package.json', '.npmrc',
+  'config/exam.json', 'content/questions.json', 'scripts/generate-config-schema.mjs']) {
   test(`a deployment-relevant change to ${path} continues the build`, () => {
     const repo = fixture()
     try {

@@ -6,6 +6,10 @@
 
 本設計では、問題を1問ずつ解くシンプルな演習を前提とする。問題は試験ナンバーごとに20問を配置するが、受験セッションや試験結果は管理しない。未ログイン時の解答は保存せず、ログインユーザーについてのみ解答履歴を保存する。お気に入りはプレミアム会員と管理者だけが利用する。模擬試験1〜5は無料、模擬試験6以降は500円の買い切りを完了したプレミアム会員向けとし、決済と利用資格をStripeの識別子により管理する。
 
+スキーマの正本は `frontend/prisma/schema.prisma` と `frontend/prisma/migrations/`。DB操作はPrisma、スキーマ変更はPrisma Migrateを使用する。日時列はPostgreSQLの `timestamp(6)`、本文はJSONBとし、既存のCHECK制約・部分一意インデックスはマイグレーションSQLで維持する。
+
+2026年10月24日の移行では旧DBを残し、別DBへ問題・選択肢をID・内容・正答・公開状態・マイクロ秒の日時を含めて保全する。ユーザー・履歴等は移行しないことが承認されている。移行完了と本番照合の結果は [移行記録](テンプレート移行_2026-10-24.md) で管理する。
+
 ### 対象テーブル
 
 | テーブル | 用途 |
@@ -19,14 +23,15 @@
 | `memberships` | ユーザーの有料コンテンツ利用資格 |
 | `verification_access_grants` | 購入とは独立した、最長7日の運用確認用アクセス資格 |
 | `stripe_webhook_events` | 処理済みStripe Event IDを保持する冪等性記録 |
-| `question_seed_states` | 旧seed同期の履歴表。新版アプリでは未使用、ローリング更新互換性のため当面保持 |
-| `api_rate_limit_buckets` | API操作回数の一時的な共有カウンター |
+| `auth_sessions` | Better Authのセッション・期限 |
+| `auth_accounts` | Better Authの認証方式・パスワードハッシュ |
+| `auth_verifications` | Better Authの検証用スキーマ。メール検証・再設定は現在非公開 |
+| `rate_limiter_flexible` | rate-limiter-flexibleの稼働中カウンター |
+| `api_rate_limit_buckets` | 旧共有カウンター。Prisma互換性のためスキーマを保持、新規カウントはしない |
 
-### 旧seed同期記録（2026年10月21日廃止承認）
+### 旧seed同期記録
 
-`question_seed_states` は `exam_number` と `question_number` の組に一意制約を持つ。`seed_digest` は直前に確認したseedの内容ハッシュ、`seed_publication_status` はseed側の公開状態、`deleted` は削除による同期停止フラグである。作成・更新日時を記録する。問題削除後も残す必要があるため `questions` の削除に連動する外部キーは設けない。ハッシュの比較対象は本文・選択肢と正答・解説・出典・分類・問題番号で、公開状態を分離する。
-
-問題を完成扱いとし、実行用seed・自動同期と、管理APIからの同期記録の参照・更新を廃止する。本番DBを問題の正本とする。旧版アプリが稼働し得るローリング更新中に表を削除すると保存・削除が失敗するため、今回はマイグレーションやスキーマ変更を行わず履歴表を残す。物理削除は旧版の稼働・切戻し期間終了後に別途マイグレーションで行う。テストでは歴史的同期挙動の回帰検査にのみ使用する。
+`question_seed_states` は旧Rails DB側の履歴として保持し、新しいPrismaスキーマには作成しない。新版アプリは参照・更新しない。旧DBや切戻し資料を削除する承認ではない。問題データの正本はDBであり、起動・デプロイによる投入・同期は行わない。
 
 次の機能に対応するテーブルは設けない。
 
@@ -34,12 +39,14 @@
 - 模擬試験の受験セッション・試験結果
 - 学習進捗・分野別集計・メダル
 - 問題の誤り報告
-- パスワード再設定
+- パスワード再設定の公開機能（Better Authの汎用検証テーブルはあるが、該当APIは無効）
 
 ## 2. ER図
 
 ```mermaid
 erDiagram
+    users ||--o{ auth_sessions : sessions
+    users ||--o{ auth_accounts : credentials
     users ||--o{ answer_histories : answers
     users ||--o{ favorites : registers
     users o|--o{ payments : makes
@@ -55,7 +62,8 @@ erDiagram
         bigint id PK
         varchar name
         varchar email UK
-        varchar password_digest
+        boolean email_verified
+        text image
         varchar role
         datetime created_at
         datetime updated_at
@@ -71,8 +79,6 @@ erDiagram
         jsonb explanation_blocks
         text source_text
         varchar publication_status
-        bigint created_by_user_id FK
-        bigint updated_by_user_id FK
         datetime created_at
         datetime updated_at
     }
@@ -156,6 +162,34 @@ erDiagram
         datetime updated_at
     }
 
+    auth_sessions {
+        bigint id PK
+        bigint user_id FK
+        text token UK
+        datetime expires_at
+    }
+
+    auth_accounts {
+        bigint id PK
+        bigint user_id FK
+        text provider_id
+        text account_id
+        text password
+    }
+
+    auth_verifications {
+        bigint id PK
+        text identifier
+        text value
+        datetime expires_at
+    }
+
+    rate_limiter_flexible {
+        varchar key PK
+        integer points
+        bigint expire
+    }
+
     api_rate_limit_buckets {
         varchar key PK
         bigint request_count
@@ -174,7 +208,8 @@ erDiagram
 | `id` | BIGINT | NO | - | 主キー |
 | `name` | VARCHAR(100) | NO | - | 表示名 |
 | `email` | VARCHAR(255) | NO | - | ログイン用メールアドレス。小文字に正規化して保存 |
-| `password_digest` | VARCHAR(255) | NO | - | ハッシュ化済みパスワード |
+| `email_verified` | BOOLEAN | NO | false | Better Authのメール検証状態 |
+| `image` | TEXT | YES | - | Better Authの任意画像欄。現在のUIでは使用しない |
 | `role` | VARCHAR(20) | NO | `user` | `user` または `admin` |
 | `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
 | `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
@@ -189,7 +224,7 @@ erDiagram
 
 #### 補足
 
-- パスワードは平文で保存しない。
+- パスワードハッシュはBetter Authが `auth_accounts.password` へ保存・検証し、`users` には置かない。平文を保存しない。
 - メールアドレスは登録・更新時に前後の空白を除去し、小文字へ正規化する。
 - プレミアム会員資格は `role` で表さず、`memberships` で管理する。管理者権限と購入状態を混在させない。
 - アカウント削除時は、そのユーザーの `answer_histories`、`favorites`、`memberships`、`verification_access_grants` を削除し、`payments.user_id` は `NULL` にする。
@@ -209,8 +244,6 @@ erDiagram
 | `explanation_blocks` | JSONB | NO | - | 解答後に表示する解説の表示ブロック |
 | `source_text` | TEXT | YES | `NULL` | 出典・根拠資料。1行ごとに `資料名・章節 | https://...` 形式で保持し、画面では外部リンクとして表示 |
 | `publication_status` | VARCHAR(20) | NO | `draft` | 公開状態 |
-| `created_by_user_id` | BIGINT | YES | `NULL` | 作成した管理者。`users.id` を参照 |
-| `updated_by_user_id` | BIGINT | YES | `NULL` | 最終更新した管理者。`users.id` を参照 |
 | `created_at` | DATETIME | NO | 現在時刻 | 作成日時 |
 | `updated_at` | DATETIME | NO | 現在時刻 | 更新日時 |
 
@@ -224,11 +257,9 @@ erDiagram
 | INDEX | `major_category_code` | 大分類での抽出 |
 | INDEX | `category_code` | 分野での抽出 |
 | INDEX | `publication_status, id` | 公開問題の取得 |
-| FOREIGN KEY | `created_by_user_id` | `users.id`。管理者削除時は `NULL` |
-| FOREIGN KEY | `updated_by_user_id` | `users.id`。管理者削除時は `NULL` |
 | CHECK | `exam_number` | 1以上 |
-| CHECK | `question_number` | 1〜20 |
-| CHECK | 各コード・状態 | 「4. 固定値」の値のみ許可 |
+| CHECK | `question_number` | 1以上。設定上限20は共通Zodで検証 |
+| API検証 | 各コード・状態 | 共通Zodで「4. 固定値」と設定の組合せを検証 |
 
 #### 補足
 
@@ -473,24 +504,32 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 | `created_at` | DATETIME | NO | 付与日時 |
 | `updated_at` | DATETIME | NO | 更新日時 |
 
-- 未取消かつ `expires_at > 現在時刻` の場合だけ有効。APIリクエストごとに判定し、トークンへ固定しない。
+- 未取消かつ `expires_at > 現在時刻` の場合だけ有効。APIリクエストごとに判定し、セッションへ固定しない。
 - 購入資格の返金・異議申立て処理とは独立させる。検証用資格の失効を理由に、購入由来の有効な資格や履歴・お気に入りを削除しない。
 - 運用コマンドで既存の一般ユーザーに付与し、再実行で既存資格や期限を無断で上書きしない。付与・取消の公開APIは設けない。
 
-### 3.10 api_rate_limit_buckets
+### 3.10 認証テーブル
 
-登録・ログイン・回答・Checkoutの回数制限を、同じDBを使う複数プロセス・マシンで共有する。追加の公開APIは設けない。2026年10月21日、本番で追加マイグレーション・テーブルとバックアップ専用ロールのSELECT権限を読み取り確認した。確認時に新たなマイグレーションや権限変更は行っていない。
+Better Authの公式Prisma adapterで管理する。ユーザーIDは `users.id` に関連し、ユーザー削除時にセッションと認証アカウントを連動削除する。
 
-| カラム | 型 | NULL | 制約・説明 |
-|---|---|---:|---|
-| `key` | VARCHAR(64) | NO | 主キー。操作種別・対象・固定時間窓から作るHMAC-SHA256 |
-| `request_count` | BIGINT | NO | 同じ窓内の試行回数。CHECKで1以上を保証 |
-| `expires_at` | DATETIME | NO | 窓の終了時刻。インデックスあり |
+| テーブル | 主な列・制約 |
+| --- | --- |
+| `auth_sessions` | BIGINT主キー、`user_id`、一意な `token`、`expires_at`、`created_at`、`updated_at`、任意の `ip_address` / `user_agent` |
+| `auth_accounts` | BIGINT主キー、`user_id`、`provider_id`、`account_id`、`password`、任意のトークン関連列、日時。`provider_id/account_id` が一意 |
+| `auth_verifications` | BIGINT主キー、`identifier`、`value`、`expires_at`、日時。現在はメール検証・パスワード再設定の公開APIを有効にしない |
 
-- IP、ユーザーID、メール、トークンの平文やリクエスト本文は保存しない。`secret_key_base` をHMACの鍵とし、全マシンで同じ鍵を使用する。秘密鍵の変更時は新しいカウンターになる。
-- PostgreSQLの `INSERT ... ON CONFLICT ... DO UPDATE` で回数を原子的に加算する。上限超過の試行も数える。ユーザー・問題・決済への外部キーや作成日時は持たない。
-- 制限対象のリクエストごとに、失効行を最大100件削除する。以後リクエストがなければ失効行は残るが、期限後の制限判定には使わない。厳密な期限時刻の物理削除や大量通信への防御を保証する方式ではない。
-- 制限の対象・時間窓・上限・障害時の応答は `API設計.md` に定義する。初期上限と通常操作への影響は公開前に実環境で再確認する。
+有効期間24時間のセッションCookieを使用し、権限・購入資格は現在のDB値で判定する。ライブラリ保存用の秘密値・Cookie・トークン・ハッシュは一般APIやログへ出力しない。旧Bearerトークンや `users.password_digest` は使用しない。
+
+### 3.11 操作回数制限
+
+認証APIの入口はBetter Authの標準レート制限、保存先と業務APIはrate-limiter-flexibleのPostgreSQLストアを使用する。同じDBを使用する複数プロセスでカウンターを共有し、Redisや追加公開APIは設けない。
+
+| テーブル | 主な列・用途 |
+| --- | --- |
+| `rate_limiter_flexible` | `key` VARCHAR(255)主キー、`points` INTEGER、`expire` BIGINT（ミリ秒期限）。稼働中のライブラリ標準ストア |
+| `api_rate_limit_buckets` | 旧 `key` / `request_count` / `expires_at` の互換用表。初期マイグレーションで有効なカウンターを新形式へ移し、新規書込みはしない |
+
+IP・ユーザーIDの平文はキーに保存せず、共通の `BETTER_AUTH_SECRET` を鍵とするHMACで区分・対象・固定時間窓を識別する。上限と時間窓はAPI設計を参照する。ライブラリで失効行を削除し、保存先障害時は処理を許可せず503とする。厳密なネットワーク防御や期限直後の物理削除を保証するものではない。
 
 ## 4. 固定値
 
@@ -661,7 +700,7 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 ## 6. セキュリティ・運用
 
 - パスワードには十分な強度のハッシュ関数を使用する。
-- APIレスポンスへ `password_digest` を含めない。
+- APIレスポンスへパスワードハッシュ・セッショントークンを含めない。
 - 管理者権限の判定は `users.role` をサーバー側で確認する。
 - 有料コンテンツの利用権限は `memberships.status` をサーバー側で確認し、フロントエンドの表示制御だけに依存しない。
 - Stripeのシークレットキー、Webhook署名シークレット及びPrice IDは環境変数で管理し、DB、コード及びログへ値を記録しない。
@@ -672,17 +711,18 @@ Stripe Webhookの再送に対して冪等に処理するため、正常に処理
 
 ### DB正本の問題データ運用
 
-- 通常デプロイは `db:prepare` のみとし、何もしない `db/seeds.rb` を残して初期DBにも問題を自動投入しない。既存の問題・選択肢・ユーザー・履歴・お気に入りは変更しない。
-- 問題の保存・削除は `QuestionWriter` で検証とロックを行う。内容変更時の回答履歴削除を同一トランザクションで保証し、公開状態だけの変更では履歴を保持する。通常の改稿では問題ID・選択肢ID・お気に入りを保持する。
+- 通常デプロイは `npm run db:migrate` によりスキーマだけを準備し、`npm run db:seed` は開発環境でも何もしない。通常デプロイで問題・選択肢・ユーザー・履歴・お気に入りを削除・再作成しない。
+- 問題の保存・削除は `frontend/server/services/learning-writer.ts` で共有Zod検証とロックを行う。内容変更時の回答履歴削除を同一トランザクションで保証し、公開状態だけの変更では履歴を保持する。通常の改稿では問題ID・選択肢ID・お気に入りを保持する。
 - 問題だけのアーカイブは既存DBへの同期には使用せず、問題と選択肢が空の環境への明示的な取込みに限定する。レコードIDを持ち込まないため、ユーザーや回答履歴・お気に入りを保持する復旧には完全DBバックアップを使用する。
 - 原典fixture・承認記録・固定ハッシュ及び旧問題は凍結したテスト資料として保持する。運用データの改稿に合わせて上書きしない。
-- 本番の最終内容・バックアップ・復元可能性とデプロイ結果は別途確認する。旧同期表の物理削除は本移行と同時に行わない。
+- 本番の最終内容・バックアップ・復元可能性とデプロイ結果は別途確認する。旧DBの同期表を物理削除しない。
+- 今回のID保全移行だけは、空のアプリDBへ `questions:restore_identity` で問題・選択肢の全列を取り込む。通常のIDなしアーカイブとは別形式であり、ユーザーを含む復旧には完全バックアップを使用する。
 
 ## 7. APIとの対応
 
 | API上の資源 | 主なテーブル |
 |---|---|
-| アカウント登録・ログイン・本人情報 | `users` |
+| アカウント登録・ログイン・本人情報 | `users`, `auth_sessions`, `auth_accounts` |
 | 問題取得・問題管理 | `questions`, `question_choices` |
 | 解答判定 | `questions`, `question_choices` |
 | ログイン時の解答保存・履歴 | `answer_histories` |

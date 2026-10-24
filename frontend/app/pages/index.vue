@@ -317,30 +317,36 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
       </div>
     </section>
 
-    <section class="home-section policy-section">
+    <section id="usage-guide" class="home-section policy-section" aria-labelledby="usage-guide-title">
       <div class="section-title">
-        <h2 class="section-heading">
+        <h2 id="usage-guide-title" class="section-heading">
           <span>利用にあたって</span>
         </h2>
       </div>
-      <div class="policy-grid">
-        <article>
-          <UIcon name="i-lucide-user-check" />
-          <h3>模擬試験1〜5は無料</h3>
-          <p>模擬試験1〜5はログインなしでも利用できます。解答履歴の保存にはログインが必要です。お気に入りはプレミアム会員向けです。</p>
-        </article>
-        <article>
-          <UIcon name="i-lucide-badge-check" />
-          <h3>500円の買い切り</h3>
-          <p>プレミアム会員は模擬試験6以降も利用できます。月額料金や自動更新はありません。</p>
-          <NuxtLink class="text-link" to="/premium">プレミアム会員について</NuxtLink>
-        </article>
-        <article>
-          <UIcon name="i-lucide-book-open" />
-          <h3>根拠資料も確認</h3>
-          <p>各問題の解説と、出題の根拠となる資料を確認できます。</p>
-        </article>
-      </div>
+      <dl class="usage-details">
+        <div class="usage-row">
+          <dt>模擬試験1〜5は無料</dt>
+          <dd>
+            <p>模擬試験1〜5はログインなしでも利用できます。解答履歴の保存にはログインが必要です。お気に入りはプレミアム会員向けです。</p>
+          </dd>
+        </div>
+        <div class="usage-row">
+          <dt>500円の買い切り</dt>
+          <dd>
+            <p>プレミアム会員は模擬試験6以降も利用できます。月額料金や自動更新はありません。</p>
+            <NuxtLink class="usage-premium-link" to="/premium">
+              <span>プレミアム会員について</span>
+              <UIcon name="i-lucide-arrow-right" aria-hidden="true" />
+            </NuxtLink>
+          </dd>
+        </div>
+        <div class="usage-row">
+          <dt>根拠資料も確認</dt>
+          <dd>
+            <p>各問題の解説と、出題の根拠となる資料を確認できます。</p>
+          </dd>
+        </div>
+      </dl>
     </section>
   </div>
 </template>
@@ -498,15 +504,37 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 .update-list article { min-height: 68px; display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 18px; border-bottom: 1px solid #cbd7d9; }
 .update-list time { color: var(--teal-dark); font-weight: 800; }
 .update-list p { margin: 0; color: #4f6169; }
-.policy-section { background: #fff; }
-.policy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.policy-grid article { padding: 24px 0; border-top: 3px solid var(--yellow); }
-.policy-grid article:nth-child(2) { border-color: var(--coral); }
-.policy-grid article:nth-child(3) { border-color: var(--teal); }
-.policy-grid :deep(svg) { width: 28px; height: 28px; color: var(--teal); }
-.policy-grid h3 { margin: 14px 0 8px; }
-.policy-grid p { margin: 0; color: var(--muted); line-height: 1.8; }
-.text-link { display: inline-block; margin-top: 12px; color: var(--teal-dark); font-weight: 800; }
+.policy-section {
+  scroll-margin-top: calc(var(--site-navigation-height, var(--header-height)) + 20px);
+  background: #fff;
+}
+.usage-details { margin: 0; border-top: 1px solid #dce4e4; }
+.usage-row {
+  display: grid;
+  grid-template-columns: minmax(180px, .3fr) minmax(0, 1fr);
+  gap: 32px;
+  padding: 26px 0;
+  border-bottom: 1px solid #dce4e4;
+}
+.usage-row dt { color: var(--ink); font-size: 16px; font-weight: 700; line-height: 1.9; }
+.usage-row dd { min-width: 0; margin: 0; color: #51636c; font-size: 15px; line-height: 1.9; }
+.usage-row p { margin: 0; }
+.usage-premium-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: var(--teal-dark);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: #a3c3c4;
+  text-underline-offset: 4px;
+}
+.usage-premium-link:hover { text-decoration-color: currentColor; }
+.usage-premium-link:focus-visible { outline: 2px solid var(--teal-dark); outline-offset: 4px; }
+.usage-premium-link :deep(.iconify) { flex: 0 0 16px; width: 16px; height: 16px; }
 
 @media (max-width: 1100px) {
   .exam-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
@@ -518,6 +546,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 
 @media (max-width: 960px) {
   .number-checkbox-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .usage-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 }
 
 @media (max-width: 640px) {
@@ -541,6 +570,6 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
   .overview-actions { align-items: stretch; flex-direction: column; }
   .home-section { padding: 44px 20px; }
   .update-list article { grid-template-columns: 1fr; gap: 5px; padding: 15px 0; }
-  .policy-grid { grid-template-columns: 1fr; }
+  .usage-row { padding: 22px 0; }
 }
 </style>

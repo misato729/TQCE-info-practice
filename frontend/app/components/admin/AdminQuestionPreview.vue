@@ -5,7 +5,7 @@ const props = defineProps<{ question: AdminQuestionInput }>()
 
 const majorCategoryLabel = computed(() => getMasterDataLabel(
   MAJOR_CATEGORIES,
-  props.question.major_category_code as 'teacher_education' | 'information',
+  props.question.major_category_code,
 ))
 </script>
 
@@ -41,8 +41,8 @@ const majorCategoryLabel = computed(() => getMasterDataLabel(
   --ink: #16232b;
   --muted: #60717a;
   --line: #d8e1e4;
-  --teal: #087f83;
-  --teal-dark: #075e62;
+  --teal: var(--brand-primary, #2563eb);
+  --teal-dark: var(--brand-primary-dark, #1b47a9);
   overflow: hidden;
   border-radius: 7px;
   background: #eef3f3;
@@ -59,7 +59,7 @@ const majorCategoryLabel = computed(() => getMasterDataLabel(
 .preview-choices > div { position: relative; min-width: 0; display: grid; grid-template-columns: 18px 28px minmax(0, 1fr) auto; align-items: start; gap: 9px; padding: 13px; border: 1px solid #c8d4d7; border-radius: 5px; }
 .preview-choices > div.correct { border-color: #68aaa9; background: #eef8f7; }
 .preview-radio { width: 15px; height: 15px; margin-top: 4px; border: 1px solid #839399; border-radius: 50%; }
-.preview-choices strong { margin-top: 1px; color: var(--teal-dark); }
+.preview-choices strong { min-width: 0; overflow-wrap: anywhere; margin-top: 1px; color: var(--teal-dark); }
 .correct-label { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 4px; background: #d5efec; color: #176861; font-size: 10px; font-weight: 900; white-space: nowrap; }
 .preview-explanation { margin-top: 24px; padding: 20px; border-left: 4px solid var(--teal); background: #f3fbfa; }
 .preview-explanation h3 { margin: 0 0 13px; color: #30464d; font-size: 14px; }
