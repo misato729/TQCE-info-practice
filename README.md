@@ -22,7 +22,7 @@ Nuxt 4の画面とNitro/H3のAPIをTypeScriptで実装します。DB操作・認
 | Stripe公式SDK | Checkoutと署名付きWebhook |
 | Sentry公式Node SDK | 許可した固定項目だけのAPI障害通知。初期状態は送信無効 |
 | Node.js組込みテスト / Playwright | 単体・API・ブラウザ操作の検証 |
-| PostgreSQL 16 / Docker Compose | DBとローカル開発環境 |
+| PostgreSQL 16（ローカル）/ Neon PostgreSQL 18（本番）/ Docker Compose | DBと開発環境 |
 
 正確なバージョンは `frontend/package-lock.json`、依存一覧は `frontend/package.json` を参照してください。`backend/` のRailsコードは旧構成の参照・切戻し資料として残しており、通常の起動・ビルド・デプロイでは使用しません。
 

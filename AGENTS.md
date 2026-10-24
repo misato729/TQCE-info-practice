@@ -10,7 +10,7 @@
 - DB操作・マイグレーション: Prisma / Prisma Migrate（`frontend/prisma/`）
 - 認証: Better AuthのHttpOnly Cookieセッション
 - `backend/` のRailsコードは旧構成の参照・切戻し資料であり通常運用には使わない
-- データベース: PostgreSQL 16
+- データベース: PostgreSQL 16（ローカル）／Neon PostgreSQL 18（本番）
 - 開発環境: Docker Compose
 
 環境構築、起動、停止、デプロイ方法は `README.md` を参照してください。
