@@ -8,7 +8,7 @@ COPY content/ /workspace/content/
 COPY scripts/ /workspace/scripts/
 RUN npm ci --ignore-scripts --no-audit --no-fund
 COPY frontend/ ./
-RUN node scripts/ensure-dependencies.mjs --record && npx nuxt prepare
+RUN node scripts/patch-node-forge.mjs && npx nuxt prepare && node scripts/ensure-dependencies.mjs --record
 EXPOSE 3000
 ENTRYPOINT ["sh", "scripts/container-entrypoint.sh"]
 

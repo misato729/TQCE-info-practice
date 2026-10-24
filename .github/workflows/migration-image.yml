@@ -1,0 +1,25 @@
+name: Migration image verification
+on:
+  push:
+    branches: [migration/nuxt-template]
+    paths:
+      - '.github/workflows/migration-image.yml'
+      - 'frontend/Dockerfile'
+permissions:
+  contents: read
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build clean production image
+        run: docker build --platform linux/amd64 --file frontend/Dockerfile --target production --tag tqce-nuxt-migration:production .
+      - name: Export verified image
+        run: docker save tqce-nuxt-migration:production | gzip -1 > /tmp/tqce-nuxt-image.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tqce-nuxt-production-image
+          path: /tmp/tqce-nuxt-image.tar.gz
+          compression-level: 0
+          retention-days: 1
