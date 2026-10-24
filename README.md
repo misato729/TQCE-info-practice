@@ -24,7 +24,7 @@ Nuxt 4の画面とNitro/H3のAPIをTypeScriptで実装します。DB操作・認
 | Node.js組込みテスト / Playwright | 単体・API・ブラウザ操作の検証 |
 | PostgreSQL 16（ローカル）/ Neon PostgreSQL 18（本番）/ Docker Compose | DBと開発環境 |
 
-正確なバージョンは `frontend/package-lock.json`、依存一覧は `frontend/package.json` を参照してください。`backend/` のRailsコードは旧構成の参照・切戻し資料として残しており、通常の起動・ビルド・デプロイでは使用しません。
+正確なバージョンは `frontend/package-lock.json`、依存一覧は `frontend/package.json` を参照してください。旧Railsのコード・テスト・設定は現行Gitツリーから外し、Git管理外のローカル保管先に残しています。保存先と照合方法は [旧Rails保管記録](document/旧Rails保管_2026-10-25.md) を参照してください。
 
 ## アーキテクチャ
 
@@ -60,7 +60,7 @@ docker compose up -d --build
 
 Nuxtの画面とAPIは同じサービスで起動します。通常のComposeには `frontend` と `nuxt-db` だけを定義し、旧Railsの `DATABASE_URL` を引き継がず、新しい `nuxt_postgres_data` を使用します。新DBへの問題取込みと管理者作成は明示操作です。起動・マイグレーション・`db:seed` では問題を投入しません。
 
-旧DBの保存ボリュームは削除せず、通常の起動対象から分離しています。`legacy` profileを同じプロジェクトに置くだけでは、既存の旧コンテナがDocker Desktopの一括起動で立ち上がるため、移行前の停止済み `db` / `backend` コンテナも取り除きます。既存環境でまだ残っている場合は、`docker ps -a` で対象を確認してその停止済みコンテナだけを `docker rm` してください。`-v` は付けません。保存ボリュームと旧Railsのコードは残ります。
+旧DBの保存ボリュームは削除せず、通常の起動対象から分離しています。`legacy` profileを同じプロジェクトに置くだけでは、既存の旧コンテナがDocker Desktopの一括起動で立ち上がるため、移行前の停止済み `db` / `backend` コンテナも取り除きます。既存環境でまだ残っている場合は、`docker ps -a` で対象を確認してその停止済みコンテナだけを `docker rm` してください。`-v` は付けません。保存ボリュームとローカル保管した旧Rails一式は残ります。
 
 旧DBが必要な場合だけ、別プロジェクトで明示起動します。`.env` に通常用の `COMPOSE_PROJECT_NAME` があっても分離されるよう、`-p` を省略しないでください。次のコマンドは切戻し等の必要時だけ実行し、普段は実行しません。
 
@@ -145,7 +145,7 @@ Sentryは公式SDKを使用し、自動収集を無効にした独立クライ�
 
 NetlifyのAPI転送先は `https://tqce-info-practice.fly.dev/api/:splat` です。ブラウザ側の `NUXT_PUBLIC_API_BASE` は空にし、絶対URLへの直接アクセスへ戻しません。DB接続情報、認証秘密鍵、Stripe秘密鍵はFly.ioで管理します。
 
-ローカル検証・ビルド・データ照合とFly.io API切替を完了してから、最後のmainへのpushでNetlifyを1回だけ反映します。途中のプレビューや手動再ビルドを重ねません。反映後は配信コミット、Private、APIプロキシ、ログイン・演習・管理操作を確認します。
+現在はNetlifyの自動ビルドを停止しています。承認済みのコミット・pushでも停止状態を確認し、`[skip netlify]` を併用して公開中のサイトを維持します。自動ビルドの再開や手動デプロイは別途の明示指示があるまで実行しません。GitHub Actionsで行う生成・ビルドは検証のみで、公開先へ配信しません。
 
 Fly.ioへのデプロイはリポジトリルートから行います。
 
@@ -153,7 +153,7 @@ Fly.ioへのデプロイはリポジトリルートから行います。
 fly deploy --config fly.toml
 ```
 
-`backend/fly.toml` は旧Rails用です。新しいDB接続・秘密鍵は事前に安全な手段で設定し、旧DBの接続情報とバックアップは切戻し用に保管します。`release_command` 失敗時はDB状態とリリース状態を個別に確認し、実行中の処理へ別のデプロイを重ねません。スキーマ準備に問題の自動投入を追加しないでください。
+旧Rails用の `backend/fly.toml` はローカル保管先にあります。新しいDB接続・秘密鍵は事前に安全な手段で設定し、旧DBの接続情報とバックアップは切戻し用に保管します。`release_command` 失敗時はDB状態とリリース状態を個別に確認し、実行中の処理へ別のデプロイを重ねません。スキーマ準備に問題の自動投入を追加しないでください。
 
 ## ディレクトリ構成
 
@@ -168,8 +168,8 @@ fly deploy --config fly.toml
 │   ├── prisma/            # Prismaスキーマとマイグレーション
 │   ├── server-tests/      # 隔離DBでのサーバーテスト
 │   └── e2e/               # Playwrightブラウザテスト
-├── backend/               # 旧Rails構成の参照・切戻し資料
 ├── document/              # 仕様・作問資料・運用記録
+│   └── question-review-fixtures/ # 現行表示検査の承認JSON
 ├── operations/            # 公開可能な運用案内。private/はGit管理外
 ├── fly.toml               # Node/Nitro APIの本番構成
 ├── docker-compose.yml     # 通常用: Nuxt/Nitro + 新DB

@@ -15,14 +15,8 @@ frontend/test-results/
 frontend/blob-report/
 frontend/.netlify/
 
-# Backend
-backend/.bundle/
-backend/log/*
-backend/tmp/*
-backend/vendor/bundle/
-backend/config/master.key
-!backend/log/.keep
-!backend/tmp/.keep
+# Legacy Rails code is retained locally only, outside the current Git tree.
+/backend/
 
 # Environment
 .env

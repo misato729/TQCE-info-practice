@@ -6,10 +6,10 @@ import ts from 'typescript'
 import * as Vue from 'vue'
 import * as VueSSR from 'vue/server-renderer'
 
-// Render the real shared component. Backend tests independently establish that
-// all seed/API payloads match this approved-draft fixture, including the table.
+// Render the real shared component against the frozen approved-draft fixture.
+// This is review data only; the live database remains the source of truth.
 const componentPath = new URL('../app/components/QuestionContentBlocks.vue', import.meta.url)
-const fixturePath = new URL('../../backend/test/fixtures/mock_exams_21_to_25_guidance_psychology_report_approved.json', import.meta.url)
+const fixturePath = new URL('../../document/question-review-fixtures/mock_exams_21_to_25_guidance_psychology_report_approved.json', import.meta.url)
 const { descriptor } = parse(readFileSync(componentPath, 'utf8'), { filename: fileURLToPath(componentPath) })
 const compiled = compileScript(descriptor, { id: 'q21-25-block-check', inlineTemplate: true, templateOptions: { ssr: true } })
 const script = ts.transpileModule(compiled.content, {
