@@ -4,7 +4,7 @@ name: tqce-info-practice-legacy
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     env_file: .env
     restart: "no"
     ports:
