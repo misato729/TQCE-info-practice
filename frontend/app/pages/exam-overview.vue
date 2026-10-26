@@ -600,7 +600,7 @@ const references = [
 .page-label {
   margin: 0 0 8px;
   color: var(--teal-dark);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -628,28 +628,28 @@ const references = [
 
 .exam-facts dt {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
 .exam-facts dd {
   margin: 0;
   color: var(--ink);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
 }
 
 .exam-facts strong {
   margin-right: 3px;
   color: var(--teal-dark);
-  font-size: 30px;
+  font-size: 1.875rem;
   line-height: 1;
 }
 
 .fact-note {
   margin: 16px 0 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.8;
 }
 
@@ -660,7 +660,7 @@ const references = [
 
 .page-intro .updated-at {
   margin-top: 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .supplementary-section {
@@ -669,7 +669,7 @@ const references = [
 
 .supplementary-section summary {
   color: var(--ink);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 700;
   line-height: 1.6;
   cursor: pointer;
@@ -689,7 +689,7 @@ const references = [
 .notice h2,
 .practice-cta h2 {
   margin: 0;
-  font-size: 23px;
+  font-size: 1.4375rem;
   line-height: 1.4;
 }
 
@@ -764,7 +764,7 @@ const references = [
 .trend-item h3 {
   margin: 0;
   color: var(--ink);
-  font-size: 19px;
+  font-size: 1.1875rem;
   line-height: 1.5;
 }
 
@@ -803,7 +803,7 @@ const references = [
 .question-detail h4 {
   margin: 0;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -824,7 +824,7 @@ const references = [
   border-left: 3px solid #a9b9bd;
   background: #f4f7f7;
   color: #4f6169;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.8;
 }
 
@@ -871,7 +871,7 @@ const references = [
 
 .section-heading p {
   margin: 0;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .question-balance {
@@ -903,7 +903,7 @@ const references = [
 }
 
 .question-balance span {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
 }
 
@@ -925,7 +925,7 @@ th,
 td {
   padding: 15px 18px;
   border-bottom: 1px solid var(--line);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.65;
   vertical-align: top;
 }
@@ -933,7 +933,7 @@ td {
 thead th {
   background: #eef4f4;
   color: #41555c;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 tbody tr:last-child th,
@@ -1034,12 +1034,12 @@ tbody td:last-child {
 }
 
 .notice h2 {
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 .notice p {
   margin: 7px 0 0;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .notice p + p {

@@ -136,7 +136,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   gap: 9px;
   padding: 0 10px 10px;
   color: #53676e;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -164,7 +164,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   display: flex;
   align-items: center;
   color: var(--ink);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 800;
   text-decoration: none;
 }
@@ -187,7 +187,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   border-radius: 5px;
   background: #e7f2f2;
   color: var(--teal-dark);
-  font-size: 21px;
+  font-size: 1.3125rem;
   cursor: pointer;
 }
 
@@ -210,7 +210,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
   justify-content: center;
   border-radius: 5px;
   color: #40545b;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-decoration: none;
 }
@@ -284,7 +284,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
     border: 0;
     background: transparent;
     color: var(--teal-dark);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 800;
     text-align: left;
     cursor: pointer;
@@ -330,7 +330,7 @@ const examTarget = (exam: ExamCatalogEntry, question?: number) => (
     padding: 5px 6px;
   }
 
-  .exam-link { font-size: 13px; }
+  .exam-link { font-size: 0.8125rem; }
 
   .exam-row button {
     width: 44px;
