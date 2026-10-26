@@ -90,13 +90,19 @@ test('login shows Japanese errors for throttled requests and unavailable connect
   await page.getByLabel('パスワード', { exact: true }).fill('Synthetic-login-password')
   await page.getByRole('button', { name: 'ログイン', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('操作が集中しています。しばらく待ってからお試しください')
+  await expect(page.locator('.api-status')).toHaveClass(/\bconnected\b/)
   await expect(page).toHaveURL('/login')
   expect(loginRequests).toBe(1)
 
   mode = 'offline'
   await page.getByRole('button', { name: 'ログイン', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('ログインできませんでした。もう一度お試しください。')
+  await expect(page.locator('.api-status')).toHaveClass(/\bfailed\b/)
   expect(loginRequests).toBeGreaterThanOrEqual(2)
+  mode = 'limited'
+  await page.getByRole('button', { name: 'ログイン', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('操作が集中しています。しばらく待ってからお試しください')
+  await expect(page.locator('.api-status')).toHaveClass(/\bconnected\b/)
   await assertFitsViewport(page)
 })
 

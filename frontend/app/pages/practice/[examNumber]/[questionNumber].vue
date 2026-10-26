@@ -163,6 +163,16 @@ const requestQuery = computed(() => ({
   exam_number: validPosition.value ? examNumber.value : 0,
   after_question_number: validPosition.value ? questionNumber.value - 1 : -1,
 }))
+// Keep Nuxt's reactive fetch/error/retry handling, but reject positions already
+// known to be invalid before reaching the shared API client or the network.
+const questionApi = new Proxy(api, {
+  apply(target, thisArg, args) {
+    if (!validPosition.value) return Promise.reject(createError({
+      statusCode: 422, message: '試験ナンバーまたは問番号が正しくありません。',
+    }))
+    return Reflect.apply(target as Function, thisArg, args)
+  },
+})
 // HttpOnly credentials do not change authHeaders. Re-fetch when the native
 // identity or its application entitlement changes, including another tab.
 const questionSession = computed(() => JSON.stringify([
@@ -179,7 +189,7 @@ const {
   refresh,
   clear,
 } = await useFetch<ApiResponse<Question>>('/api/v1/questions/next', {
-  $fetch: api,
+  $fetch: questionApi,
   query: requestQuery,
   headers: authHeaders,
   watch: [questionSession],

@@ -31,6 +31,17 @@ export default defineNuxtConfig({
     // Nitro resolves shared modules after the intermediate SSR build.
     build: { rolldownOptions: { makeAbsoluteExternalsRelative: false } },
   },
+  hooks: {
+    'vite:extendConfig'(config, { isClient }) {
+      if (!isClient) return
+      // Nuxt UI transpiles Reka for SSR. Prebundle its client-side barrel to
+      // keep development startup from loading hundreds of individual modules.
+      const client = config.environments?.client ?? config
+      if (!client.optimizeDeps) return
+      client.optimizeDeps.exclude = (client.optimizeDeps.exclude ?? []).filter(dependency => dependency !== 'reka-ui')
+      client.optimizeDeps.include = [...new Set([...(client.optimizeDeps.include ?? []), 'reka-ui'])]
+    },
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {

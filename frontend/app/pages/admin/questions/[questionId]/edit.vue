@@ -34,18 +34,21 @@ const questionInput = computed<AdminQuestionInput | null>(() => {
 
 const submit = async (input: AdminQuestionInput) => {
   if (submitting.value) return
+  const requestedQuestionId = questionId.value
   submitting.value = true
   errorMessage.value = ''
   fieldErrors.value = []
   successMessage.value = ''
 
   try {
-    await api(`/api/v1/admin/questions/${questionId.value}`, {
+    const saved = await api<ApiResponse<AdminQuestion>>(`/api/v1/admin/questions/${requestedQuestionId}`, {
       method: 'PATCH',
       headers: authHeaders.value,
       body: { question: input },
     })
-    await refresh()
+    if (questionId.value !== requestedQuestionId) return
+    // PATCH already returns the canonical saved question, including choice IDs.
+    response.value = saved
     successMessage.value = '編集内容を保存しました。'
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }

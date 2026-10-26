@@ -37,37 +37,48 @@ function meta(page: number, perPage: number, total: number, atLeastOne = false) 
 const serializeChoice = (choice: ChoiceRecord) => ({ id: Number(choice.id), choice_label: choice.choice_label,
   content_blocks: choice.content_blocks, display_order: Number(choice.display_order) })
 
-export async function authorizeExam(examNumber: number, user: User | null, db?: Database): Promise<void> {
-  if (!paymentsEnabled || examNumber <= freeExamMax || await hasPaidAccess(user, db)) return
+function authorizeResolvedExam(examNumber: number, user: User | null, fullAccess: boolean): void {
+  if (!paymentsEnabled || examNumber <= freeExamMax || fullAccess) return
   if (user) fail(403, 'paid_membership_required', 'この模擬試験の利用にはプレミアム会員資格が必要です')
   fail(401, 'unauthorized', 'この模擬試験を利用するにはログインが必要です')
 }
 
-async function serializePublicQuestion(question: QuestionRecord, user: User | null, db: Database) {
+export async function authorizeExam(examNumber: number, user: User | null, db?: Database): Promise<void> {
+  if (!paymentsEnabled || examNumber <= freeExamMax) return
+  authorizeResolvedExam(examNumber, user, await hasPaidAccess(user, db))
+}
+
+// Only these private assembly helpers accept resolved access. Every public
+// entry point still resolves current DB entitlements for its own request.
+async function publicQuestionResponse(question: QuestionRecord, user: User | null, fullAccess: boolean, db: Database) {
+  authorizeResolvedExam(question.exam_number, user, fullAccess)
   const payload: Record<string, unknown> = { id: question.id, exam_number: question.exam_number,
     question_number: question.question_number, content_blocks: question.content_blocks,
     major_category_code: question.major_category_code, category_code: question.category_code,
     choices: question.choices.map(serializeChoice) }
   if (user) {
-    const allowed = await hasPaidAccess(user, db)
-    const favorite = allowed ? await db.favorite.findUnique({ where: { user_id_question_id: { user_id: user.id, question_id: question.id } }, select: { id: true } }) : null
-    payload.is_favorite = allowed && favorite !== null
+    const favorite = fullAccess ? await db.favorite.findUnique({ where: { user_id_question_id: { user_id: user.id, question_id: question.id } }, select: { id: true } }) : null
+    payload.is_favorite = fullAccess && favorite !== null
   }
-  return payload
+  return { data: payload }
 }
 
 export async function getQuestion(id: number, user: User | null, db: Database = getDatabase()) {
   const question = await loadQuestion(id, db, { published: true })
-  await authorizeExam(question.exam_number, user, db)
-  return { data: await serializePublicQuestion(question, user, db) }
+  const fullAccess = await hasPaidAccess(user, db)
+  return publicQuestionResponse(question, user, fullAccess, db)
 }
 
 export async function nextQuestion(params: Record<string, unknown>, user: User | null, db: Database = getDatabase()) {
   const where: Prisma.QuestionWhereInput = { publication_status: 'published' }
   let orderBy: Prisma.QuestionOrderByWithRelationInput[] = [{ exam_number: 'asc' }, { question_number: 'asc' }]
+  // Resolve once within this request, only when permissions are needed. Free
+  // invalid/missing questions must not add otherwise unnecessary DB reads.
+  let access: Promise<boolean> | undefined
+  const currentAccess = () => access ??= hasPaidAccess(user, db)
   if (present(params.exam_number)) {
     const exam = integerParam(params.exam_number, 'exam_number')
-    await authorizeExam(exam, user, db)
+    if (paymentsEnabled && exam > freeExamMax) authorizeResolvedExam(exam, user, await currentAccess())
     where.exam_number = exam
     if (present(params.after_question_number)) {
       where.question_number = { gt: integerParam(params.after_question_number, 'after_question_number', 0) }
@@ -75,7 +86,7 @@ export async function nextQuestion(params: Record<string, unknown>, user: User |
     orderBy = [{ question_number: 'asc' }]
   } else {
     if (present(params.after_question_number)) fail(400, 'bad_request', 'exam_numberを指定してください')
-    if (!await hasPaidAccess(user, db)) {
+    if (!await currentAccess()) {
       where.exam_number = { lte: freeExamMax }
     }
   }
@@ -86,7 +97,8 @@ export async function nextQuestion(params: Record<string, unknown>, user: User |
   }
   if (!question) question = await db.question.findFirst({ where, orderBy, select: { id: true } })
   if (!question) return notFound()
-  return getQuestion(record(question).id, user, db)
+  const selected = await loadQuestion(record(question).id, db, { published: true })
+  return publicQuestionResponse(selected, user, await currentAccess(), db)
 }
 
 export async function answerQuestion(id: number, selectedChoiceId: unknown, user: User | null, db?: Database) {

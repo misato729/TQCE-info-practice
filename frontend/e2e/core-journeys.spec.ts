@@ -53,17 +53,26 @@ test('anonymous practice hides answers until submitting and fits the screen', as
 })
 
 test('registration, history, favorites, relogin and cross-tab logout stay consistent', async ({ page, context }) => {
+  let memberReads = 0
+  page.on('request', request => {
+    if (request.method() === 'GET' && new URL(request.url()).pathname === '/api/v1/me') memberReads += 1
+  })
   const suffix = randomBytes(8).toString('hex')
   const email = `browser-${suffix}@example.test`
   const password = `Synthetic-${randomBytes(16).toString('hex')}`
   await page.goto('/signup')
+  await expect(page.locator('.api-status')).toHaveClass(/\bconnected\b/)
+  await page.waitForLoadState('networkidle')
   await page.getByLabel('ユーザー名', { exact: true }).fill(`検証会員${suffix}`)
   await page.getByLabel('メールアドレス', { exact: true }).fill(email)
   await page.getByLabel('パスワード', { exact: true }).fill(password)
   await page.getByLabel('確認用パスワード', { exact: true }).fill(password)
+  const beforeSignup = memberReads
   await page.getByRole('button', { name: '登録する', exact: true }).click()
   await expect(page).toHaveURL('/')
   await expect(page.locator('.site-header .account-link')).toBeVisible()
+  await page.waitForLoadState('networkidle')
+  expect(memberReads - beforeSignup).toBe(1)
 
   const cookies = await context.cookies()
   const sessionCookie = cookies.find(cookie => cookie.name.endsWith('session_token'))
@@ -100,9 +109,12 @@ test('registration, history, favorites, relogin and cross-tab logout stay consis
   await expect(page.getByRole('alert')).toContainText('メールアドレスまたはパスワードが正しくありません')
   await expect(page).toHaveURL(/\/login\?redirect=/)
   await page.getByLabel('パスワード', { exact: true }).fill(password)
+  const beforeLogin = memberReads
   await page.getByRole('button', { name: 'ログイン', exact: true }).click()
   await expect(page).toHaveURL('/favorites')
   await expect(page.locator('.favorite-card')).toHaveCount(1)
+  await page.waitForLoadState('networkidle')
+  expect(memberReads - beforeLogin).toBe(1)
   const firstTabSession = page.waitForResponse(response => new URL(response.url()).pathname === '/api/auth/get-session' && response.ok())
   await page.goto('/history')
   await firstTabSession

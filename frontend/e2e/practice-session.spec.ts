@@ -24,7 +24,7 @@ async function sessionFixture(context: BrowserContext) {
     role: 'user', paid_content_access: true, favorite_questions: [],
     membership: { status: 'active', purchased_at: '2026-01-01T00:00:00.000Z', expires_at: null }, verification_access: null,
   })
-  await context.route('**/api/**', async route => {
+  await context.route(url => url.pathname.startsWith('/api/'), async route => {
     const path = new URL(route.request().url()).pathname
     requests.push(`${route.request().method()} ${path} ${identity}`)
     const respond = (body: unknown, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
@@ -144,7 +144,7 @@ test('an answer finishing after an account switch cannot restore the previous ac
 
 test('anonymous 401 responses do not cause a session-generation refetch loop', async ({ page, context }) => {
   let questionRequests = 0
-  await context.route('**/api/**', async route => {
+  await context.route(url => url.pathname.startsWith('/api/'), async route => {
     const path = new URL(route.request().url()).pathname
     if (path === '/api/auth/get-session') {
       return route.fulfill({ status: 200, contentType: 'application/json', body: 'null' })

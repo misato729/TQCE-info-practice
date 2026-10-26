@@ -34,17 +34,22 @@ type ApiResponse = {
 }
 
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, authHeaders, sessionVersion } = useAuth()
+const { isLoggedIn, user, authHeaders, sessionVersion } = useAuth()
 const histories = ref<HistoryItem[]>([])
 const meta = ref<HistoryMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
 const loading = ref(false)
 const loadError = ref('')
 let loadVersion = 0
+const historySession = computed(() => JSON.stringify([
+  user.value?.id ?? null, user.value?.paid_content_access ?? false, sessionVersion.value,
+]))
+let currentOwner = user.value?.id ?? null
 
 const loadHistories = async () => {
   const version = ++loadVersion
-  const session = sessionVersion.value
+  const session = historySession.value
+  const requestedPage = page.value
   if (!isLoggedIn.value) {
     histories.value = []
     loadError.value = ''
@@ -57,14 +62,14 @@ const loadHistories = async () => {
   try {
     const response = await api<ApiResponse>('/api/v1/answer_histories', {
       headers: authHeaders.value,
-      query: { page: page.value, per_page: 20 },
+      query: { page: requestedPage, per_page: 20 },
     })
-    if (version !== loadVersion || session !== sessionVersion.value || !isLoggedIn.value) return
+    if (version !== loadVersion || session !== historySession.value || requestedPage !== page.value || !isLoggedIn.value) return
     histories.value = response.data
     meta.value = response.meta
   }
   catch (error: any) {
-    if (version !== loadVersion || session !== sessionVersion.value) return
+    if (version !== loadVersion || session !== historySession.value || requestedPage !== page.value) return
     if (error?.statusCode === 401 || error?.status === 401) {
       return
     }
@@ -75,7 +80,20 @@ const loadHistories = async () => {
   }
 }
 
-watch([isLoggedIn, page, sessionVersion], loadHistories, { immediate: true })
+// Conceal the old entitlement's cards immediately, even if the replacement
+// lookup fails. The default-flush loader coalesces one authentication update.
+watch(historySession, () => {
+  loadVersion += 1
+  histories.value = []
+  loadError.value = ''
+  loading.value = false
+  const owner = user.value?.id ?? null
+  if (owner !== currentOwner) {
+    currentOwner = owner
+    page.value = 1
+  }
+}, { flush: 'sync' })
+watch([historySession, page], loadHistories, { immediate: true })
 
 const formatAnsweredAt = (value: string) => new Intl.DateTimeFormat('ja-JP', {
   dateStyle: 'medium',

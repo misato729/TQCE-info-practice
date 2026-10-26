@@ -6,6 +6,22 @@ type ApiResponse<T> = { data: T }
 const currentUserRequests = new WeakMap<object, { version: number, promise: Promise<AuthUser | null> }>()
 const logoutRequests = new WeakMap<object, Promise<void>>()
 const authMutationQueues = new WeakMap<object, Promise<void>>()
+type LocalSignInReceipt = { version: number, userId: number, fingerprint: string, expiresAt: number }
+const localSignInReceipts = new WeakMap<object, LocalSignInReceipt>()
+const localSignInReceiptLifetime = 30_000
+
+// A short-lived receipt only deduplicates the library notification for a local
+// sign-in already hydrated through /me. Never retain the SDK's session token.
+async function sessionFingerprint(token: unknown): Promise<string | null> {
+  if (typeof token !== 'string' || !token || !globalThis.crypto?.subtle) return null
+  try {
+    const digest = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(token))
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')
+  } catch {
+    // Missing Web Crypto must not prevent a valid sign-in or session refresh.
+    return null
+  }
+}
 
 function authFailure(error: { status?: number, code?: string }, action: 'login' | 'signup' | 'logout') {
   let message: string | undefined
@@ -48,11 +64,16 @@ export const useAuth = () => {
   // Keep existing useFetch callers compatible; credentials are handled by $api.
   const authHeaders = computed<Record<string, string>>(() => ({}))
   const queueMutation = <T>(action: () => Promise<T>): Promise<T> => {
+    localSignInReceipts.delete(nuxtApp)
     authMutationPending.value += 1
-    return serializeAuthMutation(nuxtApp, action).finally(() => { authMutationPending.value -= 1 })
+    return serializeAuthMutation(nuxtApp, () => {
+      localSignInReceipts.delete(nuxtApp)
+      return action()
+    }).finally(() => { authMutationPending.value -= 1 })
   }
 
   const clearCurrentUser = () => {
+    localSignInReceipts.delete(nuxtApp)
     sessionVersion.value += 1
     user.value = null
     authResolved.value = true
@@ -99,22 +120,39 @@ export const useAuth = () => {
     }
   }
 
-  const completeSignIn = async (operationVersion: number) => {
+  const completeSignIn = async (operationVersion: number, nativeToken: unknown) => {
     if (sessionVersion.value !== operationVersion) throw new Error('Authentication operation was superseded')
     // Invalidate checks made with the old cookie while the native action ran.
     const hydrationVersion = ++sessionVersion.value
     user.value = null
     authResolved.value = false
-    const current = await loadCurrentUser(true)
+    const [current, fingerprint] = await Promise.all([loadCurrentUser(true), sessionFingerprint(nativeToken)])
     if (sessionVersion.value !== hydrationVersion || !current) throw new Error('Session could not be confirmed')
+    if (fingerprint) localSignInReceipts.set(nuxtApp, {
+      version: hydrationVersion, userId: current.id, fingerprint,
+      expiresAt: Date.now() + localSignInReceiptLifetime,
+    })
     return current
+  }
+
+  const consumeLocalSignInSession = (identity: unknown, token: unknown): Promise<boolean> | null => {
+    const receipt = localSignInReceipts.get(nuxtApp)
+    if (!receipt) return null
+    // Consume once, including a mismatching or expired notification. Another
+    // session must keep the normal generation change and fresh /me lookup.
+    localSignInReceipts.delete(nuxtApp)
+    if (receipt.version !== sessionVersion.value || String(receipt.userId) !== String(identity)
+      || receipt.expiresAt <= Date.now() || typeof token !== 'string' || !token) return null
+    return sessionFingerprint(token).then(fingerprint => (
+      receipt.expiresAt > Date.now() && fingerprint !== null && fingerprint === receipt.fingerprint
+    ))
   }
   const login = (credentials: { email: string, password: string }) => queueMutation(async () => {
     const version = ++sessionVersion.value
     authResolved.value = false
     const result = await nuxtApp.$authClient.signIn.email(credentials)
     if (result.error) throw authFailure(result.error, 'login')
-    return completeSignIn(version)
+    return completeSignIn(version, result.data?.token)
   })
   const signup = async (attributes: { name: string, email: string, password: string, password_confirmation: string }) => {
     const input = signupFormSchema.parse(attributes)
@@ -124,7 +162,7 @@ export const useAuth = () => {
       const { name, email, password } = input
       const result = await nuxtApp.$authClient.signUp.email({ name, email, password })
       if (result.error) throw authFailure(result.error, 'signup')
-      return completeSignIn(version)
+      return completeSignIn(version, result.data?.token)
     })
   }
   const logout = async (): Promise<void> => {
@@ -154,5 +192,5 @@ export const useAuth = () => {
     if (sessionVersion.value === version) clearCurrentUser()
   })
 
-  return { user, isLoggedIn, authResolved, sessionVersion, authMutationPending, authHeaders, clearCurrentUser, login, signup, logout, deleteAccount, ensureCurrentUser }
+  return { user, isLoggedIn, authResolved, sessionVersion, authMutationPending, authHeaders, clearCurrentUser, login, signup, logout, deleteAccount, ensureCurrentUser, consumeLocalSignInSession }
 }

@@ -41,6 +41,10 @@ export async function requireAdmin(event: H3Event): Promise<User> {
   return user
 }
 
+function resolvedPaidAccess(user: User | null | undefined, activeMembership: boolean, activeGrant: boolean): boolean {
+  return !paymentsEnabled || Boolean(user && (user.role === 'admin' || activeMembership || activeGrant))
+}
+
 export async function hasPaidAccess(user: User | null | undefined, db?: Database): Promise<boolean> {
   if (!paymentsEnabled) return true
   if (!user) return false
@@ -50,16 +54,18 @@ export async function hasPaidAccess(user: User | null | undefined, db?: Database
     connection.membership.findFirst({ where: { user_id: user.id, status: 'active' }, select: { id: true } }),
     connection.verificationAccessGrant.findFirst({ where: { user_id: user.id, revoked_at: null, expires_at: { gt: new Date() } }, select: { id: true } }),
   ])
-  return membership !== null || grant !== null
+  return resolvedPaidAccess(user, membership !== null, grant !== null)
 }
 
 export async function userPayload(user: User, db?: Database): Promise<AuthUser> {
   const connection = db ?? getDatabase()
-  const [membership, grant, access] = await Promise.all([
+  const [membership, grant] = await Promise.all([
     connection.membership.findUnique({ where: { user_id: user.id } }),
     connection.verificationAccessGrant.findFirst({ where: { user_id: user.id, revoked_at: null, expires_at: { gt: new Date() } } }),
-    hasPaidAccess(user, connection),
   ])
+  // These rows already belong to this request; reusing them avoids querying
+  // both entitlements twice without caching permissions between requests.
+  const access = resolvedPaidAccess(user, membership?.status === 'active', grant !== null)
   const favorites = access ? record(await connection.favorite.findMany({ where: { user_id: user.id, question: { publication_status: 'published' } },
     select: { question: { select: { id: true, exam_number: true, question_number: true } } },
     orderBy: [{ question: { exam_number: 'asc' } }, { question: { question_number: 'asc' } }] })).map(favorite => favorite.question) : []

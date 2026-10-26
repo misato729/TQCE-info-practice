@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test('admin login keeps leading icons clear of typed text on desktop and mobile', async ({ page }) => {
   const mutations: string[] = []
   // Geometry checks use an anonymous mocked session, never a real account.
-  await page.route('**/api/**', async route => {
+  await page.route(url => url.pathname.startsWith('/api/'), async route => {
     const request = route.request()
     const path = new URL(request.url()).pathname
     if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method())) mutations.push(path)

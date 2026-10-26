@@ -36,6 +36,11 @@ const removingId = ref<number | null>(null)
 const checkingAccess = ref(false)
 const accessError = ref('')
 let loadVersion = 0
+let toggleVersion = 0
+const favoriteScope = computed(() => JSON.stringify([
+  user.value?.id ?? null, sessionVersion.value, canUseFavorites.value, page.value,
+]))
+let currentOwner = user.value?.id ?? null
 
 const resolveAccess = async () => {
   if (!isLoggedIn.value || user.value) return
@@ -52,7 +57,7 @@ const resolveAccess = async () => {
 
 const loadFavorites = async () => {
   const version = ++loadVersion
-  const session = sessionVersion.value
+  const scope = favoriteScope.value
   if (!canUseFavorites.value) {
     favorites.value = []
     loading.value = false
@@ -66,7 +71,7 @@ const loadFavorites = async () => {
       headers: authHeaders.value,
       query: { page: page.value, per_page: 20 },
     })
-    if (version !== loadVersion || session !== sessionVersion.value || !canUseFavorites.value) return
+    if (version !== loadVersion || scope !== favoriteScope.value || !canUseFavorites.value) return
     if (response.data.length === 0 && page.value > 1) {
       page.value -= 1
       return
@@ -76,7 +81,7 @@ const loadFavorites = async () => {
     response.data.forEach(item => setFavorite(item.question, true))
   }
   catch (error: any) {
-    if (version !== loadVersion || session !== sessionVersion.value) return
+    if (version !== loadVersion || scope !== favoriteScope.value) return
     if ((error?.statusCode ?? error?.status) === 401) return
     else if (error?.data?.error?.code === 'paid_membership_required') disableFavorites()
     else {
@@ -91,17 +96,23 @@ const loadFavorites = async () => {
 
 const toggleFromList = async (item: FavoriteItem) => {
   if (removingId.value) return
+  const version = ++toggleVersion
+  const scope = favoriteScope.value
+  const listVersion = loadVersion
+  const isCurrent = () => version === toggleVersion && scope === favoriteScope.value && listVersion === loadVersion
   removingId.value = item.id
   try {
     const added = await toggleFavorite(item.question)
+    if (!isCurrent()) return
     meta.value.total_count += added ? 1 : -1
   }
   catch (error: any) {
+    if (!isCurrent()) return
     if ((error?.statusCode ?? error?.status) === 401) return
     else loadError.value = 'お気に入りを更新できませんでした。もう一度お試しください。'
   }
   finally {
-    removingId.value = null
+    if (version === toggleVersion && scope === favoriteScope.value) removingId.value = null
   }
 }
 
@@ -111,8 +122,22 @@ const majorCategoryLabel = (code?: string) => (
 
 onMounted(() => { void resolveAccess() })
 watch(isLoggedIn, () => { void resolveAccess() })
-// A replacement session can belong to the same user; retry a discarded lookup.
-watch([() => user.value?.id, canUseFavorites, page, sessionVersion], loadFavorites, { immediate: true })
+// Invalidate pending reads and mutations before a new account/page can render.
+// Coalesce these changes in the loader rather than adding a verification GET.
+watch(favoriteScope, () => {
+  loadVersion += 1
+  toggleVersion += 1
+  favorites.value = []
+  loadError.value = ''
+  loading.value = false
+  removingId.value = null
+  const owner = user.value?.id ?? null
+  if (owner !== currentOwner) {
+    currentOwner = owner
+    page.value = 1
+  }
+}, { flush: 'sync' })
+watch(favoriteScope, loadFavorites, { immediate: true })
 </script>
 
 <template>

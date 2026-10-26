@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 const globals = globalThis as any
 globals.defineNuxtPlugin = (plugin: any) => typeof plugin === 'function' ? plugin : plugin.setup
 globals.useRequestURL = () => new URL('https://exam.example.invalid')
+globals.useApiStatus = () => ({ beginRequest() {}, finishRequest() {} })
 const { default: setupClient } = await import('../app/plugins/auth-client.ts')
 
 test('Better Auth Vue client uses native endpoints and credentialed requests', async () => {
