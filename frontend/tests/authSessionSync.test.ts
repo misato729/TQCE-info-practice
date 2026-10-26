@@ -14,6 +14,9 @@ globals.ref = ref
 globals.watch = watch
 globals.useAuth = useAuth
 globals.useFavorites = useFavorites
+globals.useIncorrectReview = () => ({
+  loading: ref(false), error: ref(''), start: async () => false,
+})
 globals.useApiStatus = useApiStatus
 globals.defineNuxtPlugin = (plugin: any) => typeof plugin === 'function' ? plugin : plugin.setup
 globals.defineNuxtRouteMiddleware = (middleware: unknown) => middleware

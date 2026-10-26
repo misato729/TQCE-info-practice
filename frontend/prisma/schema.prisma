@@ -81,6 +81,7 @@ model AnswerHistory {
   @@index([selected_choice_id], map: "index_answer_histories_on_selected_choice_id")
   @@index([user_id, question_id], map: "index_answer_histories_on_user_id_and_question_id")
   @@index([user_id, created_at(sort: Desc)], map: "index_answer_histories_on_user_id_and_created_at")
+  @@index([user_id, question_id, created_at(sort: Desc), id(sort: Desc)], map: "index_answer_histories_for_latest_by_question")
   @@map("answer_histories")
 }
 model Favorite {

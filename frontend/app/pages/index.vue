@@ -7,7 +7,7 @@ import {
   type PracticeOrder,
 } from '~/utils/practiceSequence'
 
-type LauncherMode = 'exam' | 'conditions'
+type LauncherMode = 'exam' | 'conditions' | 'incorrect'
 
 const title = '情報教認ラボ｜高等学校（情報）教員資格認定試験'
 const description = '高等学校（情報）教員資格認定試験の予想問題を、解説と根拠資料付きで演習できる学習サイトです。'
@@ -27,8 +27,23 @@ const updates = [
 
 const questionNumbers = Object.freeze(Array.from({ length: 20 }, (_, index) => index + 1))
 
-const { user } = useAuth()
+const { user, isLoggedIn, sessionVersion } = useAuth()
+const {
+  totalCount: incorrectReviewCount,
+  loading: incorrectReviewLoading,
+  error: incorrectReviewError,
+  loaded: incorrectReviewLoaded,
+  load: loadIncorrectReview,
+  start: startIncorrectReview,
+} = useIncorrectReview()
 const launcherMode = ref<LauncherMode>('exam')
+
+const selectLauncherMode = (mode: LauncherMode) => {
+  launcherMode.value = mode
+  if (mode === 'incorrect' && isLoggedIn.value) void loadIncorrectReview()
+}
+
+const retryIncorrectReview = () => loadIncorrectReview({ force: true })
 
 const hasFullAccess = computed(() => (
   user.value?.role === 'admin' || user.value?.paid_content_access === true
@@ -120,6 +135,15 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
     : selectedExamNumbers.value.filter(examNumber => examNumbers.includes(examNumber))
 })
 
+const incorrectReviewSession = computed(() => JSON.stringify([
+  user.value?.id ?? null,
+  sessionVersion.value,
+  user.value?.paid_content_access ?? false,
+]))
+watch(incorrectReviewSession, () => {
+  if (launcherMode.value === 'incorrect' && isLoggedIn.value) void loadIncorrectReview()
+})
+
 </script>
 
 <template>
@@ -145,7 +169,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
             <span>問題演習を始める</span>
           </h2>
         </div>
-        <p>模試を1回分解くか、取り組みたい模試と問題番号を自由に組み合わせて始められます。</p>
+        <p>模試を1回分解くほか、条件を指定した演習や、間違えた問題だけの復習もできます。</p>
       </div>
 
       <div class="launcher-tabs" role="tablist" aria-label="問題演習の開始方法">
@@ -156,7 +180,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           :aria-selected="launcherMode === 'exam'"
           aria-controls="exam-mode-panel"
           :class="{ active: launcherMode === 'exam' }"
-          @click="launcherMode = 'exam'"
+          @click="selectLauncherMode('exam')"
         >
           <UIcon name="i-lucide-files" />
           模試を選ぶ
@@ -168,10 +192,22 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           :aria-selected="launcherMode === 'conditions'"
           aria-controls="conditions-mode-panel"
           :class="{ active: launcherMode === 'conditions' }"
-          @click="launcherMode = 'conditions'"
+          @click="selectLauncherMode('conditions')"
         >
           <UIcon name="i-lucide-list-filter" />
           条件を指定
+        </button>
+        <button
+          id="incorrect-mode-tab"
+          type="button"
+          role="tab"
+          :aria-selected="launcherMode === 'incorrect'"
+          aria-controls="incorrect-mode-panel"
+          :class="{ active: launcherMode === 'incorrect' }"
+          @click="selectLauncherMode('incorrect')"
+        >
+          <UIcon name="i-lucide-rotate-ccw" />
+          間違えた問題
         </button>
       </div>
 
@@ -204,7 +240,7 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
       </div>
 
       <div
-        v-else
+        v-else-if="launcherMode === 'conditions'"
         id="conditions-mode-panel"
         class="launcher-panel"
         role="tabpanel"
@@ -301,6 +337,77 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
           </div>
         </form>
       </div>
+
+      <div
+        v-else
+        id="incorrect-mode-panel"
+        class="launcher-panel"
+        role="tabpanel"
+        aria-labelledby="incorrect-mode-tab"
+      >
+        <div class="incorrect-review-panel" aria-live="polite">
+          <template v-if="!isLoggedIn">
+            <UIcon class="incorrect-review-icon" name="i-lucide-log-in" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>ログインが必要です</h3>
+              <p>間違えた問題の記録は、ログイン後に利用できます。</p>
+            </div>
+            <NuxtLink
+              class="primary-link"
+              :to="{ path: '/login', query: { redirect: '/#practice-launcher' } }"
+            >
+              ログインへ
+            </NuxtLink>
+          </template>
+
+          <template v-else-if="incorrectReviewLoading">
+            <UIcon class="incorrect-review-icon spin" name="i-lucide-loader-circle" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>復習する問題を確認しています</h3>
+              <p>最新の解答状況を読み込んでいます。</p>
+            </div>
+          </template>
+
+          <template v-else-if="incorrectReviewError">
+            <UIcon class="incorrect-review-icon error-icon" name="i-lucide-circle-alert" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>間違えた問題を読み込めません</h3>
+              <p>{{ incorrectReviewError }}</p>
+            </div>
+            <button class="secondary-link" type="button" @click="retryIncorrectReview">再読み込み</button>
+          </template>
+
+          <template v-else-if="incorrectReviewLoaded && incorrectReviewCount === 0">
+            <UIcon class="incorrect-review-icon" name="i-lucide-circle-check" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>現在、復習する問題はありません</h3>
+              <p>通常の問題演習で、次の問題に取り組めます。</p>
+            </div>
+            <button class="secondary-link" type="button" @click="selectLauncherMode('exam')">模試を選ぶ</button>
+          </template>
+
+          <template v-else-if="incorrectReviewLoaded">
+            <UIcon class="incorrect-review-icon" name="i-lucide-list-restart" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>復習する問題が{{ incorrectReviewCount }}問あります</h3>
+              <p>最新の回答が不正解の問題を、毎回異なる順番で復習します。</p>
+            </div>
+            <button class="primary-link" type="button" @click="startIncorrectReview">
+              <UIcon name="i-lucide-shuffle" aria-hidden="true" />
+              ランダムに復習を始める
+            </button>
+          </template>
+
+          <template v-else>
+            <UIcon class="incorrect-review-icon" name="i-lucide-list-restart" aria-hidden="true" />
+            <div class="incorrect-review-copy">
+              <h3>間違えた問題を復習</h3>
+              <p>最新の解答状況から、復習する問題を確認します。</p>
+            </div>
+            <button class="secondary-link" type="button" @click="loadIncorrectReview()">問題を確認する</button>
+          </template>
+        </div>
+      </div>
     </section>
 
     <section class="home-section updates-section">
@@ -366,9 +473,9 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 .section-heading::before { content: ''; flex: 0 0 4px; width: 4px; height: 26px; background: var(--teal-dark); }
 .section-heading > span { min-width: 0; }
 .launcher-tabs {
-  width: min(400px, 100%);
+  width: min(660px, 100%);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 30px;
   border-bottom: 1px solid #bfcfd0;
 }
@@ -388,6 +495,26 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
 .launcher-tabs button.active { border-color: var(--teal); color: var(--teal-dark); }
 .launcher-tabs :deep(svg) { width: 19px; height: 19px; }
 .launcher-panel { padding-top: 28px; }
+.incorrect-review-panel {
+  min-height: 154px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 28px;
+  border: 1px solid #c7d4d5;
+  border-radius: 8px;
+  background: #fff;
+}
+.incorrect-review-icon { width: 34px; height: 34px; color: var(--teal); }
+.incorrect-review-copy { min-width: 0; }
+.incorrect-review-copy h3 { margin: 0; color: var(--ink); font-size: 19px; line-height: 1.5; }
+.incorrect-review-copy p { margin: 7px 0 0; color: var(--muted); line-height: 1.7; }
+.incorrect-review-panel > .primary-link,
+.incorrect-review-panel > .secondary-link { white-space: nowrap; }
+.incorrect-review-panel .error-icon { color: var(--coral); }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .exam-grid-heading {
   min-height: 32px;
   display: flex;
@@ -555,6 +682,14 @@ watch(availableExamNumbers, (examNumbers, previousExamNumbers) => {
   .launcher-heading h2 { font-size: 27px; }
   .launcher-heading > p { font-size: 14px; }
   .launcher-tabs { width: 100%; margin-top: 24px; }
+  .launcher-tabs button { min-height: 62px; flex-direction: column; gap: 4px; font-size: 12px; }
+  .incorrect-review-panel {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 22px 20px;
+  }
+  .incorrect-review-panel > .primary-link,
+  .incorrect-review-panel > .secondary-link { width: 100%; }
   .exam-grid-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
   .exam-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
   .exam-card { height: 68px; }

@@ -9,7 +9,7 @@ import { closeDatabase, isolatedTransaction, query, type Database } from '../ser
 import type { User } from '../server/core/auth.ts'
 import { excerptFrom, sanitizeQuestionInput, validateQuestionInput, type QuestionInput } from '../server/services/learning-validation.ts'
 import { deleteQuestion, loadQuestion, materialDigest, saveQuestion } from '../server/services/learning-writer.ts'
-import { answerQuestion, getHistory, getQuestion, listAdminQuestions, listExams, listFavorites, listHistory, nextQuestion, putFavorite, removeFavorite } from '../server/services/learning.ts'
+import { answerQuestion, getHistory, getQuestion, listAdminQuestions, listExams, listFavorites, listHistory, listIncorrectReviewQuestions, nextQuestion, putFavorite, removeFavorite } from '../server/services/learning.ts'
 
 process.env.APP_ENV = 'test'
 if (process.env.TEST_DATABASE_URL) process.env.DATABASE_URL = process.env.TEST_DATABASE_URL
@@ -171,6 +171,60 @@ test('signed-in answers, history ownership, favorite idempotency and pagination 
   await removeFavorite(question.id, owner, db)
   await removeFavorite(question.id, owner, db)
   assert.equal((await listFavorites(owner, {}, db)).data.length, 0)
+}))
+
+test('incorrect review returns each owner question only when its latest answer is wrong', integration, async () => isolated(async (db, exam) => {
+  const owner = await user(db)
+  const other = await user(db)
+  const sameTimestampLatestWrong = await saveQuestion(input({ exam_number: exam }), { db })
+  const corrected = await saveQuestion(input({ exam_number: exam, question_number: 2 }), { db })
+  const wrong = await saveQuestion(input({ exam_number: exam + 1, question_number: 3 }), { db })
+  const hidden = await saveQuestion(input({ exam_number: exam + 1 }), { db })
+  await assert.rejects(listIncorrectReviewQuestions(null, db), apiError(401))
+
+  const olderCorrect = await answerQuestion(sameTimestampLatestWrong.id, sameTimestampLatestWrong.choices[1]!.id, owner, db)
+  const newerWrong = await answerQuestion(sameTimestampLatestWrong.id, sameTimestampLatestWrong.choices[0]!.id, owner, db)
+  await query('UPDATE answer_histories SET created_at=$1 WHERE id IN ($2,$3)',
+    [new Date('2026-10-26T00:00:00.000Z'), olderCorrect.data.answer_history_id, newerWrong.data.answer_history_id], db)
+  await answerQuestion(corrected.id, corrected.choices[0]!.id, owner, db)
+  await answerQuestion(corrected.id, corrected.choices[1]!.id, owner, db)
+  await answerQuestion(corrected.id, corrected.choices[0]!.id, other, db)
+  await answerQuestion(wrong.id, wrong.choices[0]!.id, owner, db)
+  await answerQuestion(hidden.id, hidden.choices[0]!.id, owner, db)
+  await saveQuestion(input({ exam_number: exam + 1, publication_status: 'private' }), { id: hidden.id, db })
+
+  const result = await listIncorrectReviewQuestions(owner, db)
+  assert.deepEqual(result, {
+    data: [
+      { question_id: sameTimestampLatestWrong.id, exam_number: exam, question_number: 1 },
+      { question_id: wrong.id, exam_number: exam + 1, question_number: 3 },
+    ],
+    meta: { total_count: 2 },
+  })
+}))
+
+test('incorrect review filters paid questions before reporting the free-user count', integration, async () => isolated(async (db, exam) => {
+  const owner = await user(db)
+  const freeQuestion = await saveQuestion(input({ exam_number: exam }), { db })
+  const paidQuestion = await saveQuestion(input({ exam_number: exam + 1 }), { db })
+  await answerQuestion(freeQuestion.id, freeQuestion.choices[0]!.id, owner, db)
+  await answerQuestion(paidQuestion.id, paidQuestion.choices[0]!.id, owner, db)
+  setConfigurationForTesting({ ...configuration, payments: { ...configuration.payments, enabled: true, free_exam_count: exam } })
+
+  const freeResult = await listIncorrectReviewQuestions(owner, db)
+  assert.deepEqual(freeResult, { data: [{ question_id: freeQuestion.id, exam_number: exam, question_number: 1 }], meta: { total_count: 1 } })
+  assert.equal('locked_count' in freeResult.meta, false)
+
+  const [payment] = await query<{ id: number }>("INSERT INTO payments(user_id,stripe_checkout_session_id,stripe_price_id,amount,currency,status,paid_at,created_at,updated_at) VALUES($1,$2,'price_review',500,'jpy','paid',NOW(),NOW(),NOW()) RETURNING id", [owner.id, `cs_${randomUUID()}`], db)
+  await query("INSERT INTO memberships(user_id,source_payment_id,status,activated_at,created_at,updated_at) VALUES($1,$2,'active',NOW(),NOW(),NOW())", [owner.id, payment!.id], db)
+  const paidResult = await listIncorrectReviewQuestions(owner, db)
+  assert.deepEqual(paidResult, {
+    data: [
+      { question_id: freeQuestion.id, exam_number: exam, question_number: 1 },
+      { question_id: paidQuestion.id, exam_number: exam + 1, question_number: 1 },
+    ],
+    meta: { total_count: 2 },
+  })
 }))
 
 test('paid-mode authorization conceals restricted histories and preserves favorites when access is revoked', integration, async () => isolated(async (db, exam) => {

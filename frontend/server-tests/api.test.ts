@@ -160,6 +160,22 @@ test('HTTP exercises hide answers, save authenticated history and preserve favor
   assert.equal((await request('/favorites', { cookie: another.cookie })).body.meta.total_count, 0)
 })
 
+test('HTTP incorrect review requires a session and follows the latest answer', integration, async () => {
+  assert.equal((await request('/review_questions/incorrect')).status, 401)
+  const session = await account()
+  const question = await request('/questions/next?exam_number=1&after_question_number=0')
+  const item = question.body.data
+  await request(`/questions/${item.id}/answer`, { method: 'POST', cookie: session.cookie, body: { selected_choice_id: item.choices[0].id } })
+  const incorrect = await request('/review_questions/incorrect', { cookie: session.cookie })
+  assert.equal(incorrect.status, 200)
+  assert.deepEqual(incorrect.body, { data: [{ question_id: item.id, exam_number: 1, question_number: 1 }], meta: { total_count: 1 } })
+  const head = await request('/review_questions/incorrect', { method: 'HEAD', cookie: session.cookie })
+  assert.equal(head.status, 200)
+  assert.equal(head.body, null)
+  await request(`/questions/${item.id}/answer`, { method: 'POST', cookie: session.cookie, body: { selected_choice_id: item.choices[1].id } })
+  assert.deepEqual((await request('/review_questions/incorrect', { cookie: session.cookie })).body, { data: [], meta: { total_count: 0 } })
+})
+
 test('cookie-authenticated mutations reject CSRF origins and simple form submissions before changing data', integration, async () => {
   const session = await account()
   const question = await request('/questions/next?exam_number=1&after_question_number=0')

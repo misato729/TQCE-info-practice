@@ -4,7 +4,7 @@
 
 教員資格認定試験（高等学校・情報）の問題演習サービスで使用するDBを定義する。
 
-本設計では、問題を1問ずつ解くシンプルな演習を前提とする。問題は試験ナンバーごとに20問を配置するが、受験セッションや試験結果は管理しない。未ログイン時の解答は保存せず、ログインユーザーについてのみ解答履歴を保存する。お気に入りはプレミアム会員と管理者だけが利用する。模擬試験1〜5は無料、模擬試験6以降は500円の買い切りを完了したプレミアム会員向けとし、決済と利用資格をStripeの識別子により管理する。
+本設計では、問題を1問ずつ解くシンプルな演習を前提とする。問題は試験ナンバーごとに20問を配置するが、受験セッションや試験結果は管理しない。未ログイン時の解答は保存せず、ログインユーザーについてのみ解答履歴を保存する。間違えた問題の復習対象は解答履歴から都度導出し、復習セッションや問題ごとの復習状態は保存しない。お気に入りはプレミアム会員と管理者だけが利用する。模擬試験1〜5は無料、模擬試験6以降は500円の買い切りを完了したプレミアム会員向けとし、決済と利用資格をStripeの識別子により管理する。
 
 スキーマの正本は `frontend/prisma/schema.prisma` と `frontend/prisma/migrations/`。DB操作はPrisma、スキーマ変更はPrisma Migrateを使用する。日時列はPostgreSQLの `timestamp(6)`、本文はJSONBとし、既存のCHECK制約・部分一意インデックスはマイグレーションSQLで維持する。
 
@@ -37,6 +37,7 @@
 
 - 演習セッション
 - 模擬試験の受験セッション・試験結果
+- 間違えた問題の復習セッション・復習フラグ・問題ごとの復習状態
 - 学習進捗・分野別集計・メダル
 - 問題の誤り報告
 - パスワード再設定の公開機能（Better Authの汎用検証テーブルはあるが、該当APIは無効）
@@ -333,6 +334,7 @@ erDiagram
 | FOREIGN KEY | `selected_choice_id` | `question_choices.id` |
 | INDEX | `user_id, created_at` | ユーザー別の履歴を新しい順に取得 |
 | INDEX | `user_id, question_id` | 問題ごとの解答有無・履歴を確認 |
+| INDEX | `user_id, question_id, created_at DESC, id DESC` | ユーザー・問題ごとの最新回答を安定して取得し、間違えた問題の復習対象を導出 |
 | INDEX | `question_id` | 問題単位の参照・削除 |
 | INDEX | `selected_choice_id` | 選択肢参照の確認 |
 
@@ -342,6 +344,9 @@ erDiagram
 - `selected_choice_id` が同じ `question_id` に属することを、保存時に検証する。
 - `is_correct` は解答時点の判定結果を保持するスナップショットとする。
 - 履歴一覧は `created_at DESC, id DESC` で安定して並べる。
+- 間違えた問題の復習対象は、ユーザー・問題ごとに `created_at DESC, id DESC` の先頭1件を最新回答として、その `is_correct = false` の問題だけを1問1件で導出する。未回答は対象外とし、後の正解で対象から外れ、後の不正解で対象へ戻る。
+- 復習対象の取得では、`questions.publication_status = published` と現在のユーザーの利用資格も同時に確認する。無料会員には模擬試験1〜5だけを返し、プレミアム会員、管理者及び有効な検証用資格を持つユーザーには利用可能な全公開問題を許可する。
+- PostgreSQLでは `DISTINCT ON (question_id)` 又はウィンドウ関数をパラメータ化SQLで使用し、最新回答へ絞った後に不正解を選ぶ。復習対象、順序及び進捗を保存するテーブルは追加しない。
 
 ### 3.5 favorites
 
@@ -707,7 +712,7 @@ IP・ユーザーIDの平文はキーに保存せず、共通の `BETTER_AUTH_SE
 - Webhookは未加工のリクエスト本文と `Stripe-Signature` ヘッダーで署名を検証してから状態を更新する。
 - カード番号、カード有効期限、セキュリティコード及びStripe Webhook本文全体を保存しない。
 - DBバックアップにはユーザー情報が含まれるため、保存先と閲覧権限を制限する。
-- 解答履歴とお気に入りは本人または管理者以外から参照できないようにする。
+- 解答履歴、間違えた問題の復習対象及びお気に入りは本人または管理者以外から参照できないようにする。
 
 ### DB正本の問題データ運用
 
@@ -726,6 +731,7 @@ IP・ユーザーIDの平文はキーに保存せず、共通の `BETTER_AUTH_SE
 | 問題取得・問題管理 | `questions`, `question_choices` |
 | 解答判定 | `questions`, `question_choices` |
 | ログイン時の解答保存・履歴 | `answer_histories` |
+| 間違えた問題の復習対象 | `answer_histories`, `questions`, `users`, `memberships`, `verification_access_grants` |
 | お気に入り | `favorites` |
 | Checkout Session作成・決済状態 | `payments` |
 | 有料コンテンツ利用権限 | `memberships`, `payments` |

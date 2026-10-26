@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { EXAM_CATALOG, QUESTIONS_PER_EXAM, FREE_EXAM_MAX } from '~/utils/examCatalog'
 import {
+  createPracticeSeed,
   createPracticeSequence,
   shufflePracticeSequence,
   type PracticeOrder,
@@ -68,8 +69,16 @@ type SourceReference = {
 
 const route = useRoute()
 const { $api: api } = useNuxtApp()
-const { isLoggedIn, user, authHeaders, sessionVersion } = useAuth()
+const { isLoggedIn, user, authResolved, authHeaders, sessionVersion } = useAuth()
 const { canUseFavorites, isFavorite, setFavorite, toggleFavorite } = useFavorites()
+const {
+  loading: incorrectReviewLoading,
+  error: incorrectReviewError,
+  loaded: incorrectReviewLoaded,
+  load: loadIncorrectReview,
+  clear: clearIncorrectReview,
+  createSequence: createIncorrectReviewSequence,
+} = useIncorrectReview()
 const updatingFavorite = ref(false)
 
 const allExamNumbers = EXAM_CATALOG.map(exam => exam.exam_number)
@@ -87,6 +96,11 @@ const parseNumberSelection = (value: unknown, allowedNumbers: readonly number[])
 
 const examNumber = computed(() => Number(route.params.examNumber))
 const questionNumber = computed(() => Number(route.params.questionNumber))
+const answerHistoryId = computed(() => {
+  const value = Number(route.query.answer_history_id)
+  return Number.isInteger(value) && value > 0 ? value : null
+})
+const isIncorrectReview = computed(() => route.query.review === 'incorrect' && answerHistoryId.value === null)
 const practiceScope = computed<PracticeScope>(() => {
   const value = route.query.scope
   return value === 'teacher_education' || value === 'information' ? value : 'all'
@@ -124,10 +138,17 @@ const isRandomPractice = computed(() => (
   && practiceOrder.value === 'random'
   && practiceSeed.value !== null
 ))
-const practiceSequence = computed<PracticePosition[]>(() => (
+const regularPracticeSequence = computed<PracticePosition[]>(() => (
   isRandomPractice.value
     ? shufflePracticeSequence(basePracticeSequence.value, practiceSeed.value!)
     : basePracticeSequence.value
+))
+const incorrectReviewSnapshot = ref<PracticePosition[]>([])
+const incorrectReviewReady = ref(false)
+const incorrectReviewRedirecting = ref(false)
+const incorrectReviewRemainingCount = ref<number | null>(null)
+const practiceSequence = computed<PracticePosition[]>(() => (
+  isIncorrectReview.value ? incorrectReviewSnapshot.value : regularPracticeSequence.value
 ))
 const currentPracticeIndex = computed(() => practiceSequence.value.findIndex(position => (
   position.examNumber === examNumber.value && position.questionNumber === questionNumber.value
@@ -138,6 +159,13 @@ const nextPracticePosition = computed(() => (
     : null
 ))
 const practiceNavigationQuery = computed(() => {
+  if (isIncorrectReview.value && practiceSeed.value !== null) {
+    return {
+      review: 'incorrect',
+      order: 'random',
+      seed: String(practiceSeed.value),
+    }
+  }
   if (hasConditionSelection.value) {
     const query: Record<string, string> = {
       exams: selectedPracticeExamNumbers.value.join(','),
@@ -151,12 +179,19 @@ const practiceNavigationQuery = computed(() => {
   }
   return practiceScope.value === 'all' ? {} : { scope: practiceScope.value }
 })
-const validPosition = computed(() => (
+const basicPositionIsValid = computed(() => (
   Number.isInteger(examNumber.value)
   && allExamNumbers.includes(examNumber.value)
   && Number.isInteger(questionNumber.value)
   && allQuestionNumbers.includes(questionNumber.value)
-  && currentPracticeIndex.value >= 0
+))
+const validPosition = computed(() => (
+  basicPositionIsValid.value
+  && (
+    isIncorrectReview.value
+      ? (!incorrectReviewReady.value || currentPracticeIndex.value >= 0)
+      : currentPracticeIndex.value >= 0
+  )
 ))
 
 const requestQuery = computed(() => ({
@@ -213,7 +248,101 @@ const completed = ref(false)
 const favoriteModalOpen = ref(false)
 const favoriteModalCloseButton = ref<HTMLButtonElement | null>(null)
 const restoredHistoryId = ref<number | null>(null)
+const incorrectReviewRouteError = ref('')
 let answerGeneration = 0
+let incorrectReviewGeneration = 0
+
+const incorrectReviewQuerySignature = computed(() => JSON.stringify([
+  route.query.review,
+  route.query.order,
+  route.query.seed,
+  route.query.scope,
+  route.query.exams,
+  route.query.questions,
+  route.query.answer_history_id,
+]))
+
+const initializeIncorrectReview = async (force = false) => {
+  const generation = ++incorrectReviewGeneration
+  incorrectReviewRouteError.value = ''
+
+  if (!isIncorrectReview.value) {
+    incorrectReviewSnapshot.value = []
+    incorrectReviewRemainingCount.value = null
+    incorrectReviewReady.value = false
+    incorrectReviewRedirecting.value = false
+    return
+  }
+  if (!authResolved.value) {
+    incorrectReviewReady.value = false
+    return
+  }
+  if (!isLoggedIn.value) {
+    incorrectReviewReady.value = false
+    incorrectReviewRedirecting.value = true
+    await navigateTo({ path: '/login', query: { redirect: route.fullPath } })
+    if (generation === incorrectReviewGeneration) incorrectReviewRedirecting.value = false
+    return
+  }
+
+  incorrectReviewReady.value = false
+  try {
+    await loadIncorrectReview(force ? { force: true } : undefined)
+    if (generation !== incorrectReviewGeneration || !isIncorrectReview.value) return
+    if (incorrectReviewError.value || !incorrectReviewLoaded.value) {
+      incorrectReviewRouteError.value = '復習する問題を読み込めませんでした。通信状況を確認して、もう一度お試しください。'
+      return
+    }
+
+    const seed = practiceSeed.value ?? createPracticeSeed()
+    const sequence = createIncorrectReviewSequence(seed)
+    incorrectReviewSnapshot.value = sequence
+    incorrectReviewRemainingCount.value = null
+
+    if (sequence.length === 0) {
+      incorrectReviewReady.value = true
+      incorrectReviewRedirecting.value = true
+      await navigateTo({ path: '/history', query: { review: 'complete' } }, { replace: true })
+      return
+    }
+
+    const currentIsTarget = sequence.some(position => (
+      position.examNumber === examNumber.value && position.questionNumber === questionNumber.value
+    ))
+    const target = currentIsTarget
+      ? { examNumber: examNumber.value, questionNumber: questionNumber.value }
+      : sequence[0]!
+    const canonicalQuery = {
+      review: 'incorrect',
+      order: 'random',
+      seed: String(seed),
+    }
+    const currentQueryKeys = Object.keys(route.query).sort().join(',')
+    const queryIsCanonical = currentQueryKeys === 'order,review,seed'
+      && route.query.review === canonicalQuery.review
+      && route.query.order === canonicalQuery.order
+      && route.query.seed === canonicalQuery.seed
+    const pathIsCanonical = examNumber.value === target.examNumber
+      && questionNumber.value === target.questionNumber
+
+    incorrectReviewReady.value = true
+    if (!queryIsCanonical || !pathIsCanonical) {
+      incorrectReviewRedirecting.value = true
+      await navigateTo({
+        path: `/practice/${target.examNumber}/${target.questionNumber}`,
+        query: canonicalQuery,
+      }, { replace: true })
+    }
+  }
+  catch {
+    if (generation === incorrectReviewGeneration) {
+      incorrectReviewRouteError.value = '復習する問題を読み込めませんでした。通信状況を確認して、もう一度お試しください。'
+    }
+  }
+  finally {
+    if (generation === incorrectReviewGeneration) incorrectReviewRedirecting.value = false
+  }
+}
 
 const majorCategoryLabel = computed(() => (
   MAJOR_CATEGORIES.find(item => item.value === question.value?.major_category_code)?.label
@@ -258,23 +387,56 @@ const loadErrorMessage = computed(() => {
   if (questionError.value || (questionResponse.value && !question.value)) return '指定された公開問題が見つかりませんでした。'
   return ''
 })
+const incorrectReviewPagePending = computed(() => (
+  isIncorrectReview.value
+  && !incorrectReviewRouteError.value
+  && !incorrectReviewError.value
+  && (
+    !authResolved.value
+    || incorrectReviewRedirecting.value
+    || (!incorrectReviewReady.value && (incorrectReviewLoading.value || !incorrectReviewLoaded.value))
+  )
+))
+const incorrectReviewPageError = computed(() => {
+  if (!isIncorrectReview.value || incorrectReviewReady.value) return ''
+  if (incorrectReviewRouteError.value) return incorrectReviewRouteError.value
+  return incorrectReviewError.value ? '復習する問題を読み込めませんでした。通信状況を確認して、もう一度お試しください。' : ''
+})
+const incorrectReviewHasNoTargets = computed(() => (
+  isIncorrectReview.value && incorrectReviewReady.value && incorrectReviewSnapshot.value.length === 0
+))
 const practiceProgress = computed(() => (
-  hasConditionSelection.value && currentPracticeIndex.value >= 0
-    ? `${isRandomPractice.value ? 'ランダム ' : ''}${currentPracticeIndex.value + 1} / ${practiceSequence.value.length}`
+  isIncorrectReview.value && currentPracticeIndex.value >= 0
+    ? `復習 ${currentPracticeIndex.value + 1} / 全${practiceSequence.value.length}問`
+    : hasConditionSelection.value && currentPracticeIndex.value >= 0
+      ? `${isRandomPractice.value ? 'ランダム ' : ''}${currentPracticeIndex.value + 1} / ${practiceSequence.value.length}`
     : ''
 ))
 const completionHeading = computed(() => (
-  hasConditionSelection.value
+  isIncorrectReview.value
+    ? incorrectReviewRemainingCount.value === 0
+      ? '間違えた問題をすべて正解しました'
+      : `まだ${incorrectReviewRemainingCount.value ?? 0}問あります`
+    : hasConditionSelection.value
     ? '選択した問題をすべて解き終えました'
     : practiceScope.value === 'all' ? '公開中の問題はここまでです' : '指定した出題範囲はここまでです'
 ))
 const completionMessage = computed(() => {
+  if (isIncorrectReview.value) {
+    return incorrectReviewRemainingCount.value === 0
+      ? '今回の解答を反映した結果、復習対象の問題はなくなりました。'
+      : '今回の解答を反映して、復習対象を更新しました。新しい順番でもう一度取り組めます。'
+  }
   if (hasConditionSelection.value) {
     return `${selectedPracticeExamNumbers.value.length}模試、全${practiceSequence.value.length}問の演習が完了しました。`
   }
   if (practiceScope.value === 'teacher_education') return `模擬試験 ${examNumber.value} の教職教養を解き終えました。`
   if (practiceScope.value === 'information') return `模擬試験 ${examNumber.value} の情報科特有を解き終えました。`
   return `模擬試験 ${examNumber.value} の公開問題をすべて解き終えました。`
+})
+const nextActionLabel = computed(() => {
+  if (!isIncorrectReview.value) return '次の問題'
+  return nextPracticePosition.value ? '次の復習問題' : '復習結果を確認'
 })
 
 watch(
@@ -285,6 +447,8 @@ watch(
     route.query.questions,
     route.query.order,
     route.query.seed,
+    route.query.review,
+    route.query.answer_history_id,
     practiceScope.value,
     questionSession.value,
   ],
@@ -298,6 +462,12 @@ watch(
     submitting.value = false
   },
   { flush: 'sync' },
+)
+
+watch(
+  [isIncorrectReview, authResolved, isLoggedIn, questionSession, incorrectReviewQuerySignature],
+  () => { void initializeIncorrectReview() },
+  { immediate: true },
 )
 // Do not retain a previous account's question/error while the replacement
 // request is pending. Nuxt also cancels the previous in-flight useFetch result.
@@ -322,6 +492,7 @@ const submitAnswer = async () => {
 
   const generation = answerGeneration
   const questionId = question.value.id
+  const reviewOwnerSession = isLoggedIn.value ? questionSession.value : null
   submitting.value = true
   answerError.value = ''
 
@@ -334,6 +505,12 @@ const submitAnswer = async () => {
         body: { selected_choice_id: selectedChoiceId.value },
       },
     )
+    // An authenticated answer can change whether this question belongs to a
+    // future review round. Keep the current round's local snapshot, but make
+    // every later entry point fetch the latest target set.
+    if (reviewOwnerSession !== null && reviewOwnerSession === questionSession.value) {
+      clearIncorrectReview()
+    }
     if (generation === answerGeneration && question.value?.id === questionId) answerResult.value = response.data
   }
   catch (error: any) {
@@ -353,13 +530,8 @@ const submitAnswer = async () => {
   }
 }
 
-const answerHistoryId = computed(() => {
-  const value = Number(route.query.answer_history_id)
-  return Number.isInteger(value) && value > 0 ? value : null
-})
-
 const restoreAnswerHistory = async () => {
-  if (status.value !== 'success' || !question.value || !isLoggedIn.value || !answerHistoryId.value) return
+  if (isIncorrectReview.value || status.value !== 'success' || !question.value || !isLoggedIn.value || !answerHistoryId.value) return
   if (restoredHistoryId.value === answerHistoryId.value) return
 
   const generation = answerGeneration
@@ -407,6 +579,23 @@ const goToNextQuestion = async () => {
   if (!question.value || loadingNext.value) return
 
   if (!nextPracticePosition.value) {
+    if (isIncorrectReview.value) {
+      loadingNext.value = true
+      answerError.value = ''
+      try {
+        const remaining = await loadIncorrectReview({ force: true })
+        if (incorrectReviewError.value || !incorrectReviewLoaded.value) throw new Error('incorrect review load failed')
+        incorrectReviewRemainingCount.value = remaining.length
+        completed.value = true
+      }
+      catch {
+        answerError.value = '復習結果を更新できませんでした。通信状況を確認して、もう一度お試しください。'
+      }
+      finally {
+        loadingNext.value = false
+      }
+      return
+    }
     completed.value = true
     return
   }
@@ -422,6 +611,35 @@ const goToNextQuestion = async () => {
   }
   catch (error: any) {
     answerError.value = '次の問題へ移動できませんでした。もう一度お試しください。'
+  }
+  finally {
+    loadingNext.value = false
+  }
+}
+
+const restartIncorrectReview = async () => {
+  if (!isIncorrectReview.value || loadingNext.value) return
+
+  loadingNext.value = true
+  answerError.value = ''
+  try {
+    const seed = createPracticeSeed()
+    const sequence = createIncorrectReviewSequence(seed)
+    if (sequence.length === 0) {
+      incorrectReviewRemainingCount.value = 0
+      return
+    }
+
+    incorrectReviewSnapshot.value = sequence
+    incorrectReviewRemainingCount.value = null
+    completed.value = false
+    await navigateTo({
+      path: `/practice/${sequence[0]!.examNumber}/${sequence[0]!.questionNumber}`,
+      query: { review: 'incorrect', order: 'random', seed: String(seed) },
+    })
+  }
+  catch {
+    answerError.value = '復習を再開できませんでした。もう一度お試しください。'
   }
   finally {
     loadingNext.value = false
@@ -464,7 +682,32 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 
 <template>
   <div class="page-wrap practice-wrap">
-    <div v-if="status === 'idle' || status === 'pending'" class="state-panel" role="status" aria-live="polite" aria-busy="true">
+    <div v-if="incorrectReviewPagePending" class="state-panel" role="status" aria-live="polite" aria-busy="true">
+      <UIcon class="spin" name="i-lucide-loader-circle" aria-hidden="true" />
+      <p>復習する問題を読み込んでいます</p>
+    </div>
+
+    <div v-else-if="incorrectReviewPageError" class="state-panel error-panel" role="alert">
+      <UIcon name="i-lucide-circle-alert" />
+      <h1>復習する問題を表示できません</h1>
+      <p>{{ incorrectReviewPageError }}</p>
+      <div class="state-actions">
+        <button class="secondary-link" type="button" @click="() => initializeIncorrectReview(true)">再読み込み</button>
+        <NuxtLink class="primary-link" to="/history">解答履歴へ戻る</NuxtLink>
+      </div>
+    </div>
+
+    <div v-else-if="incorrectReviewHasNoTargets" class="state-panel review-complete-panel">
+      <UIcon name="i-lucide-circle-check-big" />
+      <h1>復習する問題はありません</h1>
+      <p>最新の解答で間違えた問題は、すべて正解済みです。</p>
+      <div class="state-actions">
+        <NuxtLink class="secondary-link" to="/history">解答履歴を確認する</NuxtLink>
+        <NuxtLink class="primary-link" to="/">トップへ戻る</NuxtLink>
+      </div>
+    </div>
+
+    <div v-else-if="status === 'idle' || status === 'pending'" class="state-panel" role="status" aria-live="polite" aria-busy="true">
       <UIcon class="spin" name="i-lucide-loader-circle" aria-hidden="true" />
       <p>問題を読み込んでいます</p>
     </div>
@@ -495,6 +738,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
         <div>
           <div class="practice-context">
             <span class="exam-label">模擬試験 {{ question.exam_number }}</span>
+            <span v-if="isIncorrectReview" class="review-label">間違えた問題を復習中</span>
             <span v-if="practiceProgress" class="practice-progress">{{ practiceProgress }}</span>
           </div>
           <h1>問{{ question.question_number }}</h1>
@@ -600,10 +844,24 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
           <div v-if="completed" class="completed-message">
             <strong>{{ completionHeading }}</strong>
             <p>{{ completionMessage }}</p>
-            <NuxtLink class="secondary-link" to="/">トップへ戻る</NuxtLink>
+            <div class="completed-actions">
+              <button
+                v-if="isIncorrectReview && (incorrectReviewRemainingCount ?? 0) > 0"
+                class="primary-link"
+                type="button"
+                :disabled="loadingNext"
+                @click="restartIncorrectReview"
+              >{{ loadingNext ? '読み込み中です' : '残っている問題をもう一度復習' }}</button>
+              <NuxtLink
+                v-if="isIncorrectReview"
+                class="secondary-link"
+                :to="incorrectReviewRemainingCount === 0 ? { path: '/history', query: { review: 'complete' } } : '/history'"
+              >解答履歴へ戻る</NuxtLink>
+              <NuxtLink v-else class="secondary-link" to="/">トップへ戻る</NuxtLink>
+            </div>
           </div>
           <button v-else class="primary-link next-button" type="button" :disabled="loadingNext" @click="goToNextQuestion">
-            {{ loadingNext ? '読み込み中です' : '次の問題' }}
+            {{ loadingNext ? '読み込み中です' : nextActionLabel }}
             <UIcon name="i-lucide-arrow-right" />
           </button>
         </section>
@@ -653,6 +911,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .practice-head { padding: 46px 0 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; }
 .practice-context { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
 .practice-head .exam-label { color: var(--teal); font-size: 14px; font-weight: 800; }
+.review-label { padding: 4px 9px; border-radius: 999px; background: #e5f3f1; color: var(--teal-dark); font-size: 12px; font-weight: 800; }
 .practice-progress { padding-left: 12px; border-left: 1px solid #bdcbcd; color: var(--muted); font-size: 13px; font-weight: 800; }
 .practice-head h1 { margin: 5px 0 0; font-size: 36px; }
 .practice-head p { margin: 0; color: var(--muted); }
@@ -707,6 +966,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .next-button { margin-top: 24px; }
 .completed-message { margin-top: 24px; padding: 18px; border: 1px solid var(--line); background: #fff; }
 .completed-message p { color: var(--muted); }
+.completed-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.completed-actions .primary-link,
+.completed-actions .secondary-link { width: auto; }
 .state-panel { min-height: 360px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; text-align: center; }
 .state-panel :deep(svg) { width: 34px; height: 34px; color: var(--teal); }
 .state-panel p { margin: 0; color: var(--muted); }
@@ -714,6 +976,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
 .error-panel :deep(svg) { color: var(--coral); }
 .paywall-panel h1 { margin: 4px 0 0; font-size: 26px; }
 .paywall-panel :deep(svg) { color: #64787e; }
+.review-complete-panel h1 { margin: 4px 0 0; font-size: 26px; }
+.review-complete-panel :deep(svg) { color: var(--teal); }
 .state-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 12px; }
 .spin { animation: spin 1s linear infinite; }
 .favorite-modal-backdrop {
@@ -777,6 +1041,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleFavoriteModalK
   .question-text { font-size: 18px; }
   .choices label { grid-template-columns: 18px 28px minmax(0, 1fr) 22px; padding: 11px; }
   .answer-result { padding: 20px 16px; }
+  .completed-actions { flex-direction: column; }
+  .completed-actions .primary-link,
+  .completed-actions .secondary-link { width: 100%; }
   .favorite-modal { padding: 30px 20px 24px; }
   .favorite-modal-actions { flex-direction: column; }
   .favorite-modal-actions a { width: 100%; }

@@ -158,6 +158,44 @@ export async function listHistory(user: User | null, params: Record<string, unkn
   return { data: rows.map(row => serializeHistory({ ...row, answered_at: row.created_at } as unknown as HistoryRow, fullAccess)), meta: meta(page, perPage, count) }
 }
 
+type IncorrectReviewQuestionRow = { question_id: number, exam_number: number, question_number: number }
+
+export async function listIncorrectReviewQuestions(user: User | null, db: Database = getDatabase()) {
+  const current = requireUser(user)
+  const fullAccess = !paymentsEnabled || await hasPaidAccess(current, db)
+  const values: unknown[] = [current.id]
+  let accessPredicate = ''
+  if (!fullAccess) {
+    values.push(freeExamMax)
+    accessPredicate = 'AND questions.exam_number <= $2'
+  }
+  const rows = await query<IncorrectReviewQuestionRow>(`
+    WITH latest_answers AS (
+      SELECT DISTINCT ON (answer_histories.question_id)
+        answer_histories.question_id,
+        answer_histories.is_correct
+      FROM answer_histories
+      WHERE answer_histories.user_id = $1
+      ORDER BY answer_histories.question_id,
+        answer_histories.created_at DESC,
+        answer_histories.id DESC
+    )
+    SELECT questions.id AS question_id,
+      questions.exam_number,
+      questions.question_number
+    FROM latest_answers
+    INNER JOIN questions ON questions.id = latest_answers.question_id
+    WHERE latest_answers.is_correct = FALSE
+      AND questions.publication_status = 'published'
+      ${accessPredicate}
+    ORDER BY questions.exam_number ASC,
+      questions.question_number ASC,
+      questions.id ASC
+  `, values, db)
+  const data = rows.map(row => ({ question_id: Number(row.question_id), exam_number: Number(row.exam_number), question_number: Number(row.question_number) }))
+  return { data, meta: { total_count: data.length } }
+}
+
 export async function getHistory(id: number, user: User | null, db: Database = getDatabase()) {
   const current = requireUser(user)
   const found = await db.answerHistory.findFirst({ where: { user_id: current.id, id }, include: { question: true, selected_choice: true } })

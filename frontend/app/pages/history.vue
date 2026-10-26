@@ -35,6 +35,11 @@ type ApiResponse = {
 
 const { $api: api } = useNuxtApp()
 const { isLoggedIn, user, authHeaders, sessionVersion } = useAuth()
+const {
+  loading: incorrectReviewLoading,
+  error: incorrectReviewError,
+  start: startIncorrectReview,
+} = useIncorrectReview()
 const histories = ref<HistoryItem[]>([])
 const meta = ref<HistoryMeta>({ current_page: 1, per_page: 20, total_count: 0, total_pages: 0 })
 const page = ref(1)
@@ -45,6 +50,15 @@ const historySession = computed(() => JSON.stringify([
   user.value?.id ?? null, user.value?.paid_content_access ?? false, sessionVersion.value,
 ]))
 let currentOwner = user.value?.id ?? null
+const incorrectReviewMessage = ref('')
+
+const startIncorrectReviewFromHistory = async () => {
+  incorrectReviewMessage.value = ''
+  const started = await startIncorrectReview()
+  if (!started && !incorrectReviewError.value) {
+    incorrectReviewMessage.value = '現在、復習する問題はありません。'
+  }
+}
 
 const loadHistories = async () => {
   const version = ++loadVersion
@@ -117,6 +131,44 @@ const historyLink = (history: HistoryItem) => ({
       <h1>解答履歴</h1>
       <p>これまでに回答した問題を、新しい順に確認できます。</p>
     </header>
+
+    <div
+      v-if="isLoggedIn && $route.query.review === 'complete'"
+      class="review-complete-notice"
+      role="status"
+    >
+      <UIcon name="i-lucide-circle-check" aria-hidden="true" />
+      <div>
+        <strong>間違えた問題をすべて正解しました</strong>
+        <p>今回の復習は完了です。</p>
+      </div>
+    </div>
+
+    <section v-if="isLoggedIn" class="incorrect-review-cta" aria-labelledby="incorrect-review-title">
+      <div>
+        <h2 id="incorrect-review-title">間違えた問題を復習</h2>
+        <p>最新の回答が不正解の問題だけを、ランダムな順番で復習できます。</p>
+      </div>
+      <button
+        class="primary-link"
+        type="button"
+        :disabled="incorrectReviewLoading"
+        @click="startIncorrectReviewFromHistory"
+      >
+        <UIcon
+          :class="{ spin: incorrectReviewLoading }"
+          :name="incorrectReviewLoading ? 'i-lucide-loader-circle' : 'i-lucide-shuffle'"
+          aria-hidden="true"
+        />
+        {{ incorrectReviewLoading ? '問題を確認しています' : '間違えた問題をランダムに復習' }}
+      </button>
+      <p v-if="incorrectReviewError" class="incorrect-review-message error-message" role="alert">
+        {{ incorrectReviewError }}
+      </p>
+      <p v-else-if="incorrectReviewMessage" class="incorrect-review-message" role="status">
+        {{ incorrectReviewMessage }}
+      </p>
+    </section>
 
     <div v-if="!isLoggedIn" class="empty-state">
       <h2>ログインが必要です</h2>
@@ -202,6 +254,37 @@ const historyLink = (history: HistoryItem) => ({
 <style scoped>
 .empty-icon { width: 34px; height: 34px; color: var(--teal); }
 .error-icon { color: var(--coral); }
+.review-complete-notice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 16px 18px;
+  border: 1px solid #9dc8c3;
+  border-radius: 8px;
+  background: #eaf6f4;
+  color: var(--teal-dark);
+}
+.review-complete-notice :deep(svg) { width: 26px; height: 26px; flex: 0 0 26px; }
+.review-complete-notice strong { display: block; }
+.review-complete-notice p { margin: 3px 0 0; color: #486369; font-size: 14px; }
+.incorrect-review-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px 24px;
+  margin-bottom: 24px;
+  padding: 22px 24px;
+  border: 1px solid #b7cbcc;
+  border-radius: 8px;
+  background: #f3f8f7;
+}
+.incorrect-review-cta h2 { margin: 0; color: var(--ink); font-size: 18px; }
+.incorrect-review-cta p { margin: 6px 0 0; color: var(--muted); line-height: 1.7; }
+.incorrect-review-cta .primary-link { white-space: nowrap; }
+.incorrect-review-cta .primary-link:disabled { opacity: .6; cursor: wait; }
+.incorrect-review-message { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid #d4e0df; }
+.incorrect-review-cta .error-message { color: #a23b2a; }
 .history-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; color: var(--muted); }
 .history-summary strong { color: var(--ink); }
 .history-list { display: grid; gap: 14px; }
@@ -232,6 +315,8 @@ const historyLink = (history: HistoryItem) => ({
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 640px) {
+  .incorrect-review-cta { grid-template-columns: 1fr; padding: 20px; }
+  .incorrect-review-cta .primary-link { width: 100%; white-space: normal; }
   .history-card a { padding: 18px; }
   .history-card-head { align-items: flex-start; flex-direction: column; }
   .history-question strong { font-size: 16px; }

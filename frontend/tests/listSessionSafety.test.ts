@@ -44,15 +44,18 @@ function harness(t: TestContext, name: 'history' | 'favorites') {
   }) }
   globals.useAuth = () => auth
   globals.useNuxtApp = () => app
+  const incorrectReview = {
+    loading: ref(false), error: ref(''), start: async () => false,
+  }
   const source = readFileSync(new URL(`../app/pages/${name}.vue`, import.meta.url), 'utf8')
   const script = source.match(/<script setup lang="ts">([\s\S]*?)<\/script>/)![1]!
-  const setup = new Function('ref', 'computed', 'watch', 'definePageMeta', 'onMounted', 'useNuxtApp', 'useAuth', 'useFavorites',
+  const setup = new Function('ref', 'computed', 'watch', 'definePageMeta', 'onMounted', 'useNuxtApp', 'useAuth', 'useFavorites', 'useIncorrectReview',
     `${stripTypeScriptTypes(script)}\nreturn {
       items: ${name === 'history' ? 'histories' : 'favorites'}, meta, page, loading, loadError,
       ${name === 'favorites' ? 'toggleFromList, removingId, isFavorite,' : ''}
     }`)
   const scope = effectScope()
-  const view = scope.run(() => setup(ref, computed, watch, () => {}, () => {}, () => app, () => auth, useFavorites))!
+  const view = scope.run(() => setup(ref, computed, watch, () => {}, () => {}, () => app, () => auth, useFavorites, () => incorrectReview))!
   t.after(() => scope.stop())
   return { auth, reads, writes, view }
 }
