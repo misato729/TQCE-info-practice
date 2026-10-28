@@ -109,7 +109,7 @@ docker compose exec -T frontend npm run db:migrate
 
 ## Stripeプレミアム会員の設定
 
-プレミアム会員は500円（税込）の買い切りです。模擬試験1〜5は無料、模擬試験6以降は有効なプレミアム会員または管理者だけが利用できます。販売開始フラグの初期値は `false` です。
+プレミアム会員は500円（税込）の買い切りです。模擬試験1〜5は無料、模擬試験6以降は有効なプレミアム会員・管理者・有効な検証用資格を持つユーザーが利用できます。販売開始フラグの初期値は `false` です。以下は設定手順であり、本番設定変更や販売開始は個別の明示指示と公開前条件の確認後に行います。
 
 1. Stripeで「模擬試験6以降の利用資格（買い切り）」など提供内容が分かる名称のProductと、日本円500円の一回払い用Priceを作成します。Stripe Dashboardの公開情報には、サイトURL `https://johokyonin-lab.netlify.app/`、利用規約URL `https://johokyonin-lab.netlify.app/terms`、プライバシーポリシーURL `https://johokyonin-lab.netlify.app/privacy-policy` を登録します。Checkoutでは利用規約への同意を必須にするため、URL未設定時はSessionを作成できません。ドメインを変更してもDashboardの登録値は自動更新されないため、販売前に確認してください。
 2. StripeのWebhook送信先を `https://<backend-host>/api/v1/webhooks/stripe` とし、次のイベントを登録します。
@@ -122,7 +122,7 @@ docker compose exec -T frontend npm run db:migrate
    - `charge.dispute.closed`
 3. `.env.example` に記載したStripe設定、フロントエンドURL、販売事業者情報を設定します。シークレット値はリポジトリへ保存しません。
 4. Stripeのテストモードで、購入、Webhook再送、全額返金、異議申立て、重複購入防止を確認します。
-5. 利用規約、プライバシーポリシー、特定商取引法に基づく表記の実情報を確認した後、`PAID_MEMBERSHIP_ENABLED=true` にします。
+5. 利用規約、プライバシーポリシー、特定商取引法に基づく表記の実情報と、バックアップ・復元・監視・性能等の公開前条件を確認します。所有者による販売開始の明示承認後にだけ `PAID_MEMBERSHIP_ENABLED=true` にします。
 
 販売事業者情報には、実際の氏名または登記上の名称と問い合わせ先を設定してください。サイト名や未登記の屋号だけを販売事業者名として使用しないでください。住所・電話番号を公開する初期方式は `SELLER_CONTACT_DISCLOSURE_MODE=public` で、実際の住所・電話番号も必須です。
 
@@ -153,7 +153,7 @@ NetlifyのAPI転送先は `https://tqce-info-practice.fly.dev/api/:splat` です
 
 現在はNetlifyの自動ビルドを停止しています。承認済みのコミット・pushでも停止状態を確認し、`[skip netlify]` を併用して公開中のサイトを維持します。自動ビルドの再開や手動デプロイは別途の明示指示があるまで実行しません。GitHub Actionsで行う生成・ビルドは検証のみで、公開先へ配信しません。
 
-Fly.ioへのデプロイはリポジトリルートから行います。
+Fly.ioへのデプロイが別途明示的に指示された場合は、リポジトリルートから行います。以下のコマンドを、資料更新やコミット・pushの指示だけで実行しません。
 
 ```sh
 fly deploy --config fly.toml
